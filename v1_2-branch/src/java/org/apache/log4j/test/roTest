@@ -1,0 +1,30 @@
+
+# A regression test to check the option reading code and print formats.
+
+# Read the .functions file
+. .functions
+
+A1_PREFIX="log4j.appender.A1"
+
+# ----------------------------------------------------------------------
+function testRO {
+ confFile=$1
+
+  echo -n "ReadOnlyFile test $TEST - "
+ java -Dlog4j.configDebug org.apache.log4j.test.ROFile $confFile
+ 
+}
+
+touch readonly
+chmod -w readonly
+
+echo  "$A1_PREFIX=org.apache.log4j.RollingFileAppender" > $LCF
+lecho "$A1_PREFIX.Append=true"
+lecho "$A1_PREFIX.File=readonly" 
+lecho "$A1_PREFIX.layout=org.apache.log4j.PatternLayout" 
+lecho "$A1_PREFIX.layout.ConversionPattern=%p [%t] = %m" 
+lecho "$ROOT_PREFIX=DEBUG, A1" 
+testRO $LCF
+
+rm -f readonly
+

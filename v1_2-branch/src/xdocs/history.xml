@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+
+  <properties>
+    <author email="not@disclosed">Ceki Gülcü</author>
+    <title>Project history</title>
+  </properties>
+
+<body>
+
+    <section name="Project history">
+
+      <p>The <a href="HISTORY"><b>project history</b></a> gives a
+	brief summary of changes and additions. Users frequently
+	report bugs that are solved in newer versions of log4j. Please
+	have a look at the history file before asking for help.
+      </p>
+
+      <p>The project's official URL is <a
+	  href="http://logging.apache.org/log4j">http://logging.apache.org/log4j</a>.
+      </p>
+
+      <p>Many thanks to all the log4j users who keep sending us input
+      and sometimes even praise for our collective effort. The first
+      ancestor of log4j was written for the E.U. sponsored <a
+      href="http://www.semper.org">SEMPER</a> project.  N. Asokan,
+      Ceki G&#252;lc&#252; and Michael Steiner came up with the idea
+      of hierarchical loggers back in 1996. Their idea is still at the
+      heart of log4j. The package was considerably improved over the
+      years at the <a href="http://www.zurich.ibm.com">IBM Zurich
+      Research Laboratory</a>. However, log4j is no longer associated
+      nor supported by IBM.
+      </p>
+
+      <p>Special thanks to M. Niksch from ZRL for his assistance on
+	many large and small matters. The Apache members, Pier
+	Fumagalli and Sam Ruby in particular, have been extremely
+	helpful in easing the move to Apache.
+      </p>
+
+      <p>The log4j logo was designed and kindly donated by Cyberlab SA of Switzerland.
+      </p> 
+
+    </section>
+  </body> 
+</document>

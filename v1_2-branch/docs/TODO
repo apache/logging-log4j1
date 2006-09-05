@@ -1,0 +1,75 @@
+TODO
+
+
+- Add support for string options in SocketAppender
+
+- Add a properties file option to log4j:configure in XML.
+
+- Really quiet mode for LogLog.
+
+- Deprecate configure element in DTD.
+
+- Support for duplicate appender suppression in configurators.
+- Clean up the association of renderers and hierarchies
+- FailOverAppender
+
+- Graceful congiguration merging
+
+- Integrate tons of GUI code.
+- JDBCAppender.
+- Time based rolling.
+- SSL logging.
+- Authenticated logging.
+
+
+ONGOING TASKS
+
+- Better test suite.
+- Better documentation.
+
+	
+DONE
+
+- Add priority#priorityClass to Configurators
+- log4j: namespace in DTD
+- Mapped Diagnostic Contexts
+- Allow the raw message object to be seen by Appenders and Layouts.
+- Complete multiple hierachy support.
+- JMSAppender.
+- SMTPAppender.
+- Automatic configuration file reloading.
+- AsyncAppender.
+- Written a short user manual.
+- Added XMLLayout.
+- In DOMConfigurator added support for sub-classes of Category
+  implementing OptionHandler interface.
+- Added support for Filters and ErrorHandlers.
+- Added support for multiple hierarchy trees.
+- Added support for sub-classing of Category.
+- Socket logging.
+- Integration with NT event logging.
+- File name option form environment.
+- com.ibm.log4j to org.log4j package renaming.
+- DOMConfigurator.
+- PatternLayout replaces TTCCLayout and SimpleLayout.
+- TTCCLayout customizable with any DateFormat.
+- Better control over NDC stack.
+- Act as UNIX syslog client.
+- Make Priority intances flyweights. 
+- ILog.init methods with Layout argument, with Appender argument.
+- Contexts a la Logging Pattern of N. Harrison.
+- Improve catBag lookup speed with wrapper classes.
+- Truncate functionality.
+- ILog facade to LogCreationManager.getSingleton()
+- JAR file
+- New syntactic sugars to log objects  and not strings.
+- Exception --> Throwable
+
+
+
+
+
+
+
+  	
+	

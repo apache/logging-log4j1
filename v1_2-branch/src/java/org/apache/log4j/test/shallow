@@ -1,0 +1,137 @@
+#!/bin/bash
+
+# A regression test to check the option reading code and print formats.
+ 
+# Read the .functions file
+. .functions
+
+A1_PREFIX="log4j.appender.A1"
+A2_PREFIX="log4j.appender.A2" 
+
+PORT=12345
+DELAY=5000
+
+# If set, allows to skip tests 
+declare -i start=$1
+
+# ----------------------------------------------------------------------
+function testShallow {
+ layout=$1
+
+ echo -n "Shallow test $TEST - "
+ runShallow $LCF
+ $PERL filter.pl $TEMP.A1 $OUTPUT.A1 Shallow $layout 
+ $PERL filter.pl $TEMP.A2 $OUTPUT.A2 Shallow $layout 
+ if [ $? != 0 ]; then
+  echo "The output is not in expected format. See the file [$OUTPUT]."
+  exit 1   
+fi
+ check witness/shallow.A1.$TEST $OUTPUT.A1; echo -n "-"
+ check witness/shallow.A2.$TEST $OUTPUT.A2; echo " OK."
+}
+# +============================================
+# Make a config file for the shallow test
+# +============================================
+function makeShallowConfigFile {
+  logFile=$1  
+  rootPriority=$2
+  shallowPriority=$3
+  layoutClass=$4
+  dateFormat=$5
+  additivity=$6
+   
+ echo "$A1_PREFIX=org.apache.log4j.FileAppender" > $LCF
+ echo "$A1_PREFIX.Append=false" >> $LCF 
+ echo "$A1_PREFIX.layout=$layoutClass" >> $LCF
+ echo "$A1_PREFIX.layout.DateFormat=$dateFormat" >> $LCF 
+
+ echo "$A2_PREFIX=org.apache.log4j.FileAppender" >> $LCF
+ echo "$A2_PREFIX.append=false" >> $LCF 
+ echo "$A2_PREFIX.layout=$layoutClass" >> $LCF
+ echo "$A2_PREFIX.layout.DateFormat=$dateFormat" >> $LCF 
+ 
+ 
+ echo "$A1_PREFIX.File=$logFile.A1" >> $LCF
+ echo "$A2_PREFIX.File=$logFile.A2" >> $LCF   
+
+ echo "$ROOT_PREFIX=$rootPriority, A1" >> $LCF
+ echo "log4j.logger.org.apache.log4j.test.Shallow=$shallowPriority, A2" >> $LCF 
+
+ if [ -n "$additivity" ]; then
+   echo "log4j.additivity.org.apache.log4j.test.Shallow=$additivity" >> $LCF
+ fi
+   
+}
+# ----------------------------------------------------------------------
+function runShallow() {
+ confFile=$1
+ #java -Dlog4j.configDebug org.apache.log4j.test.Shallow $confFile
+ java org.apache.log4j.test.Shallow $confFile 
+}
+# ----------------------------------------------------------------------
+function testSocket {
+ layout=$1 
+ echo -n "Shallow test $TEST - "
+ runShallow $LCF
+ sleep 8
+ $PERL filter.pl $TEMP $OUTPUT Shallow $layout 
+ check witness/shallow.$TEST $OUTPUT; echo " Test PASSED O.K."
+}
+# ===============================================================
+
+setPERL
+
+declare -i TEST
+
+TEST=1
+if [ $TEST -ge $start ]; then
+
+  makeShallowConfigFile $TEMP DEBUG " " $SIMPLE
+  testShallow LINE_NUMBER
+fi
+
+
+TEST=2
+if [ $TEST -ge $start ]; then
+  makeShallowConfigFile $TEMP INFO DEBUG $SIMPLE xxx true
+  testShallow LINE_NUMBER 
+fi
+
+TEST=3
+if [ $TEST -ge $start ]; then
+  makeShallowConfigFile $TEMP DEBUG " " $TTCC NULL true
+  testShallow LINE_NUMBER
+fi
+
+TEST=4
+if [ $TEST -ge $start ]; then
+  makeShallowConfigFile $TEMP INFO " " $TTCC RELATIVE
+  testShallow RELATIVE
+fi
+
+TEST=5
+if [ $TEST -ge $start ]; then
+  makeShallowConfigFile $TEMP DEBUG WARN $TTCC ABSOLUTE
+  testShallow ABSOLUTE
+fi
+
+TEST=6
+if [ $TEST -ge $start ]; then
+  makeShallowConfigFile $TEMP DEBUG WARN $TTCC DATE
+  testShallow DATE
+fi
+
+TEST=7
+if [ $TEST -ge $start ]; then
+  makeShallowConfigFile $TEMP DEBUG WARN $TTCC DATE false
+  testShallow DATE
+fi
+
+TEST=8
+if [ $TEST -ge $start ]; then
+  makeShallowConfigFile $TEMP DEBUG DEBUG $TTCC DATE false
+  echo "$A1_PREFIX.Threshold=WARN" >> $LCF   
+  testShallow DATE
+fi
+
+

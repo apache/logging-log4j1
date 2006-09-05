@@ -1,0 +1,189 @@
+#!/bin/bash
+
+# Usage: install [-j] [-h]
+#	 -j: jar files only
+#        -h: do not update the history file
+
+# +=============================================+
+# Strip the filename, retain the directory only.|
+# +=============================================+
+function getShellScriptDirectory {
+  local dir
+  
+  dir=${0%/*}
+
+  if [ "$dir" = "." ]
+  then
+    dir=$(pwd)
+  elif [ "${dir#/}" = "$dir" ]  # dir does not start with a /
+  then
+    dir=$(pwd)/$dir
+  fi
+ echo $dir
+}
+# ==================================================
+
+WWW_TARGET=~/ASF/dump
+DISTRIB_TARGET=~/sf/temp
+JAR_FULL=log4j.jar
+JAR_CORE=log4j-core.jar
+
+
+if [ -z "$ANT" ]
+then
+  ANT=ant
+fi
+
+
+while getopts ":jh" opt; do
+
+  case $opt in
+    j ) JAR_ONLY=true
+    ;;
+    h ) NO_HISTORY=true
+    ;;
+    \? ) echo "Usage: install [-j] [-h]"
+         echo "     -j: jar files only"
+	 echo "     -h: do not update the history file"
+	 exit;
+  esac	 
+done
+
+# =================================================================
+function cleanUp {
+ echo ""
+}
+# =================================================================
+
+pushd $PWD > /dev/null
+
+scriptDir=$(getShellScriptDirectory)
+echo "Script directry is determined to be [$scriptDir]"
+
+echo "Sourcing ${scriptDir}/.functions"
+. ${scriptDir}/.functions 
+
+echo "Setting current dir to [${scriptDir}/..]"
+cd ${scriptDir}/..
+PKG_DIR=$PWD
+
+# ${PKG_DIR##*/} returns the package name
+PKG_NAME=${PKG_DIR##*/}
+
+# Package name is [$PKG_NAME]
+
+TGZ_FILE=${PKG_NAME}.tgz 
+ZIP_FILE=${PKG_NAME}.zip
+
+echo "Deleting \"core\" files."
+find . -type f -name core -exec rm {} \;
+
+deleteFile $PKG_DIR/org/apache/log4j/performance/test
+deleteFile $PKG_DIR/org/apache/log4j/test/temp
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.A1
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.A2
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.x
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.1
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.2
+deleteFile $PKG_DIR/org/apache/log4j/test/temp.3
+deleteFile $PKG_DIR/org/apache/log4j/test/logging.lcf
+deleteFile $PKG_DIR/org/apache/log4j/test/logging.cat
+deleteFile $PKG_DIR/org/apache/log4j/test/current.reg
+deleteFile $PKG_DIR/org/apache/log4j/test/current.reg.A1
+deleteFile $PKG_DIR/org/apache/log4j/test/current.reg.A2
+deleteFile $PKG_DIR/org/apache/log4j/test/log4j.properties
+deleteFile $PKG_DIR/org/apache/log4j/test/socket.lcf
+deleteFile $PKG_DIR/org/apache/log4j/test/file
+deleteFile $PKG_DIR/org/apache/log4j/test/output.A1
+
+deleteFile $PKG_DIR/org/apache/log4j/examples/test
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/output.A1
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/output.A2
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/temp.A1
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/temp.A2
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/current.reg
+deleteFile $PKG_DIR/org/apache/log4j/nt/EventLogCategories.dbg
+deleteFile $PKG_DIR/org/apache/log4j/nt/EventLogCategories.h
+deleteFile $PKG_DIR/org/apache/log4j/nt/EventLogCategories.rc
+deleteFile $PKG_DIR/org/apache/log4j/nt/EventLogCategories.RES
+deleteFile $PKG_DIR/org/apache/log4j/nt/MSG00001.bin
+deleteFile $PKG_DIR/org/apache/log4j/nt/NTEventLogAppender.lib
+deleteFile $PKG_DIR/org/apache/log4j/nt/NTEventLogAppender.exp
+deleteFile $PKG_DIR/org/apache/log4j/nt/vc50.idb
+deleteFile $PKG_DIR/org/apache/log4j/net/test/loop.log
+deleteFile $PKG_DIR/org/apache/log4j/net/test/loop.log.1
+deleteFile $PKG_DIR/classes/org/apache/log4j/UnitTestCategory.class
+deleteFile $PKG_DIR/org/apache/log4j/varia/test/temp
+deleteFile $PKG_DIR/org/apache/log4j/xml/test/temp
+
+echo "Cleaning \"classes\" directory."
+find .  -type d -path "./classes/exercise" -exec rm -r {} \;
+find .  -type d -path "./classes/make" -exec rm -r {} \;
+
+echo -n "Build stamp: "
+date -u +"%Y-%m-%d %T %Z" 
+
+echo "About to run ANT. Current directory is [$PWD]"
+$ANT jar
+
+if [ "$?" != "0" ]; then
+  echo "jar failed! Exiting."; popd; exit 1
+fi
+
+if [ -n "$JAR_ONLY" ]; then
+ cleanUp
+ exit
+fi 
+
+
+
+# Run tramake
+$scriptDir/tarmake 
+
+if [ "$?" != "0" ]; then
+  echo "There was an error while running \"$scriptDir/tarmake\". Exiting."
+  exit 1
+fi
+  
+if [ ! -s  ../$TGZ_FILE ]
+then
+  echo "../$TGZ_FILE does not exists in $PWD/.."
+  exit 1
+fi
+
+
+echo "Moving $TGZ_FILE to $WWW_TARGET/"
+mv ../$TGZ_FILE $WWW_TARGET/
+if [ "$?" != "0" ]; then
+  echo "There was an error moving ../$TGZ_FILE to $WWW_TARGET/"
+  exit 1
+fi
+
+echo "About to do  ZIP processing in [$DISTRIB_TARGET]"
+
+# Clean up old copy of package in $DISTRIB_TARGET
+cd $DISTRIB_TARGET
+if [ -d $DISTRIB_TARGET/$PKG_NAME ]; then
+  echo; echo "Removing directory $DISTRIB_TARGET/$PKG_NAME"
+  rm -r $DISTRIB_TARGET/$PKG_NAME 
+  if [ "$?" != "0" ]; then
+    echo "Could not remove $DISTRIB_TARGET/$PKG_NAME. Exiting."; exit 1
+  fi
+fi
+
+echo; echo "Untarring $WWW_TARGET/$TGZ_FILE in $PWD"
+tar xzf $WWW_TARGET/$TGZ_FILE
+
+cd $DISTRIB_TARGET
+echo;
+if [ -e $WWW_TARGET/$ZIP_FILE ]; then
+  echo "Removing stale $WWW_TARGET/$ZIP_FILE"
+  rm $WWW_TARGET/$ZIP_FILE
+fi
+echo "Zipping  $PKG_NAME in $DISTRIB_TARGET to $WWW_TARGET/$ZIP_FILE"
+zip -y -9 -q -r  $WWW_TARGET/$ZIP_FILE $PKG_NAME
+if [ "$?" != "0" ]; then
+  echo "There was an error while zipping. Exiting."; exit 1
+fi
+
+cleanUp

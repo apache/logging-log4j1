@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+  
+  <properties>
+    <author email="BMarlborough@thoughtworks.com">Brad Marlborough</author>
+    <title>LogFactor5 Features Users' Guide</title>
+  </properties>
+  
+  <body>
+    <section name="LogFactor5 Features">
+
+      <h3><font color="#000099">Manage Log Messages</font></h3>
+
+      <p>The Log Table pane shows the listing of LogRecords that have
+	been sent to the LogFactor5 appender. The newest log messages
+	appear at the bottom of the table.
+      </p>
+
+      <p><img src="images/lf5_logtable.gif" align="absbottom" alt="Log Table" width="600" height="489"></img></p>
+
+      <h4><font face="Verdana, Arial, Helvetica, sans-serif" size="3"><a name="levels"></a></font>Log 
+	Level Selection </h4>
+
+      <p>The LogFactor5 toolbar applies directly to the Log Table
+	area. Log levels can be toggled on and off to filter out
+	messages that you want to view or hide. Levels include FATAL,
+	ERROR, WARN, INFO and DEBUG. </p>
+
+
+      <p><img src="images/lf5_loglevels.gif" width="600" height="488"
+      alt="Log Levels"/></p>
+
+      <p><a name="color"></a><b>Log Level Color Configuration</b></p>
+
+      <p>To help distiguish the various log events displayed in the
+	LogTable, LogFactor5 allows users to set the colors of their
+	log events based on level.</p>
+
+      <p><img src="images/lf5_colorchooser.gif" width="600"
+      height="489" alt="Log Level Color Configuration"/></p>
+      
+      <h4><a name="search"></a>Full Text Searching</h4>
+
+      <p>The Log Table supports full text searching. To perform a
+	search, choose Edit-&gt;Find from the menu bar or CTRL-F and
+	then enter the text you want to search for.  LogFactor5 will
+	find any strings that are an exact match for the string you
+	entered. Pressing F3 will find the next occurrence of the
+	string.
+      </p>
+      
+      <p><img src="images/lf5_search.gif" width="600" height="488"
+      alt="Full Text Searching"/></p>
+
+      <h4><a name="views"></a>Log Table Views</h4>
+
+      <!-- =========================================================== -->
+      <!-- In the next paragraph, changed category to logger, priority --> 
+      <!-- to level, LogRecord to event. (Ceki)                        -->
+      <!-- =========================================================== -->
+      <p>The Log Table has three views; compact, standard and
+	detailed. The compact view only displays the Nested Diagnostic
+	Context (NDC), logger and message.  The standard view is the
+	default view, and displays the level, NDC, logger and message
+	of the logging event. The detailed view displays, in addition,
+	the date, message number, location (i.e. the method that is
+	logging the message), thread description and the
+	throwable. The view selector on the toolbar switches between
+	the three views. Columns in the Log Table can be re-sized and
+	moved by interacting with the column headers.
+      </p>
+
+      <p><img src="images/lf5_view.gif" width="600" height="489"
+      alt="Log Table View"/></p>
+      
+      <h4><a name="recorddetails"></a>Log Record Details</h4>
+      
+      <p>The Log Record Detail area displays all of the attributes of
+	the LogRecord which is selected in the Log Table. When a row,
+	or LogRecord, is selected in the Log Table, the complete
+	details of that LogRecord are displayed in the LogRecord
+	Detail area, independent of the view in effect.
+      </p>
+
+      <p><img src="images/lf5_recorddetail.gif" width="600"
+      height="481" alt="LogRecord Details"/>
+      </p>
+
+      <!-- ============================================================ -->
+      <!-- In the next 2 paragraphs, changed category to logger. (Ceki) -->
+      <!-- ============================================================ -->
+      <h4><a name="explorer"></a>Logger Explorer</h4>
+
+      <p>The Logger Explorer area enables the filtering of incoming
+	log messages based on logger. If a logger is deselected
+	(no checkmark is shown next to it) then new messages on that
+	logger will not be displayed. The Logger Explorer has no
+	effect on log messages already in the Log Table.
+      </p>
+
+      <p>The Logger Explorer displays loggers in a hierarchical
+	tree-like fashion.  Loggers are identified with
+	dot-separated names similar to Java package and class
+	names. The name components are mapped to the levels in the
+	hierarchy in the Logger Explorer. For example, the logger
+	name org.apache.applications.log4j.InitUsing Log4JProperties
+	is displayed below: 
+      </p>
+
+      <p><img src="images/lf5_category_explorer.gif" width="600"
+	  height="481" alt="Logger Explorer"/></p>
+
+
+      <h4><a name="selectloggers"></a>Selecting and Deselecting Loggers</h4>
+
+      <p>When a logger in a hierarchy is deselected, no messages at
+	that level or below will appear in the Log Table. For example,
+	if just the first InitUsingMultipleAppenders logger in the
+	examples.InitUsingMultipleAppenders.InitUsingMultipleAppenders
+	logger is deselected, then messages with the logger examples
+	would be displayed in the Log Table, but messages with the
+	logger InitUsingMultipleAppenders.InitUsingMultipleAppenders
+	would be filtered and not displayed in the Log Table. 
+      </p>
+
+      <p>To quickly select or deselect loggers in the hierarchy,
+	the right-mouse button can be used to bring up the pop-up menu
+	displayed below. </p>
+
+      <p><img src="images/lf5_deselectall.gif" width="600"
+	  height="488" alt="Deselect All Descendants"/></p>
+
+      <p><img src="images/lf5_selectall.gif" width="600"
+	  height="488" alt="Select All Descendants"/></p>
+      
+
+      <h4><a name="expandcattree"></a>Expanding and Collapsing the Logger Tree</h4>
+      
+      <p>You can also expand and collapse the hierarchy tree using
+	the pop-up menu displayed below.</p>
+      
+      <p><img src="images/lf5_expandall.gif" width="600" height="488"
+      alt="Expand Tree"/></p>
+      
+      <p><img src="images/lf5_collapseall.gif" width="600"
+      height="488" alt="Collapse Tree"/></p>
+      
+      <H4><a name="ndcfiltering"></a>NDC Record Filtering</H4>
+
+
+      <p>Log4j provides a lightweight technique for stamping log
+	requests initiated from the same client within a multithreaded
+	system. The Nested Diagnostic Context (NDC) provides an easy
+	way to differentiate logging output of one client from
+	another. The NDC is also useful for differentiating log
+	messages being output by different members of a large
+	development team building an application on the same
+	server. To improve the sorting of potentially thousands of log
+	records being output from multiple clients, a NDC filter has
+	been provided. To use the NDC filter, select the Edit menu
+	item and choose 'Sort by NDC'. Fill in the name of the NDC you
+	would like to filter on. All records containing the filter key
+	word will be displayed in the Log Table. To restore all of the
+	log records use the Edit -&gt; Restore all NDC's. You can also
+	use the Edit-&gt;Find feature to locate NDC's without removing
+	log records from the Log Table. Furthermore, you can use the
+	Configure-&gt;Save feature to persist the last NDC filter key
+	word that was used. Note however that restoring all NDCs will
+	effectively erase the NDC filter key word. Refer to the <a
+	href="#configuration">Configuration section</a> below for more
+	information on saving NDC filter key words.</p>
+
+      <p><img src="images/lf5_ndc_filtering.gif" width="600"
+      height="488" alt="NDC Filtering"/></p>
+
+
+      <font color="#000099"><h3>Read Log Files</h3>
+      </font> 
+
+      <h4><a name="readfile"></a>Read a File</h4>
+
+      <p>LogFactor5 supports reading in log files that were created
+	using log4j's RollingFileAppender.  The benefit of this
+	feature is that developers who run utilities like Ant to test
+	their applications can now view their log files off-line
+	(i.e. after their application has completed the test and the
+	JVM has shut down). Reading log files currently only works for
+	files written a LogFactor5's unique ConversionPattern.  For
+	more information on setting the LogFactor5 conversion pattern,
+	please see the OpeningLogFiles example. To open a file and
+	read it into LogFactor5, you need to start the logging console
+	using the StartLogFactor5Console.bat file provided in the bin
+	directory. Once the console is open, choose File-&gt;Open from
+	the menu at the top of the GUI.
+	</p>
+
+      <p><img src="images/lf5_openfile.gif" width="600" height="488"
+	  align="absbottom" alt="Log Table"/></p>
+
+      <h4><a name="readurl"></a>Read a File From a URL</h4>
+
+      <p>LogFactor5 supports reading log files created using log4j
+	from a URL. Having the ability to open log files on a remote
+	server provides the ability for multiple developers working on
+	the same application to view log files independently.  It also
+	gives developers the ability to view log files both internally
+	and from remote locations. Reading log files currently only
+	works for files written a LogFactor5's unique
+	ConversionPattern. For more information on setting the
+	LogFactor5 conversion pattern, please see the <a
+	href="example7.html">OpeningLogFiles</a> example. To open a
+	file and read it into LogFactor5, you need to start the
+	logging console using the StartLogFactor5Console.bat file
+	provided in the bin directory.  Once the console is open,
+	choose File-&gt;Open URL from the menu at the top of the GUI.
+	</p>
+
+      <p><img src="images/lf5_openurl.gif" width="600" height="488" align="absbottom" alt="Log Table"/> </p>
+
+      <p><a href="#top"><font size="2">&lt;&lt; Return to Top of Page &gt;&gt;</font></a></p>
+	
+      <font color="#000099"> <h3>Configuration</h3></font> 
+
+      <h4><a name="configuration"></a>Save Configuration Information</h4>
+
+      <p>LogFactor5 allows you to save your current
+	configuration. When you choose the Configuration-&gt;Save
+	option from the menu at the top of the GUI, the loggers and
+	levels that you currently have selected, along with the last
+	NDC filter key word used (assuming 'Restore all NDC's' has not
+	been selected), are saved to your local file system. This
+	means that the next time you start up the console you will not
+	need to reselect the loggers, levels, and NDC filter that you
+	would like used for filtering.
+      </p>
+
+      <p>LogFactor5 also allows you to remove your saved
+	configuration, and to configure the maximum number of records
+	that will be displayed at any time in the logging
+	console. Setting the maximum number of records to display
+	allows you to optimize LogFactor5's performance for your
+	system. The maximum number of records can also be configured
+	via a log4j properties file.
+      </p>
+
+      <p><img src="images/lf5_configure.gif" width="600" height="488" align="absbottom" alt="Log Table"/></p>
+    </section>
+  </body>
+</document>

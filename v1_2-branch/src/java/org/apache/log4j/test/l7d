@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Read the .functions file
+. .functions
+
+declare -i start=$1
+
+# ------------------------------------------------
+function testL7D {
+ configFile=$1
+ lang=$2
+ country=$3
+ 
+ echo -n "L7D test $TEST - "
+ java org.apache.log4j.test.L7D $configFile $lang $country
+
+  check witness/l7d.$TEST $TEMP; echo " OK."
+}
+# ------------------------------------------------
+
+declare -i TEST
+
+
+TEST=1; 
+if [ $TEST -ge $start ]; then
+  D_FLAG=$DEF_DEBUG
+  echo "log4j.rootCategory=INFO, testAppender" > $LCF
+  lecho "log4j.appender.testAppender=org.apache.log4j.RollingFileAppender"
+  lecho "log4j.appender.testAppender.File=$TEMP"
+  lecho "log4j.appender.testAppender.Append=false"
+  lecho "log4j.appender.testAppender.layout=org.apache.log4j.PatternLayout"
+  lecho "log4j.appender.testAppender.layout.ConversionPattern=T$TEST %5p - %m%n"
+  testL7D $LCF en US
+fi

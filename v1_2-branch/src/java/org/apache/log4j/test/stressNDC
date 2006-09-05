@@ -1,0 +1,6 @@
+if [ -z "$PERL" ]
+then
+  PERL=perl
+fi
+
+java org.apache.log4j.test.StressNDC $1 | $PERL StressNDC.pl

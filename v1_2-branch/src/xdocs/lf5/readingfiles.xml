@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+  
+  <properties>
+    <author email="BMarlborough@thoughtworks.com">Brad Marlborough</author>
+    <title>LogFactor5 Users' Guide</title>
+  </properties>
+  
+  <body>
+    <section name="Reading Log Files">
+
+      <p><code>FileAppender</code> and derived classes give you the
+	ability to output log messages to a files. LogFactor5 provides
+	developers with two easy ways to open and view these log
+	files. Log files can be opened locally using the File-&gt;Open
+	menu item or log files can be opened from a remote server
+	using the File-&gt;Open URL menu item.
+      </p>
+      
+      <p>An additional feature that was added to LogFactor5 was the
+	ability to start the console window independently of
+	log4j. That is to say, you do not need to add a
+	<code>LF5Appender</code> to your properties file to use
+	LogFactor5. The benefit of this feature is that developers who
+	run utilities like Ant to test their applications can now view
+	their log files off-line (i.e. after their application has
+	completed the test and the JVM has shut down). Moreover, the
+	ability to open log files on a remote server provides the
+	ability for multiple developers working on the same
+	application to view log files independently. It also gives
+	developers the ability to view log files both internally and
+	from remote locations.
+      </p>
+
+      <p>LogFactor5 can read in log files created with
+	<code>RollingFileAppender</code>.  The format of the log file
+	can be set in the log4j.properties or a standard properties
+	file and <b>must</b> follow the LogFactor5 layout conventions
+	in order for LogFactor5 to read the file. The following is an
+	example of a properties file with the LogFactor5 conversion
+	pattern added:
+      </p>
+
+<pre><font face="Times New Roman, Times, serif">
+log4j.rootLogger=debug, R
+
+# R is the RollingFileAppender that outputs to a rolling log 
+# file called sample.log.
+
+log4j.appender.R=org.apache.log4j.RollingFileAppender
+log4j.appender.R.File=sample.log
+
+# Define a pattern layout for the file.  
+# For more information on conversion characters (i.e. d,p,t,c,l,m,n)
+# please see the PatternLayout class of the Log4j API.
+
+log4j.appender.R.layout=org.apache.log4j.PatternLayout
+
+# The following normally appears on one single line.
+<b>log4j.appender.R.layout.ConversionPattern=[slf5s.start]%d{DATE}[slf5s.DATE]%n\
+   %p[slf5s.PRIORITY]%n%x[slf5s.NDC]%n%t[slf5s.THREAD]%n\
+   %c[slf5s.CATEGORY]%n%l[slf5s.LOCATION]%n%m[slf5s.MESSAGE]%n%n</b>
+
+# Set the max size of the file 
+log4j.appender.R.MaxFileSize=500KB</font></pre>
+
+      <p>You are free to use any or all of the main conversion
+	characters to create your log file (i.e. %p for
+	Priority). There are only two requirements for the conversion
+	pattern. First, the conversion pattern string <b>must</b>
+	start with the tag <b>[slf5s.start]</b>. Second, for each
+	log4j conversion character listed in the conversion pattern
+	string, a corresponding LogFactor5 tag <b>must</b> be placed
+	immediately <b>after</b> the character. The following is a
+	complete list of the log4j characters and LogFactor5 tags:
+      </p>
+
+<pre><font face="Times New Roman, Times, serif">Date - %d{DATE}[slf5s.DATE]
+Priority - %p[slf5s.PRIORITY]
+NDC - %x[slf5s.NDC]
+Thread - %t[slf5s.THREAD]
+Category - %c[slf5s.CATEGORY]
+Location - %l[slf5s.LOCATION]
+Message - %m[slf5s.MESSAGE]</font>
+</pre>
+
+      <p> <b>Note:</b> The order of the characters does not matter so
+	you are free to layout your log file any way you like. Just
+	remember to include the LogFactor5 start tag at the beginning
+	of the string and any LogFactor5 tags after each corresponding
+	log4j conversion character. For more information or to see a
+	working example, try the OpeningLogFiles example in the
+	examples directory.
+      </p>
+    </section>
+  </body>
+</document>
+
+

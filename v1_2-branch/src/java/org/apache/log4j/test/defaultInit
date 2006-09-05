@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# Read the .functions file
+. .functions
+
+# If set, allows to skip tests 
+declare -i start=$1
+
+# ==================================================
+function testDefaultInit {
+ echo -n "Default initialization test $TEST - "
+
+ if [ -e $TEMP ]; then
+   #echo "Deleting $TEMP."
+   rm $TEMP
+   touch $TEMP
+ fi
+
+ java $1 -Dlog4j.debug org.apache.log4j.test.DefaultInit
+
+ check witness/definit.$TEST $TEMP; echo "OK."
+}
+# ==================================================
+
+
+declare -i TEST
+
+function createProperties {
+ echo "log4j.rootCategory=DEBUG, A1" > $LCF
+ lecho "log4j.appender.A1=org.apache.log4j.FileAppender"
+ lecho "log4j.appender.A1.File=$TEMP"
+ lecho "log4j.appender.A1.Append=false"
+ lecho "log4j.appender.A1.layout=org.apache.log4j.PatternLayout "
+ lecho "log4j.appender.A1.layout.ConversionPattern=%m%n"  
+}
+
+LCF=log4j.properties
+createProperties
+
+TEST=1
+if [ $TEST -ge $start ]; then
+  testDefaultInit 
+fi
+
+TEST=2
+if [ $TEST -ge $start ]; then
+  testDefaultInit -Dlog4j.defaultInitOverride
+fi 
+
+TEST=3
+if [ $TEST -ge $start ]; then
+  testDefaultInit -Dlog4j.defaultInitOverride=true
+fi 
+
+TEST=4
+if [ $TEST -ge $start ]; then
+  testDefaultInit -Dlog4j.defaultInitOverride=
+fi 
+
+TEST=5
+if [ $TEST -ge $start ]; then
+  testDefaultInit -Dlog4j.defaultInitOverride=false
+fi 
+
+rm $LCF
+
+LCF=props
+createProperties
+
+TEST=6
+if [ $TEST -ge $start ]; then
+  testDefaultInit -Dlog4j.configuration=props
+fi 
+
+rm $LCF

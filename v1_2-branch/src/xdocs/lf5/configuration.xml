@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+  
+  <properties>
+    <author email="BMarlborough@thoughtworks.com">Brad Marlborough</author>
+    <title>LogFactor5 Users' Guide</title>
+  </properties>
+  
+  <body>
+    <section name="LogFactor5 Configuration Information">
+
+      
+      <p>There are two ways of configuring LogFactor5: using a log4j properties file, 
+	or using the Configure menu in the LogFactor5 GUI. 
+      </p>
+
+      <h3>Configuration Using a Properties File</h3>
+
+      <p>The <code>LF5Appender</code> has a single property that can
+	be set via a log4j properties file, the
+	<b>MaxNumberOfRecords</b> property. This property is used by
+	LogFactor5 to determine the maximum number of records to
+	display at any one time in the GUI.  If this maximum number is
+	exceeded, LogFactor5 begins to remove the oldest records, one
+	at a time. Removing records in this fashion reduces the risk
+	that your computer will run out of memory while the GUI is
+	running. If the <b>MaxNumberOfRecords</b> property is not set,
+	LogFactor5 sets a default value of 5000.</p>
+
+      <p>To set the <b>MaxNumberOfRecords</b> property using a regular
+	<i>java.util.Properties</i> file, you should use the following
+	line (replace A1 with the name of your appender):
+      </p>
+
+<pre>     log4j.appender.A1.MaxNumberOfRecords=2000
+</pre>
+
+      <p>To set the <b>MaxNumberOfRecords</b> property using an XML
+	properties file, you should use the following lines (replace
+	the name LF5Appender with the name of your appender):</p>
+<pre>
+    &lt;appender name="LF5Appender" class="org.apache.log4j.lf5.LF5Appender"&gt;
+       &lt;param name="MaxNumberOfRecords" value="1000"/&gt;
+    &lt;/appender&gt;
+
+    &lt;root&gt;
+      &lt;priority value ="debug" /&gt;
+      &lt;appender-ref ref="LF5Appender"/&gt;
+    &lt;/root&gt;
+</pre>
+
+      <p><b>Note:</b> Setting the maximum number of records to display
+	via the Configure-&gt;Set Max Number Of Records menu in the
+	LogFactor5 GUI will override any value that you set in this
+	configuration file.
+      </p>
+
+      <h3>Configuration Using the GUI</h3> 
+      <h4>Save</h4> 
+
+      <p> LogFactor5 allows you to save the current configuration of
+	your logging console using the Configure menu. The
+	Configure-&gt;Save menu option saves your current GUI
+	configuration to a file called
+	<b>lf5_configuration.xml</b>. This configuration file is a
+	saved to the location &lt;USER_HOME&gt;/lf5 on your local
+	drive.
+      </p>
+
+      <p>The information saved in the configuration file is as
+	follows:</p>
+
+      <ul>
+	<li>The current configuration of the logger explorer window including all 
+	  selected and de-selected channels</li>
+	<li>The current configuration of all level</li>
+	<li>The view settings, and</li>
+	<li>The last NDC filter used (if the Restore All NDC's item was not selected 
+	  prior to saving).</li>
+      </ul>
+
+      <p>Once you have saved a configuration, your configuration is loaded each time 
+	that you start LogFactor5.</p>
+
+      <h4>Reset</h4>
+
+      <p> You can remove your currently saved configuration by using
+	the Configure-&gt;Reset menu option. This will delete the
+	lf5_configuration.xml file from your local file system.</p>
+      
+      <h4>Set Max Number Of Records</h4>
+
+      <p>The Configure menu also includes a &quot;Set Max Number Of Records&quot; option, 
+	which allows you to change the maximum number of records that will be displayed 
+	in the GUI at any time. Setting the maximum number of records using this menu 
+	item will override any value that you set in your log4j property file (see below). 
+	<b>Note:</b> The value that you set using this option <b>is not</b> saved into 
+	the lf5_configuration file.</p>
+
+      <h4>Removing Empty Categories</h4>
+
+      <p>When you save your configuration using the Configure-&gt;Save menu option, 
+	and then start logging from a different application, you will likely find that 
+	many of the categories you saved are empty. You can remove these &quot;dead&quot; 
+	categories from the display by right clicking on the root of the category tree 
+	in the category explorer, and choosing the &quot;Remove All Empty Categories&quot; 
+	option. This will prune the category explorer tree to display only those channels 
+	that contain information.</p>
+
+      <p><img src="images/lf5_remove_categories.gif" width="600" height="490"/></p>
+
+    </section>
+  </body>
+</document>

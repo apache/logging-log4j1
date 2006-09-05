@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+
+  <properties>
+    <author email="not@disclosed">Ceki Gülcü</author>
+    <title>Older distributions</title>
+  </properties>
+
+<body>
+
+    <section name="Older distributions of the log4j package">
+
+      <hr/> 
+      
+      <p><b>BEWARE:</b>Certain Internet Explorer versions rename .tar.gz downloads
+        as .tar.  You should rename the files back to
+	<code>tar.gz</code> after the download completes.
+      </p> 
+      <hr/>
+
+      <a href="http://archive.apache.org/dist/logging/log4j/">Log4j Archives</a>
+
+    </section>
+
+</body>
+</document>
+

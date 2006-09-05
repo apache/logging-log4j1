@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration configDebug="true">
+
+	<appender name="STDOUT" class="org.apache.log4j.FileAppender">
+           <param name="File" value="System.out" />	
+           <layout class="org.apache.log4j.PatternLayout">
+             <param name="ConversionPattern"
+		    value="aa:%p#%d#%c#%m%n"/>
+           </layout>	    
+	</appender>
+
+	<appender name="UDPVENUS" class="org.apache.log4j.net.DatagramStringAppender">
+           <param name="DatagramHost" value="Venus" />	
+           <param name="DatagramPort" value="8300" />	
+           <layout class="org.apache.log4j.PatternLayout">
+             <param name="ConversionPattern"
+		    value="%p#%d#%c#%m"/>
+           </layout>	  
+           <filter class="org.apache.log4j.filters.PriorityRangeFilter">
+            <param name="PriorityMin" value="WARN" />
+           </filter>
+	</appender>
+
+	<category name="org.apache.log4j.xml">
+	  <priority value="INFO" />
+	</category>
+	
+	<category name="ch">
+	   <priority value ="DEBUG2" class="ch.orange.log.Priority"/>
+	</category>
+	
+	<category name="script">
+	   <priority value ="DEBUG2" class="ch.orange.log.Priority"/>
+	</category>
+	
+	<root>
+	   <priority value ="DEBUG2" class="ch.orange.log.Priority"/>
+	   <appender-ref ref="STDOUT" /> 
+	   <appender-ref ref="UDPVENUS" /> 
+	</root>
+	
+</configuration>

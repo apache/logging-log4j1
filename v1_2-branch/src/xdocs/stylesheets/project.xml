@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project name="Logging Services Log4j"
+         href="http://logging.apache.org/log4j/docs/">
+
+  <title>Log4j project</title>
+  <logo href="images/logo.jpg">The log4j project</logo>
+  
+  <body>
+      
+    <menu name="Log4j Project">
+      <item name="Introduction"   href="/index.html"/>
+      <item name="Download"       href="/download.html"/>
+      <item name="Documentation"  href="/documentation.html"/>
+      <item name="Roadmap"        href="/plan.html"/>
+      <item name="Wiki"           href="http://wiki.apache.org/logging-log4j/Log4JProjectPages"/>
+      <item name="Contact us"     href="/contactUs.html"/>
+      <item name="Contributors"   href="/contributors.html"/>
+      <item name="History"        href="/history.html"/>
+    </menu>
+
+    <menu name="Logging Services">
+      <item name="Home page" href="http://logging.apache.org/"/>
+      <item name="News" href="http://logging.apache.org/site/news.html"/>
+      <item name="Mission" href="http://logging.apache.org/site/mission-statement.html"/>
+      <item name="Guidelines" href="http://logging.apache.org/site/bylaws.html"/>
+    </menu>
+
+    <menu name="Translations">
+      <item name="Korean" href="http://jakarta.apache-korea.org/log4j/index.html"/>
+      <item name="Japanese" href="http://www.ingrid.org/jajakarta/log4j/"/>
+    </menu>
+  </body>
+</project>

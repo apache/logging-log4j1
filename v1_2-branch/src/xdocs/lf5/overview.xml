@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+  
+  <properties>
+    <author email="BMarlborough@thoughtworks.com">Brad Marlborough</author>
+    <title>LogFactor5 Users' Guide</title>
+  </properties>
+  
+  <body>
+    <section name="LogFactor5 Overview">
+
+      <p><b>What is LogFactor5?</b> - LogFactor5 is a Swing based GUI
+	that leverages the power of log4j logging framework and
+	provides developers with a sophisticated, feature-rich,
+	logging interface for managing log messages.
+      </p>
+
+      <p><b>How does it work?</b> - LogFactor5 seamlessly plugs into
+	log4j and provides developers with an alternate destination
+	for outputting messages. </p>
+
+      <p><b>Benefits:</b></p>
+      <ul>
+	<li>Quickly isolate problems in your application.</li>
+	<li>Enable only the categories that you are interested in without affecting 
+	  other messages.</li>
+	<li>Filter out priority levels you don't need.</li>
+	<li>Filter out records based on NDC.</li>
+	<li>Reduce the time required to locate specific messages.</li>
+	<li>Read in and view log4j log files from either a file or a URL.</li>
+	<li>Start the LogFactor5 GUI up independent of your application.</li>
+      </ul>
+      <p><b>Features: </b> 
+	<ul>
+	  <li>Real-time category and log level filtering.</li>
+	  <li>Read log files from a file.</li>
+	  <li>Read log files from a URL.</li>
+	  <li>Customizable Log Table view.</li>
+	  <li>Category level tree navigation.</li>
+	  <li>NDC record filtering.</li>
+	  <li>Full text searching on logged messages.</li>
+	  <li>Save configuration and filtering settings for later sessions.</li>
+	  <li>Configure the number of log records to be displayed.</li>
+	  <li>Customizable record colors.</li>
+	  <li>Configurable font face and size.</li>
+	  <li>Customizable Log Table column layout.</li>
+	  <li>Full support for all log4j levels.</li>
+	  <li>Full support for custom levels.</li>
+	  <li>Dynamic message counting.</li>
+	</ul>
+      </p>
+
+      <p><b>LogFactor5 System Requirements:</b></p>
+      
+      <p>LogFactor5 requires Java (TM) Virtual Machine 1.2.2 and log4j
+	1.2 or later.
+      </p>
+   
+      <p><b> Documentation and Help</b></p>
+      <ul>
+	<li>All documentation is in HTML format.</li>
+	
+	<li>For additional documentation on logging, please see the <a
+	    href="suggested_reading.html">Suggested Reading</a>
+	    section. </li>
+      </ul>
+      <p><b> Platform Support</b></p>
+      <ul>
+	<li>LogFactor5 is written in 100% Java and will work with any
+	  system supporting the Java 2 platform.</li>
+      </ul>
+      <p></p>
+
+    </section>
+  </body>
+</document>

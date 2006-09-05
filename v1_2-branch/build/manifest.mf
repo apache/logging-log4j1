@@ -1,0 +1,7 @@
+Manifest-version: 1.0
+
+Name: org/apache/log4j/
+Implementation-Title: log4j
+Implementation-Version: @version@
+Implementation-Vendor: "Apache Software Foundation"
+

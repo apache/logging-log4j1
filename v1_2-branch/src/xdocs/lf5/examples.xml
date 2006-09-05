@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+  
+  <properties>
+    <author email="BMarlborough@thoughtworks.com">Brad Marlborough</author>
+    <title>LogFactor5 Users' Guide</title>
+  </properties>
+  
+  <body>
+    <section name="LogFactor5 Examples">
+
+      <h3><b><font color="#000099">Example 1: InitUsingDefaultConfigurator</font></b>
+      </h3>
+      <h4>Example Description:</h4>
+
+      <p>The LogFactor5 library has a DefaultLF5Configurator class which provides a
+	very basic LogFactor5 configuration for you. This class can be used to programmatically
+	register an LF5Appender at the root of the <i>org.apache.log4j.Category</i>
+	tree. The InitUsingDefaultConfigurator.java class demonstrates how to use this
+	configurator. </p>
+
+      <p>When using this class, all that you have to do is make a call to the static l
+	method DefaultLF5Configurator.configure( ), and your basic configuration will
+	be done for you.</p>
+      
+      <h4>Running the Example:</h4>
+
+      <p>Let <code>LOG4J_HOME</code> be the the directory where you
+      installed log4j and let VERSION stand for the log4j version.</p>
+      
+      <ul>
+	<li>Ensure that <i>LOG4J_HOME/dist/lib/log4j-VERSION.jar</i>
+	  is in your CLASSPATH.</li>
+
+	<li>Ensure that <i>LOG4J_HOME/dist/classes</i> is in your
+	CLASSPATH. This directory contains the binary class files for
+	running the lf5 examples. <em>It is not needed under normal
+	operational circumstances.</em> </li>
+
+	<li>Ensure that a JAXP compatible XML parser is in is in your
+	CLASSPATH.</li>
+	
+	<li>Type<b> </b>the following at the command line:
+
+	  <p><b> java examples.lf5.InitUsingDefaultConfigurator.InitUsingDefaultConfigurator</b></p>
+	</li>
+      </ul>      
+
+      <h3><b><font color="#000099">Example 2: InitUsingPropertiesFile</font> </b> </h3>
+      <h4>Example Description:</h4>
+
+      <p>The log4j environment is fully configurable
+	programmatically. However, it is far more flexible to
+	configure log4j using configuration files. One common method
+	of configuring log4j involves using a properties file, and the
+	<code>org.apache.log4j.PropertyConfigurator</code> class. The
+	<code>PropertyConfigurator</code> class allows you to load
+	properties from a standard properties document consisting of
+	key=value pairs. This example demonstrates how to load
+	LogFactor5 via a configuration file used by a
+	PropertyConfigurator.</p>
+
+      <p>This example uses a very basic properties file, which is
+	loaded via a PropertyConfigurator.  The
+	<i>example.properties</i> file has only one property, which
+	registers a <code>LF5Appender</code> with the root of the
+	Category tree. The <code>InitUsingPropertiesFile</code> class
+	loads this file using the <code>PropertyConfigurator</code>
+	class. </p>
+
+      <p><b>Note:</b> The <i>example.properties</i> file used in this
+	example is loaded as a resource via your CLASSPATH. For this
+	reason, the example will only work if the
+	<i>LOG4J_HOME/dist/classes</i> directory is in your
+	CLASSPATH</p>
+      
+      <h4>Running the Example:</h4>
+
+      <p>Let <code>LOG4J_HOME</code> be the the directory where you
+      installed log4j.</p>
+
+      <ul>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
+	
+	<li>Type<b> </b>the following at the command line: 
+
+	  <p><b> java
+	  examples.lf5.InitUsingPropertiesFile</b>.<b>InitUsingPropertiesFile</b></p>
+	</li>
+      </ul>
+
+      <!-- ======================================================== -->
+      <!--                      Example 3                           -->
+      <!-- ======================================================== -->
+
+      <h3><b><font color="#000099">Example 3: InitUsingXMLPropertiesFile</font></b>
+      </h3>
+
+      <h4>Example Description:</h4>
+
+      <p>Log4j can also be configured using an XML properties file,
+	and the <i>org.apache.log4j.xml.DOMConfigurator</i> class. The
+	DOMConfigurator class allows you to load properties from an
+	XML based properties file. This example demonstrates how to
+	load LogFactor5 via an XMLconfiguration file used by a
+	DOMConfigurator.
+      </p>
+
+      <p>This example uses a very basic XML properties file. The
+	example.xml file registers an LF5Appender with the root of the
+	Category tree. The InitUsingXMLPropertiesFile.java class loads
+	this file using the DOMConfigurator class. 
+      </p>
+
+      <p><b>Note:</b> The <i>example.xml</i> file used in this example
+	is loaded as a resource via your CLASSPATH.  For this reason,
+	the example will only work if the
+	<i>LOG4J_HOME/dist/classes</i> directory is in your
+	CLASSPATH. You will also need an XML parser in order to run
+	this example.
+      </p>
+
+      <h4>Running the Example:</h4>
+
+      <p>Let <code>LOG4J_HOME</code> be the the directory where you
+      installed log4j.</p>
+
+      <ul>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
+
+	<li>Type<b> </b>the following at the command line:
+
+	  <p><b> java
+	  examples.lf5.InitUsingXMLPropertiesFile.InitUsingXMLPropertiesFile</b></p>
+	</li>
+      </ul>
+
+      <!-- ======================================================== -->
+      <!--                      Example 4                           -->
+      <!-- ======================================================== -->
+
+      <h3><b><font color="#000099">Example 4:
+	    InitUsingLog4JProperties</font></b> </h3>
+
+      <h4>Example Description:</h4>
+
+      <p>The log4j library does not make any assumptions about its
+	environment. In particular, there are no default log4j
+	appenders. Under certain well-defined circumstances however,
+	the static initializer of the <i>org.apache.log4j.Category
+	</i>class will attempt to automatically configure log4j. The
+	Java language guarantees that the static initializer of a
+	class is called once and only during the loading of a class
+	into memory. This automatic configuration is done from a file
+	named <b>log4j.properties</b>. If you have a log4j.properties
+	file in your CLASSPATH at the time that you instantiate a
+	Category, log4j will register any appenders in this file at
+	the root of the Category tree.
+      </p>
+
+      <p>This example provides you with a very basic log4j.properties
+	file that you can add to your CLASSPATH in order to register
+	the LF5Appender with the Category class. If you put this file
+	somewhere in your CLASSPATH, all logging requests will now
+	automatically be redirected to the LogFactor5 logging console
+	in addition to any other Appenders you may have enabled.
+      </p>
+
+      <p>If you look at the InitUsingLog4JProperties.java file you
+	will notice that no Configurators are used in the code. A
+	Category is instantiated using the getInstance() method, and
+	logging calls such as cat.debug( ) can be used immediately.
+      </p>
+
+      <p><b>Note: </b>Adding the
+	<i>LOG4J_HOME/examples/lf5/InitUsingLog4JProperties/log4j.properties</i>
+	file to your CLASSPATH will reduce the number of lines of code
+	you have to write (e.g. you will not need to add lines such as
+	PropertyConfigurator.configure(configFileResource)). However,
+	you should be aware that using this default static
+	initialization has application wide effects. All logging will
+	be directed to LogFactor5 if you use this approach!
+      </p>
+	
+      <h4>Running the Example:</h4>
+     
+      <ul>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
+
+	<li>Copy the provided
+	  <i>LOG4J_HOME/examples/lf5/InitUsingLog4JProperties/log4j.properties</i>
+	  file to a directory that is currently in your
+	  CLASSPATH. </li>
+	  
+	<li>Type<b> </b>the following at the command line:
+
+	  <p><b> java
+	    examples.lf5.InitUsingLog4JProperties.InitUsingLog4JProperties</b></p>
+	</li>
+
+	<li>After you are done running the example, make sure to
+	  remove the <i>log4j.properties</i> file again, otherwise the
+	  log4j will always be using the same configuration.</li>
+      </ul>
+
+      <!-- ======================================================== -->
+      <!--                      Example 5                           -->
+      <!-- ======================================================== -->
+
+      <h3><b><font color="#000099">Example 5: InitUsingMultipleAppenders</font></b>
+      </h3>
+      <h4>Example Description:</h4>
+
+      <p>In Log4J, output destinations are called
+	appenders. Currently, appenders exit for the console, rolling
+	log files, remote socket servers, NT Event Loggers, and remote
+	UNIX Syslog daemons. Suppose you want to output log messages
+	to more than one appender...</p>
+
+      <p>This example demonstrates how to use LogFactor5 along with
+	Log4J's RollingFileAppender to output log messages to both the
+	LogFactor5 console and a series of rolling log files. The
+	example.properties registers two appenders with the root of
+	the Category tree. </p>
+
+<pre><font face="Courier New, Courier, mono">log4j.rootCategory=, A1, R
+
+# A1 is set to be a LF5Appender which outputs to a swing
+# logging console.
+
+log4j.appender.A1=org.apache.log4j.lf5.LF5Appender
+
+# R is the RollingFileAppender that outputs to a rolling log
+# file called rolling_log_file.log.
+
+log4j.appender.R=org.apache.log4j.RollingFileAppender
+log4j.appender.R.File=rolling_log_file.log</font>
+</pre>
+
+      <p>Users must also define a Pattern Layout for the log
+	file. That is, which pieces of information you want logged to
+	the log file and in which order. Information on the various
+	conversion specifiers (i.e. d, p, t, l, m, n) are documented
+	in the PatternLayout class of the Log4J API.</p>
+
+<pre>log4j.appender.R.layout=org.apache.log4j.PatternLayout
+# Next line is editited to fit.
+log4j.appender.R.layout.ConversionPattern=[slf5s.start]%d{DATE}[slf5s.DATE]%n\
+  %p[slf5s.PRIORITY]%n%x[slf5s.NDC]%n%t[slf5s.THREAD]%n%c[slf5s.CATEGORY]%n\
+  %l[slf5s.LOCATION]%n%m[slf5s.MESSAGE]%n%n
+</pre>
+
+      <p>Users also have the ability to set the size of the rolling log file(s) and
+	the number of backup files that should be kept. In this case the the size of
+	the maximum size of the log file is 100KB and the number of backup files kept
+	is 1.</p>
+<pre>
+log4j.appender.R.MaxFileSize=100KB
+log4j.appender.R.MaxBackupIndex=1
+</pre>
+
+      <p>The InitUsingMultipleAppenders.java class loads this file
+	using the PropertyConfigurator class. </p>
+
+      <p><b>Note:</b> Another approach would be to add the
+	RollingFileAppender configuration to the log4j.properties
+	file. This would cause the InitUsingLog4JProperties example to
+	use both the LogFactor5 console and a rolling log file as it's
+	output destinations. 
+      </p>
+
+      <h4>Running the Example:</h4>
+
+      <ul>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
+
+	<li>Type<b> </b>the following at the command line:
+
+	  <p><b> java
+	examples.lf5.InitUsingMultipleAppenders.InitUsingMultipleAppenders</b></p>
+	</li>
+      </ul>
+
+
+      <!-- ======================================================== -->
+      <!--                      Example 6                           -->
+      <!-- ======================================================== -->
+      <h3><b><font color="#000099">Example 6: UsingSocketAppenders</font></b> </h3>
+      <h4>Example Description:</h4>
+
+      <p>When logging messages from an application, it is often useful
+	to log the messages to a remote location over a socket. Log4j
+	comes with a variety of classes designed for this
+	purpose. This example is designed to show you how to use these
+	log4j classes in conjunction with the LF5Appender. 
+      </p>
+
+      <p>Two specific log4j classes are instrumental for logging
+	messages over a socket: the
+	<i>org.apache.log4j.net.SocketAppender</i> class and the
+	<i>org.apache.log4j.net.SocketServer</i> class. </p>
+
+      <p><b>The SocketAppender class:</b></p>
+
+      <p>The SocketAppender class is used on the application side,
+	where log messages are being created. This class sends all
+	logging messages to a specific host and port as specified in a
+	properties file. The properties file can be either an
+	application specific properties file, or the system
+	log4j.properties file.  In this example, the
+	socketclient.properties file contains the information that
+	registers the SocketAppender with log4j. The following lines
+	from the socketclient.properties file register the
+	SocketAppender with log4j:
+      </p>
+<pre>
+       log4j.appender.A1=org.apache.log4j.net.SocketAppender
+       log4j.appender.A1.RemoteHost=localhost
+       log4j.appender.A1.Port=8887
+</pre>
+
+      <p>For additional details about properties files, refer to the log4j documentation
+	or the other LogFactor5 examples.
+      </p>
+
+      <p><b>The SocketServer class:</b></p>
+
+      <p>The SocketServer class listens on a port specified as a
+	command line argument.  The host and port of the machine
+	running the SocketServer class must correspond to the host and
+	port in the socketclient.properties file. The SocketServer
+	class uses a separate properties file to determine which
+	Appenders it should forward incoming messages to. In this
+	example, the socketserver.properties file contains the
+	information that registers the LF5Appender with log4j. The
+	following lines from the socketserver.properties file register
+	the LF5Appender with log4j on the server side:</p>
+
+<pre>
+       log4j.appender.A=org.apache.log4j.lf5.LF5Appender
+       log4j.appender.A1.MaxNumberOfRecords=700
+</pre>
+
+      <p> The first line registers the LF5Appender with log4j, and the
+	second line tells LogFactor5 the maximum number of records to
+	display in the GUI at any one time.  For additional
+	information about how the SocketServer class loads properties
+	files (including default properties files) please refer to the
+	log4j documenation.
+      </p>
+
+      <h4>Running the Example:</h4>
+      <ul>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
+	
+	<li> Start the SocketServer using the following command: </li>
+	
+	<p><b>java org.apache.log4j.net.SimpleSocketServer 8887
+	LOG4J_HOME/examples/lf5/UsingSocketAppenders/socketserver.properties</b></p>
+	
+	<li>At another command line, start the client using the
+	following command:</li> 
+
+	<p><b> java examples.lf5.UsingSocketAppenders.UsingSocketAppenders</b></p>
+      </ul>
+
+      <!-- ======================================================== -->
+      <!--                      Example 7                           -->
+      <!-- ======================================================== -->
+
+      <h3><b><font color="#000099">Example 7: OpeningLogFiles</font></b> </h3>
+      <h4>Example Description:</h4>
+
+      <p>Log4J's RollingFileAppender gives you the ability to output
+	log messages to a series of rolling files. However, there are
+	no utilities available for reading in and viewing those files
+	once they have been written. LogFactor5 provides developers
+	with two easy ways to open and view log files. Log files can
+	be opened locally using the 'Open' menu item or log files can
+	be opened from a remote server using the 'Open URL' menu
+	item. 
+      </p>
+
+      <p>An additional feature that was added to LogFactor5 was the
+	ability to start the console window independent of Log4J. That
+	is to say, you do not need to add a LF5Appender to your
+	properties file to use LogFactor5. The benefit of this feature
+	is that developers who run utilities like Ant to test their
+	applications can now view their log files off-line (i.e. after
+	their application has completed the test and the JVM has shut
+	down). Moreover, the ability to open log files on a remote
+	server provides the ability for multiple developers working on
+	the same application to view log files independently. It also
+	gives developers the ability to view log files both internally
+	and from remote locations. 
+      </p>
+
+      <p>This example uses the sample.log file created by Log4J's
+	RollingFileAppender.  1The format of the log file can be set in
+	the log4j.properties or a standard properties file and
+	<b>must</b> follow the LogFactor5 layout conventions in order
+	for LogFactor5 to open the file. The following is an example
+	of a properties file with the LogFactor5 conversion pattern
+	added:
+      </p>
+
+<pre><font face="Times New Roman, Times, serif">log4j.rootCategory= R
+
+# R is the RollingFileAppender that outputs to a rolling log
+# file called sample.log.
+
+log4j.appender.R=org.apache.log4j.RollingFileAppender
+log4j.appender.R.File=sample.log
+
+# Define a pattern layout for the file.
+# For more information on conversion characters (i.e. d,p,t,c,l,m,n)
+# please see the PatternLayout class of the Log4j API.
+
+<b>log4j.appender.R.layout=org.apache.log4j.PatternLayout
+log4j.appender.R.layout.ConversionPattern=</b><b>[slf5s.start]%d{DATE}[slf5s.DATE]%n\
+%p[slf5s.PRIORITY]%n%x[slf5s.NDC]%n%t[slf5s.THREAD]%n\
+%c[slf5s.CATEGORY]%n%l[slf5s.LOCATION]%n%m[slf5s.MESSAGE]%n%n</b>
+
+# Set the max size of the file
+
+log4j.appender.R.MaxFileSize=500KB</font></pre>
+
+      <p>You are free to use any or all of the main conversion
+	characters to create ml your log file (i.e. %p for
+	Priority). There are only two requirements for the conversion
+	pattern. First, the conversion pattern string <b>must</b>
+	start with the tag <b>[slf5s.start]</b>. Second, for each
+	log4j conversion character listed in the conversion pattern
+	string, a corresponding LogFactor5 tag <b>must</b> be placed
+	immediately <b>after</b> the character. The following is a
+	complete list of the log4j characters and LogFactor5 tags:
+      </p>
+
+<pre><font face="Times New Roman, Times, serif">Date - %d{DATE}[slf5s.DATE]
+Priority - %p[slf5s.PRIORITY]
+NDC - %x[slf5s.NDC]
+Thread - %t[slf5s.THREAD]
+Category - %c[slf5s.CATEGORY]
+Location - %l[slf5s.LOCATION]
+Message - %m[slf5s.MESSAGE]</font>
+</pre>
+
+      <p> <b>Note:</b> The order of the characters does not matter so
+	you are free to layout your log file any way you like. Just
+	remember to include the LogFactor5 start tag at the beginning
+	of the string and any LogFactor5 tags after each corresponding
+	log4j conversion character.</p>
+
+      <h4>Running the Example:</h4>
+      
+      <ul>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
+
+	<li>Type<b> </b>the following at the command line:<b> java
+	    org.apache.log4j.lf5.StartLogFactor5</b>
+	</li>
+
+	<li>Under the 'File' menu, select 'Open'.</li>
+
+	<li>Open the <i>sample.log</i> file located in the <font
+	  face="Courier New, Courier,
+	  mono">examples/lf5/OpeningLogFiles</font> directory.</li>
+
+	<li>Clear the log table using the Clear Log Table button.</li>
+      </ul>
+
+      <!-- ======================================================== -->
+      <!--                      Example 8                           -->
+      <!-- ======================================================== -->
+      <h3><b><font color="#000099">Example 8</font></b></h3>
+      <h4><b><font color="#000099">Example 8a: UsingLogMonitorAdapter</font></b></h4>
+      <h4>Example Description:</h4>
+
+      <p>Ideally LogFactor5's intended use is with Log4J, but this
+	does not preclude its use with other logging schemes. The
+	LogMonitorAdapter API allows developers to log directly to the
+	LogFactor5 GUI Monitor with a minimum of effort.
+      </p>
+
+      <p>The UsingLogMonitorAdapter.java class demonstrates how to use
+	the LogMonitorAdapter.  This example requests a new instance
+	of the LogMonitorAdapter, and uses the log4j Priority
+	levels. </p>
+
+<pre>     _adapter = LogMonitorAdapter.newInstance(LogMonitorAdapter.LOG4J_LOG_LEVELS);</pre>
+<p>When you log to the LogFactor5 GUI Monitor, simply call one of the many log
+  methods on the LogMonitorAdapter object:</p>
+<pre>     _adapter.log(channel,"Doh this is a debugging");
+
+     _adapter.log(channel,LogLevel.INFO,"Hmmm fobidden doughnut");
+     _adapter.log(channel,LogLevel.WARN,"Danger Danger Will Robinson",
+         new RuntimeException("DANGER"), "32");
+     _adapter.log(channel,LogLevel.ERROR,"Exit stage right->");
+     _adapter.log(channel,LogLevel.FATAL,"What's up Doc?",
+         new NullPointerException("Unfortunate exception"));
+</pre>
+
+      <h4>Running the Example:</h4>
+      <ul>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
+
+	<li>Type<b> </b>the following at the command line:
+
+	  <p><b>java
+	  examples.lf5.UsingLogMonitorAdapter.UsingLogMonitorAdapter</b></p>
+	</li>
+      </ul>
+
+      <h4><b><font color="#000099">Example 8b: CustomizedLogLevels</font></b> </h4>
+      <h4>Example Description:</h4>
+
+      <p>What good is a LogMonitorAdapter if you can only use preset
+	LogLevels? This example illustrates how to use the
+	LogMonitorAdapter with a set of user-defined LogLevels.</p>
+
+      <p>The CustomizedLogLevels.java class demonstrates how to customize LogLevels ml
+	to suit your logging needs. As with the previous example we request an instance
+	of the LogMonitorAdapter, but this time an array of defined LogLevels is supplied:</p>
+
+<pre>     _adapter = LogMonitorAdapter.newInstance(new LogLevel[] {DEFAULT, LEVEL_ONE,
+           LEVEL_TWO,LEVEL_THREE, LEVEL_FOUR });
+</pre>
+
+      <p>The LogMonitorAdapter will set the first entry in the array to be the default
+	LogLevel. For example, when logging a message where no LogLevel has been specified,
+	the DEFAULT LogLevel will be used. The default LogLevel can also be set using
+	the LogMonitorAdapter's setDefaultLevel method, while the severe LogLevel can
+	be set as follows:
+      </p>
+
+<pre>     _adapter.setSevereLevel(LEVEL_ONE);</pre>
+      <p></p>
+
+      <p>Logging messages then follow the same rules as the example above.</p>
+
+<pre>     _adapter.log(channel,"Using the customized LogLevels");
+
+     _adapter.log(channel,LEVEL_FOUR,"This is a test");
+     _adapter.log(channel,LEVEL_THREE,"Hmmm fobidden doughnut");
+     _adapter.log(channel,LEVEL_ONE,"Danger Danger Will Robinson",
+         new RuntimeException("DANGER"), "32");
+     _adapter.log(channel,LEVEL_TWO,"Exit stage right->");
+     _adapter.log(channel,LEVEL_FOUR,"What's up Doc?",
+         new NullPointerException("Unfortunate exception"));
+      </pre>
+
+      <h4>Running the Example:</h4>
+      <ul>
+	<li>Set up your CLASSPATH as in Example 1 above.</li>
+
+	<li>Type<b> </b>the following at the command line:
+	  
+	  <p><b> java
+	      examples.lf5.UsingLogMonitorAdapter.CustomizedLogLevels</b></p>
+	</li>
+      </ul>
+    </section>
+  </body>
+</document>

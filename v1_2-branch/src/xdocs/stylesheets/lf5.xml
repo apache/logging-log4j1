@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project name="Jakarta Site"
+        href="http://jakarta.apache.org/">
+
+  <title>Log4j project</title>
+  <logo href="lf5/images/lf5_logo.gif">LogFactor5</logo>
+  <body>
+
+    <menu name="LF5 User Guide">
+      <item name="Overview"   href="/lf5/overview.html"/>
+      <item name="Features"   href="/lf5/features.html"/>
+      <item name="Reading Files"   href="/lf5/readingfiles.html"/>
+      <item name="Configuration"   href="/lf5/configuration.html"/>
+      <item name="Library"   href="/lf5/library.html"/>
+      <item name="Examples"   href="/lf5/examples.html"/>
+      <item name="Troubleshoot"   href="/lf5/trouble.html"/>
+      <item name="FAQ"   href="/lf5/faq.html"/>
+    </menu> 
+
+    
+    <menu name="Log4j Project">
+      <item name="Home page"   href="/index.html"/>
+    </menu>
+
+
+  </body>
+</project>

@@ -1,0 +1,39 @@
+This is the build information for the current log4j release.  It contains the
+versions of tools and jars used to build this version of the log4j library.
+
+Ant - v1.6.5; Available from http://ant.apache.org
+JDK - jdk1.3.1_16; Available from http://java.sun.com/j2se/1.3/index.jsp
+
+
+External jar dependencies - These projects were used in compiling the log4j
+classes. The locations of their jars can be set in the build.properties file,
+a sample of which can be duplicated from the file build.properties.sample.
+
+XML (jaxp.jaxp.jar) - Crimson 1.1.3; Available from 
+  http://xml.apache.org/crimson/
+  
+Java Mail (javamail.jar) - v1.3.2; Available from
+  http://java.sun.com/products/javamail/
+
+JavaBeans Activation Framework (activation.jar) - v1.0.2; Available from
+  http://java.sun.com/products/javabeans/jaf/index.jsp
+
+JMS (jms.jar) - v1.1; Available from
+  http://java.sun.com/products/jms/docs.html
+
+JMX (jmx.jar, jmx-extra.jar) - v1.2; Available from
+  http://java.sun.com/products/JavaManagement/index.jsp
+
+JNDI (jndi.jar) - v1.2.1; Available from
+  http://java.sun.com/products/jndi/downloads/
+
+  
+External jar dependencies for unit tests - These jars are used as part of the
+unit testing.
+
+JUnit - v3.8.1; Available from http://junit.org
+
+Jakarta ORO (jakarta.oro.jar) - v2.0.8;
+  Available from http://jakarta.apache.org/oro/
+
+Clover (clover.jar) - v1.3.8; Available from http://www.cenqua.com/clover/

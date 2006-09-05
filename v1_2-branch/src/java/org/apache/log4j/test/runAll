@@ -1,0 +1,19 @@
+
+#!/bin/sh
+
+. .functions
+
+deleteFile log4j.properties
+
+./shallow || die "shallow test FAILED."
+./defaultInit || die "defaultInit test FAILED."
+./propConfig || die "propConfig test FAILED."
+./getOptions || die "getOptions test FAILED."
+./domTest || die "domTest FAILED."
+./multipleAppenders || die "multipleAppenders test FAILED."
+./confParsing || die "confParsing test FAILED."
+#./customCategory || die "customCategory test FAILED."
+./mycat || die "mycat test FAILED."
+./l7d || die "L7D test FAILED."
+./fqcn || die "FQCN test FAILED."
+#./extSupport || die "Extension support test FAILED."

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# A regression test to check support custom priorities
+
+# Read the .functions file
+. .functions
+
+# If set, allows to skip tests 
+declare -i start=$1
+echo "start=$start TEMP=$TEMP OUTPUT=$OUTPUT"
+
+function testCustomCat {
+ layout=$1
+ 
+ echo -n "Custom Priority test $TEST - "
+ java -Dlog4j.debug org.apache.log4j.test.CustomCategoryTest $LCF
+
+ check witness/customCat.$TEST $TEMP; echo "OK."
+}
+
+
+
+setPERL
+
+declare -i TEST
+
+TEST=1
+if [ $TEST -ge $start ]; then
+  echo "LOG4J=org.apache.log4j" > $LCF
+  lecho "log4j.rootCategory=TRACE#\${LOG4J}.xml.examples.XLevel, testAppender" 
+  lecho "log4j.loggerFactory=\${LOG4J}.xml.examples.XLogger\$XFactory"
+  lecho "log4j.appender.testAppender=\${LOG4J}.FileAppender"
+  lecho "log4j.appender.testAppender=\${LOG4J}.FileAppender"
+  lecho "log4j.appender.testAppender.File=$TEMP"
+  lecho "log4j.appender.testAppender.Append=false"
+  lecho "log4j.appender.testAppender.layout=\${LOG4J}.PatternLayout "
+  lecho "log4j.appender.testAppender.layout.ConversionPattern=%-5p - %m%n"  
+  testCustomCat
+fi
+
+
+

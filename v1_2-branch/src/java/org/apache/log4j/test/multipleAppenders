@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Read the .functions file
+. .functions
+
+setPERL
+
+echo "log4j.rootCategory=DEBUG, A1, A2" > $LCF
+lecho "log4j.appender.A1=org.apache.log4j.FileAppender"
+lecho "log4j.appender.A1.File=$TEMP"
+lecho "log4j.appender.A1.Append=false"
+lecho "log4j.appender.A1.layout=org.apache.log4j.TTCCLayout" 
+lecho "log4j.appender.A1.layout.ContextPrinting=false"
+lecho "log4j.appender.A1.layout.ThreadPrinting=xx"
+
+lecho "log4j.appender.A2=org.apache.log4j.FileAppender"
+lecho "log4j.appender.A2.File=$TEMP.1"
+lecho "log4j.appender.A2.Append=false"
+lecho "log4j.appender.A2.layout=org.apache.log4j.TTCCLayout" 
+lecho "log4j.appender.A2.layout.ContextPrinting=false"
+lecho "log4j.appender.A2.layout.ThreadPrinting=true"
+
+echo -n "  MultipleAppenders test $TEST - "
+java $D_FLAG org.apache.log4j.test.MultipleAppenders $LCF
+

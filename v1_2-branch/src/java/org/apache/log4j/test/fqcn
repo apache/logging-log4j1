@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# A regression test to check the caller localization in subclasses of Category
+
+# Read the .functions file
+. .functions
+
+# If set, allows to skip tests 
+declare -i start=$1
+echo "start=$start TEMP=$TEMP OUTPUT=$OUTPUT"
+
+function testFQCN {
+ layout=$1
+ 
+ echo -n "FQCN test $TEST - "
+ java org.apache.log4j.test.FQCNTest $OUTPUT
+
+ check witness/fqcn.$TEST $OUTPUT; echo "OK."
+}
+
+
+
+declare -i TEST
+
+TEST=1
+if [ $TEST -ge $start ]; then
+  testFQCN 
+fi

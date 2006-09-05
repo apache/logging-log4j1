@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+  
+  <properties>
+    <author email="BMarlborough@thoughtworks.com">Brad Marlborough</author>
+    <title>LogFactor5 Users' Guide</title>
+  </properties>
+  
+  <body>
+    <section name="Troubleshooting Examples">
+
+      <p><b>Q. How do I send log messages to both LogFactor5 and a rolling log file?</b> 
+      </p> 
+
+      <p><b>A.</b> Log4J gives you the ability to log to mulitple
+	appenders. The <i>RollingFileAppender</i> class is the
+	appender used to log messages to a series of files. The
+	following code snippet shows how to configure a
+	log4j.properties file or a standard properites file so that it
+	logs to both the LogFactor5 console and a rolling log
+	file.</p>
+
+<pre><font face="Courier New, Courier, mono"># Register both appenders
+with the root of the logger tree.
+
+log4j.rootLogger=, A1, R
+
+# A1 is set to be a LF5Appender which outputs to a swing
+# logging console.   
+  
+log4j.appender.A1=org.apache.log4j.lf5.LF5Appender
+
+# R is the RollingFileAppender that outputs to a rolling log 
+# file called rolling_log_file.log.
+
+log4j.appender.R=org.apache.log4j.RollingFileAppender
+log4j.appender.R.File=rolling_log_file.log
+
+# Configure a pattern layout, the size of the file and the number
+# of backup files.
+
+log4j.appender.R.layout=org.apache.log4j.PatternLayout
+# Edited to fit.
+log4j.appender.R.layout.ConversionPattern=[slf5s.start]%d{DATE}[slf5s.DATE]%n\
+  %p[slf5s.PRIORITY]%n%x[slf5s.NDC]%n%t[slf5s.THREAD]%n\
+  %c[slf5s.CATEGORY]%n%l[slf5s.LOCATION]%n%m[slf5s.MESSAGE]%n%n
+log4j.appender.R.MaxFileSize=100KB
+log4j.appender.R.MaxBackupIndex=1</font></pre>
+
+      <p>For more information on logging to multiple appenders along
+	with a demo, please see the <a
+	  href="example5.html">IntiUsingMultipleAppenders</a> example in the
+	examples folder.
+      </p>
+
+      <hr/>
+
+      <p><b>Q. What is the maximum number of log records that will be visible at any 
+	  one time?</b> 
+      </p>
+
+      <p><b>A.</b> The logging console will only display up to 5000 LogRecords as a 
+	default. When this limit has reached, the oldest record will be removed from 
+	those that are displayed.</p>
+      <hr/>
+
+      <p><b>Q. Is the maximum number of records shown configurable? </b></p> 
+
+      <p><b>A.</b> The maximum number of records shown is configurable
+	via a log4j properties file, or via the Configure menu item in
+	the LogFactor5 GUI. Our memory profiling has shown that with a
+	logging message of 25 words in length, and a stack trace
+	nested seven methods deep, every 1000 records displayed in the
+	logging console uses about 6 MB of memory. For this reason,
+	when you are setting the maximum number of log records to be
+	shown, it is possible to run out of memory if you are not
+	careful. The default maximum number of records is set to 5000
+	records to minimize the possibility of running out of
+	memory.</p>
+      <hr/>
+
+      <p><b>Q. Why does the command prompt hang when I close the
+      console? </b></p>
+      
+      <p><b>A.</b> If you close the LogFactor5 console (as opposed to
+	exiting) you are effectively hiding the console and turning
+	off any logging to console. However, closing the console does
+	not shut down the Java virtual machine. As a result, the
+	command prompt hangs until the virtual machine is properly
+	shut down.</p>
+      <hr/>
+
+      <p><b>Q. How do I shut down the console completely including the virtual machine? 
+	</b>
+      </p>
+      <p><b>A.</b> Selecting exit (as opposed to close) will shut down the LogFactor5 
+  console along with the virtual machine. </p>
+      <hr/>
+
+      <p><b>Q. I have not added LogFactor5 via a configurator or the addAppender() method, 
+  yet the console still pops up every time. What's happening? </b></p>
+
+      <p><b>A. </b>The example log4j.properties file that ships with
+	LogFactor5 is in your CLASSPATH, and is being loaded during
+	static initialization of the Category class. If you remove the
+	file from your CLASSPATH, or rename the file, the logging
+	console should stop loading.</p>
+      <hr/>
+
+      
+      <p><b>Q. If I close the LogFactor5 logging console, but don't shut down the virtual 
+	  machine (i.e. use close rather than exit) does the console continue to log messages? 
+	</b></p>
+
+      <p><b>A.</b> No. Once the LogFactor5 console is closed, it stops logging messages. 
+	This does not effect any other appenders you may be using (i.e. rolling log 
+	files).</p>
+      <hr/>
+
+      <p><b>Q. When I call the removeAppender( ) method on the Category class, the logging 
+	  window does not disappear. What's happening?</b></p>
+      <p><b>A. </b>The LF5Appender <b>is</b> being removed from the list of registered 
+	Appenders in the Category class, and messages are no longer being sent to the 
+	logging window. However, the logging window is being kept alive by the Swing 
+	thread, so you will need to close the window manually in order to get rid of 
+	it. </p>
+      <hr/>
+
+      <p><b>Q. How do I send log messages to LogFactor5 using log4j's SocketAppender 
+	  and SocketServer classes?</b></p>
+ 
+      <p><b>A.</b> Log4 gives you the ability to send messages to a remote location 
+	over a socket for logging purposes. The org.apache.log4j.net.SocketAppender 
+	and org.apache.log4j.net.SocketServer classes are the key classes used in remote 
+	logging.</p>
+
+      <p>If you want to use the LF5Appender to log messages remotely,
+	you can simply register the LF5Appender in the properties file
+	being loaded by your SocketServer.  The following steps give
+	you a high level description of how to do this. For more
+	information on using the SocketAppender, along with a demo,
+	please see the UsingSocketAppenders example in the examples
+	folder.</p> 
+
+      <p>STEP 1: On the client side (the application producing the
+	logging messages), modify your configuration properties file
+	to write to a SocketAppender. If you add lines similar to the
+	following to your configuration file, it should do the trick:
+      </p>
+<pre>
+    log4j.rootCategory=, A1
+    log4j.appender.A1=org.apache.log4j.net.SocketAppender
+    log4j.appender.A1.RemoteHost=localhost
+    log4j.appender.A1.Port=8888
+</pre>
+
+      <p>Once you have loaded this configuration, all messages will be written to the 
+	machine and port that you specify. </p>
+
+      <p>STEP 2: On the server side (where you are listening for
+	messages), you will need to run log4j's SocketServer
+	class. You should create a configuration file with
+	configuration information similar to the following: </p>
+<pre>
+    log4j.rootCategory=DEBUG,A 
+    log4j.category.org.apache.log4j.net.SocketNode=DEBUG
+    log4j.appender.A=org.apache.log4j.lf5.LF5Appender
+</pre>
+
+      <p>STEP 3: Set up your CLASSPATH on both the client and server
+	to run log4j and LogFactor5. </p>
+
+      <p>STEP 4: Run the SocketServer at the command line. The command
+	line syntax for the SocketServer is as follows: </p>
+
+<pre>
+    java org.apache.log4j.net.SocketServer portNumber configurationFile\
+                                           configurationDirectory 
+</pre>
+
+
+      <p> For example, we ran the following at the command line: java
+  org.apache.log4j.net.SocketServer 8888
+  C:\temp\socketserver.properties C:\temp
+      </p>
+
+      <p>STEP 5: Start your client, and start logging messages to the SocketAppender.</p>
+
+      <hr/>
+
+      <p><b>Q. How do I save my current configuration?</b></p>
+
+      <p><b>A. </b>LogFactor5 has a Configure menu item in the top
+	menu bar. If you choose save from this menu, it will save your
+	current configuration. If you choose reset from this menu, it
+	will delete any saved configuration information.
+      </p>
+      <hr/>
+
+      <p><b>Q. What configuration information is saved?</b></p>
+      <p><b>A. </b>If you choose Configure-&gt;Save from the LogFactor5 menu, LogFactor5 
+	saves the configuration of the category explorer window. This means that the 
+	next time you open LogFactor5, any channels that you have selected or de-selected 
+	will remain as they were when you last exited the GUI.</p>
+      <hr/>
+
+      <p><b>Q. When I open LogFactor5, I have a bunch of old categories from another 
+	  application. What's going on here, and how do I get rid of these dead categories?</b>
+      </p>
+
+      <p><b>A. </b>You must have saved your configuration in the other
+	application.  LogFactor5 is displaying your saved
+	configuration, as well as any new categories in the
+	application you are now running. To remove these empty
+	categories, right-click at the root of the category tree in
+	the category explorer window, and choose &quot;Remove All
+	Empty Categories&quot;. If you want to get rid of this old
+	configuration information permanently, you should choose
+	Configure-&gt;Reset from the menu as well.</p> 
+
+      <hr/>
+
+      <p><b>Q. I'm using Ant to build my project and one of my tasks
+	  is to execute a series of JUnit tests. When I attempt to use
+	  the LF5Appender as an appender I get the following exception
+	  thrown: </b>
+      </p>
+
+<pre>
+    java.lang.NullPointerException 
+    at javax.swing.ImageIcon.&lt;init&gt;(ImageIcon.java:134)
+    at org.apache.log4j.lf5.viewer.channelexplorer.ChannelNodeRenderer.
+                                       &lt;init&gt;(ChannelNodeRenderer.java:71) 
+    ... etc.
+</pre>
+
+      <p><b>What do I need to do to fix this problem?</b></p>
+
+      <p><b>A. </b>This problem is related to the way that Ant's class
+	loader works.  The solution for this problem is to fork the
+	junit task into a separate Java Virtual Machine. The
+	appropriate code to fork the VM is a follows:
+      </p>
+
+<pre>
+    &lt;junit fork="yes"&gt;
+      ...
+    &lt;/junit&gt;
+</pre>
+      <hr/>
+
+      <p><b>Q. When I try to open a file, I get the following error:
+	  'Error - Invalid log file format!'. What is going
+	  on?</b></p>
+
+      <p><b>A. </b>LogFactor5 can read in log files created with
+	Log4J's RollingFileAppender.  The format of the log file
+	<b>must</b> follow the LogFactor5 layout conventions in order
+	for LogFactor5 to open the file. For more information on
+	LogFactor5's layout conventions and how to set the conversion
+	pattern in a Log4J properties file, please see the
+	OpeningLogFiles example.</p>
+
+      <hr/>
+
+      <p><b>Q. Why can't I set my own custom date format?</b></p>
+
+      <p><b>A. </b>Log4j allows users to cutomize the date format of
+	their log records.  Unfortunately LogFactor5 does not support
+	this feature. LogFactor5 uses a date manager to ensure that
+	only one date format is ever used. The reason for this is that
+	LogFactor5 can read in log files created with Log4J's
+	RollingFileAppender.  However, the data in the log files is
+	text rather than objects. In order for LogFactor5 to read in
+	the log file, it must know the exact format of the data in
+	order to parse the information. This include the format of the
+	date. Any files containing invalid date formats would not be
+	able to be opened and read.  As a result, users are forced to
+	use a default date format provided by Log4j ( %d{Date} ).</p>
+  
+      <hr/>
+
+      <p><b>Q. Why does the LogFactor5 GUI hang when I use Tomcat
+	  1.4's reload feature to reload my application?</b></p>
+
+      <p><b>A. </b>When an application using LogFactor5 is deployed
+	using Tomcat, the GUI binds itself to the naming context of
+	the application. However, when the application is reloaded
+	using Tomcat's reload feature, the naming context is nulled
+	and a new naming context is created. Since the VM is not shut
+	down and restarted during the reload process, and there is no
+	longer a naming context to bind to, the LogFactor5 console
+	hangs. When the application is reloaded, a new LogFactor5
+	console is created while the old one is left hanging in limbo.
+	One way around this problem is to use Tomcat in conjunction
+	with JBoss to redeploy the application. JBoss also has a
+	reload feature that allows users to redeploy their application
+	without having to bounce the web/application server. The
+	difference is that JBoss has a naming context manager that
+	keeps track of an applications naming context between deploys
+	rather than nulling the context and creating a new one. As a
+	result, the LogFactor5 console will remain bound to the
+	application between each deploy. </p>
+  
+    </section>
+  </body>
+</document>

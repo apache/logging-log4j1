@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+
+  <properties>
+    <author email="not@disclosed">Ceki Gülcü</author>
+    <title>Contact us</title>
+  </properties>
+
+  <body>
+
+
+    <section name="Mailing lists">
+
+      <p>Discussion on log4j and logging in general are held on the
+	<em>log4j-user</em> mailing list.  To subscribe to this list
+	send an e-mail to <a
+	HREF="mailto:log4j-user-subscribe@logging.apache.org">log4j-user-subscribe@logging.apache.org</a>.
+      </p>
+
+      <p>Development related discussions are held on the
+	<em>log4j-dev</em> mailing list. To subscribe to this list
+	send an e-mail to <A
+	HREF="mailto:log4j-dev-subscribe@logging.apache.org">log4j-dev-subscribe@logging.apache.org</A>. All
+	developers are encouraged to subscribe to the
+	<em>log4j-dev</em> list which will notify the subscribers of
+	any commits to our CVS repository.
+      </p>
+
+      <p><b>To prevent spam, we expect you to be subscribed to a list
+	  before posting to it. Otherwise, your mail needs to be
+	  approved by an administrator which delays your posting and
+	  creates needless work for us.</b>
+      </p>
+
+      <p>Most Logging Services mailing lists, in particular the log4j mailing
+	lists, are archived. Some of the known archives are listed
+	below:
+      </p>
+
+      <ul>
+
+	<li>
+	  <a href="http://www.mail-archive.com/">http://www.mail-archive.com</a>
+	</li>
+
+	<li>Full mbox archives of all Logging Services lists are available at
+	    <a
+	    href="http://logging.apache.org/mail/">http://logging.apache.org/mail/</a>
+	</li>
+
+	<li>
+	  <a href="http://marc.theaimsgroup.com">http://marc.theaimsgroup.com</a>
+	</li>
+
+      </ul>
+
+      <p>Please do your best to ensure that you are not sending HTML
+	or "Stylelized" email to the list.  If you are using Outlook
+	or Outlook Express or Eudora, chances are that you are sending
+	HTML email by default. There is usually a setting that will
+	allow you to send "Plain Text" email. 
+      </p>
+    </section>
+
+
+    <section name="Bug reporting">
+
+      <p>Bugs should be reported by using the <a
+	href="http://nagoya.apache.org/bugzilla">Apache Bug
+	Database</a>. Before reporting a problem, please make sure to
+	<a href="http://nagoya.apache.org/bugzilla/query.cgi">check
+	the database</a> and the <a href="HISTORY">project history
+	file</a> to see if the problem is not already known. Before
+	filing a report, you should first send email to the
+	<em>log4j-user</em> mailing list describing the bug ensuring
+	that you are not filing an already known problem. Only after
+	these precautionary steps should you file a bug report with
+	Bugzilla.
+      </p>
+
+      <p>Although Bugzilla allows users to file enhancement requests
+	 as bugs, enhancement requests are not bugs and should not be
+	 treated as such. The preferred way to request for
+	 enhancements is by posting on the log4j-user list. This
+	 allows other interested parties to participate in the ensuing
+	 discussion.
+      </p>
+
+      <p><b>Just reporting a bug will not fix it. A good bug report
+      includes a detailed description of the problem and a succinct
+      test case which can reproduce the problem.</b> 
+      </p>
+
+</section>
+
+</body>
+</document>
+

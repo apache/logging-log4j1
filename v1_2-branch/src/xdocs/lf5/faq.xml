@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+  
+  <properties>
+    <author email="BMarlborough@thoughtworks.com">Brad Marlborough</author>
+    <title>LogFactor5 Users' Guide</title>
+  </properties>
+  
+  <body>
+    <section name="Frequently Asked Questions">
+
+
+      <p><b>Q. What is LogFactor5?</b> </p>
+
+      <p><b>A.</b> LogFactor5 is a Swing based GUI that leverages the
+	power of log4j to provide developers with a sophisticated,
+	feature-rich, visual tool for managing log messages.</p> 
+
+      <hr/>
+
+      <p><b>Q. Do I need to know how to use log4j in order to use LogFactor5?</b></p>
+
+      <p><b>A.</b> Yes, the documentation for LogFactor5 assumes the
+	user has some understanding of how log4j works. Note however
+	that the LogFactor5 examples will run regardless of a user's
+	log4j knowledge level.</p> <hr/>
+
+      <p><b>Q. What are the memory requirements for LogFactor5?</b></p>
+
+      <p><b>A.</b> The LogFactor5 logging console window uses around
+	13 MB of memory to run on a Windows OS. Our memory profiling
+	has shown that with a logging message of 25 words in length,
+	and a stack trace nested seven methods deep, every 1000
+	records displayed in the logging console uses about 6.5 MB of
+	memory. For this reason, when you are setting the maximum
+	number of log records to be shown, you should be careful that
+	you have enough memory to display all of the records.  The
+	default maximum number of records that will be displayed is
+	set to 5000 to minimize the possibility of running out of
+	memory. We recommend that Windows users have at least 96 MB of
+	RAM when using LogFactor5.</p>
+
+    </section>
+  </body>
+</document>

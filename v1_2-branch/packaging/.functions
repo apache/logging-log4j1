@@ -1,0 +1,40 @@
+# +=============================================+
+# Strip the filename, retain the directory only.|
+# +=============================================+
+function getShellScriptDirectory {
+  local dir
+  
+  dir=${0%/*}
+
+  if [ "$dir" = "." ]
+  then
+    dir=$(pwd)
+  elif [ "${dir#/}" = "$dir" ]  # dir does not start with a /
+  then
+    dir=$(pwd)/$dir
+  fi
+ echo $dir
+}
+# ==============================================
+# Delete the file if exists
+# ==============================================
+function deleteFile {
+  if [ -e $1 ]; then
+    echo "Deleting file [$1]."
+    rm $1
+  fi
+}
+# ==============================================
+# Change extension of file if it exists
+# ==============================================
+function changeFileExtension {
+  filename=$1
+  ext=$2
+  #echo "File mame =$1, ext=$2" 
+  if [ -e $filename ]; then
+    noext=${filename%.*}
+    echo "Renaming [$filename] to [$noext.$ext]."
+    mv $filename $noext.$ext
+  fi
+}
+# ==============================================
