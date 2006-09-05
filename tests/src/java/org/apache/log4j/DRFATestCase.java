@@ -423,11 +423,11 @@ public class DRFATestCase extends TestCase {
         assertEquals(0, firstFile.length());
 
         Calendar cal = Calendar.getInstance();
-        long now = cal.getTimeInMillis();
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 1);
+        long now = cal.getTime().getTime();
+        cal.set(Calendar.SECOND, 3);
+        cal.set(Calendar.MILLISECOND, 0);
         cal.add(Calendar.MINUTE, 1);
-        long until = cal.getTimeInMillis();
+        long until = cal.getTime().getTime();
         Thread.sleep(until - now);
         root.info("Hello, World");
         assertTrue(firstFile.exists());
