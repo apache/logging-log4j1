@@ -45,6 +45,7 @@
        </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=35123">35123</a>: Additivity not exported by PropertyPrinter.
        </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=31003">31003</a>: RollingFileAppender, if removed, can cause NullPointerExceptions.
        </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=23021">23021</a>: AsyncAppender blocks on thread death.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40412">40412</a>: NOTICE file added to distribution and jar.
        </li></ul>
    </li>
     </ul>

@@ -445,7 +445,9 @@
                    ${stem}/or/jms/*.class,
                    ${stem}/config/*.class"
          excludes="**/UnitTest**"
-         manifest="${jar.dest}/manifest.mf"/>
+         manifest="${jar.dest}/manifest.mf">
+         <metainf dir="." includes="NOTICE,LICENSE"/>
+     </jar>
   </target>
 
 
@@ -615,7 +617,8 @@
                      build.properties.sample,
                           manifest.mf,
            INSTALL,
-           LICENSE.txt,
+           LICENSE,
+           NOTICE,
            ${dist.dir}/lib/log4j*.jar,
            ${dist.dir}/lib/NTEventLogAppender.dll,
            ${dist.dir}/classes/**,
