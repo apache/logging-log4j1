@@ -394,6 +394,7 @@
 	          <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
 	        </section>
 	      </manifest>
+         <metainf dir="." includes="NOTICE,LICENSE"/>
 	  	</jar>
 	  </target>
 	
@@ -427,6 +428,7 @@
           <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
         </section>
       </manifest>
+	  <metainf dir="." includes="NOTICE,LICENSE"/>
   	</jar>
   </target>
 
@@ -462,7 +464,7 @@
             <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
           </section>
         </manifest>
-
+		<metainf dir="." includes="NOTICE,LICENSE"/>
   	</jar>
   </target>
 		
@@ -498,6 +500,7 @@
         <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
       </section>
     </manifest>
+    <metainf dir="." includes="NOTICE,LICENSE"/>
     </jar>
   </target>
 
@@ -531,6 +534,7 @@
         <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
       </section>
     </manifest>
+    <metainf dir="." includes="NOTICE,LICENSE"/>
     </jar>
   </target>
 
@@ -572,6 +576,7 @@
           <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
         </section>
       </manifest>
+	  <metainf dir="." includes="NOTICE,LICENSE"/>
     </jar>	
   </target>
 
@@ -599,6 +604,7 @@
                     <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
                 </section>
             </manifest>
+            <metainf dir="." includes="NOTICE,LICENSE"/>
         </jar>
     </target>
 
@@ -672,6 +678,7 @@
 	      <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
 	    </section>
 	  </manifest>
+	  <metainf dir="." includes="NOTICE,LICENSE"/>
 	</jar>	
   </target>
 	
@@ -762,6 +769,7 @@
           <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
         </section>
       </manifest>
+	  <metainf dir="." includes="NOTICE,LICENSE"/>
     </jar>
 
   </target>
@@ -783,6 +791,7 @@
           <attribute name="Implementation-Vendor" value="Apache Software Foundation"/>
         </section>
       </manifest>
+	  <metainf dir="." includes="NOTICE,LICENSE"/>
     </jar>
 
   </target>
@@ -1037,7 +1046,8 @@ Licensed under the &lt;a href="http://www.apache.org/licenses/LICENSE-2.0"&gt;Ap
          build.xml,
          build.properties.sample,
          INSTALL.txt,
-         LICENSE.txt"
+         LICENSE,
+		 NOTICE"
          excludes="**/*.bak,
          **/goEnv.bat,
          docs/pub-support/*,

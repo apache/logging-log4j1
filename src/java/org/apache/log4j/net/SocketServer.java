@@ -164,19 +164,7 @@ public class SocketServer {
   LoggerRepository configureHierarchy(InetAddress inetAddress) {
     logger.info("Locating configuration file for " + inetAddress);
 
-    // We assume that the toSting method of InetAddress returns is in
-    // the format hostname/d1.d2.d3.d4 e.g. torino/192.168.1.1
-    String s = inetAddress.toString();
-    int i = s.indexOf("/");
-
-    if (i == -1) {
-      logger.warn(
-        "Could not parse the inetAddress [" + inetAddress
-        + "]. Using default hierarchy.");
-
-      return genericHierarchy();
-    } else {
-      String key = s.substring(0, i);
+      String key = inetAddress.getHostName();
 
       File configFile = new File(dir, key + CONFIG_FILE_EXT);
 
@@ -193,7 +181,6 @@ public class SocketServer {
 
         return genericHierarchy();
       }
-    }
   }
 
   LoggerRepository genericHierarchy() {
