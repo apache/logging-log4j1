@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!-- Content Stylesheet for Site -->
+
+    ## Defined variables
+    #set ($bodybg = "#ffffff")
+    #set ($bodyfg = "#000000")
+    #set ($bodylink = "#525D76")
+
+    #set ($titlebg = "#FFFFFF")
+    #set ($titlefg = "#2222AA")
+
+    #set ($bannerbg = "#FFFFFF")
+    #set ($bannerfg = "#2222AA")
+
+    #set ($subbannerbg = "#828DA6")
+    #set ($subbannerfg = "#ffffff")
+    
+<!-- start the processing -->
+#document()
+<!-- end the processing -->
+
+## This is where the macro's live
+
+#macro ( projectanchor $name $value )
+  #if ($value.startsWith("http://"))
+      <a href="$value">$name</a>
+  #else
+      <a href="$relativePath$value">$name</a>
+  #end
+#end
+
+#macro ( metaauthor $author $email )
+            <meta name="author" value="$author">
+            <meta name="email" value="$email">
+#end
+
+#macro ( image $value )
+#if ($value.getAttributeValue("width"))
+#set ($width=$value.getAttributeValue("width"))
+#end
+#if ($value.getAttributeValue("height"))
+#set ($height=$value.getAttributeValue("height"))
+#end
+#if ($value.getAttributeValue("align"))
+#set ($align=$value.getAttributeValue("align"))
+#end
+<img src="$relativePath$value.getAttributeValue("src")" width="$!width" height="$!height" align="$!align">
+#end
+
+## ============================================
+##  subsection macro
+## ============================================
+#macro ( subsection $subsection)
+        <h3>$subsection.getAttributeValue("name")</strong></h3>
+        #foreach ( $items in $subsection.getChildren() )
+            #if ($items.getName().equals("img"))
+                #image ($items)
+            #elseif ($items.getName().equals("source"))
+                #source ($items)
+            ## #elseif ($items.getName().equals("table"))
+            ##    #table ($items)
+            #else
+                $items
+            #end
+        #end
+#end
+
+## ===================================
+##          titleSection macro
+## ===================================
+#macro ( titleSection $titleSection)
+  <font size="+2" color="$titlefg"><b>$titleSection.getAttributeValue("name")</b></font>
+#end
+
+## ================================
+##          section macro
+## ================================
+#macro ( section $section)
+  <h1>$section.getAttributeValue("name")</strong></h1>
+        #foreach ( $items in $section.getChildren() )
+            #if ($items.getName().equals("img"))
+                #image ($items)
+            #elseif ($items.getName().equals("source"))
+                #source ($items)
+            ##elseif ($items.getName().equals("table"))
+            ##    #table ($items)
+            #elseif ($items.getName().equals("subsection"))
+                #subsection ($items)
+            #else
+                $items
+            #end
+        #end
+#end
+
+## ===================================
+##  make navigation bar
+## ===================================
+
+#macro ( makeNavigationBar )
+  <!-- ============================================================ -->
+  <div class="leftcol">
+    #set ($menus = $project.getChild("body").getChildren("menu"))
+    #foreach ( $menu in $menus )
+       <div class="menu_header">$menu.getAttributeValue("name")</div>
+       #foreach ($item in $menu.getChildren() )
+       	 #set ($name = $item.getAttributeValue("name"))
+       	 <div class="menu_item">#projectanchor($name $item.getAttributeValue("href"))</div>
+       #end  
+    #end
+  </div> 
+   
+#end
+
+## ====================================
+##      getProjectImage
+## ====================================
+#macro (getProjectImage)
+   ##<div class="banner">
+   ##<table class="banner" width="100%" border="0">
+   <table class="banner" border="0">
+     <tr>
+       <td valign="top">
+         <a href="http://logging.apache.org/">
+           <img src="http://logging.apache.org/images/ls-logo.jpg" border="0"/>
+         </a>
+       <td align="right">
+           #if ($project.getChild("logo"))
+             #set ( $logoString = $project.getChild("logo").getAttributeValue("href") )
+             #if ( $logoString.startsWith("/") )
+     	       <a href="$project.getAttributeValue("href")">
+      	         <img src="$relativePath$logoString" 
+      	           alt="$project.getChild("logo").getText()" border="0"/>
+      	       </a>
+             #else
+      	       <a href="$project.getAttributeValue("href")">
+                 <img src="$relativePath/$logoString" alt="$project.getChild("logo").getText()" border="0"/>
+      	       </a>
+             #end
+           #end  
+       </td>
+     </tr>
+   </table>
+   ##</div>
+#end
+
+#macro (printMeta $metaElement)
+<meta #set ($attribs = $metaElement.getAttributes())
+#foreach ($a in $attribs) $a.getName()="$a.getValue()" #end />
+#end
+
+#macro (faqIndex $root)
+
+  #set( $section = 1 )
+
+  #foreach ( $s in $root.getChild("body").getChildren() )
+    #if ($s.getName().equals("faqSection"))
+      #set( $counter = 1 )
+      <br/>
+      <div class="index-faqSection">
+        Section $section. <a href="#$section"> $s.getChild("title").getContent()</a>
+      </div>
+
+      #foreach ( $q in $s.getChildren() )
+        #if ($q.getName().equals("question"))
+           <table class="index-question">
+              <td nowrap="true" valign="top">Question $section.$counter</td>	      
+              <td><a href="#$section.$counter">$q.getChild("title").getContent()</a></td>           
+            </table>
+          #set( $counter = $counter + 1 )
+        #end
+      #end
+    #set( $section = $section + 1 )
+    #end
+  #end
+#end
+
+#macro (faqContents $root)
+  <hr/>
+
+  #set( $section = 1 )
+
+  #foreach ( $s in $root.getChild("body").getChildren() )
+    #if ($s.getName().equals("faqSection"))
+      #set( $counter = 1 )
+      <div class="faqSection">
+        <a name="$section">Section $section.</a> $s.getChild("title").getContent()
+      </div>
+      #foreach ( $i in $s.getChildren() )
+        #if ($i.getName().equals("question"))
+           <div class="question">
+             <a name="$section.$counter">$section.$counter $i.getChild("title").getContent()</a>
+           </div>
+           #set( $counter = $counter + 1 )
+           $i.getChild("answer").getContent()
+        #elseif ($i.getName().equals("text"))
+           $i.getContent()
+        #end
+      #end
+    #set( $section = $section + 1 )
+    #end
+  #end
+#end
+
+
+#macro (messages $root)
+  #foreach ( $m in $root.getChild("body").getChildren() )
+    #if ($m.getName().equals("message"))
+      <div class="big">
+        <a name="$m.getAttributeValue('ref')">
+         <table>
+            <tr>
+             <td valign="top"><b>Message:</b></td>
+             <td class="msg_title">$m.getChild("title").getContent()</td>
+            </tr>
+         </table> 
+        </a>
+      </div>
+      <div class="msg_meaning">
+        $m.getChild("explanation").getContent()
+      </div>
+    #end
+  #end
+#end
+
+#macro (document)
+    #set ($properties =  $root.getChild("properties") )
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+            #set ($authors = $properties.getChildren("author"))
+            #foreach ( $au in $authors )
+                #metaauthor ( $au.getText() $au.getAttributeValue("email") )
+            #end
+
+            #set ($metas = $root.getChildren("meta"))
+
+            ##    Parse meta directives such as
+            ##    <meta name="keyword" content="jakarta, java"/>
+            #foreach ($meta in $metas) #printMeta($meta) #end
+
+            ##    Support for <base> tags.
+            #if ($properties.getChild("base"))
+              #set ($url = $properties.getChild("base").getAttributeValue("href"))
+              <base href="$url"/>
+            #end
+ 
+            <link href="$relativePath/css/site.css" rel="stylesheet" type="text/css"/>
+            #set ($links = $properties.getChildren("link"))
+            #foreach ( $l in $links )
+              <link href="$l.getAttributeValue("href")" rel="stylesheet" type="text/css"/>
+            #end
+           
+
+            <title>$project.getChild("title").getText() - $properties.getChild("title").getText()</title>
+        </head>
+
+        <body bgcolor="$bodybg" text="$bodyfg" link="$bodylink">        
+           <!-- START Header table --> 
+            #getProjectImage()
+           <!-- END Header table --> 
+
+	   <div class="centercol">
+             <hr noshade="" size="1"/>
+		       
+           #foreach ( $item in $root.getChild("body").getChildren() )
+             #if ($item.getName().equals("img"))
+               #image ($item)
+             #elseif ($item.getName().equals("section"))
+               #section ($item)
+             #elseif ($item.getName().equals("faqSection"))
+               ## do nothing, we'll handle the faq later
+             #elseif ($item.getName().equals("message"))
+               ## do nothing, we'll handle the faq later
+             #else
+               $item
+              #end 
+            #end
+
+            #faqIndex ($root)	
+            #faqContents ($root)
+            #messages ($root)	
+
+##                    #if ($root.getChild("body").getChild("titleSection"))
+##                      #set ($titleSection = $root.getChild("body").getChild("titleSection"))
+##                      #titleSection($titleSection)
+##                    #end
+##
+##                    #set ($allSections = $root.getChild("body").getChildren("section"))
+##                    #foreach ( $section in $allSections )
+##                       #section ($section)
+##                    #end
+
+             
+                <!-- FOOTER -->
+              <div align="center"><font color="$bodylink" size="-1"><em>
+                 Copyright &#169; 1999-2006, Apache Software Foundation.<br />
+Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.
+               </em></font></div>
+
+           <!-- END main table --> 
+
+           <!-- LEFT SIDE NAVIGATION -->
+           #makeNavigationBar()
+
+        </body>
+    </html>
+#end
+
+
+
+
+

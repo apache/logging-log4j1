@@ -32,6 +32,10 @@ jndi.jar=${lib.home.dir}/jndi-1_2_1/lib/jndi.jar
 # Required to run Checkstyle. Available from http://checkstyle.sf.net
 checkstyle.jar=${lib.home.dir}/checkstyle-2.2/checkstyle-all-2.2.jar
 
-# The templates for the creation of the web-pages are inherited 
-# from the parent project.
-logging-site=../logging-site
+# Velocity's Anakia task is used in the generation of the documentation
+# download from http://jakarta.apache.org
+velocity.jar=${lib.home.dir}/velocity-1.4/velocity-dep-1.4.jar
+# Velocity's Anakia task requires JDOM, 
+# but Velocity 1.4 is not compatible with JDOM 1.0, but beta 8 works okay
+# download for http://www.jdom.org/dist/binary/archive
+jdom.jar=${lib.home.dir}/jdom-b8/build/jdom.jar

@@ -47,7 +47,8 @@
        </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=23021">23021</a>: AsyncAppender blocks on thread death.
        </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40412">40412</a>: NOTICE file added to distribution and jar.
        </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40378">40378</a>: Chainsaw of log4j 1.2 does not show TRACE level.
-       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40378">40501</a>: TRACE level missing in short introduction to log4j.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40501">40501</a>: TRACE level missing in short introduction to log4j.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=37960">37960</a>: Update site generation to velocity 1.4 and remove dependency on logging/site project.
        </li></ul>
    </li>
     </ul>
