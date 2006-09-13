@@ -37,6 +37,7 @@
 	   40412: NOTICE file added to distribution and jars.
 	   40378: Chainsaw of log4j 1.2 does not show TRACE level.
 	   40501: TRACE level missing in short introduction to log4j.
+	   37960: Update site generation to velocity 1.4 and remove dependency on logging/site project.
 	
 
  December 4th, 2005
