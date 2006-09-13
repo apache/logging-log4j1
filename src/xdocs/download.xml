@@ -46,6 +46,8 @@
        </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=31003">31003</a>: RollingFileAppender, if removed, can cause NullPointerExceptions.
        </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=23021">23021</a>: AsyncAppender blocks on thread death.
        </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40412">40412</a>: NOTICE file added to distribution and jar.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40378">40378</a>: Chainsaw of log4j 1.2 does not show TRACE level.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40378">40501</a>: TRACE level missing in short introduction to log4j.
        </li></ul>
    </li>
     </ul>
