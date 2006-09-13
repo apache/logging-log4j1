@@ -29,6 +29,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.apache.log4j.Level;
 
 /**
  * Represents the controls for filtering, pausing, exiting, etc.
@@ -91,9 +92,15 @@ class ControlPanel extends JPanel {
         c.anchor = GridBagConstraints.WEST;
 
         c.gridy = 0;
-        final Priority[] allPriorities = Priority.getAllPossiblePriorities();
+        final Level[] allPriorities = new Level[] {Level.FATAL, 
+               Level.ERROR, 
+               Level.WARN, 
+			   Level.INFO, 
+			   Level.DEBUG, 
+			   Level.TRACE };
+        
         final JComboBox priorities = new JComboBox(allPriorities);
-        final Priority lowest = allPriorities[allPriorities.length - 1];
+        final Level lowest = allPriorities[allPriorities.length - 1];
         priorities.setSelectedItem(lowest);
         aModel.setPriorityFilter(lowest);
         gridbag.setConstraints(priorities, c);
