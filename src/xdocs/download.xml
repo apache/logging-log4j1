@@ -9,7 +9,7 @@
     <meta name="keywords" content="java, log4j download, logging, tracing, component, framework, API, log4j"/>
       <body>
 	
-      <section name="log4j version 1.2.13">
+      <section name="log4j version 1.2.14">
 	  <p>Log4j is <a
 	      href="http://logging.apache.org/site/binindex.cgi"><b>available
 	      for download</b></a> from a number of mirrors. Please
@@ -17,9 +17,41 @@
 	      bandwidth.
 	  </p>
 	  
-	  <p>Log4j version 1.2.13 contains several bug fixes related to the TRACE
-    level introduced in version 1.2.12 and a fix in the ConsoleAppender
-    for a bug that affected JBoss.
+	  <p>Changes in log4j 1.2.14:
+    <ul>
+ <li>AsyncAppender was rewritten to eliminate reported deadlocks (bugs <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=26224">26224</a>, <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=28006">28006</a>, <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=37904">37904</a>, <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=38137">38137</a>), 
+   and to add an option to not block if the event queue becomes full (bug <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=38982">38982</a>).</li>
+   
+  <li>SyslogAppender can now accept a port specification (bug <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=39687">39687</a>) in its syslogHost attribute.</li>
+ 
+  <li>SMPTAppender can now accept cc and bcc addresses (bug <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=19125">19125</a>) and perform password authentication (bug <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=24969">24969</a>).</li>
+ 
+  <li>The following bugs were fixed:
+      <ul>
+       <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40159">40159</a>: NullPointerException in org.apache.log4j.NDC.get.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=36787">36787</a>: org.apache.log4j.lf5.util.DateFormatManager.setTimeZone assignment error.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=38559">38559</a>: Monthly logs not generated at midnight with DailyRollingFileAppender.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40145">40145</a>: PatternLayout specifier %r is not consistent with documentation.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=37119">37119</a>: Space after log level causes default level to be used.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=39135">39135</a>: Bad patterns in ISO8601DateFormat and DateTimeDateFormat.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=35743">35743</a>: SyslogAppender throws NullPointerException upon misconfiguration.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=15501">15501</a>: FallbackErrorHandler throws NullPointerException if no loggers are set.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=38564">38564</a>: Bad documentation for WriterAppender.encoding.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=37866">37866</a>: NTEventLogAppender not build, tested and placed in distribution.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=38662">38662</a>: SMTPAppender does not output newlines between stack trace lines.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=30294">30294</a>: SMTPAppender will not run within sandbox.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=16922">16922</a>: MDC with SMTPAppender doesn't work.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=31507">31507</a>: Misspelling in HierarchyDynamicMBean.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=35123">35123</a>: Additivity not exported by PropertyPrinter.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=31003">31003</a>: RollingFileAppender, if removed, can cause NullPointerExceptions.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=23021">23021</a>: AsyncAppender blocks on thread death.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40412">40412</a>: NOTICE file added to distribution and jar.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40378">40378</a>: Chainsaw of log4j 1.2 does not show TRACE level.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40501">40501</a>: TRACE level missing in short introduction to log4j.
+       </li><li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=37960">37960</a>: Update site generation to velocity 1.4 and remove dependency on logging/site project.
+       </li></ul>
+   </li>
+    </ul>
     </p>
 
     <p>The next major release of log4j will be version 1.3.  It will contain
