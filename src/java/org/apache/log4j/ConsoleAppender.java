@@ -59,7 +59,7 @@ public class ConsoleAppender extends WriterAppender {
     /**
      *   Creates a configured appender.
      * @param layout layout, may not be null.
-     * @param targetStr target, either "System.err" or "System.out".
+     * @param target target, either "System.err" or "System.out".
      */
   public ConsoleAppender(Layout layout, String target) {
     setLayout(layout);
