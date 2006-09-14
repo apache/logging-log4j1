@@ -146,7 +146,7 @@ public class SMTPAppender extends AppenderSkeleton {
   
   /**
    *  Create mail session.
-   *  @param mail session, may not be null.
+   *  @return mail session, may not be null.
    */
   protected Session createSession() {
     Properties props = null;
