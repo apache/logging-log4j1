@@ -73,6 +73,12 @@
   
   <property name="javac.source" value="1.1"/>
   <property name="javac.target" value="1.1"/>
+  
+  <!--  destination for generated documentation on Apache web host  -->
+  <property name="apache.javadoc_dest" value="/www/logging.apache.org/log4j/docs"/>
+  <!--  Apache web host  -->
+  <property name="apache.host" value="people.apache.org"/>
+
 
 
   <!-- Construct compile classpath -->
@@ -573,6 +579,35 @@
     </anakia>
 
   </target>
+
+<target name="deploy-site" depends="javadoc" description="Deploy log4j documentation">
+    <fail unless="apache.user">-Dapache.user=USERNAME must be specified.</fail>
+    <tar destfile="${packaging.dir}/apache-log4j12-site.tar.gz" compression="gzip">
+         <tarfileset dir="${javadoc.dest}" prefix="api-${version}"/>
+    </tar>
+    <exec executable="scp" dir="${packaging.dir}">
+         <arg value="apache-log4j12-site.tar.gz"/>
+         <arg value="${apache.user}@${apache.host}:"/>
+    </exec>
+    <exec executable="ssh">
+         <arg value="-l"/>
+         <arg value="${apache.user}"/>
+         <arg value="${apache.host}"/>
+         <arg value="tar"/>
+         <arg value="--directory=${apache.javadoc_dest}"/>
+         <arg value="-xvzf"/>
+         <arg value="apache-log4j12-site.tar.gz"/>
+    </exec>
+    <exec executable="ssh">
+      <arg value="-l"/>
+      <arg value="${apache.user}"/>
+      <arg value="${apache.host}"/>
+      <arg value="chmod"/>
+      <arg value="-R"/>
+      <arg value="g+w"/>
+      <arg value="${apache.javadoc_dest}"/>
+    </exec>
+</target>
 
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
