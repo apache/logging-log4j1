@@ -710,7 +710,7 @@
          <metainf dir="${maven.src}" includes="NOTICE,LICENSE"/>
 	  </jar>           
       <mkdir dir="${dist.images}"/>       
-      <jar destfile="${dist.images}/logging-log4j-${version}-maven.jar"
+      <jar destfile="${dist.images}/logging-log4j-${version}-bundle.jar"
            basedir="${maven.dest}"
            includes="log4j-${version}-sources.jar log4j-${version}-javadoc.jar">
            <zipfileset dir="." includes="pom.xml"/>
