@@ -687,6 +687,37 @@
 
     <delete dir="${dist.tmp}" />
   </target>
+  
+  <!-- This target will be incorporated init dist for the next release
+           currently it will repackage a previously built release   -->
+  <target name="dist-maven" depends="init" description="Builds an upload package for Maven">
+      <property name="maven.base" value="${packaging.dir}/maven"/>
+      <property name="maven.src" value="${maven.base}/logging-log4j-${version}"/>
+      <property name="maven.dest" value="${packaging.dir}/maven"/>
+      <mkdir dir="${maven.base}"/>             
+      <untar src="${dist.images}/logging-log4j-${version}.tar.gz"
+             dest="${maven.base}"
+             compression="gzip"/>
+
+      <jar destfile="${maven.dest}/log4j-${version}-sources.jar"
+           basedir="${maven.src}/src/java"
+           includes="**/*.java">
+         <metainf dir="${maven.src}" includes="NOTICE,LICENSE"/>
+      </jar>
+      <jar destfile="${maven.dest}/log4j-${version}-javadoc.jar"
+           basedir="${maven.src}/docs/api"
+           includes="**/*">
+         <metainf dir="${maven.src}" includes="NOTICE,LICENSE"/>
+	  </jar>           
+      <mkdir dir="${dist.images}"/>       
+      <jar destfile="${dist.images}/logging-log4j-${version}-maven.jar"
+           basedir="${maven.dest}"
+           includes="log4j-${version}-sources.jar log4j-${version}-javadoc.jar">
+           <zipfileset dir="." includes="pom.xml"/>
+           <zipfileset dir="${maven.src}/dist/lib" includes="log4j-1.2.14.jar"/>
+           <metainf dir="${maven.src}" includes="NOTICE,LICENSE"/>
+      </jar>
+  </target>
 
 
     <!-- ================================================================= -->
