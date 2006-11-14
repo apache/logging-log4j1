@@ -161,13 +161,14 @@ public class Category implements ULogger, AppenderAttachable {
   public void addAppender(Appender newAppender) {
     // BEGIN - WRITE LOCK
     lock.getWriteLock();
-
+    try {
     if (aai == null) {
       aai = new AppenderAttachableImpl();
     }
-
     aai.addAppender(newAppender);
+    } finally {
     lock.releaseWriteLock();
+    }
     //	END - WRITE LOCK
 
     repository.fireAddAppenderEvent((Logger) this, newAppender);
@@ -209,17 +210,17 @@ public class Category implements ULogger, AppenderAttachable {
     int writes = 0;
 
     for (Category c = this; c != null; c = c.parent) {
-      try {
   	  	// Protect against simultaneous writes operations such as 
 	   	  // addAppender, removeAppender,...
         c.lock.getReadLock();
-
+    	try {
         if (c.aai != null) {
           writes += c.aai.appendLoopOnAppenders(event);
         }
 	     } finally {
 			   c.lock.releaseReadLock();
 			 }
+	    
        if (!c.additive) {
          break;
        }      
@@ -604,12 +605,15 @@ public class Category implements ULogger, AppenderAttachable {
   public Enumeration getAllAppenders() {
 	  Enumeration result;
   	lock.getReadLock();
+    try {
     if (aai == null) {
       result = NullEnumeration.getInstance();
     } else {
       result = aai.getAllAppenders();
     }
+    } finally {
     lock.releaseReadLock();
+    }
     return result;
   }
 
@@ -625,12 +629,15 @@ public class Category implements ULogger, AppenderAttachable {
   	Appender result;
   	
   	lock.getReadLock();
+  	try {
     if ((aai == null) || (name == null)) {
       result = null;
     } else {	
 	    result = aai.getAppender(name);
     }	  
+  	} finally {
 	  lock.releaseReadLock();
+  	}
 	
     return result;
   }
@@ -941,14 +948,16 @@ public class Category implements ULogger, AppenderAttachable {
   	boolean result;
 
     lock.getReadLock();
-    
+    try {
     if ((appender == null) || (aai == null)) {
       result = false;
     } else {
       result = aai.isAttached(appender);
     }
+    } finally {
+    	lock.releaseReadLock();
+    }
     
-    lock.releaseReadLock();
     return result;
   }
 
@@ -1186,12 +1195,14 @@ public class Category implements ULogger, AppenderAttachable {
    */
   public void removeAllAppenders() {
     lock.getWriteLock();
-    
+    try {
     if (aai != null) {
       aai.removeAllAppenders();
       aai = null;
     }
+    } finally {
     lock.releaseWriteLock();
+  }
   }
 
   /**
@@ -1203,13 +1214,15 @@ public class Category implements ULogger, AppenderAttachable {
    */
   public void removeAppender(Appender appender) {
 	  lock.getWriteLock();
-    
+	  try {
     if ((appender == null) || (aai == null)) {
       // Nothing to do
     } else {
   		aai.removeAppender(appender);
     }
+	  } finally {
     lock.releaseWriteLock();
+  }
   }
 
   /**
@@ -1222,13 +1235,15 @@ public class Category implements ULogger, AppenderAttachable {
    */
   public void removeAppender(String name) {
 	  lock.getWriteLock();
-	  
+	  try {
     if ((name == null) || (aai == null)) {
       // nothing to do
     } else {
       aai.removeAppender(name);
     }
+	  } finally {
     lock.releaseWriteLock();
+  }
   }
 
   /**
