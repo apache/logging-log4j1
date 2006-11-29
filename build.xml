@@ -78,6 +78,11 @@
   <property name="apache.javadoc_dest" value="/www/logging.apache.org/log4j/docs"/>
   <!--  Apache web host  -->
   <property name="apache.host" value="people.apache.org"/>
+  
+  <property name="maven.base" value="${packaging.dir}/maven"/>
+  <property name="maven.src" value="${maven.base}/logging-log4j-${version}"/>
+  <property name="maven.dest" value="${maven.base}/repo"/>
+  
 
 
 
@@ -690,35 +695,54 @@
   
   <!-- This target will be incorporated init dist for the next release
            currently it will repackage a previously built release   -->
-  <target name="dist-maven" depends="init" description="Builds an upload package for Maven">
-      <property name="maven.base" value="${packaging.dir}/maven"/>
-      <property name="maven.src" value="${maven.base}/logging-log4j-${version}"/>
-      <property name="maven.dest" value="${packaging.dir}/maven"/>
+  <target name="prep-maven" depends="init" description="Prepares a Maven package">
+      <delete dir="${maven.src}"/>
+      <delete dir="${maven.dest}"/>
       <mkdir dir="${maven.base}"/>             
       <untar src="${dist.images}/logging-log4j-${version}.tar.gz"
              dest="${maven.base}"
              compression="gzip"/>
-
-      <jar destfile="${maven.dest}/log4j-${version}-sources.jar"
+	  <mkdir dir="${maven.dest}/java-sources"/>
+      <jar destfile="${maven.dest}/java-sources/log4j-${version}-sources.jar"
            basedir="${maven.src}/src/java"
            includes="**/*.java">
          <metainf dir="${maven.src}" includes="NOTICE,LICENSE"/>
       </jar>
-      <jar destfile="${maven.dest}/log4j-${version}-javadoc.jar"
-           basedir="${maven.src}/docs/api"
-           includes="**/*">
-         <metainf dir="${maven.src}" includes="NOTICE,LICENSE"/>
-	  </jar>           
-      <mkdir dir="${dist.images}"/>       
-      <jar destfile="${dist.images}/logging-log4j-${version}-bundle.jar"
-           basedir="${maven.dest}"
-           includes="log4j-${version}-sources.jar log4j-${version}-javadoc.jar">
-           <zipfileset dir="." includes="pom.xml"/>
-           <zipfileset dir="${maven.src}/dist/lib" includes="log4j-1.2.14.jar"/>
-           <metainf dir="${maven.src}" includes="NOTICE,LICENSE"/>
-      </jar>
+      <mkdir dir="${maven.dest}/jars"/>
+      <copy todir="${maven.dest}/jars" file="${maven.src}/dist/lib/log4j-${version}.jar"/>
+      <mkdir dir="${maven.dest}/poms"/>
+      <copy tofile="${maven.dest}/poms/log4j-${version}.pom" file="pom.xml"/>
+      <mkdir dir="${maven.dest}/licenses"/>
+      <copy todir="${maven.dest}/licenses">
+          <fileset dir="${maven.src}" includes="LICENSE"/>
+      </copy>
+	  <checksum forceOverwrite="yes" fileext=".md5">
+	  		<fileset dir="${maven.dest}" excludes="logging-log4j-${version}/** **/*.md5 **/*.sha1 **/*.asc"/>
+	  </checksum>           
+	  <checksum forceOverwrite="yes" fileext=".sha1" algorithm="SHA">
+	  		<fileset dir="${maven.dest}" excludes="logging-log4j-${version}/** **/*.md5 **/*.sha1 **/*.asc"/>
+	  </checksum>
+	  <exec executable="gpg" dir="${maven.dest}/jars">
+	      <arg value="--armor"/>
+	      <arg value="--output"/>
+	      <arg value="log4j-${version}.jar.asc"/>
+	      <arg value="--detach-sig"/>
+	      <arg value="log4j-${version}.jar"/>	      
+	  </exec>           
+	  <exec executable="gpg" dir="${maven.dest}/java-sources">
+	      <arg value="--armor"/>
+	      <arg value="--output"/>
+	      <arg value="log4j-${version}-sources.jar.asc"/>
+	      <arg value="--detach-sig"/>
+	      <arg value="log4j-${version}-sources.jar"/>	      
+	  </exec>           
   </target>
 
+  <target name="publish-maven">
+    <scp todir="${username}@people.apache.org:/www/people.apache.org/repo/m1-ibiblio-rsync-repository/log4j/">
+        <fileset dir="${maven.dest}"/>
+    </scp>
+  </target>
 
     <!-- ================================================================= -->
     <!-- Build a complete distribution for release.                        -->
