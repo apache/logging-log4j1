@@ -33,8 +33,23 @@ typedef long long __int64;
  * be displayed in the NT Event Viewer.
  */
 WORD getCategory(jint priority) {
-  // Priority values map directly to EventLog category values
-  return (WORD)(priority + 1);
+  WORD category = 1;
+  if (priority >= org_apache_log4j_Priority_DEBUG_INT) {
+      category = 2;
+      if (priority >= org_apache_log4j_Priority_INFO_INT) {
+          category = 3;
+          if (priority >= org_apache_log4j_Priority_WARN_INT) {
+             category = 4;
+             if (priority >= org_apache_log4j_Priority_ERROR_INT) {
+                category = 5;
+                if (priority >= org_apache_log4j_Priority_FATAL_INT) {
+                    category = 6;
+                }
+             }
+          }
+      }
+  }
+  return category;
 }
 
 /*
@@ -43,23 +58,17 @@ WORD getCategory(jint priority) {
  * 3 event types of interest to us: ERROR, WARNING, and INFO.
  */
 WORD getType(jint priority) {
-  WORD ret_val;
-  
-  switch (priority) {
-  case org_apache_log4j_Priority_FATAL_INT:
-  case org_apache_log4j_Priority_ERROR_INT:
-    ret_val = EVENTLOG_ERROR_TYPE;
-    break;
-  case org_apache_log4j_Priority_WARN_INT:
-    ret_val = EVENTLOG_WARNING_TYPE;
-    break;
-  case org_apache_log4j_Priority_INFO_INT:
-  case org_apache_log4j_Priority_DEBUG_INT:
-  default:
-    ret_val = EVENTLOG_INFORMATION_TYPE;
-    break;
+  WORD type = EVENTLOG_SUCCESS;
+  if (priority >= org_apache_log4j_Priority_INFO_INT) {
+      type = EVENTLOG_INFORMATION_TYPE;
+      if (priority >= org_apache_log4j_Priority_WARN_INT) {
+          type = EVENTLOG_WARNING_TYPE;
+          if (priority >= org_apache_log4j_Priority_ERROR_INT) {
+             type = EVENTLOG_ERROR_TYPE;
+          }
+      }
   }
-  return ret_val;
+  return type;
 }
 
 HKEY regGetKey(wchar_t *subkey, DWORD *disposition) {
@@ -71,7 +80,8 @@ HKEY regGetKey(wchar_t *subkey, DWORD *disposition) {
 }
 
 void regSetString(HKEY hkey, wchar_t *name, wchar_t *value) {
-  RegSetValueExW(hkey, name, 0, REG_SZ, (LPBYTE)value, (wcslen(value) + 1) * sizeof(wchar_t));
+  RegSetValueExW(hkey, name, 0, REG_EXPAND_SZ, 
+      (LPBYTE)value, (wcslen(value) + 1) * sizeof(wchar_t));
 }
 
 void regSetDword(HKEY hkey, wchar_t *name, DWORD value) {
@@ -91,15 +101,19 @@ void addRegistryInfo(wchar_t *source) {
   wcscat(subkey, source);
   hkey = regGetKey(subkey, &disposition);
   if (disposition == REG_CREATED_NEW_KEY) {
-    regSetString(hkey, L"EventMessageFile", L"NTEventLogAppender.dll");
-    regSetString(hkey, L"CategoryMessageFile", L"NTEventLogAppender.dll");
+    HMODULE hmodule = GetModuleHandleW(L"NTEventLogAppender.dll");
+    if (hmodule != NULL) {
+        wchar_t modpath[_MAX_PATH];
+        DWORD modlen = GetModuleFileNameW(hmodule, modpath, _MAX_PATH - 1);
+        if (modlen > 0) {
+            modpath[modlen] = 0;
+            regSetString(hkey, L"EventMessageFile", modpath);
+            regSetString(hkey, L"CategoryMessageFile", modpath);
+        }
+    }
     regSetDword(hkey, L"TypesSupported", (DWORD)7);
-    regSetDword(hkey, L"CategoryCount", (DWORD)8);
+    regSetDword(hkey, L"CategoryCount", (DWORD) 6);
   }
-	//RegSetValueEx(hkey, "EventMessageFile", 0, REG_SZ, (LPBYTE)dllname, lstrlen(dllname));
-	//RegSetValueEx(hkey, "CategoryMessageFile", 0, REG_SZ, (LPBYTE)dllname, lstrlen(dllname));
-	//RegSetValueEx(hkey, "TypesSupported", 0, REG_DWORD, (LPBYTE)&whichTypes, sizeof(DWORD));
-	//RegSetValueEx(hkey, "CategoryCount", 0, REG_DWORD, (LPBYTE)&numCategories, sizeof(DWORD));
   RegCloseKey(hkey);
   return;
 }
