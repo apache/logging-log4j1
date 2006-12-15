@@ -343,14 +343,7 @@
            destdir="${javac.dest}"
            classpath="${jar.dest}/${jar.filename}"/>
     
-    <exec executable="windres"  dir="${java.source.dir}/org/apache/log4j/nt/">
-      <arg value="-o"/>
-      <arg file="${javac.dest}/EventLogCategories.o"/>
-        <arg value="--include-dir=${javac.dest}"/>
-      <arg file="${java.source.dir}/org/apache/log4j/nt/EventLogCategories.rc"/>
-    </exec>
-
-    <exec executable="windres">
+    <exec executable="windres"   dir="${java.source.dir}/org/apache/log4j/nt/">
       <arg value="-o"/>
       <arg file="${javac.dest}/NTEventLogAppender.o"/>
       <arg file="${java.source.dir}org/apache/log4j/nt/NTEventLogAppender.rc"/>
@@ -367,7 +360,6 @@
       <arg value="-shared"/>
       <arg file="${java.source.dir}org/apache/log4j/nt/nteventlog.cpp"/>
       <arg file="${javac.dest}/NTEventLogAppender.o"/>
-      <arg file="${javac.dest}/EventLogCategories.o"/>
       <arg value="-o"/>
       <arg file="${jar.dest}/NTEventLogAppender.dll"/>
     </exec>
