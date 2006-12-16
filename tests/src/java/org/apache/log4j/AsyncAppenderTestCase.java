@@ -446,6 +446,73 @@ public final class AsyncAppenderTestCase extends TestCase {
         }
     }
 
+
+    /**
+     * Tests location processing when buffer is full and locationInfo=true.
+     * See bug 41186.
+     */
+    public void testLocationInfoTrue() {
+        BlockableVectorAppender blockableAppender = new BlockableVectorAppender();
+        AsyncAppender async = new AsyncAppender();
+        async.addAppender(blockableAppender);
+        async.setBufferSize(5);
+        async.setLocationInfo(true);
+        async.setBlocking(false);
+        async.activateOptions();
+        Logger rootLogger = Logger.getRootLogger();
+        rootLogger.addAppender(async);
+        Greeter greeter = new Greeter(rootLogger, 100);
+        synchronized(blockableAppender.getMonitor()) {
+            greeter.run();
+            rootLogger.error("That's all folks.");
+        }
+        async.close();
+        Vector events = blockableAppender.getVector();
+        LoggingEvent initialEvent = (LoggingEvent) events.get(0);
+        LoggingEvent discardEvent = (LoggingEvent) events.get(events.size() - 1);
+        PatternLayout layout = new PatternLayout();
+        layout.setConversionPattern("%C:%L %m%n");
+        layout.activateOptions();
+        String initialStr = layout.format(initialEvent);
+        assertEquals(AsyncAppenderTestCase.class.getName(),
+                initialStr.substring(0, AsyncAppenderTestCase.class.getName().length()));
+        String discardStr = layout.format(discardEvent);
+        assertEquals("?:? ", discardStr.substring(0, 4));
+    }
+
+
+    /**
+     * Tests location processing when buffer is full and locationInfo=false.
+     * See bug 41186.
+     */
+    public void testLocationInfoFalse() {
+        BlockableVectorAppender blockableAppender = new BlockableVectorAppender();
+        AsyncAppender async = new AsyncAppender();
+        async.addAppender(blockableAppender);
+        async.setBufferSize(5);
+        async.setLocationInfo(false);
+        async.setBlocking(false);
+        async.activateOptions();
+        Logger rootLogger = Logger.getRootLogger();
+        rootLogger.addAppender(async);
+        Greeter greeter = new Greeter(rootLogger, 100);
+        synchronized(blockableAppender.getMonitor()) {
+            greeter.run();
+            rootLogger.error("That's all folks.");
+        }
+        async.close();
+        Vector events = blockableAppender.getVector();
+        LoggingEvent initialEvent = (LoggingEvent) events.get(0);
+        LoggingEvent discardEvent = (LoggingEvent) events.get(events.size() - 1);
+        PatternLayout layout = new PatternLayout();
+        layout.setConversionPattern("%C:%L %m%n");
+        layout.activateOptions();
+        String initialStr = layout.format(initialEvent);
+        assertEquals("?:? ", initialStr.substring(0, 4));
+        String discardStr = layout.format(discardEvent);
+        assertEquals("?:? ", discardStr.substring(0, 4));
+    }
+
     /**
      * Tests behavior when wrapped appender
      *    makes log request on dispatch thread.
