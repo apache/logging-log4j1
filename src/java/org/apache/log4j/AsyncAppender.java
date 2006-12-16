@@ -466,7 +466,11 @@ public class AsyncAppender extends AppenderSkeleton
           new Object[] { new Integer(count), maxEvent.getMessage() });
 
       return new LoggingEvent(
-        null, Logger.getLogger(maxEvent.getLoggerName()), maxEvent.getLevel(), msg, null);
+              "org.apache.log4j.AsyncAppender.DONT_REPORT_LOCATION",
+              Logger.getLogger(maxEvent.getLoggerName()),
+              maxEvent.getLevel(),
+              msg,
+              null);
     }
   }
 
