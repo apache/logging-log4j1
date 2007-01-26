@@ -127,7 +127,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
       nbs.addNotificationListener(loggerMBean, nfs, null);
 
 
-      vAttributes.add(new MBeanAttributeInfo("logger="+name,
+      vAttributes.add(new MBeanAttributeInfo("logger_"+name,
 					     "javax.management.ObjectName",
 					     "The "+name+" logger.",
 					     true,

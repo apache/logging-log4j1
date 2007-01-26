@@ -99,9 +99,9 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
 
 
     MBeanParameterInfo[] params = new MBeanParameterInfo[2];
-    params[0] = new MBeanParameterInfo("class name", "java.lang.String",
+    params[0] = new MBeanParameterInfo("className", "java.lang.String",
 				       "add an appender to this logger");
-    params[1] = new MBeanParameterInfo("appender name", "java.lang.String",
+    params[1] = new MBeanParameterInfo("appenderName", "java.lang.String",
 				       "name of the appender");
 
     dOperations[0] = new MBeanOperationInfo("addAppender",
@@ -259,7 +259,7 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
       objectName = new ObjectName("log4j", "appender", name);
       server.registerMBean(appenderMBean, objectName);
 
-      dAttributes.add(new MBeanAttributeInfo("appender="+name,
+      dAttributes.add(new MBeanAttributeInfo("appender_"+name,
 					     "javax.management.ObjectName",
 					     "The "+name+" appender.",
 					     true,

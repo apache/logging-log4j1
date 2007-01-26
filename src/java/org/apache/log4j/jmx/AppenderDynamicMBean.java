@@ -114,7 +114,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 					    MBeanOperationInfo.ACTION);
 
     params = new MBeanParameterInfo[1];
-    params[0] = new MBeanParameterInfo("layout class", "java.lang.String",
+    params[0] = new MBeanParameterInfo("layoutClass", "java.lang.String",
 				       "layout class");
 
     dOperations[1] = new MBeanOperationInfo("setLayout",
