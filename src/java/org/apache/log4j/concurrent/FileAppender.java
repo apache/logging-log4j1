@@ -16,12 +16,12 @@
 
 package org.apache.log4j.concurrent;
 
-import java.io.Writer;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Writer;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.OptionConverter;
@@ -251,40 +251,44 @@ public class FileAppender extends WriterAppender {
   public void setFile(
     String filename, boolean append, boolean bufferedIO, int bufferSize)
     throws IOException {
-    getLogger().debug("setFile called: {}, {}", fileName, append?"true":"false");
-
-    FileOutputStream ostream;
-    try {
-        //
-        //   attempt to create file
-        //
-        ostream = new FileOutputStream(filename, append);
-    } catch(FileNotFoundException ex) {
-        //
-        //   if parent directory does not exist then
-        //      attempt to create it and try to create file
-        //      see bug 9150
-        //
-        File parentDir = new File(new File(filename).getParent());
-        if(!parentDir.exists() && parentDir.mkdirs()) {
-            ostream = new FileOutputStream(filename, append);
-        } else {
-            throw ex;
-        }
-    }
-    Writer writer = createWriter(ostream);
-
-    if (bufferedIO) {
-      writer = new BufferedWriter(writer, bufferSize);
-    }
+    getLogger().debug("setFile called: {}, {}", filename, Boolean.valueOf(append));
 
     this.fileAppend = append;
     this.bufferedIO = bufferedIO;
     this.fileName = filename;
     this.bufferSize = bufferSize;
 
+	FileOutputStream ostream = createOutputStream();
+    Writer writer = createWriter(ostream);
+    if (bufferedIO) {
+      writer = new BufferedWriter(writer, bufferSize);
+    }
+
     setWriter(writer);
     getLogger().debug("setFile ended");
+  }
+
+  protected FileOutputStream createOutputStream()
+	throws IOException
+  {
+    try {
+        //
+        //   attempt to create file
+        //
+        return new FileOutputStream(fileName, fileAppend);
+    } catch(FileNotFoundException ex) {
+        //
+        //   if parent directory does not exist then
+        //      attempt to create it and try to create file
+        //      see bug 9150
+        //
+        File parentDir = new File(new File(fileName).getParent());
+        if (!parentDir.exists() && parentDir.mkdirs()) {
+            return new FileOutputStream(fileName, fileAppend);
+        } else {
+            throw ex;
+        }
+    }
   }
 
 }
