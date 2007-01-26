@@ -175,8 +175,6 @@ public class DailyRollingFileAppender extends FileAppender {
 
   private final RollingCalendar rc = new RollingCalendar();
 
-  int checkPeriod = TOP_OF_TROUBLE;
-
   // The gmtTimeZone is used only in computeCheckPeriod() method.
   static final TimeZone gmtTimeZone = TimeZone.getTimeZone("GMT");
 

@@ -53,8 +53,6 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
   */
   static final int DEFAULT_PORT = 9991;
   
-  private static final int PACKET_LENGTH = 16384;
-
   /**
      We remember host name as String in addition to the resolved
      InetAddress so that it can be returned via getOption().
@@ -67,7 +65,6 @@ public class MulticastAppender extends AppenderSkeleton implements PortBased {
   InetAddress address;
   int port = DEFAULT_PORT;
   MulticastSocket outSocket;
-  int count = 0;
   private String encoding;
   
   public MulticastAppender() {

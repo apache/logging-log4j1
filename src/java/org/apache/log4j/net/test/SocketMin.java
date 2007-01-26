@@ -21,6 +21,8 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.net.SocketAppender;
 import org.apache.log4j.NDC;
+
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class SocketMin {
@@ -79,22 +81,24 @@ public class SocketMin {
   void loop() {
     Logger root = Logger.getRootLogger();
     InputStreamReader in = new InputStreamReader(System.in);
-    System.out.println("Type 'q' to quit");
-    int i;
-    int k = 0;
-    while (true) {
-      logger.debug("Message " + k++);
-      logger.info("Message " + k++);
-      logger.warn("Message " + k++);
-      logger.error("Message " + k++, new Exception("Just testing"));
-      try {i = in.read(); }
-      catch(Exception e) { return; }
-      if(i == -1) break;
-      if(i == 'q') break;
-      if(i == 'r') {
-	System.out.println("Removing appender S");
-	root.removeAppender("S");
+    try {
+      System.out.println("Type 'q' to quit");
+      int i;
+      int k = 0;
+      while (true) {
+        logger.debug("Message " + k++);
+        logger.info("Message " + k++);
+        logger.warn("Message " + k++);
+        logger.error("Message " + k++, new Exception("Just testing"));
+        i = in.read();
+        if (i == -1) break;
+        if (i == 'q') break;
+        if (i == 'r') {
+          System.out.println("Removing appender S");
+          root.removeAppender("S");
+        }
       }
+    } catch (IOException e) {
     }
   }
 

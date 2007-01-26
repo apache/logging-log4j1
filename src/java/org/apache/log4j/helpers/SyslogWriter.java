@@ -38,8 +38,7 @@ import java.net.MalformedURLException;
    @since 0.7.3
 */
 public class SyslogWriter extends Writer {
-  final int SYSLOG_PORT = 514;
-  String syslogHost;
+  static final int SYSLOG_PORT = 514;
   private InetAddress address;
   private final int port;
   private DatagramSocket ds;
@@ -56,7 +55,6 @@ public class SyslogWriter extends Writer {
    *  the colon and decimal port number.
    */
   public SyslogWriter(final String syslogHost) {
-    this.syslogHost = syslogHost;
     if (syslogHost == null) {
         throw new NullPointerException("syslogHost");
     }

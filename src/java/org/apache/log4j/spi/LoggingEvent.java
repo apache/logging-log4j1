@@ -82,7 +82,7 @@ public class LoggingEvent
    *
    * @since 1.3
    */
-   static long sequenceCount = 1;
+  private static long sequenceCount = 1;
 
   /**
    * Fully qualified name of the calling category class. This field does not
@@ -103,21 +103,14 @@ public class LoggingEvent
    */
   private transient Category logger;
 
-  /**
-   * The LoggerRepository in which this event was created.
+  /** 
+   * The logger name.
    *
-   * @since 1.3
+   * the 'logger name' variable name ("categoryName") must remain the same 
+   * as prior versions in order to maintain serialization compatibility with 
+   * log4j 1.2.8
    */
-  private transient LoggerRepository loggerRepository;
-
- 
-   /** The logger name.
-    *
-    * the 'logger name' variable name ("categoryName") must remain the same 
-    * as prior versions in order to maintain serialization compatibility with 
-    * log4j 1.2.8
-    */
-   public String categoryName;
+  public String categoryName;
 
   /**
    * Level of logging event. Level cannot be serializable because it is a
@@ -185,12 +178,11 @@ public class LoggingEvent
   public long timeStamp;
 
   /**
-   *
-   * Each logging event bears a sequence number.
+   * A unique sequence number for this logging event. 
    *
    * @since 1.3
    */
-  long sequenceNumber;
+  private long sequenceNumber;
 
   /**
    * Location information for the caller.
@@ -198,12 +190,13 @@ public class LoggingEvent
   private LocationInfo locationInfo;
 
   /**
-   * @return The current sequenceCount for this JVM.
+   * Returns the sequence count for this JVM.
+   * @return the current sequence count for this JVM
    */
-  
-  public static long getSequenceCount() {
+  public static synchronized long getSequenceCount() {
     return sequenceCount;
   }
+  
   /**
    * The no-argument constructor for LoggingEvent. This method is the recommended
    * constructor for creating LoggingEvent instances.
@@ -212,7 +205,6 @@ public class LoggingEvent
    */
   public LoggingEvent() {
   }
-
 
   /**
    * Instantiate a LoggingEvent from the supplied parameters.
@@ -228,23 +220,8 @@ public class LoggingEvent
    * @param throwable The throwable of this event.
    */
   public LoggingEvent(String fqnOfLoggerClass, Category logger, Priority level, Object message, Throwable throwable) {
-    this.fqnOfCategoryClass = fqnOfLoggerClass;
-    this.logger = logger;
-    this.categoryName = logger.getName();
-    this.level = level;
-    this.message = message;
-
-    if (throwable != null) {
-      this.throwableInfo = new ThrowableInformation(throwable);
-    }
-
-    timeStamp = System.currentTimeMillis();
-    
-    synchronized(LoggingEvent.class) {
-      sequenceNumber = sequenceCount++;
-    }
+    this(fqnOfLoggerClass, logger, System.currentTimeMillis(), level, message, throwable);
   }
-
 
   /**
    * Instantiate a LoggingEvent from the supplied parameters.
@@ -704,38 +681,37 @@ public class LoggingEvent
     return startTime;
   }
 
-
   /**
-   *
+   * Returns the sequence number.
    * @since 1.3
    */
   public long getSequenceNumber() {
     return sequenceNumber;
   }
 
-
   /**
-   *
+   * Sets the sequence number.
    * @since 1.3
    */
   public void setSequenceNumber(long sequenceNumber) {
     this.sequenceNumber = sequenceNumber;
   }
 
-
+  /**
+   * Returns the current thread name, or a past thread name returned by this method.
+   */
   public String getThreadName() {
     if (threadName == null) {
       threadName = (Thread.currentThread()).getName();
     }
-
     return threadName;
   }
 
-
   /**
-    * @param threadName The threadName to set.
-    * @throws IllegalStateException If threadName has been already set.
-  */
+   * Sets the thread name.
+   * @param threadName The threadName to set.
+   * @throws IllegalStateException If threadName has been already set.
+   */
   public void setThreadName(String threadName)
          throws IllegalStateException {
     if (this.threadName != null) {
@@ -743,7 +719,6 @@ public class LoggingEvent
     }
     this.threadName = threadName;
   }
-
 
   /**
    * Returns the throwable information contained within this event. May be
@@ -964,4 +939,5 @@ public class LoggingEvent
   public void setFQNOfLoggerClass(String fqnOfLoggerClass) {
     this.fqnOfCategoryClass = fqnOfLoggerClass;
   }
+
 }

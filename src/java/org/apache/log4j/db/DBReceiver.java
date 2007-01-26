@@ -38,7 +38,6 @@ public class DBReceiver extends Receiver implements Pauseable {
   int refreshMillis = DEFAULT_REFRESH_MILLIS;
   DBReceiverJob receiverJob;
   boolean paused = false;
-  private static final LoggerRepository Hierarchy = null;
 
   public void activateOptions() {
     

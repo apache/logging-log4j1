@@ -16,36 +16,21 @@
 
 package org.apache.log4j.joran.action;
 
-import org.apache.log4j.Layout;
-import org.apache.log4j.Logger;
 import org.apache.log4j.joran.action.Action;
 import org.apache.log4j.joran.spi.ExecutionContext;
 
 import org.xml.sax.Attributes;
 
-
 public class StackCounterAction extends Action {
-  static final Logger logger = Logger.getLogger(HelloAction.class);
-  Layout layout;
-
 
   public StackCounterAction() {
   }
-  /**
-   * Instantiates an layout of the given class and sets its name.
-   *
-   */
+
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
-    String str = "Pushing "+name+"-begin";
     ec.pushObject(name+"-begin");
   }
 
-  /**
-   * Once the children elements are also parsed, now is the time to activate
-   * the appender options.
-   */
   public void end(ExecutionContext ec, String name) {
-    String str = "Pushing "+name+"-end";
     ec.pushObject(name+"-end");    
   }
 

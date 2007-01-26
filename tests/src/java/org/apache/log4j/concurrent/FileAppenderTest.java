@@ -69,8 +69,13 @@ public class FileAppenderTest extends TestCase {
 
     log.debug("HI");
     appender.close();
+    readHI();
+  }
+  
+  private void readHI() throws Exception {
     BufferedReader r = new BufferedReader(new FileReader(f1));
     assertEquals("DEBUG - HI", r.readLine());
+    r.close();    
   }
 
   /**
@@ -80,8 +85,7 @@ public class FileAppenderTest extends TestCase {
     appender.activateOptions();
     log.debug("HI");
     appender.close();
-    BufferedReader r = new BufferedReader(new FileReader(f1));
-    assertEquals("DEBUG - HI", r.readLine());
+    readHI();
   }
 
 }

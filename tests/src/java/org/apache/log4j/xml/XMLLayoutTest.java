@@ -138,7 +138,7 @@ public class XMLLayoutTest extends LayoutTest {
     assertEquals(Node.TEXT_NODE, messageNode.getNodeType());
 
     String msg = ex.toString();
-    assertEquals(msg, messageNode.getNodeValue().substring(0, msg.length()));
+    assertEquals("Got " + messageNode.getNodeValue(), msg, messageNode.getNodeValue().substring(0, msg.length()));
     assertNull(messageNode.getNextSibling());
   }
 

@@ -147,6 +147,11 @@ public class LocationInfo implements java.io.Serializable {
         
     return true;
   }
+  
+  public int hashCode() {
+    return getClassName().hashCode() + getLineNumber().hashCode();
+  }
+  
 
   
   /**

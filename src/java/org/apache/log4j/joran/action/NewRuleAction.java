@@ -25,21 +25,17 @@ import org.xml.sax.Attributes;
 
 
 public class NewRuleAction extends Action {
-  boolean inError = false;
   
   /**
    * Instantiates an layout of the given class and sets its name.
    *
    */
   public void begin(ExecutionContext ec, String localName, Attributes attributes) {
-		// Let us forget about previous errors (in this object)
-		inError = false; 
     String errorMsg;
     String pattern =  attributes.getValue(Action.PATTERN_ATTRIBUTE);
     String actionClass =  attributes.getValue(Action.ACTION_CLASS_ATTRIBUTE);
 
     if(Option.isEmpty(pattern)) {
-       inError = true;
        errorMsg = "No 'pattern' attribute in <newRule>";
        getLogger().warn(errorMsg);
        ec.addError(new ErrorItem(errorMsg));
@@ -47,7 +43,6 @@ public class NewRuleAction extends Action {
      }
     
      if(Option.isEmpty(actionClass)) {
-         inError = true;
          errorMsg = "No 'actionClass' attribute in <newRule>";
          getLogger().warn(errorMsg);
          ec.addError(new ErrorItem(errorMsg));
@@ -58,7 +53,6 @@ public class NewRuleAction extends Action {
       getLogger().debug("About to add new Joran parsing rule ["+pattern+","+actionClass+"].");
       ec.getJoranInterpreter().getRuleStore().addRule(new Pattern(pattern), actionClass);
     } catch (Exception oops) {
-      inError = true;
       errorMsg =  "Could not add new Joran parsing rule ["+pattern+","+actionClass+"]"; 
       getLogger().error(errorMsg, oops);
       ec.addError(new ErrorItem(errorMsg));

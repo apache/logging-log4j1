@@ -56,6 +56,9 @@ public class ThrowableInformationTest extends TestCase {
 
     boolean eq2 = te1.equals(null);
     assertEquals(false, eq2);
+    
+    assertEquals(te1.hashCode(), te1.hashCode());
+    assertEquals(te2.hashCode(), te2.hashCode());
   }
   /**
    * @param arg0

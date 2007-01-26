@@ -52,8 +52,6 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
   */
   public static final int DEFAULT_PORT = 9991;
 
-  private static final int PACKET_LENGTH = 16384;
-
   /**
      We remember host name as String in addition to the resolved
      InetAddress so that it can be returned via getOption().
@@ -66,7 +64,6 @@ public class UDPAppender extends AppenderSkeleton implements PortBased{
   InetAddress address;
   int port = DEFAULT_PORT;
   DatagramSocket outSocket;
-  int count = 0;
 
   // if there is something irrecoverably wrong with the settings, there is no
   // point in sending out packeets.

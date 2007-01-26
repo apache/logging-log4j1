@@ -31,6 +31,8 @@ import org.apache.log4j.Level;
 
 public class UtilLoggingLevel extends Level {
 
+  private static final long serialVersionUID = 909301162611820211L;
+
   public static final int SEVERE_INT = 17000;
   public static final int WARNING_INT = 16000;
   public static final int INFO_INT = 15000;

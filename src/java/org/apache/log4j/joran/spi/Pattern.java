@@ -19,7 +19,7 @@ package org.apache.log4j.joran.spi;
 import java.util.ArrayList;
 
 
-public class Pattern {
+public class Pattern implements Cloneable {
   
   // contains String instances
   ArrayList components;
@@ -29,8 +29,13 @@ public class Pattern {
   }
   
   public Object clone() {
-    Pattern p = new Pattern();
-    p.components.addAll(this.components);
+    Pattern p;
+    try {
+      p = (Pattern)super.clone();
+    } catch (CloneNotSupportedException e) {
+      throw new Error();
+    }
+    p.components = new ArrayList(components);
     return p;
   }
 

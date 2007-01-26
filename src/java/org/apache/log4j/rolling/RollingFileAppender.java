@@ -406,7 +406,7 @@ public final class RollingFileAppender extends FileAppender {
    * Increments estimated byte length of current active log file.
    * @param increment additional bytes written to log file.
    */
-  public void incrementFileLength(int increment) {
+  public synchronized void incrementFileLength(int increment) {
     fileLength += increment;
   }
 

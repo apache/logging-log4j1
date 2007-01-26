@@ -95,9 +95,6 @@ public class NDC {
   // thread is handed a clone of the parent's NDC.  It follows that
   // each thread has its own NDC (i.e. stack).
   private static final ThreadLocal tl = new ThreadLocal();
-  static int pushCounter = 0; // the number of times push has been called
-                              // after the latest call to lazyRemove
-  static final int REAP_THRESHOLD = 5;
 
   // No instances allowed.
   private NDC() {

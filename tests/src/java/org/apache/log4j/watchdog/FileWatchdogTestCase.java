@@ -43,6 +43,12 @@ public class FileWatchdogTestCase extends TestCase {
     public FileWatchdogTestCase(String name) {
         super(name);
     }
+    
+    protected void setUp() throws Exception {
+      LogManager.getLoggerRepository().resetConfiguration();
+      logger.setLevel(Level.DEBUG);      
+      Thread.sleep(100);
+    }
 
     private void copyFile(File src, File dst) throws Exception {
       if (dst.exists()) {
@@ -110,8 +116,6 @@ public class FileWatchdogTestCase extends TestCase {
 
     // basic test of plugin in standalone mode
     public void testJoranConfigurator() throws Exception {
-      LogManager.getLoggerRepository().resetConfiguration();
-      logger.setLevel(Level.DEBUG);
 
       File outFile = new File(getOutputFile("test1"));
       if (outFile.exists()) {
@@ -194,13 +198,8 @@ public class FileWatchdogTestCase extends TestCase {
 
   // basic test of plugin in standalone mode with PropertyConfigurator
   public void testPropertyConfigurator() throws Exception {
-    LogManager.getLoggerRepository().resetConfiguration();
-    logger.setLevel(Level.DEBUG);
-
     File outFile = new File(getOutputFile("test2"));
-    if (outFile.exists()) {
-          assertTrue(outFile.delete());
-    }
+    delete(outFile);
 
     // set up the needed file references
     File sourceFile1 = new File(getSourceConfigFile("test2", 1));
@@ -278,13 +277,8 @@ public class FileWatchdogTestCase extends TestCase {
   }
 
   public void testJoranConfigurationError() throws Exception {
-    LogManager.getLoggerRepository().resetConfiguration();
-    logger.setLevel(Level.DEBUG);
-
     File outFile = new File(getOutputFile("test3"));
-    if (outFile.exists()) {
-        assertTrue(outFile.delete());
-    }
+    delete(outFile);
 
     // set up the needed file references
     File sourceFile1 = new File(getSourceXMLConfigFile("test3", 1));
@@ -294,7 +288,7 @@ public class FileWatchdogTestCase extends TestCase {
 
     // config file should not exist yet
     File configFile = new File(getXMLConfigFile("test3"));
-    assertFalse(configFile.exists());
+    delete(configFile);
 
     // now watch the nonexistent file for changes
     FileWatchdog watchdog = new FileWatchdog();
@@ -356,15 +350,16 @@ public class FileWatchdogTestCase extends TestCase {
 
     testLogger.debug("good file, modTime changed: " + modTime);
   }
+  
+  private void delete(File f) {
+    if (f.exists()) {
+      assertTrue(f.delete());
+    }
+  }
 
   public void testPropertyConfigurationError() throws Exception {
-    LogManager.getLoggerRepository().resetConfiguration();
-    logger.setLevel(Level.DEBUG);
-
     File outFile = new File(getOutputFile("test4"));
-    if (outFile.exists()) {
-        assertTrue(outFile.delete());
-    }
+    delete(outFile);
 
     // set up the needed file references
     // need a "bad" property file
@@ -373,9 +368,9 @@ public class FileWatchdogTestCase extends TestCase {
     //assertTrue(sourceFile1.exists());
     assertTrue(sourceFile2.exists());
 
-    // config file should not exist yet
     File configFile = new File(getConfigFile("test4"));
-    assertFalse(configFile.exists());
+    delete(configFile);
+    // assertFalse(configFile.exists());
 
     // now watch the nonexistent file for changes
     FileWatchdog watchdog = new FileWatchdog();
@@ -441,9 +436,6 @@ public class FileWatchdogTestCase extends TestCase {
   }
 
   public void testDOMConfigureAndWatch() throws Exception {
-    LogManager.getLoggerRepository().resetConfiguration();
-    logger.setLevel(Level.DEBUG);
-
     File outFile = new File(getOutputFile("test5"));
     if (outFile.exists()) {
         assertTrue(outFile.delete());
@@ -514,9 +506,6 @@ public class FileWatchdogTestCase extends TestCase {
   /* there is a bug in property configurator where it will not work a second
      time, so commenting this out for now
   public void testPropertyConfigureAndWatch() throws Exception {
-    LogManager.getLoggerRepository().resetConfiguration();
-    logger.setLevel(Level.DEBUG);
-
     File outFile = new File(getOutputFile("test6"));
     if (outFile.exists()) {
           assertTrue(outFile.delete());

@@ -31,14 +31,9 @@ import java.util.HashMap;
 
 
 public class AppenderRefAction extends Action {
-  boolean inError = false;
   
   public void begin(
     ExecutionContext ec, String tagName, Attributes attributes) {
-    // Let us forget about previous errors (in this object)
-    inError = false;
-
-    //logger.debug("begin called");
 
     Object o = ec.peekObject();
 
@@ -48,7 +43,6 @@ public class AppenderRefAction extends Action {
         + tagName + "> line " + getLineNumber(ec);
 
       getLogger().warn(errMsg);
-      inError = true;
       ec.addError(new ErrorItem(errMsg));
 
       return;
@@ -63,7 +57,6 @@ public class AppenderRefAction extends Action {
       String errMsg = "Missing appender ref attribute in <appender-ref> tag.";
 
       getLogger().warn(errMsg);
-      inError = true;
       ec.addError(new ErrorItem(errMsg));
 
       return;
@@ -78,7 +71,6 @@ public class AppenderRefAction extends Action {
       "]. Did you define it below in the config file?";
       getLogger().warn(msg);
       getLogger().warn("See {}#appender_order for more details.", Constants.CODES_HREF);
-      inError = true;
       ec.addError(new ErrorItem(msg));
 
       return;

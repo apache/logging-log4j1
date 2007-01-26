@@ -266,6 +266,7 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
 
   /** closes the appender before disposal */
   public void finalize() {
+    super.finalize();
     close();
   }
 

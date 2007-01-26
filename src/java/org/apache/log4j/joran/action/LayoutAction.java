@@ -73,10 +73,7 @@ public class LayoutAction extends Action {
       return;
     }
 
-    if (layout instanceof OptionHandler) {
-      ((OptionHandler) layout).activateOptions();
-    }
-
+    layout.activateOptions();
     Object o = ec.peekObject();
 
     if (o != layout) {
