@@ -50,6 +50,9 @@ public class VectorAppender extends AppenderSkeleton {
     vector.addElement(event);
   }
 
+  /**
+   * Returns a vector of {@link LoggingEvent}.
+   */
   public Vector getVector() {
     return vector;
   }
@@ -70,9 +73,16 @@ public class VectorAppender extends AppenderSkeleton {
     return false;
   }
   
+  /**
+   * Returns a delay to log.
+   */
   public long getDelay() {
     return delay;
   }
+
+  /**
+   * Sets a delay to log.
+   */  
   public void setDelay(long delay) {
     this.delay = delay;
   }
