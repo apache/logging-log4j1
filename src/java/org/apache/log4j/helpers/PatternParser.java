@@ -469,7 +469,7 @@ public class PatternParser {
   }
 
 
-  private class LocationPatternConverter extends PatternConverter {
+  private static class LocationPatternConverter extends PatternConverter {
     int type;
 
     LocationPatternConverter(FormattingInfo formattingInfo, int type) {

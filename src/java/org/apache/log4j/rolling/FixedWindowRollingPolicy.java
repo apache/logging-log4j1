@@ -61,17 +61,6 @@ import org.apache.log4j.rolling.helper.ZipCompressAction;
  * @since 1.3
  * */
 public final class FixedWindowRollingPolicy extends RollingPolicyBase {
-  /**
-   * Error message.
-   */
-  private static final String FNP_NOT_SET =
-    "The FileNamePattern option must be set before using FixedWindowRollingPolicy. ";
-
-  /**
-   * Link for error message.
-   */
-  private static final String SEE_FNP_NOT_SET =
-    "See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set";
 
   /**
    * It's almost always a bad idea to have a large window size, say over 12.

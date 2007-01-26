@@ -202,8 +202,10 @@ public class JMSReceiver extends Receiver implements MessageListener {
         if (jndiPath == null || jndiPath.equals("")) {
                 ctx = new InitialContext();
         } else {
+                FileInputStream is = new FileInputStream(jndiPath);
                 Properties p = new Properties();
-                p.load(new FileInputStream(jndiPath));
+                p.load(is);
+                is.close();
                 ctx = new InitialContext(p);
         }
 

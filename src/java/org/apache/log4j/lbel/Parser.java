@@ -1,7 +1,6 @@
 package org.apache.log4j.lbel;
 
 import java.io.IOException;
-import java.util.Stack;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.lbel.comparator.ClassComparator;
@@ -52,7 +51,6 @@ class Parser {
 // Which is implemented almost directly by the following top-down parser.
   
 	TokenStream ts;
-	Stack stack = new Stack();
 	
 	Parser(TokenStream bexpTS) {
 	  ts = bexpTS;

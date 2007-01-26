@@ -49,11 +49,6 @@ public class HTMLLayout extends Layout {
    */
   private static final String DEFAULT_CONVERSION_PATTERN = "%m";
 
-  /**
-   * A conversion pattern equivalent to the TTCCCLayout. Current value is
-   * <b>%r%t%p%c%x%m</b>.
-   */
-  private static final String TTCC_CONVERSION_PATTERN = "%r%t%p%c%x%m";
     /**
      * Customized pattern conversion rules are stored under this key in the
      * {@link LoggerRepository} object store.
@@ -91,7 +86,6 @@ public class HTMLLayout extends Layout {
   private String pattern;
   private LoggingEventPatternConverter[] patternConverters;
   private FormattingInfo[] patternFields;
-  private String timezone;
   private String title = "Log4J Log Messages";
   private boolean locationInfo;
 
@@ -368,8 +362,10 @@ public class HTMLLayout extends Layout {
    * {@inheritDoc}
    */
   public String format(final LoggingEvent event) {
+    boolean oddCopy;
     synchronized(this) {
        odd = !odd;
+       oddCopy = odd;
     }
     
     String level = event.getLevel().toString().toLowerCase();
@@ -378,7 +374,7 @@ public class HTMLLayout extends Layout {
     buf.append(Layout.LINE_SEP);
     buf.append("<tr class=\"");
     buf.append(level);
-    if(odd) {
+    if (oddCopy) {
       buf.append(" odd\">");
     } else {
       buf.append(" even\">");

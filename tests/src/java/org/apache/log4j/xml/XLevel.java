@@ -25,6 +25,9 @@ import org.apache.log4j.Level;
 
  */
 public class XLevel extends Level {
+
+  private static final long serialVersionUID = 7288304330257085144L;
+  
   public static final int TRACE_INT = Level.DEBUG_INT - 1;
   public static final int LETHAL_INT = Level.FATAL_INT + 1;
   private static String TRACE_STR = "TRACE";

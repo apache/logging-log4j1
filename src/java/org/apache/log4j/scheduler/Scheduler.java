@@ -201,7 +201,8 @@ public class Scheduler extends Thread {
   
   void linger() {
     try {
-      this.wait();
+      while (jobList.isEmpty() && !shutdown)
+        this.wait();
      } catch (InterruptedException ie) {
        shutdown = true;
      }

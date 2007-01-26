@@ -27,7 +27,6 @@ import org.xml.sax.Attributes;
 public class ParamAction extends Action {
   static String NO_NAME = "No name attribute in <param> element";
   static String NO_VALUE = "No name attribute in <param> element";
-  boolean inError = false;
 
   public void begin(
     ExecutionContext ec, String localName, Attributes attributes) {
@@ -35,14 +34,12 @@ public class ParamAction extends Action {
     String value = attributes.getValue(VALUE_ATTRIBUTE);
 
     if (name == null) {
-      inError = true;
       getLogger().error(NO_NAME);
       ec.addError(new ErrorItem(NO_NAME));
       return;
     }
 
     if (value == null) {
-      inError = true;
       getLogger().error(NO_VALUE);
       ec.addError(new ErrorItem(NO_VALUE));
       return;

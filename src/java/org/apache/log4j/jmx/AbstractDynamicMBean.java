@@ -16,7 +16,6 @@
 
 package org.apache.log4j.jmx;
 
-//import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import javax.management.DynamicMBean;
 import javax.management.AttributeList;
@@ -31,9 +30,9 @@ import org.apache.log4j.Logger;
 public abstract class AbstractDynamicMBean implements DynamicMBean,
                                                       MBeanRegistration {
 
-  String dClassName;
+  private String dClassName = getClass().getName();
   MBeanServer server;
-
+  
   /**
    * Enables the to get the values of several attributes of the Dynamic MBean.
    */
@@ -121,7 +120,6 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
   public
   ObjectName preRegister(MBeanServer server, ObjectName name) {
     getLogger().debug("preRegister called. Server="+server+ ", name="+name);
-    this.server = server;
     return name;
   }
 

@@ -88,10 +88,7 @@ public class PluginAction extends Action {
       return;
     }
 
-    if (plugin instanceof OptionHandler) {
-      ((OptionHandler) plugin).activateOptions();
-    }
-
+    plugin.activateOptions();
     Object o = ec.peekObject();
 
     if (o != plugin) {

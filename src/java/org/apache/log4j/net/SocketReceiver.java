@@ -53,7 +53,6 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
   Pauseable {
   private Map socketMap = new HashMap();
   private boolean paused;
-  private boolean shutdown;
   private Thread rThread;
   protected int port;
   private ServerSocket serverSocket;
@@ -113,7 +112,6 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
       rThread.setDaemon(true);
       rThread.start();
       active = true;
-      setShutdown(false);
     }
   }
 
@@ -149,8 +147,6 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
 
     // close all of the accepted sockets
     closeAllAcceptedSockets();
-
-    setShutdown(true);
   }
 
   /**
@@ -204,7 +200,6 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
         "error starting SocketReceiver (" + this.getName()
         + "), receiver did not start", e);
       active = false;
-      setShutdown(true);
 
       return;
     }
@@ -327,21 +322,6 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
     removeSocketNodeEventListener(listener);
     addSocketNodeEventListener(listener);
     this.listener = listener;
-  }
-
-  /**
-   * Returns the shutdown property of this Receiver
-   * @return
-   */
-  private boolean isShutdown() {
-    return shutdown;
-  }
-
-  /**
-   * @param b
-   */
-  private void setShutdown(boolean b) {
-    shutdown = b;
   }
 
   public boolean isPaused() {

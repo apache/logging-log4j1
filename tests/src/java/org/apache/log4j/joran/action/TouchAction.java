@@ -24,7 +24,7 @@ import org.xml.sax.Attributes;
 
 public class TouchAction extends Action {
 
-  public static String KEY = "touched";
+  public static final String KEY = "touched";
   
   public TouchAction() {
   }

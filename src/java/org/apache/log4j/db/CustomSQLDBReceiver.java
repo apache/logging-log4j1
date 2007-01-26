@@ -156,8 +156,6 @@ public class CustomSQLDBReceiver extends Receiver implements Pauseable {
 
     public static final String LOG4J_ID_KEY = "log4jid";
 
-    private Thread receiverThread;
-
     private Job customReceiverJob;
 
     public void activateOptions() {
@@ -232,7 +230,8 @@ public class CustomSQLDBReceiver extends Receiver implements Pauseable {
         }
     }
 
-    public void finalize() {
+    public void finalize() throws Throwable {
+        super.finalize();
         close();
     }
 

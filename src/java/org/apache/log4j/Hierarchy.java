@@ -95,7 +95,6 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
   private List errorList = new Vector();
 
   boolean emittedNoAppenderWarning = false;
-  boolean emittedNoResourceBundleWarning = false;
   boolean pristine = true;
 
   /**

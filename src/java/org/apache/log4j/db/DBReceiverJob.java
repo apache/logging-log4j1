@@ -27,6 +27,7 @@ import org.apache.log4j.spi.ThrowableInformation;
 import org.apache.log4j.spi.LocationInfo;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,6 +40,18 @@ import java.util.Vector;
  * @author Ceki G&uuml;lc&uuml;
  */
 class DBReceiverJob extends ComponentBase implements Job {
+
+  String sqlException = "SELECT trace_line FROM logging_event_exception where event_id=? ORDER by i ASC";
+  String sqlProperties = "SELECT mapped_key, mapped_value FROM logging_event_property WHERE event_id=?";
+  String sqlSelect = 
+    "SELECT " +
+    "sequence_number, timestamp, rendered_message, logger_name, " +
+    "level_string, ndc, thread_name, reference_flag, " +
+    "caller_filename, caller_class, caller_method, caller_line, " +
+    "event_id " +
+    "FROM logging_event " +
+    "WHERE event_id > ?  ORDER BY event_id ASC";
+
 
   long lastId = 0;
 
@@ -54,34 +67,10 @@ class DBReceiverJob extends ComponentBase implements Job {
     Connection connection = null;
 
     try {
-      Logger logger;
-      LoggerRepository loggerRepository = parentDBReceiver
-          .getLoggerRepository();
       connection = parentDBReceiver.connectionSource.getConnection();
-
-      StringBuffer sql = new StringBuffer();
-      sql.append("SELECT ");
-      sql.append("sequence_number, ");
-      sql.append("timestamp, ");
-      sql.append("rendered_message, ");
-      sql.append("logger_name, ");
-      sql.append("level_string, ");
-      sql.append("ndc, ");
-      sql.append("thread_name, ");
-      sql.append("reference_flag, ");
-      sql.append("caller_filename, ");
-      sql.append("caller_class, ");
-      sql.append("caller_method, ");
-      sql.append("caller_line, ");
-      sql.append("event_id ");
-      sql.append("FROM logging_event ");
-
-      // have subsequent SELECTs start from we left off last time
-      sql.append(" WHERE event_id > " + lastId);
-      sql.append(" ORDER BY event_id ASC");
-
-      Statement statement = connection.createStatement();
-      ResultSet rs = statement.executeQuery(sql.toString());
+      PreparedStatement statement = connection.prepareStatement(sqlSelect);
+      statement.setLong(1, lastId);
+      ResultSet rs = statement.executeQuery();
       //rs.beforeFirst();
 
       while (rs.next()) {
@@ -162,16 +151,11 @@ class DBReceiverJob extends ComponentBase implements Job {
    */
   void getProperties(Connection connection, long id, LoggingEvent event)
       throws SQLException {
-    String sql = "SELECT mapped_key, mapped_value FROM logging_event_property WHERE event_id='"
-        + id + "'";
 
-    Statement statement = null;
-
+    PreparedStatement statement = connection.prepareStatement(sqlProperties);
     try {
-      statement = connection.createStatement();
-
-      ResultSet rs = statement.executeQuery(sql);
-      //rs.beforeFirst();
+      statement.setLong(1, id);
+      ResultSet rs = statement.executeQuery();
 
       while (rs.next()) {
         String key = rs.getString(1);
@@ -179,9 +163,7 @@ class DBReceiverJob extends ComponentBase implements Job {
         event.setProperty(key, value);
       }
     } finally {
-      if (statement != null) {
-        statement.close();
-      }
+      statement.close();
     }
   }
 
@@ -196,15 +178,13 @@ class DBReceiverJob extends ComponentBase implements Job {
    */
   void getException(Connection connection, long id, LoggingEvent event)
       throws SQLException {
-    String sql = "SELECT trace_line FROM logging_event_exception where event_id='"
-        + id + "' ORDER by i ASC";
 
-    Statement statement = null;
+    PreparedStatement statement = null;
 
     try {
-      statement = connection.createStatement();
-
-      ResultSet rs = statement.executeQuery(sql);
+      statement = connection.prepareStatement(sqlException);
+      statement.setLong(1, id);
+      ResultSet rs = statement.executeQuery();
 
       Vector v = new Vector();
 

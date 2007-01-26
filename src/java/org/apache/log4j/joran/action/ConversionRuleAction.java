@@ -19,8 +19,6 @@ package org.apache.log4j.joran.action;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import org.apache.log4j.Layout;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.Option;
 import org.apache.log4j.joran.spi.ExecutionContext;
@@ -33,16 +31,12 @@ import org.xml.sax.Attributes;
 
 
 public class ConversionRuleAction extends Action {
-  Layout layout;
-  boolean inError = false;
   
   /**
    * Instantiates an layout of the given class and sets its name.
    *
    */
   public void begin(ExecutionContext ec, String localName, Attributes attributes) {
-    // Let us forget about previous errors (in this object)
-    inError = false;
 
     String errorMsg;
     String conversionWord =
@@ -51,7 +45,6 @@ public class ConversionRuleAction extends Action {
       attributes.getValue(ActionConst.CONVERTER_CLASS_ATTRIBUTE);
 
     if (Option.isEmpty(conversionWord)) {
-      inError = true;
       errorMsg = "No 'conversionWord' attribute in <conversionRule>";
       getLogger().warn(errorMsg);
       ec.addError(new ErrorItem(errorMsg));
@@ -60,7 +53,6 @@ public class ConversionRuleAction extends Action {
     }
 
     if (Option.isEmpty(converterClass)) {
-      inError = true;
       errorMsg = "No 'converterClass' attribute in <conversionRule>";
       getLogger().warn(errorMsg);
       ec.addError(new ErrorItem(errorMsg));
@@ -85,7 +77,6 @@ public class ConversionRuleAction extends Action {
       ruleRegistry.put(conversionWord, converterClass);
   
     } catch (Exception oops) {
-      inError = true;
       errorMsg = "Could not add conversion rule to PatternLayout.";
       getLogger().error(errorMsg, oops);
       ec.addError(new ErrorItem(errorMsg));

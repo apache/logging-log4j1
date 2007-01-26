@@ -146,6 +146,14 @@ public class Priority {
         return false;
       }
     }
+    
+    /**
+     * Returns a hash code based on the level.
+     */
+    public
+    int hashCode() {
+      return level;
+    }
 
     /**
        Return the syslog equivalent of this priority as an integer.

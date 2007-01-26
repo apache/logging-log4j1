@@ -18,11 +18,8 @@ package org.apache.log4j.nt;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
-
 
 /**
    Append to the NT event log system.
@@ -37,11 +34,6 @@ import org.apache.log4j.spi.LoggingEvent;
    @author <a href="mailto:cstaylor@pacbell.net">Chris Taylor</a>
    @author <a href="mailto:jim_cakalic@na.biomerieux.com">Jim Cakalic</a> */
 public class NTEventLogAppender extends AppenderSkeleton {
-  private static final int FATAL = Level.FATAL.toInt();
-  private static final int ERROR = Level.ERROR.toInt();
-  private static final int WARN = Level.WARN.toInt();
-  private static final int INFO = Level.INFO.toInt();
-  private static final int DEBUG = Level.DEBUG.toInt();
 
   static {
     System.loadLibrary("NTEventLogAppender");
@@ -144,6 +136,7 @@ public class NTEventLogAppender extends AppenderSkeleton {
   }
 
   public void finalize() {
+    super.finalize();
     deregisterEventSource(_handle);
     _handle = 0;
   }

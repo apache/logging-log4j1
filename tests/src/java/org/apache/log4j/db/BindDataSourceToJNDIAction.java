@@ -47,7 +47,6 @@ public class BindDataSourceToJNDIAction extends Action {
   static final String URL = "url";
   static final String USER = "user";
   static final String PASSWORD = "password";
-  private boolean inError = false;
 
   /**
    * Instantiates an a data source and bind it to JNDI
@@ -88,13 +87,11 @@ public class BindDataSourceToJNDIAction extends Action {
 
       Context ctx = new InitialContext();
       ctx.rebind("dataSource", ds);
-    } catch (Exception oops) {
-      inError = true;
-      logger.error(
-        "Could not bind  datasource. Reported error follows.", oops);
+    } catch (Exception e) {
+      logger.error("Could not bind datasource", e);
       ec.addError(
         new ErrorItem(
-          "Could not not bind  datasource of type [" + dsClassName + "]."));
+          "Could not not bind datasource of type [" + dsClassName + "]"));
     }
   }
 

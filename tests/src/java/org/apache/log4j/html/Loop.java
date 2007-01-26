@@ -25,11 +25,11 @@ import java.util.Random;
 
 
 /**
- * 
+ * Tests HTML layout. 
  * @author Ceki
  */
 public class Loop {
-  public static Logger logger = Logger.getLogger(Loop.class);
+  public static final Logger logger = Logger.getLogger(Loop.class);
 
   public static void main(String[] args) {
     HTMLLayout htmlLayout = new HTMLLayout("%sn%date%thread%level%logger%m");

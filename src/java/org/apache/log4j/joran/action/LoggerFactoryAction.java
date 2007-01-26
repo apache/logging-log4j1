@@ -42,7 +42,6 @@ public class LoggerFactoryAction extends Action {
     }
   }
 
-  @Override
   public void end(ExecutionContext ec, String name) throws ActionException {
   }
 

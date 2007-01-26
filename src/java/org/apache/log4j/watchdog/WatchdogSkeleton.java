@@ -122,30 +122,15 @@ extends PluginSkeleton implements Watchdog {
 
     // create an instance of the configurator class
     Configurator configurator = getConfiguratorInstance();
-
-    // if able to create configurator, then reconfigure using input stream
-    if (configurator != null) {
-      configurator.doConfigure(srcURL, this.getLoggerRepository());
-      if (configurator instanceof ConfiguratorBase) {
-        ConfiguratorBase baseConfigurator = (ConfiguratorBase)configurator;
-        List errorList = baseConfigurator.getErrorList();
-        if (errorList.size() != 0) {
-          getLogger().error("errors reported during reconfiguration: ");
-          for (int x = 0; x < errorList.size(); x++) {
-            getLogger().debug("error " + x + ": " + errorList.get(x));
-          }
-          return false;
-        }
-      }
-    }
-    else {
+    if (configurator == null) {
       getLogger().error(
-        "watchdog \"{}\" could not create configurator, ignoring new configuration settings",
-        this.getName());
+          "watchdog \"{}\" could not create configurator, ignoring new configuration settings",
+          this.getName());
       return false;
     }
 
-    return true;
+    configurator.doConfigure(srcURL, this.getLoggerRepository());
+    return configure(configurator);
   }
 
   /**
@@ -162,38 +147,32 @@ extends PluginSkeleton implements Watchdog {
 
     // create an instance of the configurator class
     Configurator configurator = getConfiguratorInstance();
-    ConfiguratorEx configuratorEx = null;
 
     if (configurator instanceof ConfiguratorEx) {
-      configuratorEx = (ConfiguratorEx)configurator;
+      ConfiguratorEx configuratorEx = (ConfiguratorEx)configurator;
+      configuratorEx.doConfigure(stream, this.getLoggerRepository());
+      return configure(configurator);
     } else {
       getLogger().error(
         "watchdog \"{}\" could not create configurator, configurator class is not of type ConfiguratorEx",
         this.getName());
-    }
-
-    // if able to create configurator, then reconfigure using input stream
-    if (configuratorEx != null) {
-      configuratorEx.doConfigure(stream, this.getLoggerRepository());
-      if (configuratorEx instanceof ConfiguratorBase) {
-        ConfiguratorBase baseConfigurator = (ConfiguratorBase)configuratorEx;
-        List errorList = baseConfigurator.getErrorList();
-        getLogger().error("errors reported during reconfiguration: ");
-        if (errorList.size() != 0) {
-          for (int x = 0; x < errorList.size(); x++) {
-            getLogger().debug("error " + x + ": " + errorList.get(x));
-          }
-          return false;
-        }
-      }
-    }
-    else {
-      getLogger().error(
-        "watchdog \"{}\" could not create configurator, ignoring new configuration settings",
-        this.getName());
       return false;
     }
 
+  }
+  
+  private boolean configure(Configurator configurator) {
+    if (configurator instanceof ConfiguratorBase) {
+      ConfiguratorBase baseConfigurator = (ConfiguratorBase)configurator;
+      List errorList = baseConfigurator.getErrorList();
+      if (errorList.size() != 0) {
+        getLogger().error("errors reported during reconfiguration: ");
+        for (int x = 0; x < errorList.size(); x++) {
+          getLogger().debug("error " + x + ": " + errorList.get(x));
+        }
+        return false;
+      }
+    }
     return true;
   }
 }

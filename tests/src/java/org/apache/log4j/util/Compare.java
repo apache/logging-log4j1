@@ -33,6 +33,15 @@ public class Compare {
     throws FileNotFoundException, IOException {
     BufferedReader in1 = new BufferedReader(new FileReader(file1));
     BufferedReader in2 = new BufferedReader(new FileReader(file2));
+    try {
+      return compare(file1, file2, in1, in2);
+    } finally {
+      in1.close();
+      in2.close();
+    }
+  }
+    
+ public static boolean compare(String file1, String file2, BufferedReader in1, BufferedReader in2) throws IOException {
 
     String s1;
     int lineCounter = 0;
@@ -98,12 +107,22 @@ public class Compare {
 
       System.out.println(s1);
     }
+    in1.close();
   }
   
     public static boolean gzCompare(String file1, String file2)
       throws FileNotFoundException, IOException {
       BufferedReader in1 = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file1))));      
       BufferedReader in2 = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file2))));
+      try {
+        return gzCompare(file1, file2, in1, in2);
+      } finally {
+        in1.close();
+        in2.close();
+      }
+    }
+      
+    public static boolean gzCompare(String file1, String file2, BufferedReader in1, BufferedReader in2) throws IOException {
 
       String s1;
       int lineCounter = 0;

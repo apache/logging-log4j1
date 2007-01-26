@@ -19,6 +19,7 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 public final class BinaryCompare {
@@ -28,13 +29,31 @@ public final class BinaryCompare {
     private BinaryCompare() {
     }
 
+    /**
+     * Compares two files using binary comparison.
+     * 
+     * @param file1
+     * @param file2
+     * @return true if they are the same
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public static boolean compare(final String file1, final String file2)
         throws FileNotFoundException, IOException {
         BufferedInputStream in1 = new BufferedInputStream(new FileInputStream(
                     file1));
         BufferedInputStream in2 = new BufferedInputStream(new FileInputStream(
                     file2));
-
+        try {
+          return compare(file1, file2, in1, in2);
+        } finally {
+          in1.close();
+          in2.close();
+        }
+        
+    }
+    
+    private static boolean compare(final String file1, final String file2, InputStream in1, InputStream in2) throws IOException {
         int byte1 = 0;
         int byte2 = 0;
 

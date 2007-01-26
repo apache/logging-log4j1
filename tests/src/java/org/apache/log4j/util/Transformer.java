@@ -16,9 +16,12 @@
 
 package org.apache.log4j.util;
 
-import java.io.*;
-
-import org.apache.oro.text.perl.Perl5Util;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
 
 public class Transformer {
 
@@ -28,21 +31,25 @@ public class Transformer {
                                                                  IOException,
                                                                  UnexpectedFormatException {
 
-    Perl5Util util = new Perl5Util();
     String line;
     BufferedReader input = new BufferedReader(new FileReader(in));
     PrintStream output = new PrintStream(new FileOutputStream(out, false));
   
-    // Initialization of input and output omitted
-    while((line = input.readLine()) != null) {
-      // apply all filters
-      for(int i = 0; i < filters.length; i++) {
-	line = filters[i].filter(line);
+    try {
+      // Initialization of input and output omitted
+      while ((line = input.readLine()) != null) {
+        // apply all filters
+        for (int i = 0; i < filters.length; i++) {
+          line = filters[i].filter(line);
+        }
+        if (line != null) {
+          output.println(line);
+        }
       }
-      if(line != null) {
-	output.println(line);
-      }
-    }
+    } finally {
+      input.close();
+      output.close();
+    }    
   }
 
 
@@ -53,15 +60,19 @@ public class Transformer {
                                                               IOException,
                                                               UnexpectedFormatException {
 
-    Perl5Util util = new Perl5Util();
     String line;
     BufferedReader input = new BufferedReader(new FileReader(in));
     PrintStream output = new PrintStream(new FileOutputStream(out));
   
-    // Initialization of input and output omitted
-    while((line = input.readLine()) != null) {
-      line = filter.filter(line);
-      output.println(line);
+    try {
+      // Initialization of input and output omitted
+      while((line = input.readLine()) != null) {
+        line = filter.filter(line);
+        output.println(line);
+      }
+    } finally {
+      input.close();
+      output.close();
     }
   }
 

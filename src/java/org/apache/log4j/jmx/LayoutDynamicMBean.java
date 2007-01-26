@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.spi.OptionHandler;
 
 import java.util.Vector;
 import java.util.Hashtable;
@@ -152,10 +151,8 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
     throws MBeanException,
     ReflectionException {
 
-    if(operationName.equals("activateOptions") &&
-                     layout instanceof OptionHandler) {
-      OptionHandler oh = (OptionHandler) layout;
-      oh.activateOptions();
+    if(operationName.equals("activateOptions")) {
+      layout.activateOptions();
       return "Options activated.";
     }
     return null;

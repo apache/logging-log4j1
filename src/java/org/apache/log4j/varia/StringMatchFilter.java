@@ -60,7 +60,7 @@ public class StringMatchFilter
       if(key.equalsIgnoreCase(STRING_TO_MATCH_OPTION)) {
         this.setStringToMatch(value);
       } else if (key.equalsIgnoreCase(ACCEPT_ON_MATCH_OPTION)) {
-        this.setAcceptOnMatch(new Boolean(value).booleanValue());
+        this.setAcceptOnMatch(Boolean.valueOf(value).booleanValue());
       }
     }
 
