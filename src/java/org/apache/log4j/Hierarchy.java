@@ -71,7 +71,8 @@ import java.util.Vector;
 
 */
 public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
-  private LoggerFactory defaultFactory;
+  
+  private LoggerFactory loggerFactory;
   private final ArrayList repositoryEventListeners;
   private final ArrayList loggerEventListeners;
   String name;
@@ -115,7 +116,7 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
     rendererMap = new RendererMap();
     rendererMap.setLoggerRepository(this);
     properties = new Hashtable();
-    defaultFactory = new DefaultCategoryFactory();
+    loggerFactory = new DefaultLoggerFactory();
   }
 
   /**
@@ -462,7 +463,7 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
   */
   public Logger getLogger(String name) {
-    return getLogger(name, defaultFactory);
+    return getLogger(name, loggerFactory);
   }
 
   /**
@@ -842,4 +843,14 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
     return objectMap.get(key);
   }
   
+  public void setLoggerFactory(LoggerFactory loggerFactory) {
+    if (loggerFactory == null)
+      throw new NullPointerException();
+    this.loggerFactory = loggerFactory;
+  }
+
+  public LoggerFactory getLoggerFactory() {
+    return loggerFactory;
+  }  
+
 }

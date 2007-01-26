@@ -108,7 +108,7 @@ public class PropertyConfigurator extends ConfiguratorBase
      Used internally to keep track of configured appenders.
    */
   protected Hashtable registry = new Hashtable(11);
-  protected LoggerFactory loggerFactory = new DefaultCategoryFactory();
+  protected LoggerFactory loggerFactory = new DefaultLoggerFactory();
   protected List errorList = new Vector();
 
   /**

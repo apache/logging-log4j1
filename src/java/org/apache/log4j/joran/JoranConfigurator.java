@@ -27,6 +27,7 @@ import org.apache.log4j.joran.action.JndiSubstitutionPropertyAction;
 import org.apache.log4j.joran.action.LayoutAction;
 import org.apache.log4j.joran.action.LevelAction;
 import org.apache.log4j.joran.action.LoggerAction;
+import org.apache.log4j.joran.action.LoggerFactoryAction;
 import org.apache.log4j.joran.action.NewRuleAction;
 import org.apache.log4j.joran.action.ParamAction;
 import org.apache.log4j.joran.action.PluginAction;
@@ -199,6 +200,8 @@ public class JoranConfigurator extends ConfiguratorBase
         new ConversionRuleAction());
     rs.addRule(new Pattern("configuration/plugin"), new PluginAction());
     rs.addRule(new Pattern("configuration/logger"), new LoggerAction());
+    rs.addRule(new Pattern("configuration/categoryFactory"), new LoggerFactoryAction());
+    rs.addRule(new Pattern("configuration/loggerFactory"), new LoggerFactoryAction());
     rs.addRule(
       new Pattern("configuration/logger/level"), new LevelAction());
     rs.addRule(
