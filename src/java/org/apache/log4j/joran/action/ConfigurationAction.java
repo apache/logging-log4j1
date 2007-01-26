@@ -27,21 +27,40 @@ import org.xml.sax.Attributes;
 
 public class ConfigurationAction extends Action {
   static final String INTERNAL_DEBUG_ATTR = "debug";
+  static final String RESET_ATTR = "reset";
   boolean attachment = false;
 
+  private boolean trueBoolean(String name, String debugAttrib) {
+    if (debugAttrib == null || debugAttrib.equals("")
+          || debugAttrib.equals("false") || debugAttrib.equals("null")) {
+      getLogger().debug("Ignoring " + name + " attribute.");
+      return false;
+    }
+    return true;
+  }
+  
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
-    String debugAttrib = attributes.getValue(INTERNAL_DEBUG_ATTR);
 
-    if (
-      (debugAttrib == null) || debugAttrib.equals("")
-        || debugAttrib.equals("false") || debugAttrib.equals("null")) {
-      getLogger().debug("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
-    } else {
+    // reset is applied before debug
+    String resetAttrib = attributes.getValue(RESET_ATTR);
+    boolean reset = trueBoolean(RESET_ATTR, resetAttrib); 
+    if (reset) {
+      LoggerRepository repository = (LoggerRepository) ec.getObject(0);
+      repository.resetConfiguration();
+    }
+
+    String debugAttrib = attributes.getValue(INTERNAL_DEBUG_ATTR);
+    if (trueBoolean(INTERNAL_DEBUG_ATTR, debugAttrib)) {
       LoggerRepository repository = (LoggerRepository) ec.getObject(0);
       ConfiguratorBase.attachTemporaryConsoleAppender(repository);
       getLogger().debug("Starting internal logs on console.");
       attachment = true;
     }
+    
+    if (reset) {
+      getLogger().debug("Reset configuration");
+    }
+    
   }
 
   public void end(ExecutionContext ec, String name) {
