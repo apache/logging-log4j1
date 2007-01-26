@@ -9,7 +9,9 @@ elements,appender elements, categories and an optional root
 element. -->
 
 <!ELEMENT log4j:configuration (renderer*, appender*, plugin*, 
-                               (category|logger)*,root?, categoryFactory?)>
+                               (category|logger)*,root?, 
+                               (categoryFactory|loggerFactory)?)>
+                                                              
 
 <!-- The "threshold" attribute takes a level value such that all -->
 <!-- logging statements with a level equal or below this value are -->
@@ -116,6 +118,10 @@ element. -->
 
 <!ELEMENT categoryFactory (param*)>
 <!ATTLIST categoryFactory 
+   class        CDATA #REQUIRED>
+   
+<!ELEMENT loggerFactory (param*)>
+<!ATTLIST loggerFactory 
    class        CDATA #REQUIRED>
 
 <!ELEMENT appender-ref EMPTY>

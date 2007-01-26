@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration>
+
+<log4j:configuration xmlns:log4j='http://logging.apache.org/'>
+
+  <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%m%n"/>
+    </layout>	    
+  </appender>
+  
+  <root>
+    <appender-ref ref="CONSOLE" />
+  </root>
+  
+  <loggerFactory class="org.apache.log4j.xml.LoggerFactoryTest$Factory"/>
+    
+</log4j:configuration>

@@ -189,4 +189,22 @@ public interface LoggerRepositoryEx extends LoggerRepository {
    * @param value value, may be null.
    */
   void putObject(String key, Object value);
+
+  /**
+   * Sets the logger factory used by {@link LoggerRepository#getLogger(String)}.
+   * 
+   * @param loggerFactory factory to use, may not be null
+   * @throws NullPointerException factory is null
+   * @since 1.3
+   */
+  void setLoggerFactory(LoggerFactory loggerFactory);
+
+  /**
+   * Returns the logger factory used by {@link LoggerRepository#getLogger(String)}.
+   * 
+   * @return non-null factory
+   * @since 1.3
+   */
+  LoggerFactory getLoggerFactory();
+
 }
