@@ -32,6 +32,7 @@ import org.apache.log4j.Layout;
    {@link java.io.OutputStream} depending on the user's choice.
 
    @author Ceki G&uuml;lc&uuml;
+   @author Elias Ross
    @since 1.1 */
 public class WriterAppender extends ConcurrentAppender {
   
@@ -145,11 +146,15 @@ public class WriterAppender extends ConcurrentAppender {
    * Close the underlying {@link java.io.Writer}.
    */
   protected void closeWriter() {
-    getWriteLock();
+    try {
+      lock.writeLock().acquire();
+    } catch (InterruptedException e) {
+      getLogger().warn("interrupted", e);
+    }
     try {
       closeWriter0();
     } finally {
-      releaseWriteLock();
+	  lock.writeLock().release();
     }
   }
 
@@ -218,13 +223,18 @@ public class WriterAppender extends ConcurrentAppender {
     @param writer An already opened Writer.  */
   public void setWriter(Writer writer) {
     // close any previously opened writer
-    getWriteLock();
+    try {
+      lock.writeLock().acquire();
+    } catch (InterruptedException e) {
+      getLogger().warn("interrupted", e);
+      return;
+    }
     try {
       closeWriter0(); 
       this.writer = writer;
       writeHeader();
     } finally {
-      releaseWriteLock();
+	  lock.writeLock().release();
     }
   }
 

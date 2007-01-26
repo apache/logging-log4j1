@@ -19,7 +19,6 @@ package org.apache.log4j.concurrent;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Priority;
-import org.apache.log4j.helpers.ReaderWriterLock;
 import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
@@ -38,12 +37,16 @@ import org.apache.log4j.spi.OptionHandler;
  * method or within their own {@link #append} method.
  * </p>
  * <p>
+ * If Thread.interrupt() is called during append of the logger thread, 
+ * the customary behavior in this package is to stop appending.
+ * </p>
+ * <p>
  * This class is heavily based on the {@link
  * #org.apache.log4j.AppenderSkeleton} class.  It may be a useful base class
  * for creating appenders that can benefit from concurrent I/O access.
  * </p>
- *
- * @see #getWriteLock
+ * 
+ * @author Elias Ross
  */
 public abstract class ConcurrentAppender 
   extends ComponentBase implements Appender, OptionHandler
@@ -90,9 +93,9 @@ public abstract class ConcurrentAppender
   /**
    * A write lock is obtained to change options, a read lock is obtained to
    * append events.
+   * This is a re-entrant writer-preference read-write lock.
    */
-  private ReaderWriterLock lock = new ReaderWriterLock();
-
+  protected ReadWriteLock lock = new ReentrantWriterPreferenceReadWriteLock();
 
   /**
    * Constructs a ConcurrentAppender.
@@ -169,7 +172,7 @@ public abstract class ConcurrentAppender
    */
   public boolean isAsSevereAsThreshold(final Priority level) {
     Priority copy = threshold;
-    return ((copy == null) || copy.isGreaterOrEqual(level));
+    return ((copy == null) || level.isGreaterOrEqual(copy));
   }
 
   /**
@@ -195,7 +198,7 @@ public abstract class ConcurrentAppender
     guard.set(this); // arbitrary thread lock object
     try {
 
-      lock.getReadLock();
+      lock.readLock().acquire();
       try {
 
 
@@ -214,9 +217,11 @@ public abstract class ConcurrentAppender
         append(event);
 
       } finally {
-        lock.releaseReadLock();
+        lock.readLock().release();
       }
 
+    } catch (InterruptedException e) {
+      getLogger().info("interrupted", e);
     } finally {
       guard.set(null);
     }
@@ -272,14 +277,20 @@ public abstract class ConcurrentAppender
    * Calls {@link #internalClose} when completed.
    * Implementation note:  Obtains a write lock before starting close.
    * Calling this method more than once does nothing.
+   * @throws RuntimeException if the thread is interrupted
    */
   public final void close() {
     boolean wasClosed;
-    getWriteLock();
+    try {
+      lock.writeLock().acquire();
+    } catch (InterruptedException e) {
+      getLogger().warn("interrupted", e);
+      return;
+    }
     try {
       wasClosed = closed.set(true);
     } finally {
-      lock.releaseWriteLock();
+      lock.writeLock().release();
     }
 
     if (!wasClosed)
@@ -332,35 +343,6 @@ public abstract class ConcurrentAppender
    * longer be called.
    */
   protected abstract void internalClose();
-
-  /**
-   * Obtains a write lock that blocks logging to {@link #append}.
-   * This is normally done when changing output behavior, closing and reopening
-   * streams, etc.  Call {@link #releaseWriteLock} to resume logging.
-   * <p>
-   * Usage pattern:
-   <pre>
-   getWriteLock();
-   try {
-      // ...
-   } finally {
-      releaseWriteLock();
-   }
-   </pre>
-   * Note:  Do not attempt to re-acquire this lock.  This lock should only be
-   * used for critical sections and not for long periods of time.
-   */
-  protected void getWriteLock() {
-    lock.getWriteLock();
-  }
-
-  /**
-   * Releases a write lock; allows calls to the {@link #append} method.
-   * @see #getWriteLock
-   */
-  protected void releaseWriteLock() {
-    lock.releaseWriteLock();
-  }
 
   /**
    * Finalizes this appender by calling this {@link #close} method.
@@ -424,7 +406,7 @@ public abstract class ConcurrentAppender
         if (f != null)
           sb.append(',');
       }
-      return f.toString();
+      return sb.toString();
     }
 
   }

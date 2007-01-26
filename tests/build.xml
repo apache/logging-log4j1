@@ -225,6 +225,7 @@
                                      CachedDateFormat,
   	                                 Encoding,
   	                                 Syslog,
+  	                                 Concurrent,
                                      NTEventLogAppender,
                                      RFA,
                                      ERFA,
@@ -810,6 +811,18 @@
       </junit>
   </target>
 
+  <target name="Concurrent" depends="check, build">
+    <junit printsummary="yes" fork="no" haltonfailure="${haltonfailure}">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.concurrent.RollingFileAppenderTest" />
+      <test name="org.apache.log4j.concurrent.FileAppenderTest" />
+      <test name="org.apache.log4j.concurrent.ConsoleAppenderTest" />
+      <test name="org.apache.log4j.concurrent.SynchronizedBooleanTest" />
+      <test name="org.apache.log4j.concurrent.ConcurrentAppenderTest" />
+      <test name="org.apache.log4j.concurrent.WriterAppenderTest" />
+    </junit>
+  </target>
 	
   <!-- ================================================================= -->
   <!-- =========================   long Tests  ========================= -->

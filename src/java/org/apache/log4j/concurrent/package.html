@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+
+<html> 
+  <head>
+    <title>Concurrent</title>
+  </head>
+  
+  <body>
+    
+    <p>Concurrent appenders</p>
+
+    <p>
+    Mostly compatible replacement appenders for the existing Log4J appenders
+    which have a potential for deadlock when used in certain ways. The locking design allows
+    for multiple threads to execute {@link org.apache.log4j.Appender#doAppend()}
+    simultaneously.
+    Locking is done using a {@link org.apache.log4j.concurrent.ReadWriteLock} interface
+    instead of <code>synchronized</code> blocks.
+    </p>
+    
+    <p>
+    The {@link org.apache.log4j.concurrent.ConcurrentAppender} derived appenders
+    are almost identical in code to ones found in the parent package,
+    except in places where locking is used.
+    </p>
+    
+    <p>
+    Users wishing to create their own concurrent appender should follow
+    the source for {@link org.apache.log4j.concurrent.WriterAppender}, which
+    demonstrates how to properly guard critical sections.
+    </p>
+
+  </body> 
+</html>
