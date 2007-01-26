@@ -18,7 +18,12 @@ package org.apache.log4j;
 
 import junit.framework.TestCase;
 
+import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -34,6 +39,25 @@ public class CategoryTest extends TestCase {
    */
   public CategoryTest(final String name) {
     super(name);
+  }
+  
+  StringWriter sw = new StringWriter();
+  Priority debug = Level.DEBUG;
+  Logger logger = Logger.getLogger("org.example.foo");
+  
+  protected void setUp() {
+    WriterAppender a = new WriterAppender();
+    a.setWriter(sw);
+    a.setLayout(new PatternLayout("%m "));
+    a.activateOptions();
+    BasicConfigurator.configure(a);
+    Category.getRoot().setLevel(Level.ALL);
+    Category.getRoot().setResourceBundle(getTestBundle());
+    logger.setLevel(Level.ALL);
+  }
+  
+  static ResourceBundle getTestBundle() {
+    return ResourceBundle.getBundle("L7D", new Locale("en", "US"));
   }
 
   /**
@@ -59,20 +83,47 @@ public class CategoryTest extends TestCase {
    * Tests l7dlog(Priority, String, Throwable).
    */
   public void testL7dlog() {
-    Logger logger = Logger.getLogger("org.example.foo");
-    logger.setLevel(Level.ERROR);
-    Priority debug = Level.DEBUG;
-    logger.l7dlog(debug, "Hello, World", null);
+    logger.l7dlog(debug, "test", null);
+    assertEquals("This is the English, US test.", sw.toString().trim());
   }
 
   /**
-   * Tests l7dlog(Priority, String, Object[], Throwable).
+   * Tests l7dlog(Priority, String, Throwable) no resource.
    */
-  public void testL7dlog4Param() {
-    Logger logger = Logger.getLogger("org.example.foo");
+  public void testL7dlogNoResource() {    
+    logger.l7dlog(debug, "XYZ", null);
+    assertEquals("No resource is associated with key \"XYZ\". XYZ ", sw.toString());
+  }
+
+  /**
+   * Tests l7dlog(Priority, String, Throwable) log nothing.
+   */
+  public void testL7dlogNothing() {    
     logger.setLevel(Level.ERROR);
-    Priority debug = Level.DEBUG;
-    logger.l7dlog(debug, "Hello, World", new Object[0], null);
+    logger.l7dlog(debug, "msg1", null);
+    assertEquals("no logging", "", sw.toString());
+  }
+
+  /**
+   * Tests l7dlog(FQN, Priority, String, Object[], Throwable) log.
+   */
+  public void testL7dlogFormat() {    
+    Object o[] = new Object[] { new Integer(1), "X" };
+    logger.l7dlog(debug, "msg1", o, null);
+    assertEquals("This is test number 1 with string argument X. ", sw.toString());
+  }
+
+  /**
+   * Tests l7dlog(FQN, Priority, String, Object[], Throwable) log.
+   * @since 1.3
+   */
+  public void testL7dlogFQN() {    
+    VectorAppender va = new VectorAppender();
+    logger.addAppender(va);    
+    logger.l7dlog("myFQN", debug, "msg1", new Object[0], new Throwable());
+    LoggingEvent le = (LoggingEvent) va.getVector().get(0);
+    assertEquals("myFQN", le.getFQNOfLoggerClass());
+    assertNotNull(le.getThrowableInformation());
   }
 
   /**

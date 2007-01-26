@@ -1070,21 +1070,7 @@ public class Category implements ULogger, AppenderAttachable {
    * @since 0.8.4
    */
   public void l7dlog(final Priority level, String key, Throwable t) {
-    if (repository.isDisabled(level.level)) {
-      return;
-    }
-
-    if (level.isGreaterOrEqual(this.getEffectiveLevel())) {
-      String msg = getResourceBundleString(key);
-
-      // if message corresponding to 'key' could not be found in the
-      // resource bundle, then default to 'key'.
-      if (msg == null) {
-        msg = key;
-      }
-
-      forcedLog(FQCN, level, msg, t);
-    }
+    l7dlog(level, key, null, t);
   }
 
   /**
@@ -1098,22 +1084,8 @@ public class Category implements ULogger, AppenderAttachable {
    */
   public void l7dlog(
     Priority level, String key, Object[] params, Throwable t) {
-    if (repository.isDisabled(level.level)) {
-      return;
-    }
-
-    if (level.isGreaterOrEqual(this.getEffectiveLevel())) {
-      String pattern = getResourceBundleString(key);
-      String msg;
-
-      if (pattern == null) {
-        msg = key;
-      } else {
-        msg = java.text.MessageFormat.format(pattern, params);
-      }
-
-      forcedLog(FQCN, level, msg, t);
-    }
+    l7dlog(FQCN, level, key, params, t);
+    
   }
 
   /**
@@ -1178,6 +1150,42 @@ public class Category implements ULogger, AppenderAttachable {
     }
   }
 
+  /**
+   * This is the most generic localized printing method. It is intended to be invoked by
+   * <b>wrapper</b> classes.
+   *
+   * @param callerFQCN The wrapper class' fully qualified class name.
+   * @param level The level of the logging request.
+   * @param key The key of the resource bundle message.
+   * @param param Format parameteres, if null will not be used.
+   * @param t The throwable of the logging request, may be null.
+   * 
+   * @since 1.3
+   */
+  public void l7dlog(   
+    String callerFQCN, Priority level, String key, Object[] params, Throwable t)
+  {
+    if (repository.isDisabled(level.level)) {
+      return;
+    }
+
+    if (level.isGreaterOrEqual(this.getEffectiveLevel())) {
+      String pattern = getResourceBundleString(key);
+      String msg;
+
+      if (pattern == null) {
+        msg = key;
+      } else {
+        if (params != null)
+          msg = java.text.MessageFormat.format(pattern, params);
+        else
+          msg = pattern;
+      }
+
+      forcedLog(callerFQCN, level, msg, t);
+    }
+  }
+  
   /**
    * @deprecated Use the form taking in a Level as a parameter.
    */
