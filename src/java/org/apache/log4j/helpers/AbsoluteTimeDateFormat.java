@@ -22,6 +22,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 
@@ -71,6 +72,14 @@ public class AbsoluteTimeDateFormat extends DateFormat {
   }
 
   /**
+   *  Create a new instance of AbsoluteTimeDateFormat with a locale.
+   * @param pattern 
+   */
+  public AbsoluteTimeDateFormat(String pattern, Locale locale) {
+    format = new SimpleDateFormat(pattern, locale);
+  }
+
+  /**
    *   Create a new instance of AbsoluteTimeDateFormat.
    *   @param timeZone time zone used in conversion, may not be null.
    */
@@ -112,4 +121,5 @@ public class AbsoluteTimeDateFormat extends DateFormat {
   public Date parse(String s, ParsePosition pos) {
     return format.parse(s, pos);
   }
+  
 }
