@@ -16,6 +16,13 @@
 
 package org.apache.log4j.net;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
+import java.net.SocketException;
+import java.util.StringTokenizer;
+
 import junit.framework.TestCase;
 
 import org.apache.log4j.AsyncAppender;
@@ -24,6 +31,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.SyslogWriter;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -386,7 +395,6 @@ public class SyslogAppenderTest extends TestCase {
       appender.setSyslogHost("localhost:1514");
   }
 
-
   /**
     *  Tests SyslogAppender with IPv4 address followed by port specification.
     */  
@@ -394,4 +402,41 @@ public class SyslogAppenderTest extends TestCase {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("127.0.0.1:1514");
   }
+  
+  public void testActualLogging() throws IOException {
+    DatagramSocket ds = new DatagramSocket();
+    ds.setSoTimeout(10);
+    SyslogAppender appender = new SyslogAppender();
+    appender.setSyslogHost("localhost:" + ds.getLocalPort());
+    appender.setName("name");
+    appender.setLayout(new PatternLayout("%l %m"));
+    appender.activateOptions();
+    
+    Logger l = Logger.getRootLogger();
+    l.addAppender(appender);
+    l.info("greetings");
+    DatagramPacket p = new DatagramPacket(new byte[1000], 0, 1000);
+    ds.receive(p);
+    String s = new String(p.getData(), 0, p.getLength());
+    StringTokenizer st = new StringTokenizer(s, "<>() ");
+    assertEquals("14", st.nextToken());
+    assertEquals(3, st.nextToken().length());
+    st.nextToken(); // date
+    st.nextToken(); // time
+    assertEquals(appender.getLocalHostname(), st.nextToken());
+    assertEquals(getClass().getName() + ".testActualLogging", st.nextToken());
+    st.nextToken(); // this filename:line number
+    assertEquals("greetings", st.nextToken());
+    ds.close();
+  }
+  
+  public void testLeak() throws IOException { 
+    DatagramSocket ds = new DatagramSocket();
+    for (int i = 0; i < 100; i++) {
+      SyslogWriter sw = new SyslogWriter("localhost:" + ds.getLocalPort());
+      sw.close();
+    }
+    ds.close();
+  }
+  
 }

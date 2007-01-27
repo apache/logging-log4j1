@@ -125,12 +125,7 @@ public class SyslogAppender extends AppenderSkeleton {
   String localHostname;
   String syslogHost;
 
-  //SyslogTracerPrintWriter stp;
   private SyslogWriter sw;
-  private long now = -1;
-  private Date date = new Date();
-  private StringBuffer timestamp = new StringBuffer();
-  private FieldPosition pos = new FieldPosition(0);
 
   // We must use US locale to get the correct month abreviation  
   private SimpleDateFormat sdf =
@@ -161,15 +156,13 @@ public class SyslogAppender extends AppenderSkeleton {
 
 
   /**
-   * Release any resources held by this SyslogAppender.
+   * Release resources held by this SyslogAppender,
+   * including the datagram socket.
    * @since 0.8.4
    */
   public synchronized void close() {
     closed = true;
-
-    // A SyslogWriter is UDP based and needs no opening. Hence, it
-    // can't be closed. We just unset the variables here.
-    sw = null;
+    sw.close();
   }
 
   /**
@@ -335,31 +328,23 @@ public class SyslogAppender extends AppenderSkeleton {
     return facilityStr;
   }
 
-  void fillInTimestamp() throws IOException {
-    long n = System.currentTimeMillis();
-    n -= (n & 1000);
-
-    if ((n != now) || (timestamp.length() == 0)) {
-      now = n;
-      date.setTime(n);
-      // erase any previous value of the timestamp
-      timestamp.setLength(0);
-      sdf.format(date, timestamp, pos);
-      //According to the RFC the day of the month must be right justified with
-      // no leading 0.
-      if (timestamp.charAt(4) == '0') {
-        timestamp.setCharAt(4, ' ');
-      }
+  private void writeTimestamp() throws IOException {
+    StringBuffer timestamp = new StringBuffer();
+    sdf.format(new Date(), timestamp, new FieldPosition(0));
+    //According to the RFC the day of the month must be right justified with
+    // no leading 0.
+    if (timestamp.charAt(4) == '0') {
+      timestamp.setCharAt(4, ' ');
     }
     sw.write(timestamp.toString());
   }
 
-  void writeInitialParts(LoggingEvent event) throws IOException {
+  private void writeInitialParts(LoggingEvent event) throws IOException {
     int pri = syslogFacility +event.getLevel().getSyslogEquivalent();
     sw.write("<");
     sw.write(String.valueOf(pri));
     sw.write(">");
-    fillInTimestamp();
+    writeTimestamp();
     sw.write(' ');
     sw.write(localHostname);
     sw.write(' ');

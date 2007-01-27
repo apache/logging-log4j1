@@ -109,8 +109,7 @@ public class SyslogWriter extends Writer {
   }
 
   public void write(String str) throws IOException {
-    buf.append(str);
-   
+    buf.append(str); 
   }
 
   public void flush() throws IOException {
@@ -126,6 +125,11 @@ public class SyslogWriter extends Writer {
     buf.setLength(0);
   }
 
+  /**
+   * Closes the datagram socket.
+   */
   public void close() {
+    ds.close();
   }
+  
 }
