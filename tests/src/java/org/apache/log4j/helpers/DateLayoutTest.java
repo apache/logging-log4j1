@@ -24,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Date;
 
@@ -249,7 +250,7 @@ public class DateLayoutTest extends LayoutTest {
      * @deprecated since DateTimeDateFormat is deprecated
      */
   public void testDateTimeFormat() {
-      DateFormat format = new DateTimeDateFormat();
+      DateFormat format = new DateTimeDateFormat(Locale.ENGLISH);
       Calendar calendar = Calendar.getInstance();
       calendar.clear();
       calendar.set(1970, 0, 1, 0, 0, 0);

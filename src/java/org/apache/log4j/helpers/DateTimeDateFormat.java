@@ -16,6 +16,7 @@
 
 package org.apache.log4j.helpers;
 
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Date;
 import java.text.DateFormatSymbols;
@@ -51,6 +52,15 @@ public class DateTimeDateFormat extends AbsoluteTimeDateFormat {
      */
     public DateTimeDateFormat(final TimeZone timeZone) {
         super(PATTERN, timeZone);
+    }
+
+    /**
+     * Create a new instance of DateTimeDateFormat.
+     *
+     * @param locale used in conversion, may not be null.
+     */
+    public DateTimeDateFormat(Locale locale) {
+      super(PATTERN, locale);
     }
 
 }
