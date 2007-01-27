@@ -16,15 +16,24 @@
 
 package org.apache.log4j;
 
+import org.apache.log4j.spi.DefaultRepositorySelector;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.RepositorySelector;
+
 import junit.framework.TestCase;
 
 
 /**
- *    Tests for LogManager
+ * Tests for {@link LogManager}.
  *
  * @author Curt Arnold
- **/
+ */
 public class LogManagerTest extends TestCase {
+
+  private static final Object sharedGuard = new Object();
+
+  private Hierarchy h = new Hierarchy();
+  
   /**
    * Create new instance of LogManagerTest.
    * @param testName test name
@@ -72,4 +81,33 @@ public class LogManagerTest extends TestCase {
   public void testDefaultInitOverrideKey() {
      assertEquals("log4j.defaultInitOverride", LogManager.DEFAULT_INIT_OVERRIDE_KEY);
   }
+  
+  public void testValidSelector() {
+    RepositorySelector selector = new DefaultRepositorySelector(h);
+    LogManager.setRepositorySelector(selector, sharedGuard);
+    Logger log = Logger.getLogger("TestValidSelector");
+    log.info("Logger obtained");
+    
+    try {
+      LogManager.setRepositorySelector(selector, "joe");
+      fail("cannot cheat guard");
+    } catch (IllegalArgumentException e) {}
+  }
+
+  public void testInvalidSelector() {
+    try {
+      RepositorySelector selector = new RepositorySelector() {
+
+        public LoggerRepository getLoggerRepository() {
+          return null;
+        }
+        
+      };
+      LogManager.setRepositorySelector(selector, sharedGuard);
+      Logger.getLogger("TestInvalidSelector");      
+      fail("Invalid repository selector should have generated IllegalArgumentException");
+    } catch (IllegalArgumentException iae) {
+    }
+  }
+
 }

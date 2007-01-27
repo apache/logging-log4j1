@@ -209,16 +209,23 @@ public class LogManager {
        within JBoss, then JBoss will install its own repository selector
        and Tomcat will use the repository selector set by its container,
        JBoss.  
+       
+       @param selector new selector, cannot be null
+       @param guard new guard value, or existing guard, or null
+       @throws IllegalArgumentException if a non-null guard is not the same as the old
+       @throws IllegalArgumentException if the selector is null
+       @throws IllegalArgumentException if {@link RepositorySelector#getLoggerRepository()} returns null 
     */
-    public static void setRepositorySelector(
-                                             RepositorySelector selector, Object guard) throws IllegalArgumentException {
+    public static void setRepositorySelector(RepositorySelector selector, Object guard) {
         if ((LogManager.guard != null) && (LogManager.guard != guard)) {
-            throw new IllegalArgumentException(
-                                               "Attempted to reset the LoggerFactory without possessing the guard.");
+            throw new IllegalArgumentException("Attempted to reset the LoggerFactory without possessing the guard.");
         }
         if (selector == null) {
-            throw new IllegalArgumentException(
-                                               "RepositorySelector must be non-null.");
+            throw new IllegalArgumentException("RepositorySelector must be non-null.");
+        }
+        if (selector.getLoggerRepository() == null) {
+          String s = "RepositorySelector.getLoggerRepository() must return non-null.";
+          throw new IllegalArgumentException(s);
         }
         
         LogManager.guard = guard;
@@ -236,6 +243,9 @@ public class LogManager {
         return  LogManager.repositorySelector;
     } 
     
+    /**
+     * Returns the logger repository currently in use.
+     */
     public static LoggerRepository getLoggerRepository() {
         return repositorySelector.getLoggerRepository();
     }

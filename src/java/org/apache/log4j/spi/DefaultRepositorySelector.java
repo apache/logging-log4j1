@@ -16,16 +16,25 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.helpers.Constants;
-
+/**
+ * Trivial implementation of RepositorySelectorEx which takes
+ * a fixed repository.
+ */
 public class DefaultRepositorySelector implements RepositorySelectorEx {
-  LoggerRepository defaultRepository;
+  
+  private LoggerRepository defaultRepository;
 
+  /**
+   * Constructs a new instance.
+   * @param repository cannot be null
+   */
   public DefaultRepositorySelector(final LoggerRepository repository) {
+    if (repository == null)
+      throw new NullPointerException();
     this.defaultRepository = repository;
   }
 
-  public LoggerRepository  getLoggerRepository() {
+  public LoggerRepository getLoggerRepository() {
     return defaultRepository;
   }
   

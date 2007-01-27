@@ -32,6 +32,7 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.spi.LoggerRepositoryEventListener;
 import org.apache.log4j.spi.RendererSupport;
+import org.apache.log4j.spi.RootLogger;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -98,7 +99,7 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
   boolean pristine = true;
 
   /**
-     Create a new logger hierarchy.
+     Constructs a new logger hierarchy.
 
      @param root The root of the new hierarchy.
 
@@ -116,6 +117,13 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
     rendererMap.setLoggerRepository(this);
     properties = new Hashtable();
     loggerFactory = new DefaultLoggerFactory();
+  }
+
+  /**
+   * Constructs a new logger hierarchy with a default {@link RootLogger}.
+   */
+  public Hierarchy() {
+    this(new RootLogger());
   }
 
   /**
