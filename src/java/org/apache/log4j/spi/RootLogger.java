@@ -35,13 +35,22 @@ import org.apache.log4j.Logger;
 
  */
 public final class RootLogger extends Logger {
+  
   /**
-     The root category names itself as "root". However, the root
-     category cannot be retrieved by name.
+   * Constructs using a level.
+   * The root category names itself as "root". However, the root
+   * category cannot be retrieved by name.
   */
   public RootLogger(Level level) {
     super("root");
     setLevel(level);
+  }
+
+  /**
+   * Constructs using a default {@link Level#DEBUG} threshold level.
+   */
+  public RootLogger() {
+    this(Level.DEBUG);
   }
 
   /**
