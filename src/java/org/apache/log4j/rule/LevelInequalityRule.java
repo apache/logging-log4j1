@@ -30,38 +30,10 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Scott Deboy <sdeboy@apache.org>
  */
 public class LevelInequalityRule {
-    private static List levelList;
-    private static List utilLoggingLevelList;
-
-    static {
-        populateLevels();
-    }
 
     private LevelInequalityRule() {
     }
     
-    private static void populateLevels() {
-        levelList = new LinkedList();
-
-        levelList.add(Level.FATAL.toString());
-        levelList.add(Level.ERROR.toString());
-        levelList.add(Level.WARN.toString());
-        levelList.add(Level.INFO.toString());
-        levelList.add(Level.DEBUG.toString());
-        levelList.add(Level.TRACE.toString());
-        
-        utilLoggingLevelList = new LinkedList();
-
-        utilLoggingLevelList.add(UtilLoggingLevel.SEVERE.toString());
-        utilLoggingLevelList.add(UtilLoggingLevel.WARNING.toString());
-        utilLoggingLevelList.add(UtilLoggingLevel.INFO.toString());
-        utilLoggingLevelList.add(UtilLoggingLevel.CONFIG.toString());
-        utilLoggingLevelList.add(UtilLoggingLevel.FINE.toString());
-        utilLoggingLevelList.add(UtilLoggingLevel.FINER.toString());
-        utilLoggingLevelList.add(UtilLoggingLevel.FINEST.toString());
-
-    }
-
     public static Rule getRule(String inequalitySymbol, String value) {
 
         Level thisLevel = null;
@@ -71,11 +43,11 @@ public class LevelInequalityRule {
         
         //an illegalargumentexception is only generated if the user types a level name
         //that doesn't exist as either a log4j or util.logging level name
-        if (levelList.contains(value.toUpperCase())) {
-            thisLevel = Level.toLevel(value.toUpperCase());
-        } else if (utilLoggingLevelList.contains(value.toUpperCase())){
-            thisLevel = UtilLoggingLevel.toLevel(value.toUpperCase());
-        } else {
+        thisLevel = Level.toLevel(value, null);
+        if (thisLevel == null) {
+            thisLevel = UtilLoggingLevel.toLevel(value);
+        } 
+        if (thisLevel == null) {
             throw new IllegalArgumentException("Invalid level inequality rule - " + value + " is not a supported level");
         }
 

@@ -22,6 +22,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.Locale;
 
 
 /**
@@ -212,7 +213,7 @@ public class Level extends Priority implements Serializable {
       return defaultLevel;
     }
 
-    String s = sArg.toUpperCase();
+    String s = sArg.toUpperCase(Locale.ENGLISH);
 
     if (s.equals("ALL")) {
       return ALL;

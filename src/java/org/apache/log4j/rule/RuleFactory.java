@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Stack;
 import org.apache.log4j.LogManager;
 
@@ -74,7 +75,10 @@ public class RuleFactory {
   }
   
   public boolean isRule(String symbol) {
-    return ((symbol != null) && (rules.contains(symbol.toLowerCase())));
+    if (symbol == null)
+      return false;
+    symbol = symbol.toLowerCase(Locale.ENGLISH);
+    return rules.contains(symbol);
   }
 
   public Rule getRule(String symbol, Stack stack) {

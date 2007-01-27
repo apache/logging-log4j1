@@ -19,6 +19,7 @@ package org.apache.log4j.rule;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggingEventFieldResolver;
 
+import java.util.Locale;
 import java.util.Stack;
 
 
@@ -63,8 +64,9 @@ public class PartialTextMatchRule extends AbstractRule {
 
   public boolean evaluate(LoggingEvent event) {
     Object p2 = resolver.getValue(field, event);
-
-    return ((p2 != null) && (value != null)
-    && (p2.toString().toLowerCase().indexOf(value.toLowerCase()) > -1));
+    if (p2 == null || value == null)
+      return false;
+    String s = p2.toString().toLowerCase(Locale.ENGLISH);
+    return s.indexOf(value.toLowerCase(Locale.ENGLISH)) != -1;
   }
 }

@@ -325,7 +325,7 @@ public class HTMLLayout extends Layout {
     for (int i = 0; i < patternConverters.length; i++) {
         PatternConverter c = patternConverters[i];
         sbuf.append("<td class=\"");
-        sbuf.append(c.getStyleClass(null).toLowerCase());
+        sbuf.append(c.getStyleClass(null));
         sbuf.append("\">");
         sbuf.append(c.getName());
         sbuf.append("</td>");
@@ -368,7 +368,7 @@ public class HTMLLayout extends Layout {
        oddCopy = odd;
     }
     
-    String level = event.getLevel().toString().toLowerCase();
+    String level = event.getLevel().toString();
 
     StringBuffer buf = new StringBuffer();
     buf.append(Layout.LINE_SEP);
@@ -384,7 +384,7 @@ public class HTMLLayout extends Layout {
     for(int i = 0; i < patternConverters.length; i++) {
         PatternConverter c = patternConverters[i];
         buf.append("<td class=\"");
-        buf.append(c.getStyleClass(event).toLowerCase());
+        buf.append(c.getStyleClass(event));
         buf.append("\">");
         int fieldStart = buf.length();
         c.format(event, buf);
