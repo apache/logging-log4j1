@@ -379,10 +379,10 @@ import org.apache.log4j.spi.LoggingEvent;
 
    <dl>
 
-   <p><dt><b>%r [%t] %-5p %c %x - %m\n</b>
+   <p><dt><b>%r [%t] %-5p %c %x - %m%n</b>
    <p><dd>This is essentially the TTCC layout.
 
-   <p><dt><b>%-6r [%15.15t] %-5p %30.30c %x - %m\n</b>
+   <p><dt><b>%-6r [%15.15t] %-5p %30.30c %x - %m%n</b>
 
    <p><dd>Similar to the TTCC layout except that the relative time is
    right padded if less than 6 digits, thread name is right padded if
