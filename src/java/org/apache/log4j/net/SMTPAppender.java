@@ -31,6 +31,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
@@ -74,10 +78,22 @@ import org.apache.log4j.spi.TriggeringEventEvaluator;
    See org.apache.log4j.rule.ExpressionRule for a more information.
    
    <p>
+   The JavaMail session is obtained through {@link #setSessionJNDI(String) JNDI} or by
+   directly calling {@link Session#getDefaultInstance(Properties) and setting
+   various addressing details on this object.
+   The former method is preferred for application servers,
+   the latter for stand-alone usage.
+   </p>
    
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
 public class SMTPAppender extends AppenderSkeleton {
+  
+  /**
+   * JavaMail session.
+   */
+  private Session session;
+  
   private String to;
   /**
    * Comma separated list of cc recipients.
@@ -92,6 +108,7 @@ public class SMTPAppender extends AppenderSkeleton {
   private String smtpHost;
   private String smtpUsername;
   private String smtpPassword;
+  private String sessionJNDI;
   private boolean smtpDebug = false;
   private String charset = "ISO-8859-1";
   private int bufferSize = 512;
@@ -122,11 +139,21 @@ public class SMTPAppender extends AppenderSkeleton {
      recipient, from, etc. */
   public void activateOptions() {
     int errorCount = 0;
-    Session session = createSession();
+    if (sessionJNDI != null) {
+      try {
+        session = lookupSession();
+        if (session == null)
+          throw new NameNotFoundException();
+      } catch (NamingException e) {
+        throw new IllegalStateException("Failed finding javax.mail.Session: " + sessionJNDI + " Reason: " + e);
+      }
+    } else {
+      session = createSession();
+    }
+    
     msg = new MimeMessage(session);
-
     try {
-       addressMessage(msg);
+      addressMessage(msg);
     } catch (MessagingException e) {
       errorCount++;
       getLogger().error("Could not activate SMTPAppender options.", e);
@@ -140,24 +167,31 @@ public class SMTPAppender extends AppenderSkeleton {
     }
 
     if (this.evaluator == null) {
-      errorCount++;
       String errMsg = "No TriggeringEventEvaluator is set for appender ["+getName()+"].";
       getLogger().error(errMsg);
       throw new IllegalStateException(errMsg);
     }
 
     if (this.layout == null) {
-      errorCount++;
       String errMsg = "No layout set for appender named [" + name + "].";
       getLogger().error(errMsg);
       throw new IllegalStateException(errMsg);
     }
     
-    if(errorCount == 0) {
+    if (errorCount == 0) {
       super.activateOptions();
     }
   }
   
+  private Session lookupSession() throws NamingException {
+    Context c = new InitialContext();
+    try {
+      return (Session) c.lookup(sessionJNDI);
+    } finally {
+      c.close();
+    }
+  }
+
   /**
    *   Address message.
    *   @param msg message, may not be null.
@@ -186,8 +220,7 @@ public class SMTPAppender extends AppenderSkeleton {
   }
 
   /**
-   *  Create mail session.
-   *  @param mail session, may not be null.
+   * Returns a new mail session, using properties from the system.
    */
   protected Session createSession() {
     Properties props = null;
@@ -599,6 +632,22 @@ public class SMTPAppender extends AppenderSkeleton {
   public boolean getSMTPDebug() {
     return smtpDebug;
   }
+
+  /**
+   * Returns the session JNDI entry name.
+   * This is useful for application servers.
+   */
+  public String getSessionJNDI() {
+    return sessionJNDI;
+  }
+
+  /**
+   * Sets the session JNDI entry name.
+   */
+  public void setSessionJNDI(String sessionJndiLocation) {
+    this.sessionJNDI = sessionJndiLocation;
+  }
+  
 }
 
 
