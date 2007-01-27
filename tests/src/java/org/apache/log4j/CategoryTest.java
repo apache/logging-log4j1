@@ -83,7 +83,15 @@ public class CategoryTest extends TestCase {
    * Tests l7dlog(Priority, String, Throwable).
    */
   public void testL7dlog() {
-    logger.l7dlog(debug, "test", null);
+    logger.l7dlog(debug, "test", (Throwable)null);
+    assertEquals("This is the English, US test.", sw.toString().trim());
+  }
+
+  /**
+   * Tests l7dlog(Priority, String) log.
+   */
+  public void testL7dlog2() {    
+    logger.l7dlog(debug, "test");
     assertEquals("This is the English, US test.", sw.toString().trim());
   }
 
@@ -91,7 +99,7 @@ public class CategoryTest extends TestCase {
    * Tests l7dlog(Priority, String, Throwable) no resource.
    */
   public void testL7dlogNoResource() {    
-    logger.l7dlog(debug, "XYZ", null);
+    logger.l7dlog(debug, "XYZ", (Throwable)null);
     assertEquals("No resource is associated with key \"XYZ\". XYZ ", sw.toString());
   }
 
@@ -100,7 +108,7 @@ public class CategoryTest extends TestCase {
    */
   public void testL7dlogNothing() {    
     logger.setLevel(Level.ERROR);
-    logger.l7dlog(debug, "msg1", null);
+    logger.l7dlog(debug, "msg1", (Throwable)null);
     assertEquals("no logging", "", sw.toString());
   }
 
@@ -110,6 +118,15 @@ public class CategoryTest extends TestCase {
   public void testL7dlogFormat() {    
     Object o[] = new Object[] { new Integer(1), "X" };
     logger.l7dlog(debug, "msg1", o, null);
+    assertEquals("This is test number 1 with string argument X. ", sw.toString());
+  }
+
+  /**
+   * Tests l7dlog(FQN, Priority, String, Object[]) log.
+   */
+  public void testL7dlogFormat2() {    
+    Object o[] = new Object[] { new Integer(1), "X" };
+    logger.l7dlog(debug, "msg1", o);
     assertEquals("This is test number 1 with string argument X. ", sw.toString());
   }
 
