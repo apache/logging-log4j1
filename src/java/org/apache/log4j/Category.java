@@ -1074,6 +1074,17 @@ public class Category implements ULogger, AppenderAttachable {
   }
 
   /**
+   * Log a localized message. The user supplied parameter <code>key</code> is
+   * replaced by its localized version from the resource bundle.
+   *
+   * @see #setResourceBundle
+   * @since 1.3
+   */
+  public void l7dlog(final Priority level, String key) {
+    l7dlog(level, key, null, null);
+  }
+
+  /**
    * Log a localized and parameterized message. First, the user supplied
    * <code>key</code> is searched in the resource bundle. Next, the resulting
    * pattern is formatted using {@link
@@ -1082,10 +1093,21 @@ public class Category implements ULogger, AppenderAttachable {
    *
    * @since 0.8.4
    */
-  public void l7dlog(
-    Priority level, String key, Object[] params, Throwable t) {
-    l7dlog(FQCN, level, key, params, t);
-    
+  public void l7dlog(Priority level, String key, Object[] params, Throwable t) {
+    l7dlog(FQCN, level, key, params, t);    
+  }
+
+  /**
+   * Log a localized and parameterized message. First, the user supplied
+   * <code>key</code> is searched in the resource bundle. Next, the resulting
+   * pattern is formatted using {@link
+   * java.text.MessageFormat#format(String,Object[])} method with the user
+   * supplied object array <code>params</code>.
+   *
+   * @since 1.3
+   */
+  public void l7dlog(Priority level, String key, Object[] params) {
+    l7dlog(FQCN, level, key, params, null);
   }
 
   /**
