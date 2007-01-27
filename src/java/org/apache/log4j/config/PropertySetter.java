@@ -20,7 +20,6 @@ package org.apache.log4j.config;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Priority;
-import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ComponentBase;
 import org.apache.log4j.spi.OptionHandler;
@@ -82,13 +81,23 @@ public class PropertySetter extends ComponentBase {
      configured.
    */
   protected void introspect() {
+    Class c = obj.getClass();
+    getLogger().debug("introspect " + c);
     try {
-      BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
+      BeanInfo bi = Introspector.getBeanInfo(c);
       props = bi.getPropertyDescriptors();
+      StringBuffer sb = new StringBuffer();
+      for (int i = 0; i < props.length; i++) {
+        PropertyDescriptor d = props[i];
+        String rw = (d.getWriteMethod() == null) ? "(ro)" : "";
+        sb.append(" ").append(d.getName()).append(rw);
+      }
+      getLogger().debug(c + " properties: " + sb);
+      
       methodDescriptors = bi.getMethodDescriptors();
     } catch (IntrospectionException ex) {
       getLogger().error(
-        "Failed to introspect " + obj + ": " + ex.getMessage());
+        "Failed to introspect " + c + ": " + ex.getMessage());
       props = new PropertyDescriptor[0];
       methodDescriptors = new MethodDescriptor[0];
     }
