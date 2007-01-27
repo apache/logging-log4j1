@@ -20,7 +20,6 @@ package org.apache.log4j.net;
 import org.apache.log4j.AbstractAppenderTest;
 import org.apache.log4j.AppenderSkeleton;
 
-
 /**
  * Test if SMTPAppender honors the Appender contract.
  * 
@@ -28,13 +27,14 @@ import org.apache.log4j.AppenderSkeleton;
  *
  */
 public class SMTPAppenderTest extends AbstractAppenderTest {
+  
+  SMTPAppender ca = new SMTPAppender();
+  
   protected AppenderSkeleton getAppender() {
-    return new SMTPAppender();
+    return ca;
   }
 
   public AppenderSkeleton getConfiguredAppender() {
-    SMTPAppender ca = new SMTPAppender();
-
     // set a bogus layout
     ca.setLayout(new DummyLayout());
     ca.setFrom("noreply@nowhere.x");
@@ -43,7 +43,23 @@ public class SMTPAppenderTest extends AbstractAppenderTest {
     return ca;
   }
 
-  public void testPartiallyConfiguredAppender() {
-    
+  public void testBadSessionJNDI() {
+    ca.setSessionJNDI("/not/here");
+    try {
+      ca.activateOptions();
+      fail("cannot start");
+    } catch (IllegalStateException e) {
+    }
+    ca.setSessionJNDI(null);
+    ca.setLayout(new DummyLayout());
+    ca.activateOptions();
+    /*
+    LoggingEvent le = new LoggingEvent();
+    le.setMessage("hi");
+    le.setLevel(Level.DEBUG);
+    ca.doAppend(le);
+    */
   }
+  
+  
 }
