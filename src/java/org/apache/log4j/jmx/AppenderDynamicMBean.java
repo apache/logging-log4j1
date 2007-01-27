@@ -188,11 +188,10 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
     String name = appender.getName()+",layout="+layout.getClass().getName();
     cat.debug("Adding LayoutMBean:"+name);
-    ObjectName objectName = null;
     try {
       LayoutDynamicMBean appenderMBean = new LayoutDynamicMBean(layout);
-      objectName = new ObjectName("log4j:appender="+name);
-      server.registerMBean(appenderMBean, objectName);
+      ObjectName objectName = new ObjectName(getObjectName().getDomain(), "appender", name);
+      getServer().registerMBean(appenderMBean, objectName);
 
       dAttributes.add(new MBeanAttributeInfo("appender="+name,
 					     "javax.management.ObjectName",
@@ -227,7 +226,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
     cat.debug("getAttribute called with ["+attributeName+"].");
     if(attributeName.startsWith("appender="+appender.getName()+",layout")) {
       try {
-	return new ObjectName("log4j:"+attributeName );
+	return new ObjectName(getObjectName().getDomain() + ":" + attributeName);
       } catch(Exception e) {
 	cat.error("attributeName", e);
       }
@@ -307,12 +306,10 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
   }
 
   public
-  ObjectName preRegister(MBeanServer server, ObjectName name) {
-    cat.debug("preRegister called. Server="+server+ ", name="+name);
-    this.server = server;
+  ObjectName preRegister(MBeanServer server, ObjectName objectName) {
+    super.preRegister(server, objectName);
     registerLayoutMBean(appender.getLayout());
-
-    return name;
+    return objectName;
   }
 
 

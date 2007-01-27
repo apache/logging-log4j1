@@ -31,7 +31,14 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
                                                       MBeanRegistration {
 
   private String dClassName = getClass().getName();
-  MBeanServer server;
+  
+  /**
+   * Name of the registered MBean.
+   */
+  private ObjectName objectName;
+  
+  /** {@link MBeanServer} instance, set when registration done. */
+  private MBeanServer server;
   
   /**
    * Enables the to get the values of several attributes of the Dynamic MBean.
@@ -110,19 +117,30 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
   void postRegister(java.lang.Boolean registrationDone) {
   }
 
-
-
   public
   void preDeregister() {
     getLogger().debug("preDeregister called.");
   }
 
   public
-  ObjectName preRegister(MBeanServer server, ObjectName name) {
-    getLogger().debug("preRegister called. Server="+server+ ", name="+name);
-    return name;
+  ObjectName preRegister(MBeanServer server, ObjectName objectName) {
+    getLogger().debug("preRegister called. Server="+server+ ", name="+objectName);
+    this.server = server;
+    this.objectName = objectName;
+    return objectName;
   }
 
+  /**
+   * Returns the registered object name of this MBean.
+   */
+  protected ObjectName getObjectName() {
+    return objectName;
+  }
 
-
+  /**
+   * Returns the registered MBeanServer of this MBean.
+   */
+  protected MBeanServer getServer() {
+    return server;
+  }
 }
