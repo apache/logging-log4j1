@@ -19,6 +19,7 @@ package org.apache.log4j.rule;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.helpers.UtilLoggingLevel;
@@ -34,35 +35,15 @@ public class LevelEqualsRule extends AbstractRule {
 
     private transient Level level;
 
-    private static List levelList = new LinkedList();
-
-    static {
-        populateLevels();
-    }
-    
     private LevelEqualsRule(Level level) {
         this.level = level;
     }
 
-    private static void populateLevels() {
-        levelList = new LinkedList();
-
-        levelList.add(Level.FATAL.toString());
-        levelList.add(Level.ERROR.toString());
-        levelList.add(Level.WARN.toString());
-        levelList.add(Level.INFO.toString());
-        levelList.add(Level.DEBUG.toString());
-        levelList.add(Level.TRACE.toString());
-    }
-
     public static Rule getRule(String value) {
-        Level thisLevel = null;
-        if (levelList.contains(value.toUpperCase())) {
-            thisLevel = Level.toLevel(value.toUpperCase());
-          } else {
-              thisLevel = UtilLoggingLevel.toLevel(value.toUpperCase());
-          }
-
+        Level thisLevel = Level.toLevel(value, null);
+        if (thisLevel == null) {
+           thisLevel = UtilLoggingLevel.toLevel(value);
+        }
         return new LevelEqualsRule(thisLevel);
     }
 
@@ -78,7 +59,6 @@ public class LevelEqualsRule extends AbstractRule {
      * @throws IOException
      */
     private void readObject(java.io.ObjectInputStream in) throws IOException {
-        populateLevels();
         boolean isUtilLogging = in.readBoolean();
         int levelInt = in.readInt();
         if (isUtilLogging) {

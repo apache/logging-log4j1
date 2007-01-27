@@ -34,8 +34,6 @@ public class DateTimeDateFormat extends AbsoluteTimeDateFormat {
      * Equivalent format string for SimpleDateFormat.
      */
     private final static String PATTERN = "dd MMM yyyy HH:mm:ss,SSS";
-    /** Short names for the months. */
-    String[] shortMonths = new DateFormatSymbols().getShortMonths();
 
     /**
      * Create a new instance of DateTimeDateFormat.

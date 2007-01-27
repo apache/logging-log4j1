@@ -21,12 +21,13 @@ import org.apache.log4j.spi.ComponentBase;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Locale;
 
 
 /**
- *
+ * Database utilities.
+ * 
  * @author Ceki Gulcu
- *
  */
 public class Util extends ComponentBase {
   private static final String POSTGRES_PART = "postgresql";
@@ -36,12 +37,15 @@ public class Util extends ComponentBase {
   private static final String MSSQL_PART = "microsoft";
   private static final String HSQL_PART = "hsql";
   
+  /**
+   * Returns a dialect based on the product name in the {@link DatabaseMetaData}.
+   */
   public static int discoverSQLDialect(DatabaseMetaData meta) {
     int dialectCode = 0;
 
     try {
 
-      String dbName = meta.getDatabaseProductName().toLowerCase();
+      String dbName = meta.getDatabaseProductName().toLowerCase(Locale.ENGLISH);
 
       if (dbName.indexOf(POSTGRES_PART) != -1) {
         return ConnectionSource.POSTGRES_DIALECT;
