@@ -251,7 +251,7 @@ public class OptionConverter  {
     } catch (NoSuchMethodException e) {
       getLogger().warn(
         "custom level class [" + clazz + "]"
-        + " does not have a constructor which takes one string parameter", e);
+        + " does not have a class function toLevel(String, Level)", e);
     } catch (java.lang.reflect.InvocationTargetException e) {
       getLogger().warn(
         "custom level class [" + clazz + "]" + " could not be instantiated", e);
