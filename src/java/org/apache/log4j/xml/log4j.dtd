@@ -118,6 +118,7 @@ element. -->
 <!ATTLIST logger
   name		ID	#REQUIRED
   additivity	(true|false) "true"  
+  resourceBundle CDATA   #IMPLIED
 >
 
 

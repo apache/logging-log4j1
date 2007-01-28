@@ -51,6 +51,7 @@ public class JoranConfiguratorTest extends TestCase {
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
+  JoranConfigurator jc = new JoranConfigurator();
   
   public JoranConfiguratorTest(String name) {
     super(name);
@@ -67,8 +68,7 @@ public class JoranConfiguratorTest extends TestCase {
   
   
   public void test1() {
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.doConfigure("./input/joran/simple2.xml", LogManager.getLoggerRepository());
+    jc.doConfigure("tests/input/joran/simple2.xml", LogManager.getLoggerRepository());
     
     List errorList = jc.getExecutionContext().getErrorList();
     for(int i = 0; i < errorList.size(); i++) {
@@ -76,10 +76,16 @@ public class JoranConfiguratorTest extends TestCase {
     }
   }
   
+  public void testResourceBundle() {
+    jc.doConfigure("./input/joran/resourceBundle.xml", LogManager.getLoggerRepository());
+    Logger l = Logger.getLogger("foo");
+    assertNotNull(l.getResourceBundle());
+    assertNull(Logger.getLogger("bar").getResourceBundle());
+  }
+  
   public void testAsync() throws Exception {
-    JoranConfigurator joc = new JoranConfigurator();
-    joc.doConfigure("./input/joran/asyncTest.xml", LogManager.getLoggerRepository());
-    joc.dumpErrors();
+    jc.doConfigure("./input/joran/asyncTest.xml", LogManager.getLoggerRepository());
+    jc.dumpErrors();
     common();
     
     // allow time for the Aync thread to do its job
@@ -121,11 +127,5 @@ public class JoranConfiguratorTest extends TestCase {
     logger.error("Message " + ++i, e);
     root.error("Message " + i, e);    
   }
-  
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new JoranConfiguratorTest("testAsync"));
-    return suite;
-   }
 
 }
