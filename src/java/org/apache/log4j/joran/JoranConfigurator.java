@@ -16,6 +16,7 @@
 
 package org.apache.log4j.joran;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.joran.action.NestComponentIA;
 import org.apache.log4j.config.ConfiguratorBase;
 import org.apache.log4j.joran.action.ActionConst;
@@ -53,6 +54,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.lang.reflect.Method;
 import java.net.URL;
 
 import java.util.HashMap;
@@ -127,6 +129,20 @@ public class JoranConfigurator extends ConfiguratorBase
       doConfigure(action, repository);
   }
   
+  private void setXIncludeAware(SAXParserFactory factory) {
+    try {
+      Class sig[] = new Class[] { boolean.class };
+      Method m = factory.getClass().getMethod("setXIncludeAware", sig);
+      m.invoke(factory, new Object[] { Boolean.TRUE });
+    } catch (Exception e) {
+      getLogger().debug("setXIncludeAware not supported");
+    }
+  }
+  
+  private Logger getLogger() {
+    return getLogger(repository);
+  }
+  
   protected void doConfigure(final ParseAction action, final LoggerRepository repository) {
     // This line is needed here because there is logging from inside this method.
     this.repository = repository;
@@ -140,10 +156,11 @@ public class JoranConfigurator extends ConfiguratorBase
         SAXParserFactory spf = SAXParserFactory.newInstance();
         spf.setValidating(false);
         spf.setNamespaceAware(true);
+        setXIncludeAware(spf);
         saxParser = spf.newSAXParser();
     } catch (Exception pce) {
       final String errMsg = "Parser configuration error occured";
-      getLogger(repository).error(errMsg, pce);
+      getLogger().error(errMsg, pce);
       ec.addError(new ErrorItem(errMsg, pce));
       return;
     }
@@ -154,11 +171,11 @@ public class JoranConfigurator extends ConfiguratorBase
         action.parse(saxParser, document);
     } catch(IOException ie) {
       final String errMsg = "I/O error occured while parsing xml file";
-      getLogger(repository).error(errMsg, ie);
+      getLogger().error(errMsg, ie);
       ec.addError(new ErrorItem(errMsg, ie));
     } catch (Exception ex) {
       final String errMsg = "Problem parsing XML document. See previously reported errors. Abandoning all further processing.";
-      getLogger(repository).error(errMsg, ex);
+      getLogger().error(errMsg, ex);
       errorList.add(
         new ErrorItem(errMsg));
       return;
@@ -171,7 +188,7 @@ public class JoranConfigurator extends ConfiguratorBase
       
       document.replay(joranInterpreter);
 
-      getLogger(repository).debug("Finished parsing.");
+      getLogger().debug("Finished parsing.");
     } catch (SAXException e) {
       // all exceptions should have been recorded already.
     } finally {

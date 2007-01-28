@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration>
+
+<log4j:configuration xmlns:log4j='http://logging.apache.org/' debug='true' reset='true' xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="xinclude2.xml"/>
+
+  <root>
+    <level value="ALL" />
+  </root>
+  
+</log4j:configuration>
