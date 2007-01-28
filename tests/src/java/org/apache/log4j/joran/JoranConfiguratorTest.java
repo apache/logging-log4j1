@@ -68,7 +68,7 @@ public class JoranConfiguratorTest extends TestCase {
   
   
   public void test1() {
-    jc.doConfigure("tests/input/joran/simple2.xml", LogManager.getLoggerRepository());
+    jc.doConfigure("./input/joran/simple2.xml", LogManager.getLoggerRepository());
     
     List errorList = jc.getExecutionContext().getErrorList();
     for(int i = 0; i < errorList.size(); i++) {
@@ -81,6 +81,14 @@ public class JoranConfiguratorTest extends TestCase {
     Logger l = Logger.getLogger("foo");
     assertNotNull(l.getResourceBundle());
     assertNull(Logger.getLogger("bar").getResourceBundle());
+  }
+
+  public void testXInclude() {
+    jc.doConfigure("./input/xml/xinclude.xml", LogManager.getLoggerRepository());
+    jc.dumpErrors();
+    Logger l = Logger.getLogger("foo");
+    assertEquals(Level.INFO, l.getLevel());
+    System.out.println(jc.getExecutionContext().getErrorList());
   }
   
   public void testAsync() throws Exception {

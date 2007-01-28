@@ -100,10 +100,12 @@ public class LoggerAction extends Action {
     
     String resourceBundle = attributes.getValue(RESOURCE_BUNDLE);
     try {
-      ResourceBundle bundle = ResourceBundle.getBundle(resourceBundle);
-      l.setResourceBundle(bundle);
-      getLogger().debug(
-          "Setting [" + l.getName() + "] resourceBundle to [" + resourceBundle + "].");
+      if (resourceBundle != null) {
+        ResourceBundle bundle = ResourceBundle.getBundle(resourceBundle);
+        l.setResourceBundle(bundle);
+        getLogger().debug(
+            "Setting [" + l.getName() + "] resourceBundle to [" + resourceBundle + "].");
+      }
     } catch (MissingResourceException e) {
       getLogger().error("Error loading resource bundle [" + resourceBundle + "]", e);
     }

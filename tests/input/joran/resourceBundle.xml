@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration>
+
+<log4j:configuration xmlns:log4j='http://logging.apache.org/' debug='true'>
+
+  <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern"  value="%5sn %d %level [%t] %c - %m%n"/>  
+    </layout>
+  </appender>
+  
+  <logger name="foo" resourceBundle="L7D"/>
+  
+  <logger name="bar" resourceBundle="NOT_HERE"/>
+    
+  <root>
+    <level value="DEBUG" />
+    <appender-ref ref="CONSOLE" />
+  </root>
+  
+</log4j:configuration>
