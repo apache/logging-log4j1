@@ -168,7 +168,7 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
       } else {
 	return l.toString();
       }
-    } else if(attributeName.startsWith("appender=")) {
+    } else if(attributeName.startsWith("appender_")) {
       try {
 	return new ObjectName(getObjectName().getDomain() + ":" + attributeName);
       } catch(Exception e) {
