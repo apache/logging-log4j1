@@ -38,13 +38,13 @@ import java.net.MalformedURLException;
    @since 0.7.3
 */
 public class SyslogWriter extends Writer {
-  static final int SYSLOG_PORT = 514;
+  private static final int SYSLOG_PORT = 514;
   private InetAddress address;
   private final int port;
   private DatagramSocket ds;
 
   private Logger logger = LogManager.getLogger(SyslogWriter.class);
-  StringBuffer buf = new StringBuffer();
+  private StringBuffer buf = new StringBuffer();
   
   /**
    *  Constructs a new instance of SyslogWriter.
@@ -112,15 +112,20 @@ public class SyslogWriter extends Writer {
     buf.append(str); 
   }
 
+  /**
+   * Sends the pending data.
+   */
   public void flush() throws IOException {
-    logger.debug("Writing out [{}]", buf);
+    if (buf.length() == 0)
+      return;
+    // logging here can be problematic during shutdown when writing the footer
+    // logger.debug("Writing out [{}]", buf);
     byte[] bytes = buf.toString().getBytes();
     DatagramPacket packet =
       new DatagramPacket(bytes, bytes.length, address, port);
 
-    if (this.ds != null && this.address != null) {
-      ds.send(packet);
-    }
+    ds.send(packet);
+
     // clean up for next time
     buf.setLength(0);
   }
@@ -129,6 +134,11 @@ public class SyslogWriter extends Writer {
    * Closes the datagram socket.
    */
   public void close() {
+    try {
+      flush();
+    } catch (IOException e) {
+      // should throw it ... can't change method sig. though
+    }
     ds.close();
   }
   

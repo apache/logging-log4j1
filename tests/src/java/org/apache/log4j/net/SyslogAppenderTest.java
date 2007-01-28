@@ -41,6 +41,10 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Curt Arnold
  **/
 public class SyslogAppenderTest extends TestCase {
+  
+  DatagramSocket ds;
+  DatagramPacket p = new DatagramPacket(new byte[1000], 0, 1000);
+  
   /**
    * Create new instance of SyslogAppenderTest.
    * @param testName test name
@@ -48,11 +52,17 @@ public class SyslogAppenderTest extends TestCase {
   public SyslogAppenderTest(final String testName) {
     super(testName);
   }
+  
+  protected void setUp() throws Exception {
+    ds = new DatagramSocket();
+    ds.setSoTimeout(2000);    
+  }
 
   /**
     * Resets configuration after every test.
   */
-  public void tearDown() {
+  protected void tearDown() {
+    ds.close();    
     LogManager.resetConfiguration();
   }
 
@@ -403,31 +413,51 @@ public class SyslogAppenderTest extends TestCase {
       appender.setSyslogHost("127.0.0.1:1514");
   }
   
-  public void testActualLogging() throws IOException {
-    DatagramSocket ds = new DatagramSocket();
-    ds.setSoTimeout(10);
+  private String toString(DatagramPacket p){
+    return new String(p.getData(), 0, p.getLength());
+  }
+  
+  public void testActualLogging() throws Exception {
     SyslogAppender appender = new SyslogAppender();
     appender.setSyslogHost("localhost:" + ds.getLocalPort());
     appender.setName("name");
-    appender.setLayout(new PatternLayout("%l %m"));
+    PatternLayout pl = new PatternLayout("%m");
+    pl.setFooter("EOF");
+    appender.setLayout(pl);
     appender.activateOptions();
     
     Logger l = Logger.getRootLogger();
     l.addAppender(appender);
     l.info("greetings");
-    DatagramPacket p = new DatagramPacket(new byte[1000], 0, 1000);
     ds.receive(p);
-    String s = new String(p.getData(), 0, p.getLength());
+    String s = toString(p);
     StringTokenizer st = new StringTokenizer(s, "<>() ");
     assertEquals("14", st.nextToken());
     assertEquals(3, st.nextToken().length());
     st.nextToken(); // date
     st.nextToken(); // time
     assertEquals(appender.getLocalHostname(), st.nextToken());
-    assertEquals(getClass().getName() + ".testActualLogging", st.nextToken());
-    st.nextToken(); // this filename:line number
     assertEquals("greetings", st.nextToken());
-    ds.close();
+  }
+  
+  public void testLoggingHeaderFooter() throws Exception { 
+    SyslogAppender appender = new SyslogAppender();
+    appender.setSyslogHost("localhost:" + ds.getLocalPort());
+    appender.setName("name");
+
+    PatternLayout pl = new PatternLayout("%m");
+    pl.setHeader("HI");
+    pl.setFooter("BYE");
+    appender.setLayout(pl);
+    appender.activateOptions();
+    ds.receive(p);
+    String s = toString(p);
+    assertEquals(true, s.endsWith("HI"));
+
+    appender.close();
+    ds.receive(p);
+    s = toString(p);
+    assertEquals(true, s.endsWith("BYE"));
   }
   
   public void testLeak() throws IOException { 
