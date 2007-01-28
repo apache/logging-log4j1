@@ -4,6 +4,7 @@
 -- It is intended for Oracle databases.
 
 -- Tested successfully on Oracle9i Release 9.2.0.3.0 by James Stauffer
+-- Tested successfully on Oracle9i Release by Elias Ross
 
 -- The following lines are useful in cleaning any previous tables 
 
@@ -12,7 +13,6 @@
 --drop table logging_event_property; 
 --drop table logging_event_exception; 
 --drop table logging_event; 
-
 
 CREATE SEQUENCE logging_event_id_seq MINVALUE 1 START WITH 1;
 
@@ -25,7 +25,7 @@ CREATE TABLE logging_event
     level_string      VARCHAR2(254) NOT NULL,
     ndc               VARCHAR2(4000),
     thread_name       VARCHAR2(254),
-    reference_flag    SMALLINT,
+    reference_flag    NUMBER(5),
     caller_filename   VARCHAR2(254) NOT NULL,
     caller_class      VARCHAR2(254) NOT NULL,
     caller_method     VARCHAR2(254) NOT NULL,
@@ -33,16 +33,13 @@ CREATE TABLE logging_event
     event_id          NUMBER(10) PRIMARY KEY
   );
 
-
-CREATE TRIGGER logging_event_id_seq_trig
-  BEFORE INSERT ON logging_event
-  FOR EACH ROW  
-  BEGIN  
-    SELECT logging_event_id_seq.NEXTVAL 
-    INTO   :NEW.event_id 
-    FROM   DUAL;  
-  END logging_event_id_seq_trig;
-
+CREATE OR REPLACE TRIGGER logging_event_id_seq_trig
+BEFORE INSERT ON logging_event
+FOR EACH ROW
+BEGIN
+   SELECT logging_event_id_seq.nextval
+   INTO :new.sequence_number$ FROM dual
+END;
 
 CREATE TABLE logging_event_property
   (
@@ -56,12 +53,9 @@ CREATE TABLE logging_event_property
 CREATE TABLE logging_event_exception
   (
     event_id         NUMBER(10) NOT NULL,
-    i                SMALLINT NOT NULL,
+    i                NUMBER(5)  NOT NULL,
     trace_line       VARCHAR2(254) NOT NULL,
     PRIMARY KEY(event_id, i),
     FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
   );
   
-
-
-
