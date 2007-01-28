@@ -16,8 +16,9 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
+import org.apache.log4j.WriterAppender;
 import org.apache.log4j.helpers.SyslogWriter;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -46,7 +47,7 @@ import java.util.Locale;
  * @author Hermod Opstvedt
  * @author Curt Arnold
  */
-public class SyslogAppender extends AppenderSkeleton {
+public class SyslogAppender extends WriterAppender {
     // The following constants are extracted from a syslog.h file
     // copyrighted by the Regents of the University of California
     // I hope nobody at Berkley gets offended.
@@ -125,21 +126,15 @@ public class SyslogAppender extends AppenderSkeleton {
   String localHostname;
   String syslogHost;
 
-  private SyslogWriter sw;
-
   // We must use US locale to get the correct month abreviation  
   private SimpleDateFormat sdf =
     new SimpleDateFormat("MMM dd hh:mm:ss", new DateFormatSymbols(Locale.US));
 
-  private Layout layout;
-  
   public SyslogAppender() {
-      super(false);
   }
 
   public
   SyslogAppender(final Layout layout, final int syslogFacility) {
-      super(false);
       this.layout = layout;
       this.syslogFacility = syslogFacility;
       String newFacilityStr = getFacilityString(syslogFacility);
@@ -154,16 +149,6 @@ public class SyslogAppender extends AppenderSkeleton {
       setSyslogHost(syslogHost);
    }
 
-
-  /**
-   * Release resources held by this SyslogAppender,
-   * including the datagram socket.
-   * @since 0.8.4
-   */
-  public synchronized void close() {
-    closed = true;
-    sw.close();
-  }
 
   /**
    * This method gets the network name of the machine we are running on.
@@ -262,7 +247,8 @@ public class SyslogAppender extends AppenderSkeleton {
     
     localHostname = getLocalHostname();
 
-    sw = new SyslogWriter(syslogHost);
+    SyslogWriter sw = new SyslogWriter(syslogHost);
+    setWriter(sw);
     super.activateOptions();
   }
 
@@ -336,31 +322,26 @@ public class SyslogAppender extends AppenderSkeleton {
     if (timestamp.charAt(4) == '0') {
       timestamp.setCharAt(4, ' ');
     }
-    sw.write(timestamp.toString());
+    qw.write(timestamp.toString());
   }
 
   private void writeInitialParts(LoggingEvent event) throws IOException {
-    int pri = syslogFacility +event.getLevel().getSyslogEquivalent();
-    sw.write("<");
-    sw.write(String.valueOf(pri));
-    sw.write(">");
+    int pri = syslogFacility + event.getLevel().getSyslogEquivalent();
+    qw.write("<");
+    qw.write(String.valueOf(pri));
+    qw.write(">");
     writeTimestamp();
-    sw.write(' ');
-    sw.write(localHostname);
-    sw.write(' ');
+    qw.write(' ');
+    qw.write(localHostname);
+    qw.write(' ');
   }
   
-  public void append(LoggingEvent event) {
-    // We must not attempt to append if sw is null.
-    if (sw == null) {
-      return;
-    }
-
+  protected void subAppend(LoggingEvent event) {
     try {
       writeInitialParts(event);
       String msg = layout.format(event);
-      sw.write(msg);
-      sw.flush();
+      qw.write(msg);
+      qw.flush();
 
 /*
       if (layout.ignoresThrowable()) {
@@ -379,14 +360,8 @@ public class SyslogAppender extends AppenderSkeleton {
     } catch (IOException ioe) {
     }
   }
-  public Layout getLayout() {
-    return layout;
-  }
-  public void setLayout(Layout layout) {
-    this.layout = layout;
-  }
 
-    /**
+  /**
      * If the <b>FacilityPrinting</b> option is set to true, the printed
      * message will include the facility name of the application. It is
      * <em>false</em> by default.
@@ -407,5 +382,34 @@ public class SyslogAppender extends AppenderSkeleton {
     boolean getFacilityPrinting() {
       return facilityPrinting;
     }
+    
+    /**
+     * Logs a footer/header as info.
+     */
+    private void info(String msg) {
+      if (msg == null)
+        return;
+      LoggingEvent event = new LoggingEvent();
+      event.setLevel(Level.INFO);
+      try {
+        writeInitialParts(event);
+      } catch (IOException e) {
+      }
+      qw.write(msg);
+      qw.flush();      
+    }
+    
+    protected void writeFooter() {
+      if (layout != null) {
+        info(layout.getFooter());
+      }
+    }
+
+    protected void writeHeader() {
+      if (layout != null) {
+        info(layout.getHeader());
+      }
+    }
+
 
 }
