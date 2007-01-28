@@ -82,6 +82,7 @@ public class TelnetAppender extends AppenderSkeleton {
       getLogger().error("Could not active TelnetAppender options for TelnetAppender named "+getName(), e);
       throw new IllegalStateException("Could not create a SocketHandler for TelnetAppender named "+getName());
     }
+    super.activateOptions();
   }
 
   public int getPort() {
@@ -94,9 +95,13 @@ public class TelnetAppender extends AppenderSkeleton {
 
   /** shuts down the appender. */
   public void close() {
-      if(sh != null) {
-          sh.finalize();
+    if (sh != null) {
+      sh.close();
+      try {
+        sh.join();
+      } catch (InterruptedException e) {
       }
+    }
   }
 
   /** Handles a log event.  For this appender, that means writing the
@@ -128,7 +133,6 @@ public class TelnetAppender extends AppenderSkeleton {
       clients.  It is threaded so that clients can connect/disconnect
       asynchronously. */
   protected class SocketHandler extends Thread {
-    private boolean done = false;
     private Vector writers = new Vector();
     private Vector connections = new Vector();
     private ServerSocket serverSocket;
@@ -138,23 +142,28 @@ public class TelnetAppender extends AppenderSkeleton {
     
     public SocketHandler(int port) throws IOException {
       serverSocket = new ServerSocket(port);
+      setName("TelnetAppender-" + getName() + "-" + port);
     }
 
-    /** make sure we close all network connections when this handler is destroyed. */
     public void finalize() {
+      close();
+    }
+    
+    /** make sure we close all network connections when this handler is destroyed. */
+    public void close() {
       for (Enumeration e = connections.elements(); e.hasMoreElements();) {
         try {
           ((Socket) e.nextElement()).close();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
         }
       }
-
+      
+      interrupt();
       try {
         serverSocket.close();
-      } catch (Exception ex) {
-      }
-
-      done = true;
+      } catch (IOException e) {
+        e.printStackTrace();
+      }      
     }
 
     /** sends a message to each of the clients in telnet-friendly output. */
@@ -184,7 +193,7 @@ public class TelnetAppender extends AppenderSkeleton {
         are refused when MAX_CONNECTIONS is reached.
     */
     public void run() {
-      while (!done) {
+      while (!Thread.interrupted()) {
         try {
           Socket newClient = serverSocket.accept();
 
@@ -206,9 +215,17 @@ public class TelnetAppender extends AppenderSkeleton {
             newClient.close();
           }
         } catch (Exception e) {
-          getLogger().error("Encountered error while in SocketHandler loop.", e);
+          if (!Thread.interrupted())
+            getLogger().error("Encountered error while in SocketHandler loop.", e);
+          break;
         }
       }
+
+      try {
+        serverSocket.close();
+      } catch (IOException ex) {
+      }
+
     }
     
     /**
