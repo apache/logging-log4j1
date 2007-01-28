@@ -28,10 +28,14 @@ import org.apache.log4j.spi.LoggerRepository;
 import org.xml.sax.Attributes;
 
 import java.lang.reflect.Method;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 
 public class LoggerAction extends Action {
   boolean inError = false;
+  
+  final static String RESOURCE_BUNDLE = "resourceBundle";
   
   public void begin(ExecutionContext ec, String name, Attributes attributes) {
     // Let us forget about previous errors (in this object)
@@ -93,6 +97,16 @@ public class LoggerAction extends Action {
 
     getLogger().debug("Pushing logger named [" + loggerName + "].");
     ec.pushObject(l);
+    
+    String resourceBundle = attributes.getValue(RESOURCE_BUNDLE);
+    try {
+      ResourceBundle bundle = ResourceBundle.getBundle(resourceBundle);
+      l.setResourceBundle(bundle);
+      getLogger().debug(
+          "Setting [" + l.getName() + "] resourceBundle to [" + resourceBundle + "].");
+    } catch (MissingResourceException e) {
+      getLogger().error("Error loading resource bundle [" + resourceBundle + "]", e);
+    }
   }
 
   public void end(ExecutionContext ec, String e) {
