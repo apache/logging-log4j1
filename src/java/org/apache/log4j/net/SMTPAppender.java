@@ -106,6 +106,7 @@ public class SMTPAppender extends AppenderSkeleton {
   private String from;
   private String subjectStr = "";
   private String smtpHost;
+  private int    smtpPort;
   private String smtpUsername;
   private String smtpPassword;
   private String sessionJNDI;
@@ -198,32 +199,32 @@ public class SMTPAppender extends AppenderSkeleton {
    *   @throws MessagingException thrown if error addressing message. 
    */
   protected void addressMessage(final Message msg) throws MessagingException {
-       if (from != null) {
-	 		msg.setFrom(getAddress(from));
-       } else {
-	 		msg.setFrom();
-	   }
+    if (from != null) {
+      msg.setFrom(getAddress(from));
+    } else {
+      msg.setFrom();
+    }
 
-       if (to != null && to.length() > 0) {
-             msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
-       }
+    if (to != null && to.length() > 0) {
+      msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
+    }
 
-      //Add CC receipients if defined.
-	  if (cc != null && cc.length() > 0) {
-		msg.setRecipients(Message.RecipientType.CC, parseAddress(cc));
-	  }
+    //Add CC receipients if defined.
+    if (cc != null && cc.length() > 0) {
+      msg.setRecipients(Message.RecipientType.CC, parseAddress(cc));
+    }
 
-      //Add BCC receipients if defined.
-	  if (bcc != null && bcc.length() > 0) {
-		msg.setRecipients(Message.RecipientType.BCC, parseAddress(bcc));
-	  }
+    //Add BCC receipients if defined.
+    if (bcc != null && bcc.length() > 0) {
+      msg.setRecipients(Message.RecipientType.BCC, parseAddress(bcc));
+    }
   }
 
   /**
    * Returns a new mail session, using properties from the system.
    */
   protected Session createSession() {
-    Properties props = null;
+    Properties props;
     try {
         props = new Properties (System.getProperties());
     } catch(SecurityException ex) {
@@ -231,6 +232,9 @@ public class SMTPAppender extends AppenderSkeleton {
     }
     if (smtpHost != null) {
       props.put("mail.smtp.host", smtpHost);
+    }
+    if (smtpPort != 0) {
+      props.put("mail.smtp.port", String.valueOf(smtpPort));
     }
     
     Authenticator auth = null;
@@ -646,6 +650,20 @@ public class SMTPAppender extends AppenderSkeleton {
    */
   public void setSessionJNDI(String sessionJndiLocation) {
     this.sessionJNDI = sessionJndiLocation;
+  }
+
+  /**
+   * Returns the SMTP port to use.
+   */
+  public int getSMTPPort() {
+    return smtpPort;
+  }
+
+  /**
+   * Sets the SMTP port to use.
+   */
+  public void setSMTPPort(int smtpPort) {
+    this.smtpPort = smtpPort;
   }
   
 }
