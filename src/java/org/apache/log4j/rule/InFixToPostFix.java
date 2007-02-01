@@ -18,7 +18,6 @@ package org.apache.log4j.rule;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
@@ -90,14 +89,14 @@ public class InFixToPostFix {
   }
 
   boolean isOperand(String symbol) {
-    symbol = symbol.toLowerCase(Locale.ENGLISH);
+    symbol = symbol.toLowerCase();
 
     return (!operators.contains(symbol));
   }
 
   boolean precedes(String symbol1, String symbol2) {
-    symbol1 = symbol1.toLowerCase(Locale.ENGLISH);
-    symbol2 = symbol2.toLowerCase(Locale.ENGLISH);
+    symbol1 = symbol1.toLowerCase();
+    symbol2 = symbol2.toLowerCase();
 
     if (!precedenceMap.keySet().contains(symbol1)) {
       return false;

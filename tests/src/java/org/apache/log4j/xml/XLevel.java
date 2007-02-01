@@ -16,8 +16,6 @@
 
 package org.apache.log4j.xml;
 
-import java.util.Locale;
-
 import org.apache.log4j.Level;
 
 
@@ -54,7 +52,7 @@ public class XLevel extends Level {
       return defaultValue;
     }
 
-    String stringVal = sArg.toUpperCase(Locale.ENGLISH);
+    String stringVal = sArg.toUpperCase();
 
     if (stringVal.equals(TRACE_STR)) {
       return XLevel.TRACE;

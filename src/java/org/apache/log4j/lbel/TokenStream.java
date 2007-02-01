@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 
@@ -98,7 +97,7 @@ class TokenStream  {
 		    break;
   		case StreamTokenizer.TT_WORD:
   			String txt = tokenizer.sval;
-        String lowerCaseTxt = txt.toLowerCase(Locale.ENGLISH);
+        String lowerCaseTxt = txt.toLowerCase();
    		  Token result = (Token) keywordMap.get(lowerCaseTxt);
  		    if(result != null) {
   	  	  current = result;

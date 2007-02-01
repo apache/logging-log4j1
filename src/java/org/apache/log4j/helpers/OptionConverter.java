@@ -27,7 +27,6 @@ import org.apache.log4j.spi.LoggerRepository;
 
 import java.net.URL;
 
-import java.util.Locale;
 import java.util.Properties;
 
 
@@ -276,7 +275,7 @@ public class OptionConverter  {
       return dEfault;
     }
 
-    String s = value.trim().toUpperCase(Locale.ENGLISH);
+    String s = value.trim().toUpperCase();
     long multiplier = 1;
     int index;
 
