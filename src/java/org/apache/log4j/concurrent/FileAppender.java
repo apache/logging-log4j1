@@ -251,7 +251,7 @@ public class FileAppender extends WriterAppender {
   public void setFile(
     String filename, boolean append, boolean bufferedIO, int bufferSize)
     throws IOException {
-    getLogger().debug("setFile called: {}, {}", filename, Boolean.valueOf(append));
+    getLogger().debug("setFile called: {}, {}", filename, append ? Boolean.TRUE : Boolean.FALSE);
 
     this.fileAppend = append;
     this.bufferedIO = bufferedIO;
