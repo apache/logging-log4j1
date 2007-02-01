@@ -31,7 +31,6 @@ import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
-import java.util.Locale;
 import java.util.Properties;
 
 
@@ -354,7 +353,7 @@ public class PropertySetter extends ComponentBase {
   }
 
   String capitalizeFirstLetter(String name) {
-    return name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+    return name.substring(0, 1).toUpperCase() + name.substring(1);
   }
 
   /**

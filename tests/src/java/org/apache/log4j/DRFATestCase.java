@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -414,7 +413,7 @@ public class DRFATestCase extends TestCase {
         Logger root = Logger.getRootLogger();
         root.addAppender(appender);
         File firstFile =
-                new File(filename + new SimpleDateFormat(pattern, Locale.ENGLISH).format(new Date()));
+                new File(filename + new SimpleDateFormat(pattern).format(new Date()));
         root.info("Hello, World");
         //
         //   create a file by that name so it has to be deleted

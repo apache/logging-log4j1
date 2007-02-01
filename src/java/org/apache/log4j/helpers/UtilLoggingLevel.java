@@ -18,7 +18,6 @@ package org.apache.log4j.helpers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.log4j.Level;
 
@@ -112,12 +111,13 @@ public class UtilLoggingLevel extends Level {
       return defaultLevel;
     }
 
-    String s = sArg.toUpperCase(Locale.ENGLISH);
+    String s = sArg.toUpperCase();
 
     if (s.equals("SEVERE")) {
       return SEVERE;
     }
 
+    //if(s.equals("FINE")) return Level.FINE; 
     if (s.equals("WARNING")) {
       return WARNING;
     }
@@ -126,7 +126,7 @@ public class UtilLoggingLevel extends Level {
       return INFO;
     }
 
-    if (s.equals("CONFIG")) {
+    if (s.equals("CONFI")) {
       return CONFIG;
     }
 
