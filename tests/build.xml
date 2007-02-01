@@ -157,6 +157,7 @@
 	   destdir="${tests.javac.dest}" 
            excludes="${stem}/chainsaw/receivers/*.java,
                      ${stem}/selector/PassByJNDI.java,
+                     ${stem}/jmx/HierarchyMBeanTest.java,
                      ${stem}/ugli/**.java,
                      ${stem}/db/**.java,
                      org/apache/ugli/**/*.java"
