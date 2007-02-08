@@ -16,10 +16,7 @@
 
 package org.apache.log4j;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.apache.log4j.util.AbsoluteDateAndTimeFilter;
 import org.apache.log4j.util.AbsoluteTimeFilter;
 import org.apache.log4j.util.Compare;
@@ -31,6 +28,12 @@ import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.RelativeTimeFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
+
+import java.io.FileReader;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 public class PatternLayoutTestCase extends TestCase {
@@ -341,6 +344,31 @@ public class PatternLayoutTestCase extends TestCase {
           new JunitTestRunnerFilter()
         });
       assertTrue(Compare.compare(FILTERED, "witness/pattern/patternLayout.15"));
+    }
+
+    /**
+     * Tests explicit UTC time zone in pattern.
+     * @throws Exception
+     */
+    public void test16() throws Exception {
+      final long start = new Date().getTime();
+      PropertyConfigurator.configure("input/pattern/patternLayout16.properties");
+      common();
+      final long end = new Date().getTime();
+      FileReader reader = new FileReader("output/patternLayout16.log");
+      char chars[] = new char[50];
+      reader.read(chars, 0, chars.length);
+      reader.close();
+      SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      format.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+      String utcStr = new String(chars, 0, 19);
+      Date utcDate = format.parse(utcStr, new ParsePosition(0));
+      assertTrue(utcDate.getTime() >= start - 1000 && utcDate.getTime() < end + 1000);
+      String cstStr = new String(chars, 21, 19);
+      format.setTimeZone(TimeZone.getTimeZone("GMT-6"));
+      Date cstDate = format.parse(cstStr, new ParsePosition(0));
+      assertFalse(cstStr.equals(utcStr));
+      assertTrue(cstDate.getTime() >= start - 1000 && cstDate.getTime() < end + 1000);
     }
 
 
