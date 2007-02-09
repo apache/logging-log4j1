@@ -120,11 +120,13 @@ import org.apache.log4j.spi.LoggingEvent;
          the logging event. The date conversion specifier may be
          followed by a set of braces containing a
          date and time pattern strings {@link java.text.SimpleDateFormat},
-         <em>ABSOLUTE</em>, <em>DATE</em> or <em>ISO8601</em>.
-         For example, <b>%d{HH:mm:ss,SSS}</b>,
-         <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b> or
-         <b>%d{DATE}</b>.  If no date format specifier is given then
-         ISO8601 format is assumed.
+         <em>ABSOLUTE</em>, <em>DATE</em> or <em>ISO8601</em>
+          and a set of braces containing a time zone id per 
+          {@link java.util.TimeZone#getTimeZone(String)}.           
+          For example, <b>%d{HH:mm:ss,SSS}</b>,
+         <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>,
+         <b>%d{DATE}</b> or <b>%d{HH:mm:ss}{GMT+0}</b>. If no date format specifier is given then
+         ISO8601 format is assumed.  
      </td>
    </tr>
 
