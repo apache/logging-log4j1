@@ -27,7 +27,7 @@
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
     <name>Apache log4j</name>
     <homepage rdf:resource="http://logging.apache.org/log4j" />
-    <asfext:pmc rdf:resource="http://svn.apache.org/repos/asf/logging/site/trunk/doap_logging.rdf" />
+    <asfext:pmc rdf:resource="http://logging.apache.org" />
     <shortdesc>Apache log4j provides logging services for Java.</shortdesc>
     <bug-database rdf:resource="http://issues.apache.org/bugzilla" />
     <mailing-list rdf:resource="http://logging.apache.org/site/mailing-lists.html" />
