@@ -228,7 +228,7 @@ public class OptionConverter {
       LogLog.warn("custom level class [" + clazz + "] not found.");
     } catch(NoSuchMethodException e) {
       LogLog.warn("custom level class [" + clazz + "]"
-        + " does not have a constructor which takes one string parameter", e);
+        + " does not have a class function toLevel(String, Level)", e);
     } catch(java.lang.reflect.InvocationTargetException e) {
       LogLog.warn("custom level class [" + clazz + "]"
 		   + " could not be instantiated", e);
