@@ -65,10 +65,10 @@ public class ThrowableInformation implements java.io.Serializable {
 
 /**
   * VectorWriter is a seemingly trivial implemtantion of PrintWriter.
-  * The throwable instance that we are trying to represnt is asked to
+  * The throwable instance that we are trying to represent is asked to
   * print itself to a VectorWriter. 
   *
-  * By our design choice, r string representation of the throwable
+  * By our design choice, our string representation of the throwable
   * does not contain any line separators. It follows that println()
   * methods of VectorWriter ignore the 'ln' part.
   * */
@@ -82,7 +82,7 @@ class VectorWriter extends PrintWriter {
   }
 
   public void print(Object o) {      
-    v.addElement(o.toString());
+    v.addElement(String.valueOf(o));
   }
   
   public void print(char[] chars) {
@@ -94,7 +94,7 @@ class VectorWriter extends PrintWriter {
   }
 
   public void println(Object o) {      
-    v.addElement(o.toString());
+    v.addElement(String.valueOf(o));
   }
   
   // JDK 1.1.x apprenly uses this form of println while in
