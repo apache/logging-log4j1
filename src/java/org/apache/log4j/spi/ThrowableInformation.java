@@ -16,14 +16,16 @@
 
 package org.apache.log4j.spi;
 
-import java.io.PrintWriter;
-import java.io.Writer;
-
-import java.lang.reflect.Method;
-
-import java.util.Vector;
-
 import org.apache.log4j.helpers.PlatformInfo;
+
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -45,9 +47,10 @@ public class ThrowableInformation implements java.io.Serializable {
 
   public ThrowableInformation(final Throwable throwable) {
     this.throwable = throwable;
-    VectorWriter vw = new VectorWriter();
-    extractStringRep(throwable, vw);
-    rep = vw.toStringArray();
+    ArrayList lines = new ArrayList();
+    extractStringRep(throwable, lines);
+    rep = new String[lines.size()];
+    lines.toArray(rep);
   }
 
   public ThrowableInformation(String[] rep) {
@@ -63,8 +66,27 @@ public class ThrowableInformation implements java.io.Serializable {
      return throwable;
   }
 
-  public void extractStringRep(Throwable t, VectorWriter vw) {
-    t.printStackTrace(vw);
+    /**
+     * Extract string representation of throwable.
+     * @param t throwable, may not be null.
+     * @param lines list to receive stack trace, may not be null.
+     */
+  private static void extractStringRep(final Throwable t, final List lines) {
+      StringWriter sw = new StringWriter();
+      PrintWriter pw = new PrintWriter(sw);
+      t.printStackTrace(pw);
+      pw.flush();
+      LineNumberReader reader = new LineNumberReader(
+              new StringReader(sw.toString()));
+      try {
+        String line = reader.readLine();
+        while(line != null) {
+          lines.add(line);
+          line = reader.readLine();
+        }
+      } catch(IOException ex) {
+          lines.add(ex.toString());
+      }
 
     // Check if the Throwable t has a nested Throwable. If so, invoke
     // extractStringRep recursively.
@@ -95,8 +117,8 @@ public class ThrowableInformation implements java.io.Serializable {
         Throwable nextT =
           (Throwable) nextThrowableMethod.invoke(t, new Object[0]);
         if (nextT != null) {
-          vw.print("Root cause follows.");
-          extractStringRep(nextT, vw);
+          lines.add("Root cause follows.");
+          extractStringRep(nextT, lines);
         }
       }
     } catch (Exception e) {
@@ -124,11 +146,7 @@ public class ThrowableInformation implements java.io.Serializable {
     ThrowableInformation r = (ThrowableInformation) o;
 
     if (rep == null) {
-      if (r.rep != null) {
-        return false;
-      } else {
-        return true;
-      }
+      return (r.rep == null);
     }
 
     // at this point we know that both rep and r.rep are non-null.
@@ -144,92 +162,5 @@ public class ThrowableInformation implements java.io.Serializable {
     }
 
     return true;
-  }
-}
-
-
-/**
- * VectorWriter is a seemingly trivial implemtantion of PrintWriter. The
- * throwable instance that we are trying to represnt is asked to print itself to
- * a VectorWriter.
- *
- * By our design choice, r string representation of the throwable does not
- * contain any line separators. It follows that println() methods of
- * VectorWriter ignore the 'ln' part.
- */
-class VectorWriter extends PrintWriter {
-  private Vector v;
-
-  VectorWriter() {
-    super(new NullWriter());
-    v = new Vector();
-  }
-
-  public void print(Object o) {
-    v.addElement(o.toString());
-  }
-
-  public void print(char[] chars) {
-    v.addElement(new String(chars));
-  }
-
-  public void print(String s) {
-    v.addElement(s);
-  }
-
-  public void println(Object o) {
-      v.addElement(String.valueOf(o));
-  }
-
-  // JDK 1.1.x apprenly uses this form of println while in
-  // printStackTrace()
-  public void println(char[] chars) {
-    v.addElement(new String(chars));
-  }
-
-  public void println(String s) {
-    v.addElement(s);
-  }
-
-  public void write(char[] chars) {
-    v.addElement(new String(chars));
-  }
-
-  public void write(char[] chars, int off, int len) {
-    v.addElement(new String(chars, off, len));
-  }
-
-  public void write(String s, int off, int len) {
-    v.addElement(s.substring(off, off + len));
-  }
-
-  public void write(String s) {
-    v.addElement(s);
-  }
-
-  public String[] toStringArray() {
-    int len = v.size();
-    String[] sa = new String[len];
-
-    for (int i = 0; i < len; i++) {
-      sa[i] = (String) v.elementAt(i);
-    }
-
-    return sa;
-  }
-}
-
-
-class NullWriter extends Writer {
-  public void close() {
-    // blank
-  }
-
-  public void flush() {
-    // blank
-  }
-
-  public void write(char[] cbuf, int off, int len) {
-    // blank
   }
 }
