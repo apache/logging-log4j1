@@ -101,7 +101,7 @@ public class SyslogWriter extends Writer {
       this.ds = new DatagramSocket();
     }
     catch (SocketException e) {
-      e.printStackTrace(); 
+      e.printStackTrace();
       LogLog.error("Could not instantiate DatagramSocket to " + host +
 			 ". All logging will FAIL.", e);
     }
@@ -128,6 +128,9 @@ public class SyslogWriter extends Writer {
   public
   void flush() {}
 
-  public
-  void close() {}
+  public void close() {
+      if (ds != null) {
+          ds.close();
+      }
+  }
 }

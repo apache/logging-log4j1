@@ -25,6 +25,14 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.VectorErrorHandler;
+import org.apache.log4j.helpers.SyslogWriter;
+
+import java.util.StringTokenizer;
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 
 /**
@@ -342,7 +350,7 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
     *  Tests SyslogAppender with IPv6 address.
-    */  
+    */
   public void testIPv6() {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("::1");
@@ -350,7 +358,7 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
     *  Tests SyslogAppender with IPv6 address enclosed in square brackets.
-    */  
+    */
   public void testIPv6InBrackets() {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("[::1]");
@@ -359,7 +367,7 @@ public class SyslogAppenderTest extends TestCase {
   /**
     *  Tests SyslogAppender with IPv6 address enclosed in square brackets
     *     followed by port specification.
-    */  
+    */
   public void testIPv6AndPort() {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("[::1]:1514");
@@ -368,7 +376,7 @@ public class SyslogAppenderTest extends TestCase {
   /**
     *  Tests SyslogAppender with host name enclosed in square brackets
     *     followed by port specification.
-    */  
+    */
   public void testHostNameAndPort() {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("localhost:1514");
@@ -377,9 +385,35 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
     *  Tests SyslogAppender with IPv4 address followed by port specification.
-    */  
+    */
   public void testIPv4AndPort() {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("127.0.0.1:1514");
   }
+
+
+    public void testActualLogging() throws Exception {
+        DatagramSocket ds = new DatagramSocket();
+        ds.setSoTimeout(2000);
+        DatagramPacket p = new DatagramPacket(new byte[1000], 0, 1000);
+
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("localhost:" + ds.getLocalPort());
+      appender.setName("name");
+      PatternLayout pl = new PatternLayout("%m");
+      appender.setLayout(pl);
+      appender.activateOptions();
+
+      Logger l = Logger.getRootLogger();
+      l.addAppender(appender);
+      l.info("greetings");
+      appender.close();
+      ds.receive(p);
+      ds.close();
+      String s = new String(p.getData(), 0, p.getLength());
+      StringTokenizer st = new StringTokenizer(s, "<>() ");
+      assertEquals("14", st.nextToken());
+      assertEquals("greetings", st.nextToken());
+    }
+
 }

@@ -121,9 +121,14 @@ public class SyslogAppender extends AppenderSkeleton {
   public
   void close() {
     closed = true;
-    // A SyslogWriter is UDP based and needs no opening. Hence, it
-    // can't be closed. We just unset the variables here.
-    sqw = null;
+    if (sqw != null) {
+        try {
+            sqw.close();
+            sqw = null;
+        } catch(java.io.IOException ex) {
+            sqw = null;
+        }
+    }
   }
 
   private
