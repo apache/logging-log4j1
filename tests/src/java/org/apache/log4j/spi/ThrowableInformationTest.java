@@ -176,12 +176,12 @@ public class ThrowableInformationTest extends TestCase {
 
     public void testNull() {
         ThrowableInformation ti = new ThrowableInformation(new NullThrowable());
-        try {
-            String[] rep = ti.getThrowableStrRep();
-        } catch (NullPointerException ex) {
-            return;
-        }
-        fail("log4j 1.2.14 would throw exception");
+        String[] rep = ti.getThrowableStrRep();
+        assertEquals(4, rep.length);
+        assertEquals(String.valueOf((Object) null), rep[0]);
+        assertNull(rep[1]);
+        assertEquals(String.valueOf((Object) null), rep[2]);
+        assertNull(rep[3]);
     }
 
     /**
