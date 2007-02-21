@@ -25,14 +25,10 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.VectorErrorHandler;
-import org.apache.log4j.helpers.SyslogWriter;
 
 import java.util.StringTokenizer;
-import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 
 /**
@@ -391,8 +387,9 @@ public class SyslogAppenderTest extends TestCase {
       appender.setSyslogHost("127.0.0.1:1514");
   }
 
-
-    public void testActualLogging() throws Exception {
+    private static String[] log(final String msg,
+                                final Exception ex,
+                                final int packets) throws Exception {
         DatagramSocket ds = new DatagramSocket();
         ds.setSoTimeout(2000);
         DatagramPacket p = new DatagramPacket(new byte[1000], 0, 1000);
@@ -406,14 +403,63 @@ public class SyslogAppenderTest extends TestCase {
 
       Logger l = Logger.getRootLogger();
       l.addAppender(appender);
-      l.info("greetings");
+      if (ex == null) {
+        l.info(msg);
+      } else {
+        l.error(msg, ex);
+      }
       appender.close();
-      ds.receive(p);
+      String[] retval = new String[packets];
+      for(int i = 0; i < packets; i++) {
+          ds.receive(p);
+          retval[i] = new String(p.getData(), 0, p.getLength());
+      }
       ds.close();
-      String s = new String(p.getData(), 0, p.getLength());
+      return retval;
+    }
+
+    public void testActualLogging() throws Exception {
+      String s = log("greetings", null, 1)[0];
       StringTokenizer st = new StringTokenizer(s, "<>() ");
       assertEquals("14", st.nextToken());
       assertEquals("greetings", st.nextToken());
+    }
+
+    /**
+     * Exception with printStackTrace that breaks earlier SyslogAppender.
+     */
+    private static class MishandledException extends Exception {
+        /*
+         *   Create new instance.
+         */
+        public MishandledException() {
+        }
+
+        /**
+         * Print stack trace.
+         * @param w print writer, may not be null.
+         */
+        public void printStackTrace(final java.io.PrintWriter w) {
+             w.println("Mishandled stack trace follows:");
+             w.println("");
+             w.println("No tab here");
+             w.println("\ttab here");
+        }
+    }
+
+    /**
+     * Tests fix for bug 40502.
+     * @throws Exception on IOException.
+     */
+    public void testBadTabbing() throws Exception {
+        String[] s = log("greetings", new MishandledException(), 5);
+        StringTokenizer st = new StringTokenizer(s[0], "<>() ");
+        assertEquals("11", st.nextToken());
+        assertEquals("greetings", st.nextToken());
+        assertEquals("<11>Mishandled stack trace follows:", s[1]);
+        assertEquals("<11>", s[2]);
+        assertEquals("<11>No tab here", s[3]);
+        assertEquals("<11>" + SyslogAppender.TAB + "tab here", s[4]);
     }
 
 }
