@@ -19,6 +19,7 @@ package org.apache.log4j;
 import junit.framework.TestCase;
 
 import org.apache.log4j.util.SerializationTestHelper;
+import java.util.Locale;
 
 
 /**
@@ -238,5 +239,27 @@ public class LevelTest extends TestCase {
       Level level = Level.toLevel(null, Level.FATAL);
       assertEquals("FATAL", level.toString());
   }
+
+    /**
+     * Test that dotless lower I + "nfo" is recognized as INFO.
+     */
+  public void testDotlessLowerI() {
+      Level level = Level.toLevel("\u0131nfo");
+      assertEquals("INFO", level.toString());
+  }
+
+    /**
+     * Test that dotted lower I + "nfo" is recognized as INFO
+     * even in Turkish locale.
+     */
+  public void testDottedLowerI() {
+      Locale defaultLocale = Locale.getDefault();
+      Locale turkey = new Locale("tr");
+      Locale.setDefault(turkey);
+      Level level = Level.toLevel("info");
+      Locale.setDefault(defaultLocale);
+      assertEquals("INFO", level.toString());
+  }
+
 
 }

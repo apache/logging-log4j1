@@ -166,6 +166,10 @@ public class Level extends Priority implements Serializable {
     if(s.equals("FATAL")) return Level.FATAL;
     if(s.equals("OFF")) return Level.OFF;
     if(s.equals("TRACE")) return Level.TRACE;
+    //
+    //   For Turkish i problem, see bug 40937
+    //
+    if(s.equals("\u0130NFO")) return Level.INFO;
     return defaultLevel;
   }
 
