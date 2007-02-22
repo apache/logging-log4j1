@@ -25,6 +25,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.VectorErrorHandler;
+import org.apache.log4j.HTMLLayout;
 
 import java.util.StringTokenizer;
 import java.net.DatagramSocket;
@@ -507,6 +508,38 @@ public class SyslogAppenderTest extends TestCase {
       syslogDate = cal.getTime();
       assertTrue(syslogDate.compareTo(preDate) >= 0);
       assertTrue(syslogDate.compareTo(postDate) <= 0);
+    }
+
+
+    /**
+     * Tests that any header or footer in layout is sent.
+     * @throws Exception if exception during test.
+     */
+    public void testLayoutHeader() throws Exception {
+        DatagramSocket ds = new DatagramSocket();
+        ds.setSoTimeout(2000);
+        DatagramPacket p = new DatagramPacket(new byte[1000], 0, 1000);
+
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("localhost:" + ds.getLocalPort());
+      appender.setName("name");
+      appender.setHeader(false);
+      HTMLLayout pl = new HTMLLayout();
+      appender.setLayout(pl);
+      appender.activateOptions();
+
+      Logger l = Logger.getRootLogger();
+      l.addAppender(appender);
+      l.info("Hello, World");
+      appender.close();
+      String[] s = new String[3];
+      for(int i = 0; i < 3; i++) {
+          ds.receive(p);
+          s[i] = new String(p.getData(), 0, p.getLength());
+      }
+      ds.close();
+      assertEquals("<14><!DOCTYPE", s[0].substring(0,13));
+      assertEquals("<14></table>", s[2].substring(0,12));
     }
 
 }
