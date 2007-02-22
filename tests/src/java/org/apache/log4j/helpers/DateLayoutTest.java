@@ -255,7 +255,9 @@ public class DateLayoutTest extends LayoutTest {
       calendar.clear();
       calendar.set(1970, 0, 1, 0, 0, 0);
       String actual = format.format(calendar.getTime());
-      assertEquals("01 Jan 1970 00:00:00,000", actual);
+      SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy HH:mm:ss,SSS");
+      String expected = df.format(calendar.getTime());
+      assertEquals(expected, actual);
   }
 
 
