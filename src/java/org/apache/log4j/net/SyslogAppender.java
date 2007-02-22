@@ -17,10 +17,16 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.SyslogWriter;
 import org.apache.log4j.helpers.SyslogQuietWriter;
+import org.apache.log4j.helpers.SyslogWriter;
+import org.apache.log4j.spi.LoggingEvent;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 // Contributors: Yves Bossel <ybossel@opengets.cl>
 //               Christopher Taylor <cstaylor@pacbell.net>
@@ -93,6 +99,23 @@ public class SyslogAppender extends AppenderSkeleton {
   //SyslogTracerPrintWriter stp;
   SyslogQuietWriter sqw;
   String syslogHost;
+
+    /**
+     * If true, the appender will generate the HEADER (timestamp and host name)
+     * part of the syslog packet.
+     * @since 1.2.15
+     */
+  private boolean header = false;
+    /**
+     * Date format used if header = true.
+     * @since 1.2.15
+     */
+  private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss ", Locale.ENGLISH);
+    /**
+     * Host name used to identify messages from this appender.
+     * @since 1.2.15
+     */
+  private String localHostname;
 
   public
   SyslogAppender() {
@@ -252,20 +275,28 @@ public class SyslogAppender extends AppenderSkeleton {
       return;
     }
 
-    String buffer = (facilityPrinting? facilityStr : "") +
-                          layout.format(event);
+    String hdr = getPacketHeader(event.timeStamp);
+    String packet = layout.format(event);
+    if(facilityPrinting || hdr.length() > 0) {
+        StringBuffer buf = new StringBuffer(hdr);
+        if(facilityPrinting) {
+            buf.append(facilityStr);
+        }
+        buf.append(packet);
+        packet = buf.toString();
+    }
 
     sqw.setLevel(event.getLevel().getSyslogEquivalent());
-    sqw.write(buffer);
+    sqw.write(packet);
 
     if (layout.ignoresThrowable()) {
       String[] s = event.getThrowableStrRep();
       if (s != null) {
         for(int i = 0; i < s.length; i++) {
             if (s[i].startsWith("\t")) {
-               sqw.write(TAB+s[i].substring(1));
+               sqw.write(hdr+TAB+s[i].substring(1));
             } else {
-               sqw.write(s[i]);
+               sqw.write(hdr+s[i]);
             }
         }
       }
@@ -278,6 +309,9 @@ public class SyslogAppender extends AppenderSkeleton {
   */
   public
   void activateOptions() {
+      if (header) {
+        getLocalHostname();
+      }
   }
 
   /**
@@ -368,5 +402,61 @@ public class SyslogAppender extends AppenderSkeleton {
   public
   boolean getFacilityPrinting() {
     return facilityPrinting;
+  }
+
+  /**
+   * If true, the appender will generate the HEADER part (that is, timestamp and host name)
+   * of the syslog packet.  Default value is false for compatibility with existing behavior,
+   * however should be true unless there is a specific justification.
+   * @since 1.2.15
+  */
+  public final boolean getHeader() {
+      return header;
+  }
+
+    /**
+     * Returns whether the appender produces the HEADER part (that is, timestamp and host name)
+     * of the syslog packet.
+     * @since 1.2.15
+    */
+  public final void setHeader(final boolean val) {
+      header = val;
+  }
+
+    /**
+     * Get the host name used to identify this appender.
+     * @return local host name
+     * @since 1.2.15
+     */
+  private String getLocalHostname() {
+      if (localHostname == null) {
+          try {
+            InetAddress addr = InetAddress.getLocalHost();
+            localHostname = addr.getHostName();
+          } catch (UnknownHostException uhe) {
+            localHostname = "UNKNOWN_HOST";
+          }
+      }
+      return localHostname;
+  }
+
+    /**
+     * Gets HEADER portion of packet.
+     * @param timeStamp number of milliseconds after the standard base time.
+     * @return HEADER portion of packet, will be zero-length string if header is false.
+     * @since 1.2.15
+     */
+  private String getPacketHeader(final long timeStamp) {
+      if (header) {
+        StringBuffer buf = new StringBuffer(dateFormat.format(new Date(timeStamp)));
+        //  RFC 3164 says leading space, not leading zero on days 1-9
+        if (buf.charAt(4) == '0') {
+          buf.setCharAt(4, ' ');
+        }
+        buf.append(getLocalHostname());
+        buf.append(' ');
+        return buf.toString();
+      }
+      return "";
   }
 }
