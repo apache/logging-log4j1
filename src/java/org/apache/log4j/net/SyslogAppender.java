@@ -117,6 +117,11 @@ public class SyslogAppender extends AppenderSkeleton {
      */
   private String localHostname;
 
+    /**
+     * Set to true after the header of the layout has been sent or if it has none.
+     */
+  private boolean layoutHeaderChecked = false;
+
   public
   SyslogAppender() {
     this.initSyslogFacilityStr();
@@ -146,6 +151,9 @@ public class SyslogAppender extends AppenderSkeleton {
     closed = true;
     if (sqw != null) {
         try {
+            if (layoutHeaderChecked && layout != null && layout.getFooter() != null) {
+                sendLayoutMessage(layout.getFooter());
+            }
             sqw.close();
             sqw = null;
         } catch(java.io.IOException ex) {
@@ -275,6 +283,13 @@ public class SyslogAppender extends AppenderSkeleton {
       return;
     }
 
+    if (!layoutHeaderChecked) {
+        if (layout != null && layout.getHeader() != null) {
+            sendLayoutMessage(layout.getHeader());
+        }
+        layoutHeaderChecked = true;
+    }
+
     String hdr = getPacketHeader(event.timeStamp);
     String packet = layout.format(event);
     if(facilityPrinting || hdr.length() > 0) {
@@ -312,6 +327,10 @@ public class SyslogAppender extends AppenderSkeleton {
       if (header) {
         getLocalHostname();
       }
+      if (layout != null && layout.getHeader() != null) {
+          sendLayoutMessage(layout.getHeader());
+      }
+      layoutHeaderChecked = true;
   }
 
   /**
@@ -458,5 +477,26 @@ public class SyslogAppender extends AppenderSkeleton {
         return buf.toString();
       }
       return "";
+  }
+
+    /**
+     * Set header or footer of layout.
+     * @param msg message body, may not be null.
+     */
+  private void sendLayoutMessage(final String msg) {
+      if (sqw != null) {
+          String packet = msg;
+          String hdr = getPacketHeader(new Date().getTime());
+          if(facilityPrinting || hdr.length() > 0) {
+              StringBuffer buf = new StringBuffer(hdr);
+              if(facilityPrinting) {
+                  buf.append(facilityStr);
+              }
+              buf.append(msg);
+              packet = buf.toString();
+          }
+          sqw.setLevel(6);
+          sqw.write(packet);
+      }
   }
 }
