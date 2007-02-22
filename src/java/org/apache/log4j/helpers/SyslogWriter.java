@@ -56,7 +56,7 @@ public class SyslogWriter extends Writer {
    */
   public
   SyslogWriter(final String syslogHost) {
-    this.syslogHost = syslogHost;
+    SyslogWriter.syslogHost = syslogHost;
     if (syslogHost == null) {
         throw new NullPointerException("syslogHost");
     }

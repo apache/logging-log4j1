@@ -29,13 +29,17 @@ import org.apache.log4j.VectorErrorHandler;
 import java.util.StringTokenizer;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.Date;
+import java.util.Calendar;
 
 
 /**
  *    Tests for SyslogAppender
  *
- * @author Curt Arnold
- **/
+ *
+ * */
 public class SyslogAppenderTest extends TestCase {
   /**
    * Create new instance of SyslogAppenderTest.
@@ -387,7 +391,8 @@ public class SyslogAppenderTest extends TestCase {
       appender.setSyslogHost("127.0.0.1:1514");
   }
 
-    private static String[] log(final String msg,
+    private static String[] log(final boolean header,
+                                final String msg,
                                 final Exception ex,
                                 final int packets) throws Exception {
         DatagramSocket ds = new DatagramSocket();
@@ -397,6 +402,7 @@ public class SyslogAppenderTest extends TestCase {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("localhost:" + ds.getLocalPort());
       appender.setName("name");
+      appender.setHeader(header);
       PatternLayout pl = new PatternLayout("%m");
       appender.setLayout(pl);
       appender.activateOptions();
@@ -419,7 +425,7 @@ public class SyslogAppenderTest extends TestCase {
     }
 
     public void testActualLogging() throws Exception {
-      String s = log("greetings", null, 1)[0];
+      String s = log(false, "greetings", null, 1)[0];
       StringTokenizer st = new StringTokenizer(s, "<>() ");
       assertEquals("14", st.nextToken());
       assertEquals("greetings", st.nextToken());
@@ -444,6 +450,7 @@ public class SyslogAppenderTest extends TestCase {
              w.println("");
              w.println("No tab here");
              w.println("\ttab here");
+             w.println("\t");
         }
     }
 
@@ -452,7 +459,7 @@ public class SyslogAppenderTest extends TestCase {
      * @throws Exception on IOException.
      */
     public void testBadTabbing() throws Exception {
-        String[] s = log("greetings", new MishandledException(), 5);
+        String[] s = log(false, "greetings", new MishandledException(), 6);
         StringTokenizer st = new StringTokenizer(s[0], "<>() ");
         assertEquals("11", st.nextToken());
         assertEquals("greetings", st.nextToken());
@@ -460,6 +467,46 @@ public class SyslogAppenderTest extends TestCase {
         assertEquals("<11>", s[2]);
         assertEquals("<11>No tab here", s[3]);
         assertEquals("<11>" + SyslogAppender.TAB + "tab here", s[4]);
+        assertEquals("<11>" + SyslogAppender.TAB, s[5]);
+    }
+
+    /**
+     * Tests presence of timestamp if header = true.
+     *
+     * @throws Exception if IOException.
+     */
+    public void testHeaderLogging() throws Exception {
+      Date preDate = new Date();
+      String s = log(true, "greetings", null, 1)[0];
+      Date postDate = new Date();
+      assertEquals("<14>", s.substring(0, 4));
+
+      String syslogDateStr = s.substring(4, 20);
+      SimpleDateFormat fmt = new SimpleDateFormat("MMM dd HH:mm:ss ", Locale.ENGLISH);
+      Date syslogDate = fmt.parse(syslogDateStr);
+      Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+      cal.setTime(syslogDate);
+      int syslogMonth = cal.get(Calendar.MONTH);
+      int syslogDay = cal.get(Calendar.DATE);
+      if (syslogDay < 10) {
+          assertEquals(' ', syslogDateStr.charAt(4));
+      }
+      cal.setTime(preDate);
+      int preMonth = cal.get(Calendar.MONTH);
+      cal.set(Calendar.MILLISECOND, 0);
+      preDate = cal.getTime();
+      int syslogYear;
+      if (preMonth == syslogMonth) {
+          syslogYear = cal.get(Calendar.YEAR);
+      } else {
+          cal.setTime(postDate);
+          syslogYear = cal.get(Calendar.YEAR);
+      }
+      cal.setTime(syslogDate);
+      cal.set(Calendar.YEAR, syslogYear);
+      syslogDate = cal.getTime();
+      assertTrue(syslogDate.compareTo(preDate) >= 0);
+      assertTrue(syslogDate.compareTo(postDate) <= 0);
     }
 
 }
