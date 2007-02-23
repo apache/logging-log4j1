@@ -96,9 +96,9 @@ BEGIN
             VALUE "FileDescription", "Platform methods for NTEventLogAppender"
             VALUE "FileVersion", "1, 2, 15, 1"
             VALUE "InternalName", "NTEventLogAppender"
-            VALUE "LegalCopyright", "Copyright (C) 2005, Apache Software Foundation"
+            VALUE "LegalCopyright",  "Licensed to the Apache Software Foundation (ASF) under one or more\ncontributor license agreements.  See the NOTICE file distributed with\nthis work for additional information regarding copyright ownership.\nThe ASF licenses this file to You under the Apache License, Version 2.0\n(the \"License\"); you may not use this file except in compliance with\nthe License.  You may obtain a copy of the License at\n\n     http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License."
             VALUE "OriginalFilename", "NTEventLogAppender.dll"
-            VALUE "ProductName", "log4j"
+            VALUE "ProductName", "Apache log4j"
             VALUE "ProductVersion", "1, 2, 15, 1" 
         END
     END
