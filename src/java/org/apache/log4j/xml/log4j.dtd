@@ -27,7 +27,7 @@ element. -->
      
 <!ATTLIST log4j:configuration
   xmlns:log4j              CDATA #FIXED "http://jakarta.apache.org/log4j/" 
-  threshold                (all|debug|info|warn|error|fatal|off|null) "null"
+  threshold                (all|trace|debug|info|warn|error|fatal|off|null) "null"
   debug                    (true|false|null)  "null"
 >
 
@@ -45,7 +45,7 @@ element. -->
 <!-- and filters. They may also reference (or include) other appenders. -->
 <!ELEMENT appender (errorHandler?, param*, layout?, filter*, appender-ref*)>
 <!ATTLIST appender
-  name 		ID 	#REQUIRED
+  name 		CDATA 	#REQUIRED
   class 	CDATA	#REQUIRED
 >
 
@@ -71,7 +71,7 @@ element. -->
 
 <!ELEMENT logger-ref EMPTY>
 <!ATTLIST logger-ref
-  ref IDREF #REQUIRED
+  ref CDATA #REQUIRED
 >
 
 <!ELEMENT param EMPTY>
@@ -109,7 +109,7 @@ element. -->
 <!-- touch the level of the named logger. -->
 <!ELEMENT logger (level?,appender-ref*)>
 <!ATTLIST logger
-  name		ID	#REQUIRED
+  name		CDATA	#REQUIRED
   additivity	(true|false) "true"  
 >
 
@@ -120,7 +120,7 @@ element. -->
 
 <!ELEMENT appender-ref EMPTY>
 <!ATTLIST appender-ref
-  ref IDREF #REQUIRED
+  ref CDATA #REQUIRED
 >
 
 <!-- If no priority element is specified, then the configurator MUST not -->
