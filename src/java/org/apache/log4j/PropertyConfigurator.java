@@ -38,6 +38,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.StringTokenizer;
 import java.util.Hashtable;
 
@@ -302,15 +303,24 @@ public class PropertyConfigurator implements Configurator {
   public
   void doConfigure(String configFileName, LoggerRepository hierarchy) {
     Properties props = new Properties();
+    FileInputStream istream = null;
     try {
-      FileInputStream istream = new FileInputStream(configFileName);
+      istream = new FileInputStream(configFileName);
       props.load(istream);
       istream.close();
     }
-    catch (IOException e) {
+    catch (Exception e) {
       LogLog.error("Could not read configuration file ["+configFileName+"].", e);
       LogLog.error("Ignoring configuration file [" + configFileName+"].");
       return;
+    } finally {
+        if(istream != null) {
+            try {
+                istream.close();
+            } catch(Throwable ignore) {
+            }
+
+        }
     }
     // If we reach here, then the config file is alright.
     doConfigure(props, hierarchy);
@@ -429,14 +439,24 @@ public class PropertyConfigurator implements Configurator {
   void doConfigure(java.net.URL configURL, LoggerRepository hierarchy) {
     Properties props = new Properties();
     LogLog.debug("Reading configuration from URL " + configURL);
+    InputStream istream = null;
     try {
-      props.load(configURL.openStream());
+      istream = configURL.openStream();
+      props.load(istream);
     }
-    catch (java.io.IOException e) {
+    catch (Exception e) {
       LogLog.error("Could not read configuration file from URL [" + configURL
 		   + "].", e);
       LogLog.error("Ignoring configuration file [" + configURL +"].");
       return;
+    }
+    finally {
+        if (istream != null) {
+            try {
+                istream.close();
+            } catch(Exception ignore) {
+            }
+        }
     }
     doConfigure(props, hierarchy);
   }
