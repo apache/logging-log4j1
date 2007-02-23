@@ -312,16 +312,23 @@ public class PropertyConfigurator extends ConfiguratorBase
   public void doConfigure(String configFileName, LoggerRepository repo) {
     Properties props = new Properties();
 
-    try {
-      FileInputStream istream = new FileInputStream(configFileName);
+      FileInputStream istream = null;
+      try {
+      istream = new FileInputStream(configFileName);
       props.load(istream);
-      istream.close();
-    } catch (IOException e) {
+    } catch (Exception e) {
       String errMsg =
         "Could not read configuration file [" + configFileName + "].";
       addError(new ErrorItem(errMsg, e));
       getLogger(repo).error(errMsg, e);
       return;
+    } finally {
+        if(istream != null) {
+            try {
+                istream.close();
+            } catch(IOException ignored) {
+            }
+        }
     }
 
     // If we reach here, then the config file is alright.
@@ -480,16 +487,23 @@ public class PropertyConfigurator extends ConfiguratorBase
     getLogger(repository).debug(
       "Reading configuration from URL {}", configURL);
 
+    InputStream in = null;
     try {
-      InputStream in = configURL.openStream();
+      in = configURL.openStream();
       props.load(in);
-      in.close();
-    } catch (java.io.IOException e) {
+    } catch (Exception e) {
       String errMsg =
         "Could not read configuration file from URL [" + configURL + "].";
       addError(new ErrorItem(errMsg, e));
       getLogger(repository).error(errMsg, e);
       return;
+    } finally {
+        if (in != null) {
+            try {
+                in.close();
+            } catch(IOException ignored) {
+            }
+        }
     }
 
     doConfigure(props, repository);

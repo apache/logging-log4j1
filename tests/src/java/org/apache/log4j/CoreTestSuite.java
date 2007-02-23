@@ -49,6 +49,7 @@ public class CoreTestSuite {
         s.addTestSuite(org.apache.log4j.HTMLLayoutTest.class);
         s.addTestSuite(org.apache.log4j.PatternLayoutTest.class);
         s.addTestSuite(org.apache.log4j.spi.LoggingEventTest.class);
+        s.addTestSuite(org.apache.log4j.PropertyConfiguratorTest.class);
         return s;
     }
 }
