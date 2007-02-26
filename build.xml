@@ -511,7 +511,7 @@
              doctitle="log4j version ${version}&lt;br&gt;API Specification"
              windowtitle="Log4j Version ${version}"
              header="&lt;b&gt;Log4j ${version}&lt;/b&gt;"
-             bottom="Copyright 2000-2005 Apache Software Foundation.">
+             bottom="Copyright 2000-2007 Apache Software Foundation.">
 
       <link href="http://java.sun.com/j2se/1.3/docs/api/"/>
       <link href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/"/>
@@ -552,6 +552,39 @@
             </new>
        </jdiff>
   </target>  
+
+
+	  <!-- ================================================================= -->
+	  <!-- Compare the current API with a previous release                   -->
+	  <!-- ================================================================= -->
+	  <target name="clirr" depends="jar" description="Check binary compatibility with arbitrary release">
+	  	   <fail unless="clirr-core.jar">-Dclirr-core.jar=PATH must be specified.</fail>
+	  	   <fail unless="bcel.jar">-Dbcel.jar=PATH must be specified.</fail>
+	  	   <fail unless="reference.jar">-Dreference.jar=PATH must be specified.</fail>
+	       <taskdef resource="clirrtask.properties" 
+	           classpath="${clirr-core.jar};${bcel.jar}"/>
+	       <delete dir="build/clirr"/>
+	       <mkdir dir="build/clirr/orig"/>
+	       <mkdir dir="build/clirr/new"/>
+	       <copy todir="build/clirr/orig">	       
+	       	    <fileset file="${jms.jar}"/>
+	       	    <fileset file="${jmx.jar}"/>
+				<fileset file="${reference.jar}"/>
+	       </copy>
+	       <copy todir="build/clirr/new">
+	       	    <fileset file="${jms.jar}"/>
+	       	    <fileset file="${jmx.jar}"/>
+	       	    <fileset dir="${jar.dest}" includes="${jar.filename}"/>
+	       </copy>
+	  	   <clirr failOnBinError="no" failOnSrcError="no">
+	  	        <origfiles dir="build/clirr/orig" includes="*.jar"/>
+	  	        <newfiles dir="build/clirr/new" includes="*.jar"/>
+	  	  	    <formatter type="xml" outfile="${docs.dest}/compatibility.xml"/>
+	  	  </clirr>
+	  	  <xslt in="${docs.dest}/compatibility.xml"
+	  	        out="${docs.dest}/compatibility.html"
+	  	        style="${basedir}/src/xdocs/stylesheets/compatibility.xslt"/>
+	  </target>  
 
   <!-- ============================================== -->
   <!-- Build the site files using Anakia              -->
