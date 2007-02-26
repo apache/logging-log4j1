@@ -17,9 +17,15 @@
 
 package org.apache.log4j.config;
 
-import java.io.*;
-import java.util.*;
-import org.apache.log4j.*;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Category;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
    Prints the configuration of the log4j default hierarchy
@@ -85,7 +91,7 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
   }
   
   protected
-  void printOptions(PrintWriter out, Logger cat) {
+  void printOptions(PrintWriter out, Category cat) {
     Enumeration appenders = cat.getAllAppenders();
     Level prio = cat.getLevel();
     String appenderString = (prio == null ? "" : prio.toString());
@@ -118,6 +124,10 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
     if (!cat.getAdditivity() && cat != Logger.getRootLogger()) {
     	out.println("log4j.additivity." + cat.getName() + "=false");    
     }
+  }
+
+  protected void printOptions(PrintWriter out, Logger cat) {
+      printOptions(out, (Category) cat);
   }
   
   protected
