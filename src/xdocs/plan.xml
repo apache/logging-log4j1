@@ -46,14 +46,11 @@
 
     </section>
 
-    <section name="Release 1.2.15">
+    <section name="Release 1.2.16">
       <p>Expected timeframe: As needed</p>
       
-      <p>log4j 1.2.14 was released in September 2006.  log4j 1.2 is continuing to be maintained
-	  in response to reported, but no active development is anticipated in the near future.  Backporting
-	  the org.apache.log4j.rolling package from log4j 1.3 might be desirable since usage problems
-	  with the original org.apache.log4j.RollingFileAppender and org.apache.log4j.DailyRollingFileAppender
-	  are commonly reported.</p>
+      <p>log4j 1.2.15 was released in March 2007.  log4j 1.2 is continuing to be maintained
+	  in response to reported issues and requests for back-ported features from log4j 1.3.</p>
     </section>
     
     <section name="Release 1.3">
