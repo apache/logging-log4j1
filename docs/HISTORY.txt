@@ -5,6 +5,31 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
  
+ March 5th, 2007
+ 
+ - Release of version 1.2.15
+ 
+ SyslogAppender: Added "header" property which if set to true will cause the appender
+        to produce the HEADER part (timestamp and hostname) of the syslog packet.
+        Default value is false for compatibility with previous behavior.  The
+        SyslogAppender also now sends any header from the associated
+        layout when activateOptions is called or first logging event is sent and
+        any footer when the appender is closed.
+ 
+ - Fixed following bugs:
+       40944: PropertyConfigurator.configure(URL) does not close resource stream.
+       40937: In Turkish locale level "info" is not equivalent to "INFO"
+       41339: Javadoc of PatternLayout should use %n in TTCC layout examples
+       41219: Stacktraces of exceptions disappear occassionally
+       38680: Incorrect message when specified custom level class does not implement toLevel
+       37282: SyslogAppender leaks descriptors
+       41040: SyslogAppender should prefix message with TIMESTAMP and local hostname
+       40502: SyslogAppender assumes all lines start with tab
+       41169: NTEventLogAppender.dll :: "missing" event description
+       41487: Warning when configuring inner-class logger
+       41186: AsyncAppender in 1.2.14 DiscardSummary events create NullPointerExceptions in layouts
+ 
+ 
  September 18th, 2006
  
  - Release of version 1.2.14

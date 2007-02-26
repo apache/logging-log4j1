@@ -20,10 +20,6 @@
 <!-- It is available from http://ant.apache.org                        -->
 
 
-<!-- ================================================================= -->
-<!-- NOTE: all directories are relative to logging-log4j/              -->
-<!-- the parent of build/                                              -->
-<!-- ================================================================= -->
 <project name="log4j" default="usage" basedir="." >
 
   
@@ -34,7 +30,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2.14"/>
+  <property name="version" value="1.2.15"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -60,6 +56,7 @@
 
   <!-- The jar file that the jar task will generate -->
   <property name="jar.filename" value="log4j-${version}.jar"/>
+  <property name="sources-jar.filename" value="log4j-${version}-sources.jar"/>
 
   <!-- Destination for documentation files -->
   <property name="docs.dest" value="./docs"/>
@@ -95,12 +92,6 @@
   <property name="apache.javadoc_dest" value="/www/logging.apache.org/log4j/docs"/>
   <!--  Apache web host  -->
   <property name="apache.host" value="people.apache.org"/>
-  
-  <property name="maven.base" value="${packaging.dir}/maven"/>
-  <property name="maven.src" value="${maven.base}/logging-log4j-${version}"/>
-  <property name="maven.dest" value="${maven.base}/repo"/>
-  
-
 
 
   <!-- Construct compile classpath -->
@@ -422,11 +413,11 @@
   <!-- Remove the temporary manifest file, actual work is done in the    -->
   <!-- dependencies.                                                     -->
   <!-- ================================================================= -->
-  <target name="jar" depends="log4j.jar">
+  <target name="jar" depends="log4j.jar, log4j-sources.jar">
      <delete file="${jar.dest}/manifest.mf"/>
   </target>
 
-  <target name="prejar" depends="build">
+  <target name="prejar" depends="init">
     <mkdir dir="${jar.dest}"/>
     <filter token="version" value="${version}" />
     <copy file="${manifest.src}" tofile="${jar.dest}/manifest.mf"
@@ -436,10 +427,10 @@
  <!-- ================================================================= -->
  <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
  <!-- ================================================================= -->
-  <target name="log4j.jar" depends="prejar">
+  <target name="log4j.jar" depends="build, prejar">
     <delete>
       <fileset dir="${jar.dest}">
-   <include name="*.jar"/>
+   			<include name="${jar.filename}"/>
       </fileset>
     </delete>
 
@@ -464,6 +455,22 @@
                    ${stem}/or/jms/*.class,
                    ${stem}/config/*.class"
          excludes="**/UnitTest**"
+         manifest="${jar.dest}/manifest.mf">
+         <metainf dir="." includes="NOTICE,LICENSE"/>
+     </jar>
+  </target>
+
+
+ <!-- ================================================================= -->
+ <!-- Create log4j-sources.jar                                          -->
+ <!-- ================================================================= -->
+  <target name="log4j-sources.jar" depends="prejar">
+    <delete>
+      <fileset dir="${jar.dest}" includes="${sources-jar.filename}"/>
+    </delete>
+
+    <jar jarfile="${jar.dest}/${sources-jar.filename}" basedir="${java.source.dir}"
+         includes="**/*.java"
          manifest="${jar.dest}/manifest.mf">
          <metainf dir="." includes="NOTICE,LICENSE"/>
      </jar>
@@ -653,9 +660,9 @@
 
     <mkdir  dir="${dist.images}" />
     
-    <mkdir  dir="${dist.tmp}/logging-log4j-${version}" />
+    <mkdir  dir="${dist.tmp}/apache-log4j-${version}" />
 
-    <copy todir="${dist.tmp}/logging-log4j-${version}">
+    <copy todir="${dist.tmp}/apache-log4j-${version}">
        <fileset dir="${base}"
                 includes="src/java/**,
            docs/**,
@@ -667,7 +674,7 @@
            INSTALL,
            LICENSE,
            NOTICE,
-           ${dist.dir}/lib/log4j*.jar,
+           ${dist.dir}/lib/log4j-${version}.jar,
            ${dist.dir}/lib/NTEventLogAppender.dll,
            ${dist.dir}/classes/**,
            contribs/**"
@@ -682,21 +689,21 @@
     </copy>
 
 
-    <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
+    <fixcrlf srcdir="${dist.tmp}/apache-log4j-${version}"
              includes="build.sh" cr="remove"/>
-    <fixcrlf srcdir="${dist.tmp}/logging-log4j-${version}"
+    <fixcrlf srcdir="${dist.tmp}/apache-log4j-${version}"
              includes="build.bat" cr="add"/>
-    <chmod   dir="${dist.tmp}/logging-log4j-${version}"
+    <chmod   dir="${dist.tmp}/apache-log4j-${version}"
              includes="build.sh" perm="+x"/>
 
-    <tar tarfile="${dist.images}/logging-log4j-${version}.tar.gz"
+    <tar tarfile="${dist.images}/apache-log4j-${version}.tar.gz"
          basedir="${dist.tmp}"
-         includes="logging-log4j-${version}/**"
+         includes="apache-log4j-${version}/**"
          compression="gzip" />
 
-    <zip zipfile="${dist.images}/logging-log4j-${version}.zip"
+    <zip zipfile="${dist.images}/apache-log4j-${version}.zip"
          basedir="${dist.tmp}"
-         includes="logging-log4j-${version}/**" />
+         includes="apache-log4j-${version}/**" />
 
 
     <delete dir="${dist.tmp}" />
@@ -704,53 +711,68 @@
   
   <!-- This target will be incorporated init dist for the next release
            currently it will repackage a previously built release   -->
-  <target name="prep-maven" depends="init" description="Prepares a Maven package">
-      <delete dir="${maven.src}"/>
-      <delete dir="${maven.dest}"/>
-      <mkdir dir="${maven.base}"/>             
-      <untar src="${dist.images}/logging-log4j-${version}.tar.gz"
-             dest="${maven.base}"
-             compression="gzip"/>
-	  <mkdir dir="${maven.dest}/java-sources"/>
-      <jar destfile="${maven.dest}/java-sources/log4j-${version}-sources.jar"
-           basedir="${maven.src}/src/java"
-           includes="**/*.java">
-         <metainf dir="${maven.src}" includes="NOTICE,LICENSE"/>
-      </jar>
-      <mkdir dir="${maven.dest}/jars"/>
-      <copy todir="${maven.dest}/jars" file="${maven.src}/dist/lib/log4j-${version}.jar"/>
-      <mkdir dir="${maven.dest}/poms"/>
-      <copy tofile="${maven.dest}/poms/log4j-${version}.pom" file="pom.xml"/>
-      <mkdir dir="${maven.dest}/licenses"/>
-      <copy todir="${maven.dest}/licenses">
-          <fileset dir="${maven.src}" includes="LICENSE"/>
-      </copy>
+  <target name="maven-package" depends="jar" description="Prepares a Maven package">
+      <mkdir dir="${dist.dir}/poms"/>
+      <copy tofile="${dist.dir}/poms/log4j-${version}.pom" file="pom.xml"/>
+      <mkdir dir="${dist.dir}/licenses"/>
+      <copy todir="${dist.dir}/licenses" file="LICENSE"/>
+      
 	  <checksum forceOverwrite="yes" fileext=".md5">
-	  		<fileset dir="${maven.dest}" excludes="logging-log4j-${version}/** **/*.md5 **/*.sha1 **/*.asc"/>
+	  		<fileset dir="${jar.dest}" includes="${jar.filename} ${sources-jar.filename}"/>
+	  </checksum>           
+	  <checksum forceOverwrite="yes" fileext=".md5">
+	  		<fileset dir="${dist.dir}" includes="poms/log4j-${version}.pom licenses/LICENSE"/>
 	  </checksum>           
 	  <checksum forceOverwrite="yes" fileext=".sha1" algorithm="SHA">
-	  		<fileset dir="${maven.dest}" excludes="logging-log4j-${version}/** **/*.md5 **/*.sha1 **/*.asc"/>
+	  		<fileset dir="${jar.dest}" includes="${jar.filename} ${sources-jar.filename}"/>
 	  </checksum>
-	  <exec executable="gpg" dir="${maven.dest}/jars">
-	      <arg value="--armor"/>
-	      <arg value="--output"/>
-	      <arg value="log4j-${version}.jar.asc"/>
-	      <arg value="--detach-sig"/>
-	      <arg value="log4j-${version}.jar"/>	      
-	  </exec>           
-	  <exec executable="gpg" dir="${maven.dest}/java-sources">
-	      <arg value="--armor"/>
-	      <arg value="--output"/>
-	      <arg value="log4j-${version}-sources.jar.asc"/>
-	      <arg value="--detach-sig"/>
-	      <arg value="log4j-${version}-sources.jar"/>	      
-	  </exec>           
-  </target>
+	  <checksum forceOverwrite="yes" fileext=".sha1" algorithm="SHA">
+	  		<fileset dir="${dist.dir}" includes="poms/log4j-${version}.pom licenses/LICENSE"/>
+	  </checksum>           
+	  <mkdir dir="${dist.images}"/>
+      <!--  Does not include PGP signatures to allow for review prior to publication -->
+	  <tar tarfile="${dist.images}/apache-log4j-${version}-maven.tar.gz"
+         compression="gzip">
+         <tarfileset dir="${dist.dir}" includes="poms/* licenses/*" excludes="**/*.asc"/>
+         <tarfileset dir="${jar.dest}" includes="${jar.filename} ${jar.filename}.*" prefix="jars"  excludes="**/*.asc"/>
+         <tarfileset dir="${jar.dest}" includes="${sources-jar.filename} ${sources-jar.filename}.*" prefix="java-sources"  excludes="**/*.asc"/>
+      </tar>
 
-  <target name="publish-maven">
-    <scp todir="${username}@people.apache.org:/www/people.apache.org/repo/m1-ibiblio-rsync-repository/log4j/">
-        <fileset dir="${maven.dest}"/>
-    </scp>
+	  <exec executable="gpg" dir="${jar.dest}">
+	      <arg value="--armor"/>
+	      <arg value="--output"/>
+	      <arg value="${jar.filename}.asc"/>
+	      <arg value="--detach-sig"/>
+	      <arg value="${jar.filename}"/>	      
+	  </exec>           
+	  <exec executable="gpg" dir="${jar.dest}">
+	      <arg value="--armor"/>
+	      <arg value="--output"/>
+	      <arg value="${sources-jar.filename}.asc"/>
+	      <arg value="--detach-sig"/>
+	      <arg value="${sources-jar.filename}"/>	      
+	  </exec>           
+	  <exec executable="gpg" dir="${dist.dir}/poms">
+	      <arg value="--armor"/>
+	      <arg value="--output"/>
+	      <arg value="log4j-${version}.pom.asc"/>
+	      <arg value="--detach-sig"/>
+	      <arg value="log4j-${version}.pom"/>	      
+	  </exec>           
+	  <exec executable="gpg" dir="${dist.dir}/licenses">
+	      <arg value="--armor"/>
+	      <arg value="--output"/>
+	      <arg value="LICENSE.asc"/>
+	      <arg value="--detach-sig"/>
+	      <arg value="LICENSE"/>	      
+	  </exec>           
+	  <tar tarfile="${dist.images}/apache-log4j-${version}-maven-pgpsigs.tar.gz"
+         compression="gzip">
+         <tarfileset dir="${dist.dir}" includes="poms/*.asc licenses/*.asc"/>
+         <tarfileset dir="${jar.dest}" includes="${jar.filename}.asc" prefix="jars"/>
+         <tarfileset dir="${jar.dest}" includes="${sources-jar.filename}.asc" prefix="java-sources"/>
+      </tar>
+
   </target>
 
     <!-- ================================================================= -->
@@ -782,7 +804,27 @@
                    classname="org.apache.log4j.net.SMTPAppender"
                    classpath="${jar.dest}/${jar.filename}"/>
         <fail unless="javamail-found" message="JAVAMAIL was not found."/>
-
+        <antcall target="maven-package"/>
+	  <checksum forceOverwrite="yes" fileext=".md5">
+	  		<fileset dir="${dist.images}" includes="apache-log4j-${version}.tar.gz apache-log4j-${version}.zip"/>
+	  </checksum>           
+	  <checksum forceOverwrite="yes" fileext=".sha1" algorithm="SHA">
+	  		<fileset dir="${dist.images}" includes="apache-log4j-${version}.tar.gz apache-log4j-${version}.zip"/>
+	  </checksum>
+	  <exec executable="gpg" dir="${dist.images}">
+	      <arg value="--armor"/>
+	      <arg value="--output"/>
+	      <arg value="apache-log4j-${version}.tar.gz.asc"/>
+	      <arg value="--detach-sig"/>
+	      <arg value="apache-log4j-${version}.tar.gz"/>	      
+	  </exec>           
+	  <exec executable="gpg" dir="${dist.images}">
+	      <arg value="--armor"/>
+	      <arg value="--output"/>
+	      <arg value="apache-log4j-${version}.zip.asc"/>
+	      <arg value="--detach-sig"/>
+	      <arg value="apache-log4j-${version}.zip"/>	      
+	  </exec>           
    </target>
 
 <target name="fixcrlf" depends="init"
