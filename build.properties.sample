@@ -54,3 +54,11 @@ velocity.jar=${lib.home.dir}/velocity-1.4/velocity-dep-1.4.jar
 # but Velocity 1.4 is not compatible with JDOM 1.0, but beta 8 works okay
 # download for http://www.jdom.org/dist/binary/archive
 jdom.jar=${lib.home.dir}/jdom-b8/build/jdom.jar
+
+
+#
+#   CLIRR binary compatibility checker
+#      http://clirr.sourceforge.net
+clirr-core.jar=${lib.home.dir}/clirr-0.6/clirr-core-0.6.jar
+#  bcel 5.1 will throw NullPointerExceptions
+bcel.jar=${lib.home.dir}/bcel-5.2/bcel-5.2.jar

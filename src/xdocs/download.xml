@@ -53,6 +53,7 @@
        <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=41169">41169</a>: NTEventLogAppender.dll :: "missing" event description</li>
        <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=41487">41487</a>: Warning when configuring inner-class logger</li>
        <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=41186">41186</a>: AsyncAppender in 1.2.14 DiscardSummary events create NullPointerExceptions in layouts</li>
+       <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=37864">37864</a>: Add target to generate binary and source compatibility report</li>
       </ul>
    </li>
     </ul>

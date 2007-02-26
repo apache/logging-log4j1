@@ -28,6 +28,7 @@
        41169: NTEventLogAppender.dll :: "missing" event description
        41487: Warning when configuring inner-class logger
        41186: AsyncAppender in 1.2.14 DiscardSummary events create NullPointerExceptions in layouts
+	   37864: Add target to generate binary and source compatibility report
  
  
  September 18th, 2006
