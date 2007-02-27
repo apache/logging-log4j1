@@ -255,7 +255,7 @@ public class LevelTest extends TestCase {
      */
   public void testDottedLowerI() {
       Locale defaultLocale = Locale.getDefault();
-      Locale turkey = new Locale("tr");
+      Locale turkey = new Locale("tr", "TR");
       Locale.setDefault(turkey);
       Level level = Level.toLevel("info");
       Locale.setDefault(defaultLocale);
