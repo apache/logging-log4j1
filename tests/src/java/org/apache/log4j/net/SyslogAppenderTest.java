@@ -399,7 +399,6 @@ public class SyslogAppenderTest extends TestCase {
                                 final int packets) throws Exception {
         DatagramSocket ds = new DatagramSocket();
         ds.setSoTimeout(2000);
-        DatagramPacket p = new DatagramPacket(new byte[1000], 0, 1000);
 
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("localhost:" + ds.getLocalPort());
@@ -418,7 +417,9 @@ public class SyslogAppenderTest extends TestCase {
       }
       appender.close();
       String[] retval = new String[packets];
+      byte[] buf = new byte[1000];
       for(int i = 0; i < packets; i++) {
+          DatagramPacket p = new DatagramPacket(buf, 0, buf.length);
           ds.receive(p);
           retval[i] = new String(p.getData(), 0, p.getLength());
       }
@@ -519,7 +520,6 @@ public class SyslogAppenderTest extends TestCase {
     public void testLayoutHeader() throws Exception {
         DatagramSocket ds = new DatagramSocket();
         ds.setSoTimeout(2000);
-        DatagramPacket p = new DatagramPacket(new byte[1000], 0, 1000);
 
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("localhost:" + ds.getLocalPort());
@@ -534,7 +534,9 @@ public class SyslogAppenderTest extends TestCase {
       l.info("Hello, World");
       appender.close();
       String[] s = new String[3];
+      byte[] buf = new byte[1000];
       for(int i = 0; i < 3; i++) {
+          DatagramPacket p = new DatagramPacket(buf, 0, buf.length);
           ds.receive(p);
           s[i] = new String(p.getData(), 0, p.getLength());
       }
