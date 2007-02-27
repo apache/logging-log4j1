@@ -202,7 +202,7 @@ public class PriorityTest extends TestCase {
      */
   public void testDottedLowerI() {
       Locale defaultLocale = Locale.getDefault();
-      Locale turkey = new Locale("tr");
+      Locale turkey = new Locale("tr", "TR");
       Locale.setDefault(turkey);
       Priority level = Priority.toPriority("info");
       Locale.setDefault(defaultLocale);
