@@ -40,6 +40,12 @@
   packet.  Default value is false for compatibility with previous behavior.  The SyslogAppender also now sends any header from the associated layout when
   activateOptions is called or the first logging event is send and any footer when the appender is closed.</li>
  
+  <li>NTEventLogAppender: Updated NTEventLogAppender.dll which corrects missing event messages
+        and which should work with earlier releases of log4j.  If replacing
+        a previously used NTEventLogAppender.dll, the registry key 
+        HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/Eventlog/Application/Log4J
+        should be removed to allow the new DLL to properly register itself.</li>
+
   <li>The following bugs were fixed:
       <ul>
        <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40944">40944</a>: PropertyConfigurator.configure(URL) does not close resource stream.</li>
