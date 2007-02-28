@@ -41,10 +41,12 @@
   activateOptions is called or the first logging event is send and any footer when the appender is closed.</li>
  
   <li>NTEventLogAppender: Updated NTEventLogAppender.dll which corrects missing event messages
-        and which should work with earlier releases of log4j.  If replacing
-        a previously used NTEventLogAppender.dll, the registry key 
-        HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/Eventlog/Application/Log4J
-        should be removed to allow the new DLL to properly register itself.</li>
+        and which should work with earlier releases of log4j.
+		NTEventLogAppender.dll also now supports registration and unregistration
+		using regsvr32.  If replacing an existing copy of NTEventLogAppender,
+		use "regsvr32 NTDllEventLogAppender.dll" or manually remove the
+		HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/Eventlog/Application/Log4J
+		registry key.</li>
 
   <li>The following bugs were fixed:
       <ul>
