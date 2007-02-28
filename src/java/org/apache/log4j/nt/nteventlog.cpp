@@ -200,4 +200,60 @@ jint handle)
 }
 
 
+//
+//  Entry point which registers default event source (Log4j)
+//     when invoked using regsvr32 tool.
+//
+//
+STDAPI __declspec(dllexport) DllRegisterServer(void) {
+	HRESULT hr = E_FAIL;
+    HMODULE hmodule = GetModuleHandleW(L"NTEventLogAppender.dll");
+    if (hmodule != NULL) {
+        wchar_t modpath[_MAX_PATH];
+        DWORD modlen = GetModuleFileNameW(hmodule, modpath, _MAX_PATH - 1);
+        if (modlen > 0) {
+            modpath[modlen] = 0;
+			const wchar_t key[] = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\Application\\Log4j";
+			DWORD disposition;
+			HKEY hkey = 0;
+  
+			LONG stat = RegCreateKeyExW(HKEY_LOCAL_MACHINE, key, 0, NULL, 
+				REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL, 
+				&hkey, &disposition);
+			if (stat == ERROR_SUCCESS) {
+				stat = RegSetValueExW(hkey, L"EventMessageFile", 0, REG_EXPAND_SZ, 
+					(LPBYTE) modpath, (wcslen(modpath) + 1) * sizeof(wchar_t));
+				if(stat == ERROR_SUCCESS) {
+					stat = RegSetValueExW(hkey, L"CategoryMessageFile", 0, REG_EXPAND_SZ, 
+						(LPBYTE) modpath, (wcslen(modpath) + 1) * sizeof(wchar_t));
+				}
+				if(stat == ERROR_SUCCESS) {
+					DWORD value = 7;
+					stat == RegSetValueExW(hkey, L"TypesSupported", 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
+				}
+				if(stat == ERROR_SUCCESS) {
+					DWORD value = 6;
+					stat == RegSetValueExW(hkey, L"CategoryCount", 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
+				}
+				LONG closeStat = RegCloseKey(hkey);
+				if (stat == ERROR_SUCCESS && closeStat == ERROR_SUCCESS) {
+					hr = S_OK;
+				}
+			}
+        }
+    }
+	return hr;
+}
+
+
+//
+//  Entry point which unregisters default event source (Log4j)
+//     when invoked using regsvr32 tool with /u option.
+//
+//
+STDAPI __declspec(dllexport) DllUnregisterServer(void) {
+	LONG stat = RegDeleteKeyW(HKEY_LOCAL_MACHINE, 
+		L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\Application\\Log4j");
+	return (stat == ERROR_SUCCESS || stat == ERROR_FILE_NOT_FOUND) ? S_OK : E_FAIL;
+}
 #endif
