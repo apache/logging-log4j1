@@ -38,6 +38,7 @@
        41186: AsyncAppender in 1.2.14 DiscardSummary events create NullPointerExceptions in layouts
 	   37864: Add target to generate binary and source compatibility report
 	   41708: PropertyPrinter.printOptions breaking signature change in log4j 1.2.9
+	   41735: RollingFileAppender may delete files during rollover
  
  
  September 18th, 2006
