@@ -63,6 +63,7 @@
        <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=41186">41186</a>: AsyncAppender in 1.2.14 DiscardSummary events create NullPointerExceptions in layouts</li>
        <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=37864">37864</a>: Add target to generate binary and source compatibility report</li>
        <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=41708">41708</a>: PropertyPrinter.printOptions breaking signature change in log4j 1.2.9</li>
+       <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=41735">41735</a>: RollingFileAppender may delete files during rollover</li>
       </ul>
    </li>
     </ul>
