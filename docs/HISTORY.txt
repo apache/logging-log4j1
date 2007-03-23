@@ -5,7 +5,7 @@
        client code. 
  [***] Changes requiring important modifications to existing client code.
  
- March 5th, 2007
+ TBD, 2007
  
  - Release of version 1.2.15
  
@@ -39,6 +39,7 @@
 	   37864: Add target to generate binary and source compatibility report
 	   41708: PropertyPrinter.printOptions breaking signature change in log4j 1.2.9
 	   41735: RollingFileAppender may delete files during rollover
+	   33708: XMLConfiguration of loggerFactory does not work
  
  
  September 18th, 2006
