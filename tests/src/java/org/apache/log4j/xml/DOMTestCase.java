@@ -18,19 +18,20 @@
 package org.apache.log4j.xml;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.framework.Test;
-
-import org.apache.log4j.Logger;
+import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
-import org.apache.log4j.util.Filter;
-import org.apache.log4j.util.LineNumberFilter;
-import org.apache.log4j.util.ControlFilter;
-import org.apache.log4j.util.ISO8601Filter;
-import org.apache.log4j.util.Transformer;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.util.Compare;
-import org.apache.log4j.util.SunReflectFilter;
+import org.apache.log4j.util.ControlFilter;
+import org.apache.log4j.util.Filter;
+import org.apache.log4j.util.ISO8601Filter;
 import org.apache.log4j.util.JunitTestRunnerFilter;
+import org.apache.log4j.util.LineNumberFilter;
+import org.apache.log4j.util.SunReflectFilter;
+import org.apache.log4j.util.Transformer;
 
 public class DOMTestCase extends TestCase {
 
@@ -159,4 +160,123 @@ public class DOMTestCase extends TestCase {
     root.error("Message " + i, e);    
 
   }
+
+
+    /**
+     * CustomLogger implementation for testCategoryFactory1 and 2.
+     */
+  private static class CustomLogger extends Logger {
+        /**
+         * Creates new instance.
+         * @param name logger name.
+         */
+      public CustomLogger(final String name) {
+          super(name);
+      }
+  }
+
+    /**
+     * Creates new instances of CustomLogger.
+     */
+  public static class CustomLoggerFactory implements LoggerFactory {
+        /**
+         * Addivity, expected to be set false in configuration file.
+         */
+      private boolean additivity;
+
+        /**
+         * Create new instance of factory.
+         */
+      public CustomLoggerFactory() {
+          additivity = true;
+      }
+
+        /**
+         * Create new logger.
+         * @param name logger name.
+         * @return new logger.
+         */
+      public Logger makeNewLoggerInstance(final String name) {
+          Logger logger = new CustomLogger(name);
+          assertFalse(additivity);
+          return logger;
+      }
+
+        /**
+         * Set additivity.
+         * @param newVal new value of additivity.
+         */
+      public void setAdditivity(final boolean newVal) {
+          additivity = newVal;
+      }
+  }
+
+    /**
+     * CustomErrorHandler for testCategoryFactory2.
+     */
+  public static class CustomErrorHandler implements ErrorHandler {
+      public CustomErrorHandler() {}
+      public void activateOptions() {}
+      public void setLogger(final Logger logger) {}
+      public void error(String message, Exception e, int errorCode) {}
+      public void error(String message) {}
+      public void error(String message, Exception e, int errorCode, LoggingEvent event) {}
+      public void setAppender(Appender appender) {}
+      public void setBackupAppender(Appender appender) {}
+  }
+
+    /**
+     * Tests that loggers mentioned in logger elements
+     *    use the specified categoryFactory.  See bug 33708.
+     */
+  public void testCategoryFactory1() {
+      DOMConfigurator.configure("input/xml/categoryfactory1.xml");
+      //
+      //   logger explicitly mentioned in configuration,
+      //         should be a CustomLogger
+      Logger logger1 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testCategoryFactory1.1");
+      assertTrue(logger1 instanceof CustomLogger);
+      //
+      //   logger not explicitly mentioned in configuration,
+      //         should use default factory
+      Logger logger2 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testCategoryFactory1.2");
+      assertFalse(logger2 instanceof CustomLogger);
+  }
+
+    /**
+     * Tests that loggers mentioned in logger-ref elements
+     *    use the specified categoryFactory.  See bug 33708.
+     */
+    public void testCategoryFactory2() {
+        DOMConfigurator.configure("input/xml/categoryfactory2.xml");
+        //
+        //   logger explicitly mentioned in configuration,
+        //         should be a CustomLogger
+        Logger logger1 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testCategoryFactory2.1");
+        assertTrue(logger1 instanceof CustomLogger);
+        //
+        //   logger not explicitly mentioned in configuration,
+        //         should use default factory
+        Logger logger2 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testCategoryFactory2.2");
+        assertFalse(logger2 instanceof CustomLogger);
+    }
+
+    /**
+     * Tests that loggers mentioned in logger elements
+     *    use the specified loggerFactory.  See bug 33708.
+     */
+  public void testLoggerFactory1() {
+      DOMConfigurator.configure("input/xml/loggerfactory1.xml");
+      //
+      //   logger explicitly mentioned in configuration,
+      //         should be a CustomLogger
+      Logger logger1 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testLoggerFactory1.1");
+      assertTrue(logger1 instanceof CustomLogger);
+      //
+      //   logger not explicitly mentioned in configuration,
+      //         should use default factory
+      Logger logger2 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testLoggerFactory1.2");
+      assertFalse(logger2 instanceof CustomLogger);
+  }
+
 }

@@ -80,6 +80,7 @@ public class DOMConfigurator implements Configurator {
   static final String LOGGER		= "logger";
   static final String LOGGER_REF	= "logger-ref";
   static final String CATEGORY_FACTORY_TAG  = "categoryFactory";
+  static final String LOGGER_FACTORY_TAG  = "loggerFactory";
   static final String NAME_ATTR		= "name";
   static final String CLASS_ATTR        = "class";
   static final String VALUE_ATTR	= "value";
@@ -108,6 +109,8 @@ public class DOMConfigurator implements Configurator {
 
   Properties props;
   LoggerRepository repository;
+
+  protected LoggerFactory catFactory = null;
 
   /**
      No argument constructor.
@@ -258,7 +261,8 @@ public class DOMConfigurator implements Configurator {
 	    eh.setBackupAppender(findAppenderByReference(currentElement));
 	  } else if(tagName.equals(LOGGER_REF)) {
 	    String loggerName = currentElement.getAttribute(REF_ATTR);	    
-	    Logger logger = repository.getLogger(loggerName);
+	    Logger logger = (catFactory == null) ? repository.getLogger(loggerName)
+                : repository.getLogger(loggerName, catFactory);
 	    eh.setLogger(logger);
 	  } else if(tagName.equals(ROOT_REF)) {
 	    Logger root = repository.getRootLogger();
@@ -317,7 +321,7 @@ public class DOMConfigurator implements Configurator {
 
     if(EMPTY_STR.equals(className)) {
       LogLog.debug("Retreiving an instance of org.apache.log4j.Logger.");
-      cat = repository.getLogger(catName);
+      cat = (catFactory == null) ? repository.getLogger(catName) : repository.getLogger(catName, catFactory);
     }
     else {
       LogLog.debug("Desired logger sub-class: ["+className+']');
@@ -361,10 +365,15 @@ public class DOMConfigurator implements Configurator {
     }
     else {
       LogLog.debug("Desired category factory: ["+className+']');
-      Object catFactory = OptionConverter.instantiateByClassName(className, 
+      Object factory = OptionConverter.instantiateByClassName(className,
                                                                  LoggerFactory.class, 
                                                                  null);
-      PropertySetter propSetter = new PropertySetter(catFactory);
+      if (factory instanceof LoggerFactory) {
+          catFactory = (LoggerFactory) factory;
+      } else {
+          LogLog.error("Category Factory class " + className + " does not implement org.apache.log4j.LoggerFactory");
+      }
+      PropertySetter propSetter = new PropertySetter(factory);
 
       Element  currentElement = null;
       Node     currentNode    = null;
@@ -812,7 +821,7 @@ public class DOMConfigurator implements Configurator {
 	currentElement = (Element) currentNode;
 	tagName = currentElement.getTagName();
 
-	if (tagName.equals(CATEGORY_FACTORY_TAG)) {
+	if (tagName.equals(CATEGORY_FACTORY_TAG) || tagName.equals(LOGGER_FACTORY_TAG)) {
 	  parseCategoryFactory(currentElement);
 	}
       }
