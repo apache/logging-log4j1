@@ -24,61 +24,119 @@ import java.io.PrintStream;
  * logging. Such errors include those occurring during the initial phases
  * of log4j configuration or errors emanating from core components such as
  * Logger or Hierarchy.
- * 
+ *
  * @author Ceki Gulcu
  */
 public class ErrorItem {
+    /**
+     * Message.
+     */
   String message;
+    /**
+     * Column.
+     */
   int colNumber = -1;
+    /**
+     * Line number.
+     */
   int lineNumber = -1;
+    /**
+     * Exception.
+     */
   Throwable exception;
 
-  public ErrorItem(String message, Exception e) {
+    /**
+     * Create new instance.
+     * @param message message
+     * @param e exception
+     */
+  public ErrorItem(final String message, final Exception e) {
+    super();
     this.message = message;
     exception = e;
   }
 
-  public ErrorItem(String message) {
+    /**
+     * Creaet new instance.
+     * @param message message.
+     */
+  public ErrorItem(final String message) {
     this(message, null);
   }
 
+    /**
+     * Get column number.
+     * @return column number.
+     */
   public int getColNumber() {
     return colNumber;
   }
 
+    /**
+     * Set column number.
+     * @param colNumber new column number.
+     */
   public void setColNumber(int colNumber) {
     this.colNumber = colNumber;
   }
 
+    /**
+     * Get exception.
+     * @return exception.
+     */
   public Throwable getException() {
     return exception;
   }
 
-  public void setException(Throwable exception) {
+    /**
+     * Set exception.
+     * @param exception exception
+     */
+  public void setException(final Throwable exception) {
     this.exception = exception;
   }
 
+    /**
+     * Get line number.
+     * @return line number.
+     */
   public int getLineNumber() {
     return lineNumber;
   }
 
-  public void setLineNumber(int lineNumber) {
+    /**
+     * Set line number.
+     * @param lineNumber line number.
+     */
+  public void setLineNumber(final int lineNumber) {
     this.lineNumber = lineNumber;
   }
 
+    /**
+     * Get message.
+     * @return message.
+     */
   public String getMessage() {
     return message;
   }
 
-  public void setMessage(String message) {
+    /**
+     * Set message.
+     * @param message message.
+     */
+  public void setMessage(final String message) {
     this.message = message;
   }
 
+    /**
+     * String representation of ErrorItem.
+     * @return string.
+     */
   public String toString() {
     String str =
       "Reported error: \"" + message + "\"";
-    
-    if(lineNumber != -1) {
+
+    if (lineNumber != -1) {
       str += " at line " + lineNumber + " column " + colNumber;
     }
     if (exception != null) {
@@ -86,7 +144,7 @@ public class ErrorItem {
     }
     return str;
   }
-  
+
   /**
    * Dump the details of this ErrorItem to System.out.
    */
@@ -96,19 +154,19 @@ public class ErrorItem {
   
   /**
    * Dump the details of this ErrorItem on the specified {@link PrintStream}.
-   * @param ps
+   * @param ps print stream.
    */
-  public void dump(PrintStream ps) {
+  public void dump(final PrintStream ps) {
     String str =
       "Reported error: \"" + message + "\"";
-    
-    if(lineNumber != -1) {
+
+    if (lineNumber != -1) {
       str += " at line " + lineNumber + " column " + colNumber;
     }
     ps.println(str);
-    
-    if(exception != null) {
+
+    if (exception != null) {
       exception.printStackTrace(ps);
-    }    
+    }
   }
 }

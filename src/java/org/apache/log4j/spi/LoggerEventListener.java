@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,18 +43,18 @@ public interface LoggerEventListener {
 
     @param logger The logger to which the appender was added.
     @param appender The appender added to the logger. */
-  public void appenderAddedEvent(Logger logger, Appender appender);
+  void appenderAddedEvent(Logger logger, Appender appender);
 
   /**
     Called when an appender is removed from the logger.
 
     @param logger The logger from which the appender was removed.
     @param appender The appender removed from the logger. */
-  public void appenderRemovedEvent(Logger logger, Appender appender);
+  void appenderRemovedEvent(Logger logger, Appender appender);
 
   /**
     Called when level changed on the logger.
 
     @param logger The logger that changed levels. */
-  public void levelChangedEvent(Logger logger);
+  void levelChangedEvent(Logger logger);
 }

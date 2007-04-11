@@ -160,14 +160,14 @@ public interface LoggerRepositoryEx extends LoggerRepository {
   void setProperty(String key, String value);
 
   /**
-   * Errors which cannot be logged, go to the error list
+   * Errors which cannot be logged, go to the error list.
    *
    * @return List
    */
   List getErrorList();
 
   /**
-   * Errors which cannot be logged, go to the error list
+   * Errors which cannot be logged, go to the error list.
    *
    * @param errorItem an ErrorItem to add to the error list
    */
@@ -193,16 +193,15 @@ public interface LoggerRepositoryEx extends LoggerRepository {
 
   /**
    * Sets the logger factory used by {@link LoggerRepository#getLogger(String)}.
-   * 
    * @param loggerFactory factory to use, may not be null
-   * @throws NullPointerException factory is null
    * @since 1.3
    */
   void setLoggerFactory(LoggerFactory loggerFactory);
 
   /**
-   * Returns the logger factory used by {@link LoggerRepository#getLogger(String)}.
-   * 
+   * Returns the logger factory used by
+   * {@link LoggerRepository#getLogger(String)}.
+   *
    * @return non-null factory
    * @since 1.3
    */

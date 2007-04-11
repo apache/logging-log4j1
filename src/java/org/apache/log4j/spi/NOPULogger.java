@@ -21,167 +21,180 @@ import org.apache.log4j.ULogger;
 
 /**
  * A no operation (NOP) implementation of {@link ULogger}.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class NOPULogger implements ULogger {
+public final class NOPULogger implements ULogger {
 
-  /**
-   * The unique instance of NOPLogger.
-   */
-  public final static NOPULogger NOP_LOGGER = new NOPULogger();
-  
-  /**
-   * There is no point in people creating multiple instances of NullLogger. 
-   * Hence, the private access modifier. 
-   */
-  private NOPULogger() {
-  }
+    /**
+     * The unique instance of NOPLogger.
+     */
+    public static final NOPULogger NOP_LOGGER = new NOPULogger();
 
-  public static NOPULogger getLogger(final String name) {
-      return NOP_LOGGER;
-  }
+    /**
+     * There is no point in people creating multiple instances of NullLogger.
+     * Hence, the private access modifier.
+     */
+    private NOPULogger() {
+        super();
+    }
 
-  /* Always returns false.
-   * 
-   * @see org.apache.ugli.Logger#isDebugEnabled()
-   */
-  public boolean isDebugEnabled() {
-    return false;
-  }
+    /**
+     * Get instance.
+     * @param name logger name.
+     * @return logger.
+     */
+    public static NOPULogger getLogger(final String name) {
+        return NOP_LOGGER;
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#debug(java.lang.Object)
-   */
-  public void debug(Object msg) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDebugEnabled() {
+        return false;
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#debug(java.lang.Object, java.lang.Object)
-   */
-  public void debug(Object parameterizedMsg, Object param1) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void debug(final Object msg) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#debug(java.lang.Object, java.lang.Object, java.lang.Object)
-   */
-  public void debug(String parameterizedMsg, Object param1, Object param2) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void debug(final Object parameterizedMsg, final Object param1) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#debug(java.lang.Object, java.lang.Throwable)
-   */
-  public void debug(Object msg, Throwable t) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void debug(final String parameterizedMsg,
+                      final Object param1,
+                      final Object param2) {
+        // NOP
+    }
 
-  /* Always returns false.
-   * @see org.apache.ugli.Logger#isInfoEnabled()
-   */
-  public boolean isInfoEnabled() {
-    // NOP
-    return false;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void debug(final Object msg, final Throwable t) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#info(java.lang.Object)
-   */
-  public void info(Object msg) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isInfoEnabled() {
+        // NOP
+        return false;
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#info(java.lang.Object, java.lang.Object)
-   */
-  public void info(Object parameterizedMsg, Object param1) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void info(final Object msg) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#info(java.lang.Object, java.lang.Object, java.lang.Object)
-   */
-  public void info(String parameterizedMsg, Object param1, Object param2) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void info(final Object parameterizedMsg, final Object param1) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#info(java.lang.Object, java.lang.Throwable)
-   */
-  public void info(Object msg, Throwable t) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void info(final String parameterizedMsg,
+                     final Object param1, final Object param2) {
+        // NOP
+    }
 
-  /* Always returns false.
-   * @see org.apache.ugli.Logger#isWarnEnabled()
-   */
-  public boolean isWarnEnabled() {
-    return false;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void info(final Object msg, final Throwable t) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#warn(java.lang.Object)
-   */
-  public void warn(Object msg) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isWarnEnabled() {
+        return false;
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#warn(java.lang.Object, java.lang.Object)
-   */
-  public void warn(Object parameterizedMsg, Object param1) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void warn(final Object msg) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#warn(java.lang.Object, java.lang.Object, java.lang.Object)
-   */
-  public void warn(String parameterizedMsg, Object param1, Object param2) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void warn(final Object parameterizedMsg,
+                     final Object param1) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#warn(java.lang.Object, java.lang.Throwable)
-   */
-  public void warn(Object msg, Throwable t) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void warn(final String parameterizedMsg,
+                     final Object param1,
+                     final Object param2) {
+        // NOP
+    }
 
-  /* Always returns false.
-   * @see org.apache.ugli.Logger#isErrorEnabled()
-   */
-  public boolean isErrorEnabled() {
-    return false;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void warn(final Object msg, final Throwable t) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#error(java.lang.Object)
-   */
-  public void error(Object msg) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isErrorEnabled() {
+        return false;
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#error(java.lang.Object, java.lang.Object)
-   */
-  public void error(Object parameterizedMsg, Object param1) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void error(final Object msg) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#error(java.lang.Object, java.lang.Object, java.lang.Object)
-   */
-  public void error(String parameterizedMsg, Object param1, Object param2) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void error(final Object parameterizedMsg, final Object param1) {
+        // NOP
+    }
 
-  /* A NOP implementation.
-   * @see org.apache.ugli.Logger#error(java.lang.Object, java.lang.Throwable)
-   */
-  public void error(Object msg, Throwable t) {
-    // NOP
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public void error(final String parameterizedMsg,
+                      final Object param1,
+                      final Object param2) {
+        // NOP
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void error(final Object msg, final Throwable t) {
+        // NOP
+    }
 
 }
