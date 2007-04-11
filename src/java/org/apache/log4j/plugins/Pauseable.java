@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,12 +20,20 @@ package org.apache.log4j.plugins;
 
 /**
  * Instances of this interface can be paused, and resumed.
- * 
- * @author Paul Smith <psmith@apache.org>
+ *
+ * @author Paul Smith (psmith@apache.org)
  *
  */
 public interface Pauseable {
-  public void setPaused(boolean paused);
+    /**
+     * Set paused state.
+     * @param paused new value
+     */
+  void setPaused(boolean paused);
 
-  public boolean isPaused();
+    /**
+     * Get paused state.
+     * @return paused state.
+     */
+  boolean isPaused();
 }

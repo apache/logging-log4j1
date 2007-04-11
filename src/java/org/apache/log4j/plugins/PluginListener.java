@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,11 +25,19 @@ import java.util.EventListener;
 /**
  * PluginListeners are notified when plugins are started or stopped
  * by the PluginRegistry.
- * 
- * @author Paul Smith <psmith@apache.org>
+ *
+ * @author Paul Smith (psmith@apache.org)
  */
 public interface PluginListener extends EventListener {
-  public void pluginStarted(PluginEvent e);
+    /**
+     * Notification that plugin has started.
+     * @param e event
+     */
+  void pluginStarted(PluginEvent e);
 
-  public void pluginStopped(PluginEvent e);
+    /**
+     * Notification that plugin has stopped.
+     * @param e event
+     */
+  void pluginStopped(PluginEvent e);
 }
