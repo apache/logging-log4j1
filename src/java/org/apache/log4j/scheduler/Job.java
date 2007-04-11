@@ -1,9 +1,10 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -18,15 +19,18 @@ package org.apache.log4j.scheduler;
 
 
 /**
- * Job is a very simple interface. It only has a single method {@link #execute} 
+ * Job is a very simple interface. It only has a single method {@link #execute}
  * which is called by the {@link Scheduler} when a task is ready for execution.
- * 
- * It is assumed that the execution context are contained within the implementing
- * {@ink Job} itself.
- * 
- * @author Ceki G&uuml;lc&uuml;
+ * <p/>
+ * It is assumed that the execution context
+ * are contained within the implementing
+ * {@link Job} itself.
  *
+ * @author Ceki G&uuml;lc&uuml;
  */
 public interface Job {
-  public void execute();
+    /**
+     * Execute job.
+     */
+    void execute();
 }
