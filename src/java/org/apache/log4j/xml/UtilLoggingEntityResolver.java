@@ -26,17 +26,27 @@ import java.io.InputStream;
 
 /**
  * An {@link EntityResolver} specifically designed to return
- * <code>java 1.4's logging dtd, logger.dtd</code> which is embedded within the log4j jar
- * file.  Based on EntityResolver.
+ * <code>java 1.4's logging dtd, logger.dtd</code>
+ * which is embedded within the log4j jar file.  Based on EntityResolver.
+ *
+ * @since 1.3
  *
  * @author Paul Austin
- * @author Scott Deboy <sdeboy@apache.org>
+ * @author Scott Deboy (sdeboy@apache.org)
  */
-public class UtilLoggingEntityResolver implements EntityResolver {
-  
-  
-  
-  public InputSource resolveEntity(String publicId, String systemId) {
+public final class UtilLoggingEntityResolver implements EntityResolver {
+
+    /**
+     * Create new instance.
+     */
+    public UtilLoggingEntityResolver() {
+        super();
+    }
+
+
+    /** {@inheritDoc} */
+  public InputSource resolveEntity(final String publicId,
+                                   final String systemId) {
     if (systemId.endsWith("logger.dtd")) {
       Class clazz = getClass();
       InputStream in =

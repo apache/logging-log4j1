@@ -26,6 +26,8 @@ import org.apache.log4j.Level;
  * An extension of the Level class that provides support for java.util.logging
  * Levels.
  *
+ * @since 1.3
+ *
  * @author Scott Deboy (sdeboy@apache.org)
  */
 

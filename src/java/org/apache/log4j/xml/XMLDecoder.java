@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,33 +50,68 @@ import org.xml.sax.InputSource;
  * Decodes Logging Events in XML formated into elements that are used by
  * Chainsaw.
  *
- * This decoder can process a collection of log4j:event nodes ONLY 
+ * This decoder can process a collection of log4j:event nodes ONLY
  * (no XML declaration nor eventSet node)
- * 
+ *
  * NOTE:  Only a single LoggingEvent is returned from the decode method
  * even though the DTD supports multiple events nested in an eventSet.
  *
- * @author Scott Deboy <sdeboy@apache.org>
- * @author Paul Smith <psmith@apache.org>
+ * @since 1.3
+ *
+ * @author Scott Deboy (sdeboy@apache.org)
+ * @author Paul Smith (psmith@apache.org)
  *
  */
 public class XMLDecoder implements Decoder {
+    /**
+     * Document prolog.
+     */
   private static final String BEGINPART =
-    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><!DOCTYPE log4j:eventSet SYSTEM \"log4j.dtd\"><log4j:eventSet version=\"1.2\" xmlns:log4j=\"http://jakarta.apache.org/log4j/\">";
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
+    + "<!DOCTYPE log4j:eventSet SYSTEM \"log4j.dtd\">"
+    + "<log4j:eventSet version=\"1.2\" "
+    + "xmlns:log4j=\"http://jakarta.apache.org/log4j/\">";
+    /**
+     * Document close.
+     */
   private static final String ENDPART = "</log4j:eventSet>";
+    /**
+     * Record end.
+     */
   private static final String RECORD_END = "</log4j:event>";
-  private DocumentBuilderFactory dbf;
+
+    /**
+     * Document builder.
+     */
   private DocumentBuilder docBuilder;
+    /**
+     * Additional properties.
+     */
   private Map additionalProperties = new HashMap();
+    /**
+     * Partial event.
+     */
   private String partialEvent;
+    /**
+     * Owner.
+     */
   private Component owner = null;
 
-  public XMLDecoder(Component owner) {
+    /**
+     * Create new instance.
+     * @param o owner
+     */
+  public XMLDecoder(final Component o) {
       this();
-      this.owner = owner;
+      this.owner = o;
   }
-  public XMLDecoder() {
-    dbf = DocumentBuilderFactory.newInstance();
+
+    /**
+     * Create new instance.
+     */
+   public XMLDecoder() {
+    super();
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     dbf.setValidating(false);
 
     try {
@@ -93,19 +128,19 @@ public class XMLDecoder implements Decoder {
    * automatically added to each LoggingEvent as it is decoded.
    *
    * This is useful, say, to include the source file name of the Logging events
-   * @param additionalProperties
+   * @param properties additional properties
    */
-  public void setAdditionalProperties(Map additionalProperties) {
-    this.additionalProperties = additionalProperties;
+  public void setAdditionalProperties(final Map properties) {
+    this.additionalProperties = properties;
   }
 
   /**
    * Converts the LoggingEvent data in XML string format into an actual
    * XML Document class instance.
-   * @param data
+   * @param data XML fragment
    * @return dom document
    */
-  private Document parse(String data) {
+  private Document parse(final String data) {
     if (docBuilder == null || data == null) {
       return null;
     }
@@ -140,32 +175,35 @@ public class XMLDecoder implements Decoder {
   }
 
   /**
-   * Decodes a File into a Vector of LoggingEvents
+   * Decodes a File into a Vector of LoggingEvents.
    * @param url the url of a file containing events to decode
    * @return Vector of LoggingEvents
-   * @throws IOException
+   * @throws IOException if IO error during processing.
    */
-  public Vector decode(URL url) throws IOException {
-    LineNumberReader reader = null;
+  public Vector decode(final URL url) throws IOException {
+    LineNumberReader reader;
     if (owner != null) {
-      reader = new LineNumberReader(new InputStreamReader(new ProgressMonitorInputStream(owner, "Loading " + url , url.openStream())));
+      reader = new LineNumberReader(new InputStreamReader(
+              new ProgressMonitorInputStream(owner,
+                      "Loading " + url , url.openStream())));
     } else {
       reader = new LineNumberReader(new InputStreamReader(url.openStream()));
     }
 
     Vector v = new Vector();
 
-    String line = null;
-	Vector events = null;
+    String line;
+    Vector events;
     try {
         while ((line = reader.readLine()) != null) {
             StringBuffer buffer = new StringBuffer(line);
-            for (int i = 0;i<1000;i++) {
+            for (int i = 0; i < 1000; i++) {
                 buffer.append(reader.readLine()).append("\n");
             }
-			events = decodeEvents(buffer.toString());
-            if (events != null)
-            	v.addAll(events);
+            events = decodeEvents(buffer.toString());
+            if (events != null) {
+                v.addAll(events);
+            }
         }
     } finally {
       partialEvent = null;
@@ -180,37 +218,49 @@ public class XMLDecoder implements Decoder {
     return v;
   }
 
-  public Vector decodeEvents(String document) {
+    /**
+     * Decodes a String representing a number of events into a
+     * Vector of LoggingEvents.
+     * @param document to decode events from
+     * @return Vector of LoggingEvents
+     */
+  public Vector decodeEvents(final String document) {
     if (document != null) {
       if (document.trim().equals("")) {
         return null;
       }
-	  	String newDoc=null;
-	  	String newPartialEvent=null;
-	  	//separate the string into the last portion ending with </log4j:event> (which will
-	  	//be processed) and the partial event which will be combined and processed in the next section
-	
-		//if the document does not contain a record end, append it to the partial event string
-	  	if (document.lastIndexOf(RECORD_END) == -1) {
-			partialEvent = partialEvent + document;
-	  		return null;
-	  	}
-	
-	  	if (document.lastIndexOf(RECORD_END) + RECORD_END.length() < document.length()) {
-	      	newDoc = document.substring(0, document.lastIndexOf(RECORD_END) + RECORD_END.length());
-			newPartialEvent = document.substring(document.lastIndexOf(RECORD_END) + RECORD_END.length());
-	 	} else {
-	  		newDoc = document;
-	  	}
-		if (partialEvent != null) {
-			newDoc=partialEvent + newDoc;
-		}	      		
-	  	partialEvent=newPartialEvent;
-	    Document doc = parse(newDoc);
-	    if (doc == null) {
-	      return null;
-	    }
-	    return decodeEvents(doc);
+        String newDoc = null;
+        String newPartialEvent = null;
+        //separate the string into the last portion ending with
+        // </log4j:event> (which will be processed) and the
+        // partial event which will be combined and
+        // processed in the next section
+
+        //if the document does not contain a record end,
+        // append it to the partial event string
+        if (document.lastIndexOf(RECORD_END) == -1) {
+            partialEvent = partialEvent + document;
+            return null;
+        }
+
+        if (document.lastIndexOf(RECORD_END)
+                + RECORD_END.length() < document.length()) {
+            newDoc = document.substring(0,
+                    document.lastIndexOf(RECORD_END) + RECORD_END.length());
+            newPartialEvent = document.substring(
+                    document.lastIndexOf(RECORD_END) + RECORD_END.length());
+        } else {
+            newDoc = document;
+        }
+        if (partialEvent != null) {
+            newDoc = partialEvent + newDoc;
+        }
+        partialEvent = newPartialEvent;
+        Document doc = parse(newDoc);
+        if (doc == null) {
+            return null;
+        }
+        return decodeEvents(doc);
     }
     return null;
   }
@@ -219,10 +269,10 @@ public class XMLDecoder implements Decoder {
    * Converts the string data into an XML Document, and then soaks out the
    * relevant bits to form a new LoggingEvent instance which can be used
    * by any Log4j element locally.
-   * @param data
+   * @param data XML fragment
    * @return a single LoggingEvent
    */
-  public LoggingEvent decode(String data) {
+  public LoggingEvent decode(final String data) {
     Document document = parse(data);
 
     if (document == null) {
@@ -239,17 +289,17 @@ public class XMLDecoder implements Decoder {
   }
 
   /**
-   * Given a Document, converts the XML into a Vector of LoggingEvents
-   * @param document
+   * Given a Document, converts the XML into a Vector of LoggingEvents.
+   * @param document XML document
    * @return Vector of LoggingEvents
    */
-  private Vector decodeEvents(Document document) {
+  private Vector decodeEvents(final Document document) {
     Vector events = new Vector();
 
-    Logger logger = null;
-    long timeStamp = 0L;
-    String level = null;
-    String threadName = null;
+    Logger logger;
+    long timeStamp;
+    String level;
+    String threadName;
     Object message = null;
     String ndc = null;
     String[] exception = null;
@@ -266,18 +316,18 @@ public class XMLDecoder implements Decoder {
 
     for (int eventIndex = 0; eventIndex < eventList.getLength();
         eventIndex++) {
-      Node eventNode = eventList.item(eventIndex);
-      //ignore carriage returns in xml 
-	  if(eventNode.getNodeType() != Node.ELEMENT_NODE) {
-	  	continue;
-	  }
-      logger =
-        Logger.getLogger(
-          eventNode.getAttributes().getNamedItem("logger").getNodeValue());
+        Node eventNode = eventList.item(eventIndex);
+      //ignore carriage returns in xml
+        if (eventNode.getNodeType() != Node.ELEMENT_NODE) {
+            continue;
+        }
+        logger =
+            Logger.getLogger(
+               eventNode.getAttributes().getNamedItem("logger").getNodeValue());
       timeStamp =
         Long.parseLong(
           eventNode.getAttributes().getNamedItem("timestamp").getNodeValue());
-      level =eventNode.getAttributes().getNamedItem("level").getNodeValue();
+      level = eventNode.getAttributes().getNamedItem("level").getNodeValue();
       threadName =
         eventNode.getAttributes().getNamedItem("thread").getNodeValue();
 
@@ -315,7 +365,9 @@ public class XMLDecoder implements Decoder {
         }
 
         if (tagName.equalsIgnoreCase("log4j:throwable")) {
-          exception = new String[] { getCData(list.item(y)) };
+          exception = new String[] {
+                  getCData(list.item(y))
+          };
         }
 
         if (tagName.equalsIgnoreCase("log4j:locationinfo")) {
@@ -362,16 +414,19 @@ public class XMLDecoder implements Decoder {
             while (i.hasNext()) {
               Map.Entry e = (Map.Entry) i.next();
               if (!(properties.containsKey(e.getKey()))) {
-              	properties.put(e.getKey(), e.getValue());
+                properties.put(e.getKey(), e.getValue());
               }
             }
           }
         }
       }
       Level levelImpl = Level.toLevel(level);
-      
-      LocationInfo info = null;
-      if ((fileName != null) || (className != null) || (methodName != null) || (lineNumber != null)) {
+
+      LocationInfo info;
+      if ((fileName != null)
+              || (className != null)
+              || (methodName != null)
+              || (lineNumber != null)) {
           info = new LocationInfo(fileName, className, methodName, lineNumber);
       } else {
         info = LocationInfo.NA_LOCATION_INFO;
@@ -379,7 +434,7 @@ public class XMLDecoder implements Decoder {
       if (exception == null) {
           exception = new String[]{""};
       }
-      
+
       LoggingEvent loggingEvent = new LoggingEvent();
       loggingEvent.setLogger(logger);
       loggingEvent.setTimeStamp(timeStamp);
@@ -390,13 +445,9 @@ public class XMLDecoder implements Decoder {
       loggingEvent.setThrowableInformation(new ThrowableInformation(exception));
       loggingEvent.setLocationInformation(info);
       loggingEvent.setProperties(properties);
-      
+
       events.add(loggingEvent);
-     
-      logger = null;
-      timeStamp = 0L;
-      level = null;
-      threadName = null;
+
       message = null;
       ndc = null;
       exception = null;
@@ -410,7 +461,12 @@ public class XMLDecoder implements Decoder {
     return events;
   }
 
-  private String getCData(Node n) {
+    /**
+     * Get contents of CDATASection.
+     * @param n CDATASection
+     * @return text content of all text or CDATA children of node.
+     */
+  private String getCData(final Node n) {
     StringBuffer buf = new StringBuffer();
     NodeList nl = n.getChildNodes();
 

@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,10 +28,15 @@ import javax.swing.ListModel;
  * A very basic appender that takes the events and stores them in to a
  * ListModel for late retrieval.
  *
- * @author Paul Smith <psmith@apache.org>
+ * @since 1.3
+ *
+ * @author Paul Smith (psmith@apache.org)
  *
  */
 public final class ListModelAppender extends AppenderSkeleton {
+    /**
+     * Default list model.
+     */
   private final DefaultListModel model = new DefaultListModel();
 
   /**
@@ -43,38 +48,31 @@ public final class ListModelAppender extends AppenderSkeleton {
   /**
    * Returns a reference to the ListModel that contains all the LoggingEvents
    * that have been appended to this class.
-   * 
+   *
    * @return the list model
    */
-  public final ListModel getModel() {
+  public ListModel getModel() {
     return model;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.log4j.AppenderSkeleton#append(org.apache.log4j.spi.LoggingEvent)
-   */
-  protected void append(LoggingEvent event) {
+    /** {@inheritDoc} */
+  protected void append(final LoggingEvent event) {
     model.addElement(event);
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.log4j.Appender#close()
-   */
+    /** {@inheritDoc} */
   public void close() {
     clearModel();
   }
 
   /**
-   * Removes all the Events from the model
+   * Removes all the Events from the model.
    */
   public void clearModel() {
     model.clear();
   }
 
-    /**
-     * Gets whether appender requires a layout.
-     * @return false
-     */
+    /** {@inheritDoc} */
   public boolean requiresLayout() {
       return false;
   }
