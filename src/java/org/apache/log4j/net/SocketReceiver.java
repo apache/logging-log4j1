@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,43 +46,80 @@ import org.apache.log4j.spi.LoggingEvent;
   appenders currently configured in the LoggerRespository.
 
   @author Mark Womack
-  @author Scott Deboy <sdeboy@apache.org>
-  @author Paul Smith <psmith@apache.org>
+  @author Scott Deboy (sdeboy@apache.org)
+  @author Paul Smith (psmith@apache.org)
   @since 1.3
 */
 public class SocketReceiver extends Receiver implements Runnable, PortBased,
   Pauseable {
+    /**
+     * socket map.
+     */
   private Map socketMap = new HashMap();
+    /**
+     * Paused.
+     */
   private boolean paused;
+    /**
+     * Thread.
+     */
   private Thread rThread;
+    /**
+     * Port.
+     */
   protected int port;
+    /**
+     * Server socket.
+     */
   private ServerSocket serverSocket;
+    /**
+     * Socket list.
+     */
   private Vector socketList = new Vector();
+    /**
+     * Listener.
+     */
   private SocketNodeEventListener listener = null;
+    /**
+     * Listeners.
+     */
   private List listenerList = Collections.synchronizedList(new ArrayList());
 
+    /**
+     * Create new instance.
+     */
   public SocketReceiver() {
+        super();
   }
 
-  public SocketReceiver(int _port) {
-    port = _port;
+    /**
+     * Create new instance.
+     * @param p port
+     */
+  public SocketReceiver(final int p) {
+    super();
+    port = p;
   }
 
-  public SocketReceiver(int _port, LoggerRepository _repository) {
-    port = _port;
-    repository = _repository;
+    /**
+     * Create new instance.
+     * @param p port
+     * @param repo logger repository
+     */
+  public SocketReceiver(final int p, final LoggerRepository repo) {
+    super();
+    this.port = p;
+    repository = repo;
   }
 
-  /**
-    Get the port to receive logging events on. */
+    /** {@inheritDoc} */
   public int getPort() {
     return port;
   }
 
-  /**
-    Set the port to receive logging events on. */
-  public void setPort(int _port) {
-    port = _port;
+  /** {@inheritDoc} */
+  public void setPort(final int p) {
+    port = p;
   }
 
   /**
@@ -90,11 +127,11 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
    * configured for the same properties, and super class also considers
    * them to be equivalent. This is used by PluginRegistry when determining
    * if the a similarly configured receiver is being started.
-   * 
+   *
    * @param testPlugin The plugin to test equivalency against.
    * @return boolean True if the testPlugin is equivalent to this plugin.
    */
-  public boolean isEquivalent(Plugin testPlugin) {
+  public boolean isEquivalent(final Plugin testPlugin) {
     if ((testPlugin != null) && testPlugin instanceof SocketReceiver) {
       SocketReceiver sReceiver = (SocketReceiver) testPlugin;
 
@@ -215,17 +252,18 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
       while (!rThread.isInterrupted()) {
         // if we have a socket, start watching it
         if (socket != null) {
-          getLogger().debug("socket not null - creating and starting socketnode");
+          getLogger().debug(
+                  "socket not null - creating and starting socketnode");
           socketList.add(socket);
 
           SocketNode node = new SocketNode(socket, this);
-          synchronized(listenerList){
-          	for (Iterator iter = listenerList.iterator(); iter
-          	.hasNext();) {
-          		SocketNodeEventListener listener = (SocketNodeEventListener) iter.next();
-          		node.addSocketNodeEventListener(listener);
-          		
-          	}
+          synchronized (listenerList) {
+            for (Iterator iter = listenerList.iterator();
+                 iter.hasNext();) {
+                SocketNodeEventListener l =
+                        (SocketNodeEventListener) iter.next();
+                node.addSocketNodeEventListener(l);
+            }
           }
           socketMap.put(socket, node);
           new Thread(node).start();
@@ -268,7 +306,9 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
   public Vector getConnectedSocketDetails() {
     Vector details = new Vector(socketList.size());
 
-    for (Enumeration enumeration = socketList.elements(); enumeration.hasMoreElements();) {
+    for (Enumeration enumeration = socketList.elements();
+         enumeration.hasMoreElements();
+            ) {
       Socket socket = (Socket) enumeration.nextElement();
       details.add(
         new SocketDetail(socket, (SocketNode) socketMap.get(socket)));
@@ -279,7 +319,7 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
 
   /**
    * Returns the currently configured SocketNodeEventListener that
-   * will be automatically set for each SocketNode created
+   * will be automatically set for each SocketNode created.
    * @return SocketNodeEventListener currently configured
    *
    * @deprecated This receiver now supports multiple listeners
@@ -290,11 +330,12 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
 
   /**
    * Adds the listener to the list of listeners to be notified of the
-   * respective event
-   * @param listener the listener to add to the list
+   * respective event.
+   * @param l the listener to add to the list
    */
-  public void addSocketNodeEventListener(SocketNodeEventListener listener) {
-    listenerList.add(listener);
+  public void addSocketNodeEventListener(
+          final SocketNodeEventListener l) {
+    listenerList.add(l);
   }
 
   /**
@@ -302,16 +343,17 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
    * listeners.  If the listener has not been registered, then invoking
    * this method has no effect.
    *
-   * @param listener the SocketNodeEventListener to remove
+   * @param l the SocketNodeEventListener to remove
    */
-  public void removeSocketNodeEventListener(SocketNodeEventListener listener) {
-    listenerList.remove(listener);
+  public void removeSocketNodeEventListener(
+          final SocketNodeEventListener l) {
+    listenerList.remove(l);
   }
 
   /**
    * Sets the SocketNodeEventListener that will be used for each
-   * created SocketNode
-   * @param listener the listener to set on each creation of a SocketNode
+   * created SocketNode.
+   * @param l the listener to set on each creation of a SocketNode
    * @deprecated This receiver now supports multiple listeners and
    * so this method simply removes the listener (if there already)
    * and readds it to the list.
@@ -319,61 +361,86 @@ public class SocketReceiver extends Receiver implements Runnable, PortBased,
    * The passed listener will also be returned via the getListener()
    * method still, but this is also deprecated
    */
-  public void setListener(SocketNodeEventListener listener) {
-    removeSocketNodeEventListener(listener);
-    addSocketNodeEventListener(listener);
-    this.listener = listener;
+  public void setListener(final SocketNodeEventListener l) {
+    removeSocketNodeEventListener(l);
+    addSocketNodeEventListener(l);
+    this.listener = l;
   }
 
+    /** {@inheritDoc} */
   public boolean isPaused() {
     return paused;
   }
 
-  public void setPaused(boolean b) {
+    /** {@inheritDoc} */
+  public void setPaused(final boolean b) {
     paused = b;
   }
 
-  public static class SocketDetail implements AddressBased, PortBased,
+    /**
+     * Socket detail.
+     */
+  public static final class SocketDetail implements AddressBased, PortBased,
     Pauseable {
+      /**
+       * Address.
+       */
     private String address;
+      /**
+       * Port.
+       */
     private int port;
+      /**
+       * Socket node.
+       */
     private SocketNode socketNode;
 
-    private SocketDetail(Socket socket, SocketNode socketNode) {
+      /**
+       * Create new instance.
+       * @param socket socket
+       * @param node socket node
+       */
+    private SocketDetail(final Socket socket,
+                         final SocketNode node) {
+      super();
       this.address = socket.getInetAddress().getHostName();
       this.port = socket.getPort();
-      this.socketNode = socketNode;
+      this.socketNode = node;
     }
 
+      /** {@inheritDoc} */
     public String getAddress() {
       return address;
     }
 
+      /** {@inheritDoc} */
     public int getPort() {
       return port;
     }
 
+      /** {@inheritDoc} */
     public String getName() {
       return "Socket";
     }
 
+      /** {@inheritDoc} */
     public boolean isActive() {
       return true;
     }
 
+      /** {@inheritDoc} */
     public boolean isPaused() {
       return socketNode.isPaused();
     }
 
-    public void setPaused(boolean paused) {
-      socketNode.setPaused(paused);
+      /** {@inheritDoc} */
+    public void setPaused(final boolean b) {
+      socketNode.setPaused(b);
     }
   }
-  /* (non-Javadoc)
-   * @see org.apache.log4j.plugins.Receiver#doPost(org.apache.log4j.spi.LoggingEvent)
-   */
-  public void doPost(LoggingEvent event) {
-    if(!isPaused()){
+    /** {@inheritDoc} */
+  public void doPost(final LoggingEvent event) {
+    if (!isPaused()) {
       super.doPost(event);
     }
   }

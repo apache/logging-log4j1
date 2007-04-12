@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,29 +45,50 @@ import org.apache.log4j.spi.LoggingEvent;
    local file and also resent them to a second socket node.
 
     @author  Ceki G&uuml;lc&uuml;
-    @author  Paul Smith <psmith@apache.org>
+    @author  Paul Smith (psmith@apache.org)
 
     @since 0.8.4
 */
 public class SocketNode extends ComponentBase implements Runnable, Pauseable {
 
+    /**
+     * Paused state.
+     */
   private boolean paused;
+    /**
+     * Socket.
+     */
   private Socket socket;
+    /**
+     * Receiver.
+     */
   private Receiver receiver;
+    /**
+     * List of listeners.
+     */
   private List listenerList = Collections.synchronizedList(new ArrayList());
 
   /**
-    Constructor for socket and logger repository. */
-  public SocketNode(Socket socket, LoggerRepository hierarchy) {
-    this.socket = socket;
+    Constructor for socket and logger repository.
+   @param s socket
+   @param hierarchy logger repository
+   */
+  public SocketNode(final Socket s,
+                    final LoggerRepository hierarchy) {
+    super();
+    this.socket = s;
     this.repository = hierarchy;
   }
 
   /**
-    Constructor for socket and reciever. */
-  public SocketNode(Socket socket, Receiver receiver) {
-    this.socket = socket;
-    this.receiver = receiver;
+    Constructor for socket and receiver.
+   @param s socket
+   @param r receiver
+   */
+  public SocketNode(final Socket s, final Receiver r) {
+    super();
+    this.socket = s;
+    this.receiver = r;
   }
 
   /**
@@ -76,18 +97,20 @@ public class SocketNode extends ComponentBase implements Runnable, Pauseable {
    * @deprecated Now supports mutliple listeners, this method
    * simply invokes the removeSocketNodeEventListener() to remove
    * the listener, and then readds it.
+   * @param l listener
    */
-  public void setListener(SocketNodeEventListener _listener) {
-    removeSocketNodeEventListener(_listener);
-    addSocketNodeEventListener(_listener);
+  public void setListener(final SocketNodeEventListener l) {
+    removeSocketNodeEventListener(l);
+    addSocketNodeEventListener(l);
   }
 
   /**
    * Adds the listener to the list of listeners to be notified of the
-   * respective event
+   * respective event.
    * @param listener the listener to add to the list
    */
-  public void addSocketNodeEventListener(SocketNodeEventListener listener) {
+  public void addSocketNodeEventListener(
+          final SocketNodeEventListener listener) {
     listenerList.add(listener);
   }
 
@@ -98,10 +121,14 @@ public class SocketNode extends ComponentBase implements Runnable, Pauseable {
    *
    * @param listener the SocketNodeEventListener to remove
    */
-  public void removeSocketNodeEventListener(SocketNodeEventListener listener) {
+  public void removeSocketNodeEventListener(
+          final SocketNodeEventListener listener) {
     listenerList.remove(listener);
   }
 
+    /**
+     * Deserialize events from socket until interrupted.
+     */
   public void run() {
     LoggingEvent event;
     Logger remoteLogger;
@@ -186,45 +213,55 @@ public class SocketNode extends ComponentBase implements Runnable, Pauseable {
     }
 
     // send event to listener, if configured
-    if (listenerList.size()>0) {
+    if (listenerList.size() > 0) {
       fireSocketClosedEvent(listenerException);
     }
   }
 
   /**
-   * Notifies all registered listeners regarding the closing of the Socket
-   * @param listenerException
+   * Notifies all registered listeners regarding the closing of the Socket.
+   * @param listenerException listener exception
    */
-  private void fireSocketClosedEvent(Exception listenerException) {
-  	synchronized(listenerList){
-  		for (Iterator iter = listenerList.iterator(); iter.hasNext();) {
-  			SocketNodeEventListener snel = (SocketNodeEventListener) iter.next();
-  			if (snel != null) {
-  				snel.socketClosedEvent(listenerException);
-  			}
-  		}
-  	}
+  private void fireSocketClosedEvent(final Exception listenerException) {
+    synchronized (listenerList) {
+        for (Iterator iter = listenerList.iterator(); iter.hasNext();) {
+            SocketNodeEventListener snel =
+                    (SocketNodeEventListener) iter.next();
+            if (snel != null) {
+                snel.socketClosedEvent(listenerException);
+            }
+        }
+    }
   }
 
   /**
-   * Notifies all registered listeners regarding the opening of a Socket
-   * @param remoteInfo
+   * Notifies all registered listeners regarding the opening of a Socket.
+   * @param remoteInfo remote info
    */
-  private void fireSocketOpened(String remoteInfo) {
-  	synchronized(listenerList){
-  		for (Iterator iter = listenerList.iterator(); iter.hasNext();) {
-  			SocketNodeEventListener snel = (SocketNodeEventListener) iter.next();
-  			if (snel != null) {
-  				snel.socketOpened(remoteInfo);
-  			}
-  		}
-  	}
+  private void fireSocketOpened(final String remoteInfo) {
+    synchronized (listenerList) {
+        for (Iterator iter = listenerList.iterator(); iter.hasNext();) {
+            SocketNodeEventListener snel =
+                    (SocketNodeEventListener) iter.next();
+            if (snel != null) {
+                snel.socketOpened(remoteInfo);
+            }
+        }
+    }
   }
 
-  public void setPaused(boolean paused) {
-    this.paused = paused;
+    /**
+     * Sets if node is paused.
+     * @param b new value
+     */
+  public void setPaused(final boolean b) {
+    this.paused = b;
   }
 
+    /**
+     * Get if node is paused.
+     * @return true if pause.
+     */
   public boolean isPaused() {
     return this.paused;
   }
