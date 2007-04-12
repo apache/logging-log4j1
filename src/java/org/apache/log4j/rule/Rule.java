@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,12 +29,12 @@ import java.beans.PropertyChangeListener;
  * listeners when the underlying implementation of this Rule has it's
  * criteria changed by using the standard PropertyChangeListener infrastructure.
  *
- * @author Paul Smith <psmith@apache.org>
- * @author Scott Deboy <sdeboy@apache.org>
+ * @author Paul Smith (psmith@apache.org)
+ * @author Scott Deboy (sdeboy@apache.org)
  */
 public interface Rule {
   /**
-   * Returns true if this implementation of the rule accepts the LoggingEvent, 
+   * Returns true if this implementation of the rule accepts the LoggingEvent,
    * or false if not.
    *
    * <p>What True/False means can be client-specific.
@@ -42,19 +42,19 @@ public interface Rule {
    * @param e LoggingEvent this instance will evaluate
    * @return true if this Rule instance accepts the event, otherwise false.
    */
-  public boolean evaluate(LoggingEvent e);
+  boolean evaluate(LoggingEvent e);
 
   /**
-   * Adds a PropertyChangeListener to this instance, which is notified when 
-   * underlying Rule information has changed. 
+   * Adds a PropertyChangeListener to this instance, which is notified when
+   * underlying Rule information has changed.
    * (there are no specific property name events).
-   * @param listener
+   * @param listener listener
    */
-  public void addPropertyChangeListener(PropertyChangeListener listener);
+  void addPropertyChangeListener(PropertyChangeListener listener);
 
   /**
    * Removes a known PropertyChangeListener from this Rule.
-   * @param listener
+   * @param listener listener
    */
-  public void removePropertyChangeListener(PropertyChangeListener listener);
+  void removePropertyChangeListener(PropertyChangeListener listener);
 }

@@ -26,17 +26,35 @@ import java.util.Stack;
 /**
  * A Rule class implementing not equals against two strings.
  *
- * @author Scott Deboy <sdeboy@apache.org>
+ * @author Scott Deboy (sdeboy@apache.org)
  */
 public class NotEqualsRule extends AbstractRule {
+    /**
+     * Serialization ID.
+     */
   static final long serialVersionUID = -1135478467213793211L;
-  private static final LoggingEventFieldResolver resolver =
+    /**
+     * Resolver.
+     */
+  private static final LoggingEventFieldResolver RESOLVER =
     LoggingEventFieldResolver.getInstance();
+    /**
+     * Field.
+     */
   private final String field;
+    /**
+     * Value.
+     */
   private final String value;
 
-  private NotEqualsRule(String field, String value) {
-    if (!resolver.isField(field)) {
+    /**
+     * Create new instance.
+     * @param field field
+     * @param value value
+     */
+  private NotEqualsRule(final String field, final String value) {
+    super();
+    if (!RESOLVER.isField(field)) {
       throw new IllegalArgumentException(
         "Invalid NOT EQUALS rule - " + field + " is not a supported field");
     }
@@ -45,11 +63,22 @@ public class NotEqualsRule extends AbstractRule {
     this.value = value;
   }
 
-  public static Rule getRule(String field, String value) {
+    /**
+     * Get new instance.
+     * @param field field
+     * @param value value
+     * @return new instance.
+     */
+  public static Rule getRule(final String field, final String value) {
     return new NotEqualsRule(field, value);
   }
 
-  public static Rule getRule(Stack stack) {
+    /**
+     * Get new instance from top two elements of stack.
+     * @param stack stack.
+     * @return new instance.
+     */
+  public static Rule getRule(final Stack stack) {
     if (stack.size() < 2) {
       throw new IllegalArgumentException(
         "Invalid NOT EQUALS rule - expected two parameters but received "
@@ -62,8 +91,9 @@ public class NotEqualsRule extends AbstractRule {
     return new NotEqualsRule(p1, p2);
   }
 
-  public boolean evaluate(LoggingEvent event) {
-    Object p2 = resolver.getValue(field, event);
+    /** {@inheritDoc} */
+  public boolean evaluate(final LoggingEvent event) {
+    Object p2 = RESOLVER.getValue(field, event);
 
     return ((p2 != null) && !(p2.toString().equals(value)));
   }

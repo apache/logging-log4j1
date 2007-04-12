@@ -27,24 +27,41 @@ import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * A Rule class implementing equals against two levels.
- * 
- * @author Scott Deboy <sdeboy@apache.org>
+ *
+ * @author Scott Deboy (sdeboy@apache.org)
  */
 public class LevelEqualsRule extends AbstractRule {
+    /**
+     * Serialization ID.
+     */
     static final long serialVersionUID = -3638386582899583994L;
 
+    /**
+     * Level.
+     */
     private transient Level level;
 
+    /**
+     * List of levels.
+     */
     private static List levelList = new LinkedList();
 
     static {
         populateLevels();
     }
-    
-    private LevelEqualsRule(Level level) {
+
+    /**
+     * Create new instance.
+     * @param level level.
+     */
+    private LevelEqualsRule(final Level level) {
+        super();
         this.level = level;
     }
 
+    /**
+     * Populate list of levels.
+     */
     private static void populateLevels() {
         levelList = new LinkedList();
 
@@ -56,29 +73,38 @@ public class LevelEqualsRule extends AbstractRule {
         levelList.add(Level.TRACE.toString());
     }
 
-    public static Rule getRule(String value) {
-        Level thisLevel = null;
+    /**
+     * Create new rule.
+     * @param value name of level.
+     * @return instance of LevelEqualsRule.
+     */
+    public static Rule getRule(final String value) {
+        Level thisLevel;
         if (levelList.contains(value.toUpperCase())) {
             thisLevel = Level.toLevel(value.toUpperCase());
           } else {
-              thisLevel = UtilLoggingLevel.toLevel(value.toUpperCase());
+            thisLevel = UtilLoggingLevel.toLevel(value.toUpperCase());
         }
 
         return new LevelEqualsRule(thisLevel);
     }
 
-    public boolean evaluate(LoggingEvent event) {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean evaluate(final LoggingEvent event) {
         return level.equals(event.getLevel());
     }
 
     /**
-     * Deserialize the state of the object
-     * 
-     * @param in
-     * 
-     * @throws IOException
+     * Deserialize the state of the object.
+     *
+     * @param in object input stream.
+     *
+     * @throws IOException if error in reading stream for deserialization.
      */
-    private void readObject(java.io.ObjectInputStream in) throws IOException {
+    private void readObject(final java.io.ObjectInputStream in)
+            throws IOException {
         populateLevels();
         boolean isUtilLogging = in.readBoolean();
         int levelInt = in.readInt();
@@ -90,13 +116,14 @@ public class LevelEqualsRule extends AbstractRule {
     }
 
     /**
-     * Serialize the state of the object
-     * 
-     * @param out
-     * 
-     * @throws IOException
+     * Serialize the state of the object.
+     *
+     * @param out object output stream.
+     *
+     * @throws IOException if error in writing stream during serialization.
      */
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+    private void writeObject(final java.io.ObjectOutputStream out)
+            throws IOException {
         out.writeBoolean(level instanceof UtilLoggingLevel);
         out.writeInt(level.toInt());
     }
