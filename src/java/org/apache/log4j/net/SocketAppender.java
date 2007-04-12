@@ -102,8 +102,9 @@ public class SocketAppender extends AppenderSkeleton {
 
   /**
      The default port number of remote logging server (4560).
+     @since 1.2.15
   */
-  static final int DEFAULT_PORT                 = 4560;
+  static public final int DEFAULT_PORT                 = 4560;
 
   /**
      The default reconnection delay (30000 milliseconds or 30 seconds).

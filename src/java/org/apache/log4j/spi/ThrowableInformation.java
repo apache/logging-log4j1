@@ -49,6 +49,18 @@ public class ThrowableInformation implements java.io.Serializable {
     this.throwable = throwable;
   }
 
+    /**
+     * Create new instance.
+     * @since 1.2.15
+     * @param r String representation of throwable.
+     */
+  public ThrowableInformation(final String[] r) {
+      if (r != null) {
+        rep = (String[]) r.clone();
+      }
+  }
+
+
   public
   Throwable getThrowable() {
     return throwable;
