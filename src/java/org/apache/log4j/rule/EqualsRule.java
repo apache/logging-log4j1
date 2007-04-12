@@ -24,19 +24,38 @@ import java.util.Stack;
 
 
 /**
- * A Rule class which returns the result of performing equals against two strings.
+ * A Rule class which returns the result of
+ * performing equals against two strings.
  *
- * @author Scott Deboy <sdeboy@apache.org>
+ * @author Scott Deboy (sdeboy@apache.org)
  */
 public class EqualsRule extends AbstractRule {
-  static final long serialVersionUID = 1712851553477517245L;    
-  private static final LoggingEventFieldResolver resolver =
+    /**
+     * Serialization ID.
+     */
+  static final long serialVersionUID = 1712851553477517245L;
+    /**
+     * Resolver.
+     */
+  private static final LoggingEventFieldResolver RESOLVER =
     LoggingEventFieldResolver.getInstance();
+    /**
+     * Value.
+     */
   private final String value;
+    /**
+     * Field.
+     */
   private final String field;
 
-  private EqualsRule(String field, String value) {
-    if (!resolver.isField(field)) {
+    /**
+     * Create new instance.
+     * @param field field
+     * @param value value
+     */
+  private EqualsRule(final String field, final String value) {
+    super();
+    if (!RESOLVER.isField(field)) {
       throw new IllegalArgumentException(
         "Invalid EQUALS rule - " + field + " is not a supported field");
     }
@@ -45,7 +64,12 @@ public class EqualsRule extends AbstractRule {
     this.value = value;
   }
 
-  public static Rule getRule(Stack stack) {
+    /**
+     * Create new instance from top two elements of stack.
+     * @param stack stack
+     * @return new instance
+     */
+  public static Rule getRule(final Stack stack) {
     if (stack.size() < 2) {
       throw new IllegalArgumentException(
         "Invalid EQUALS rule - expected two parameters but received "
@@ -58,18 +82,25 @@ public class EqualsRule extends AbstractRule {
     return getRule(p1, p2);
   }
 
-  public static Rule getRule(String p1, String p2) {
+    /**
+     * Create new instance.
+     * @param p1 field, special treatment for level and timestamp.
+     * @param p2 value
+     * @return new instance
+     */
+  public static Rule getRule(final String p1, final String p2) {
     if (p1.equalsIgnoreCase(LoggingEventFieldResolver.LEVEL_FIELD)) {
-    	return LevelEqualsRule.getRule(p2);
+        return LevelEqualsRule.getRule(p2);
     } else if (p1.equalsIgnoreCase(LoggingEventFieldResolver.TIMESTAMP_FIELD)) {
-    	return TimestampEqualsRule.getRule(p2);
-    }else {
-    	return new EqualsRule(p1, p2);
+        return TimestampEqualsRule.getRule(p2);
+    } else {
+        return new EqualsRule(p1, p2);
     }
   }
 
-  public boolean evaluate(LoggingEvent event) {
-    Object p2 = resolver.getValue(field, event);
+    /** {@inheritDoc} */
+  public boolean evaluate(final LoggingEvent event) {
+    Object p2 = RESOLVER.getValue(field, event);
 
     return ((p2 != null) && p2.toString().equals(value));
   }

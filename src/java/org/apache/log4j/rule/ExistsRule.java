@@ -26,28 +26,53 @@ import java.util.Stack;
 /**
  * A Rule class implementing a not null (and not empty string) check.
  *
- * @author Scott Deboy <sdeboy@apache.org>
+ * @author Scott Deboy (sdeboy@apache.org)
  */
 public class ExistsRule extends AbstractRule {
-  static final long serialVersionUID = -5386265224649967464L;    
-  private static final LoggingEventFieldResolver resolver =
+    /**
+     * Serialization id.
+     */
+  static final long serialVersionUID = -5386265224649967464L;
+    /**
+     * field resolver.
+     */
+  private static final LoggingEventFieldResolver RESOLVER =
     LoggingEventFieldResolver.getInstance();
+    /**
+     * field name.
+     */
   private final String field;
 
-  private ExistsRule(String field) {
-    if (!resolver.isField(field)) {
+    /**
+     * Create new instance.
+     * @param fld field name.
+     */
+  private ExistsRule(final String fld) {
+    super();
+    if (!RESOLVER.isField(fld)) {
       throw new IllegalArgumentException(
-        "Invalid EXISTS rule - " + field + " is not a supported field");
+        "Invalid EXISTS rule - " + fld + " is not a supported field");
     }
 
-    this.field = field;
+    this.field = fld;
   }
 
-  public static Rule getRule(String field) {
+    /**
+     * Get an instance of ExistsRule.
+     * @param field field.
+     * @return instance of ExistsRule.
+     */
+  public static Rule getRule(final String field) {
     return new ExistsRule(field);
   }
 
-  public static Rule getRule(Stack stack) {
+    /**
+     * Create an instance of ExistsRule using the
+     * top name on the stack.
+     * @param stack stack
+     * @return instance of ExistsRule.
+     */
+  public static Rule getRule(final Stack stack) {
     if (stack.size() < 1) {
       throw new IllegalArgumentException(
         "Invalid EXISTS rule - expected one parameter but received "
@@ -57,8 +82,11 @@ public class ExistsRule extends AbstractRule {
     return new ExistsRule(stack.pop().toString());
   }
 
-  public boolean evaluate(LoggingEvent event) {
-    Object p2 = resolver.getValue(field, event);
+    /**
+     * {@inheritDoc}
+     */
+  public boolean evaluate(final LoggingEvent event) {
+    Object p2 = RESOLVER.getValue(field, event);
 
     return (!((p2 == null) || ((p2 != null) && p2.toString().equals(""))));
   }

@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,51 +24,92 @@ import java.util.StringTokenizer;
 
 
 /**
- * A Rule class supporting both infix and postfix expressions, accepting any rule which
+ * A Rule class supporting both infix and postfix expressions,
+ * accepting any rule which
  * is supported by the <code>RuleFactory</code>.
  *
- * NOTE: parsing is supported through the use of <code>StringTokenizer</code>, which
+ * NOTE: parsing is supported through the use of
+ * <code>StringTokenizer</code>, which
  * implies two limitations:
- * 1: all tokens in the expression must be separated by spaces, including parenthese
- * 2: operands which contain spaces MUST be wrapped in single quotes. 
+ * 1: all tokens in the expression must be separated by spaces,
+ * including parenthesis
+ * 2: operands which contain spaces MUST be wrapped in single quotes.
  *    For example, the expression:
  *      msg == 'some msg'
  *    is a valid expression.
  * 3: To group expressions, use parentheses.
  *    For example, the expression:
- *      level >= INFO || ( msg == 'some msg' || logger == 'test' ) 
+ *      level >= INFO || ( msg == 'some msg' || logger == 'test' )
  *    is a valid expression.
- * See org.apache.log4j.rule.InFixToPostFix for a description of supported operators.
+ * See org.apache.log4j.rule.InFixToPostFix for a
+ * description of supported operators.
  * See org.apache.log4j.spi.LoggingEventFieldResolver for field keywords.
  *
- * @author Scott Deboy <sdeboy@apache.org>
+ * @author Scott Deboy (sdeboy@apache.org)
  */
 public class ExpressionRule extends AbstractRule {
+    /**
+     * Serialization ID.
+     */
   static final long serialVersionUID = 5809121703146893729L;
-  private static final InFixToPostFix convertor = new InFixToPostFix();
-  private static final PostFixExpressionCompiler compiler = new PostFixExpressionCompiler();
+    /**
+     * Converter.
+     */
+  private static final InFixToPostFix CONVERTER = new InFixToPostFix();
+    /**
+     * Compiler.
+     */
+  private static final PostFixExpressionCompiler COMPILER =
+          new PostFixExpressionCompiler();
+    /**
+     * Rule.
+     */
   private final Rule rule;
 
-  private ExpressionRule(Rule rule) {
-    this.rule = rule;
+    /**
+     * Create new instance.
+     * @param r rule
+     */
+  private ExpressionRule(final Rule r) {
+    super();
+    this.rule = r;
   }
 
-  public static Rule getRule(String expression) {
+    /**
+     * Get rule.
+     * @param expression expression.
+     * @return rule.
+     */
+  public static Rule getRule(final String expression) {
       return getRule(expression, false);
   }
-  
-  public static Rule getRule(String expression, boolean isPostFix) {
+
+    /**
+     * Get rule.
+     * @param expression expression.
+     * @param isPostFix If post-fix.
+     * @return rule
+     */
+  public static Rule getRule(final String expression,
+                             final boolean isPostFix) {
+    String postFix = expression;
     if (!isPostFix) {
-      expression = convertor.convert(expression);
+      postFix = CONVERTER.convert(expression);
     }
 
-    return new ExpressionRule(compiler.compileExpression(expression));
+    return new ExpressionRule(COMPILER.compileExpression(postFix));
   }
 
-  public boolean evaluate(LoggingEvent event) {
+    /**
+     * {@inheritDoc}
+     */
+  public boolean evaluate(final LoggingEvent event) {
     return rule.evaluate(event);
   }
-  
+
+    /**
+     * {@inheritDoc}
+     */
   public String toString() {
       return rule.toString();
   }
@@ -77,8 +118,13 @@ public class ExpressionRule extends AbstractRule {
    * Evaluate a boolean postfix expression.
    *
    */
-  static class PostFixExpressionCompiler {
-    Rule compileExpression(String expression) {
+  static final class PostFixExpressionCompiler {
+      /**
+       * Compile expression.
+       * @param expression expression.
+       * @return rule.
+       */
+    public Rule compileExpression(final String expression) {
       RuleFactory factory = RuleFactory.getInstance();
 
       Stack stack = new Stack();
@@ -87,16 +133,20 @@ public class ExpressionRule extends AbstractRule {
       while (tokenizer.hasMoreTokens()) {
         //examine each token
         String token = tokenizer.nextToken();
-        if ((token.startsWith("'")) && (token.endsWith("'") && (token.length() > 2))) {
+        if ((token.startsWith("'"))
+                && (token.endsWith("'")
+                && (token.length() > 2))) {
             token = token.substring(1, token.length() - 1);
         }
-        if ((token.startsWith("'")) && (token.endsWith("'") && (token.length() == 2))) {
+        if ((token.startsWith("'"))
+                && (token.endsWith("'")
+                && (token.length() == 2))) {
             token = "";
         }
 
         boolean inText = token.startsWith("'");
         if (inText) {
-            token=token.substring(1);
+            token = token.substring(1);
             while (inText && tokenizer.hasMoreTokens()) {
               token = token + " " + tokenizer.nextToken();
               inText = !(token.endsWith("'"));
@@ -106,7 +156,8 @@ public class ExpressionRule extends AbstractRule {
           }
         }
 
-        //if a symbol is found, pop 2 off the stack, evaluate and push the result 
+        //if a symbol is found, pop 2 off the stack,
+          // evaluate and push the result
         if (factory.isRule(token)) {
           Rule r = factory.getRule(token, stack);
           stack.push(r);
@@ -117,15 +168,15 @@ public class ExpressionRule extends AbstractRule {
           }
         }
       }
-      
+
       if ((stack.size() == 1) && (!(stack.peek() instanceof Rule))) {
-      	//while this may be an attempt at creating an expression,
-      	//for ease of use, convert this single entry to a partial-text 
-      	//match on the MSG field
-      	Object o = stack.pop();
-      	stack.push("MSG");
-      	stack.push(o);
-      	return factory.getRule("~=", stack);
+        //while this may be an attempt at creating an expression,
+        //for ease of use, convert this single entry to a partial-text
+        //match on the MSG field
+        Object o = stack.pop();
+        stack.push("MSG");
+        stack.push(o);
+        return factory.getRule("~=", stack);
       }
 
       //stack should contain a single rule if the expression is valid

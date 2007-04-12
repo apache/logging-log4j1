@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,60 +25,126 @@ import java.util.Stack;
 import org.apache.log4j.LogManager;
 
 /**
- * A Factory class which, given a string representation of the rule, and a context stack, will
- * return a Rule ready for evaluation against events.  If an operator is requested that isn't supported, 
- * or if a LIKE rule is requested and the ORO package is not available, an IllegalArgumentException is thrown. 
- * 
- * @author Scott Deboy <sdeboy@apache.org>
+ * A Factory class which, given a string representation of the rule,
+ * and a context stack, will
+ * return a Rule ready for evaluation against events.
+ * If an operator is requested that isn't supported,
+ * or if a LIKE rule is requested and the ORO package
+ * is not available, an IllegalArgumentException is thrown.
+ *
+ * @author Scott Deboy (sdeboy@apache.org)
  */
-public class RuleFactory {
-  private static final RuleFactory factory_ = new RuleFactory(); 
-  private static final Collection rules = new LinkedList();
+public final class RuleFactory {
+    /**
+     * Singleton instance.
+     */
+  private static final RuleFactory FACTORY = new RuleFactory();
+    /**
+     * Rules.
+     */
+  private static final Collection RULES = new LinkedList();
+    /**
+     * AND operator literal.
+     */
   private static final String AND_RULE = "&&";
+    /**
+     * OR operator literal.
+     */
   private static final String OR_RULE = "||";
+    /**
+     * NOT operator literal.
+     */
   private static final String NOT_RULE = "!";
+    /**
+     * Inequality operator literal.
+     */
   private static final String NOT_EQUALS_RULE = "!=";
+    /**
+     * Equality operator literal.
+     */
   private static final String EQUALS_RULE = "==";
+    /**
+     * Partial match operator literal.
+     */
   private static final String PARTIAL_TEXT_MATCH_RULE = "~=";
+    /**
+     * Like operator literal.
+     */
   private static final String LIKE_RULE = "like";
+    /**
+     * Exists operator literal.
+     */
   private static final String EXISTS_RULE = "exists";
+    /**
+     * Less than operator literal.
+     */
   private static final String LESS_THAN_RULE = "<";
+    /**
+     * Greater than operator literal.
+     */
   private static final String GREATER_THAN_RULE = ">";
+    /**
+     * Less than or equal operator literal.
+     */
   private static final String LESS_THAN_EQUALS_RULE = "<=";
+    /**
+     * Greater than or equal operator literal.
+     */
   private static final String GREATER_THAN_EQUALS_RULE = ">=";
-  
+
   static {
-    rules.add(AND_RULE);
-    rules.add(OR_RULE);
-    rules.add(NOT_RULE);
-    rules.add(NOT_EQUALS_RULE);
-    rules.add(EQUALS_RULE);
-    rules.add(PARTIAL_TEXT_MATCH_RULE);
+    RULES.add(AND_RULE);
+    RULES.add(OR_RULE);
+    RULES.add(NOT_RULE);
+    RULES.add(NOT_EQUALS_RULE);
+    RULES.add(EQUALS_RULE);
+    RULES.add(PARTIAL_TEXT_MATCH_RULE);
     try {
-    	Class.forName("org.apache.log4j.rule.LikeRule");
-    	rules.add(LIKE_RULE);
+        Class.forName("org.apache.log4j.rule.LikeRule");
+        RULES.add(LIKE_RULE);
     } catch (Exception e) {
-    	LogManager.getLogger(RuleFactory.class).info("Like (regular expression) rule not supported");
+        LogManager.getLogger(RuleFactory.class).info(
+                "Like (regular expression) rule not supported");
     }
-    	
-    rules.add(EXISTS_RULE);
-    rules.add(LESS_THAN_RULE);
-    rules.add(GREATER_THAN_RULE);
-    rules.add(LESS_THAN_EQUALS_RULE);
-    rules.add(GREATER_THAN_EQUALS_RULE);
+
+    RULES.add(EXISTS_RULE);
+    RULES.add(LESS_THAN_RULE);
+    RULES.add(GREATER_THAN_RULE);
+    RULES.add(LESS_THAN_EQUALS_RULE);
+    RULES.add(GREATER_THAN_EQUALS_RULE);
   }
 
-  private RuleFactory() {}
-  
+    /**
+     * Create instance.
+     */
+  private RuleFactory() {
+        super();
+    }
+
+    /**
+     * Get instance.
+     * @return rule factory instance.
+     */
   public static RuleFactory getInstance() {
-      return factory_;
-  }
-  
-  public boolean isRule(String symbol) {
-    return ((symbol != null) && (rules.contains(symbol.toLowerCase())));
+      return FACTORY;
   }
 
-  public Rule getRule(String symbol, Stack stack) {
+    /**
+     * Determine if specified string is a known operator.
+     * @param symbol string
+     * @return true if string is a known operator
+     */
+  public boolean isRule(final String symbol) {
+    return ((symbol != null) && (RULES.contains(symbol.toLowerCase())));
+  }
+
+    /**
+     * Create rule from applying operator to stack.
+     * @param symbol symbol
+     * @param stack stack
+     * @return new instance
+     */
+  public Rule getRule(final String symbol, final Stack stack) {
     if (AND_RULE.equals(symbol)) {
       return AndRule.getRule(stack);
     }
@@ -103,20 +169,25 @@ public class RuleFactory {
       return PartialTextMatchRule.getRule(stack);
     }
 
-    //in order to avoid compile-time dependency on LikeRule, call getRule(stack) using reflection 
-    if (rules.contains(LIKE_RULE) && LIKE_RULE.equalsIgnoreCase(symbol)) {
+    //in order to avoid compile-time dependency on LikeRule,
+        // call getRule(stack) using reflection
+    if (RULES.contains(LIKE_RULE) && LIKE_RULE.equalsIgnoreCase(symbol)) {
       String methodName = "getRule";
       try {
         Class likeClass = Class.forName("org.apache.log4j.rule.LikeRule");
         Method method =
           likeClass.getDeclaredMethod(methodName, new Class[]{Stack.class});
 
-        return (Rule)method.invoke(null, new Object[]{stack});
+        return (Rule) method.invoke(null, new Object[]{stack});
+      } catch (ClassNotFoundException cnfe) {
+          throw new IllegalArgumentException("Invalid rule: " + symbol);
+      } catch (NoSuchMethodException nsme) {
+          throw new IllegalArgumentException("Invalid rule: " + symbol);
+      } catch (IllegalAccessException iae) {
+          throw new IllegalArgumentException("Invalid rule: " + symbol);
+      } catch (InvocationTargetException iae) {
+          throw new IllegalArgumentException("Invalid rule: " + symbol);
       }
-      catch (ClassNotFoundException cnfe) {}
-      catch (NoSuchMethodException nsme) {}
-      catch (IllegalAccessException iae) {}
-      catch (InvocationTargetException iae) {}
     }
 
     if (EXISTS_RULE.equalsIgnoreCase(symbol)) {
