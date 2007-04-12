@@ -258,6 +258,49 @@ public class LoggingEvent
     }
   }
 
+    /**
+       Create new instance.
+       @since 1.2.15
+       @param fqnOfCategoryClass Fully qualified class name
+                 of Logger implementation.
+       @param logger The logger generating this event.
+       @param timeStamp the timestamp of this logging event
+       @param level The level of this event.
+       @param message  The message of this event.
+       @param threadName thread name
+       @param throwable The throwable of this event.
+       @param ndc Nested diagnostic context
+       @param info Location info
+       @param properties MDC properties
+     */
+    public LoggingEvent(final String fqnOfCategoryClass,
+                        final Logger logger,
+                        final long timeStamp,
+                        final Level level,
+                        final Object message,
+                        final String threadName,
+                        final ThrowableInformation throwable,
+                        final String ndc,
+                        final LocationInfo info,
+                        final java.util.Map properties) {
+      this();
+      this.setFQNOfLoggerClass(fqnOfCategoryClass);
+      this.setLogger(logger);
+      this.setLevel(level);
+      this.setMessage(message);
+      this.setThrowableInformation(throwable);
+      this.setTimeStamp(timeStamp);
+      this.setThreadName(threadName);
+      this.setNDC(ndc);
+      this.setLocationInformation(info);
+      if (properties instanceof Hashtable) {
+        this.setProperties((Hashtable) properties);
+      } else {
+        this.setProperties(new Hashtable(properties));
+      }
+    }
+
+
   /**
    * Two events are considerd equal if they refer to the same instance, or if
    * both their timestamps and sequence numbers match.
