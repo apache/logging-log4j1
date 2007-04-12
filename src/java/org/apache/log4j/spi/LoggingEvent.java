@@ -25,6 +25,10 @@ import java.lang.reflect.Method;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.util.Hashtable;
+import java.util.Set;
+import java.util.Collections;
+import java.util.Map;
+import java.util.HashMap;
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
 //                 Wolf Siberski
@@ -182,6 +186,56 @@ public class LoggingEvent implements java.io.Serializable {
 
     this.timeStamp = timeStamp;
   }
+
+    /**
+       Create new instance.
+       @since 1.2.15
+       @param fqnOfCategoryClass Fully qualified class name
+                 of Logger implementation.
+       @param logger The logger generating this event.
+       @param timeStamp the timestamp of this logging event
+       @param level The level of this event.
+       @param message  The message of this event.
+       @param threadName thread name
+       @param throwable The throwable of this event.
+       @param ndc Nested diagnostic context
+       @param info Location info
+       @param properties MDC properties
+     */
+    public LoggingEvent(final String fqnOfCategoryClass,
+                        final Logger logger,
+                        final long timeStamp,
+                        final Level level,
+                        final Object message,
+                        final String threadName,
+                        final ThrowableInformation throwable,
+                        final String ndc,
+                        final LocationInfo info,
+                        final java.util.Map properties) {
+      super();
+      this.fqnOfCategoryClass = fqnOfCategoryClass;
+      this.logger = logger;
+      if (logger != null) {
+          categoryName = logger.getName();
+      } else {
+          categoryName = null;
+      }
+      this.level = level;
+      this.message = message;
+      if(throwable != null) {
+        this.throwableInfo = throwable;
+      }
+
+      this.timeStamp = timeStamp;
+      this.threadName = threadName;
+      ndcLookupRequired = false;
+      this.ndc = ndc;
+      this.locationInfo = info;
+      mdcCopyLookupRequired = false;
+      if (properties != null) {
+        mdcCopy = new java.util.Hashtable(properties);
+      }
+    }
 
   /**
      Set the location information for this logging event. The collected
@@ -426,5 +480,115 @@ public class LoggingEvent implements java.io.Serializable {
       oos.writeObject(clazz.getName());
     }
   }
+
+    /**
+     * Set value for MDC property.
+     * This adds the specified MDC property to the event.
+     * Access to the MDC is not synchronized, so this
+     * method should only be called when it is known that
+     * no other threads are accessing the MDC.
+     * @since 1.2.15
+     * @param propName
+     * @param propValue
+     */
+  public final void setProperty(final String propName,
+                          final String propValue) {
+        if (mdcCopy == null) {
+            getMDCCopy();
+        }
+        if (mdcCopy == null) {
+            mdcCopy = new Hashtable();
+        }
+        mdcCopy.put(propName, propValue);      
+  }
+
+    /**
+     * Return a property for this event. The return value can be null.
+     *
+     * Equivalent to getMDC(String) in log4j 1.2.  Provided
+     * for compatibility with log4j 1.3.
+     *
+     * @param key property name
+     * @return property value or null if property not set
+     * @since 1.2.15
+     */
+    public final String getProperty(final String key) {
+        Object value = getMDC(key);
+        String retval = null;
+        if (value != null) {
+            retval = value.toString();
+        }
+        return retval;
+    }
+
+    /**
+     * Check for the existence of location information without creating it
+     * (a byproduct of calling getLocationInformation).
+     * @return true if location information has been extracted.
+     * @since 1.2.15
+     */
+    public final boolean locationInformationExists() {
+      return (locationInfo != null);
+    }
+
+    /**
+     * Getter for the event's time stamp. The time stamp is calculated starting
+     * from 1970-01-01 GMT.
+     * @return timestamp
+     *
+     * @since 1.2.15
+     */
+    public final long getTimeStamp() {
+      return timeStamp;
+    }
+
+    /**
+     * Returns the set of the key values in the properties
+     * for the event.
+     *
+     * The returned set is unmodifiable by the caller.
+     *
+     * Provided for compatibility with log4j 1.3
+     *
+     * @return Set an unmodifiable set of the property keys.
+     * @since 1.2.15
+     */
+    public Set getPropertyKeySet() {
+      return getProperties().keySet();
+    }
+
+    /**
+     * Returns the set of properties
+     * for the event.
+     *
+     * The returned set is unmodifiable by the caller.
+     *
+     * Provided for compatibility with log4j 1.3
+     *
+     * @return Set an unmodifiable map of the properties.
+     * @since 1.2.15
+     */
+    public Map getProperties() {
+      getMDCCopy();
+      Map properties;
+      if (mdcCopy == null) {
+         properties = new HashMap();
+      } else {
+         properties = mdcCopy;
+      }
+      return Collections.unmodifiableMap(properties);
+    }
+
+    /**
+     * Get the fully qualified name of the calling logger sub-class/wrapper.
+     * Provided for compatibility with log4j 1.3
+     * @return fully qualified class name, may be null.
+     * @since 1.2.15
+     */
+    public String getFQNOfLoggerClass() {
+      return fqnOfCategoryClass;
+    }
+
+
 
 }

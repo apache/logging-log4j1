@@ -64,6 +64,26 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
    */
   protected boolean closed = false;
 
+    /**
+     * Create new instance.
+     */
+    public AppenderSkeleton() {
+        super();
+    }
+
+    /**
+     * Create new instance.
+     * Provided for compatibility with log4j 1.3.
+     *
+     * @param isActive true if appender is ready for use upon construction.
+     *                 Not used in log4j 1.2.x.
+     * @since 1.2.15
+     */
+    protected AppenderSkeleton(final boolean isActive) {
+        super();
+    }
+
+
 
   /**
      Derived appenders should override this method if option structure

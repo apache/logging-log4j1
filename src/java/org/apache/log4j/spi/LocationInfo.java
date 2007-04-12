@@ -64,6 +64,14 @@ public class LocationInfo implements java.io.Serializable {
 
   static final long serialVersionUID = -1325822038990805636L;
 
+    /**
+     * NA_LOCATION_INFO is provided for compatibility with log4j 1.3.
+     * @since 1.2.15
+     */
+    public static final LocationInfo NA_LOCATION_INFO =
+            new LocationInfo(NA, NA, NA, NA);
+
+
 
   // Check if we are running in IBM's visual age.
   static boolean inVisualAge = false;
@@ -144,6 +152,25 @@ public class LocationInfo implements java.io.Serializable {
       }
       // everything between is the requested stack item
       this.fullInfo = s.substring(ibegin, iend);
+    }
+
+
+    /**
+     * Create new instance.
+     * @param file source file name
+     * @param classname class name
+     * @param method method
+     * @param line source line number
+     */
+    public LocationInfo(
+      final String file,
+      final String classname,
+      final String method,
+      final String line) {
+      this.fileName = file;
+      this.className = classname;
+      this.methodName = method;
+      this.lineNumber = line;
     }
 
     /**
