@@ -1,9 +1,10 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -33,6 +34,8 @@ import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.spi.LoggerRepositoryEventListener;
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.RootLogger;
+import org.apache.log4j.spi.HierarchyEventListener;
+import org.apache.log4j.spi.HierarchyEventListenerAdapter;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -72,43 +75,92 @@ import java.util.Vector;
 
 */
 public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
-  
+
+    /**
+     * Logger factory.
+     */
   private LoggerFactory loggerFactory;
+    /**
+     * List of repository event listeners.
+     */
   private final ArrayList repositoryEventListeners;
+    /**
+     * List of logger event listeners.
+     */
   private final ArrayList loggerEventListeners;
+    /**
+     * Name of hierarchy.
+     */
   String name;
+    /**
+     * Loggers by name.
+     */
   Hashtable ht;
+    /**
+     * Root logger.
+     */
   Logger root;
+    /**
+     * Map of ObjectRenderer by Class.
+     */
   RendererMap rendererMap;
+    /**
+     * Numeric value for threshold.
+     */
   int thresholdInt;
+    /**
+     * Threshold.
+     */
   Level threshold;
+    /**
+     * Plug in registry.
+     */
   PluginRegistry pluginRegistry;
+    /**
+     * Properties.
+     */
   Map properties;
+    /**
+     * Scheduler.
+     */
   private Scheduler scheduler;
 
-  // The repository can also be used as an object store for various objects used
-  // by log4j components
+  /** The repository can also be used as an object store
+   * for various objects used by log4j components.
+   */
   private Map objectMap;
 
-  // the internal logger used by this instance of Hierarchy for its own reporting
+    /**
+     * The internal logger used by this instance of
+     * Hierarchy for its own reporting.
+     */
   private Logger myLogger;
 
+    /**
+     * Error list.
+     */
   private List errorList = new Vector();
 
+    /**
+     * True if no appender warning has already been issued.
+     */
   boolean emittedNoAppenderWarning = false;
+    /**
+     * True if hierarchy has not been modified.
+     */
   boolean pristine = true;
 
   /**
      Constructs a new logger hierarchy.
 
-     @param root The root of the new hierarchy.
+     @param rootLogger The root of the new hierarchy.
 
    */
-  public Hierarchy(Logger root) {
+  public Hierarchy(final Logger rootLogger) {
     ht = new Hashtable();
     repositoryEventListeners = new ArrayList(1);
     loggerEventListeners = new ArrayList(1);
-    this.root = root;
+    this.root = rootLogger;
     this.objectMap = new HashMap();
     // Enable all level levels by default.
     setThreshold(Level.ALL);
@@ -128,29 +180,38 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
   /**
      Add an object renderer for a specific class.
+     @param classToRender class to render
+     @param or renderer
    */
-  public void addRenderer(Class classToRender, ObjectRenderer or) {
+  public void addRenderer(final Class classToRender,
+                          final ObjectRenderer or) {
     rendererMap.put(classToRender, or);
   }
 
   /**
     Add a {@link LoggerRepositoryEventListener} to the repository. The
     listener will be called when repository events occur.
+    @param listener listener
     @since 1.3*/
   public void addLoggerRepositoryEventListener(
-    LoggerRepositoryEventListener listener) {
+    final LoggerRepositoryEventListener listener) {
     synchronized (repositoryEventListeners) {
       if (repositoryEventListeners.contains(listener)) {
         getMyLogger().warn(
-          "Ignoring attempt to add a previously registered LoggerRepositoryEventListener.");
+          "Ignoring attempt to add a previously "
+                  + "registered LoggerRepositoryEventListener.");
       } else {
         repositoryEventListeners.add(listener);
       }
     }
   }
 
+    /**
+     * Gets logger to be used for internal diagnostic messages.
+     * @return logger
+     */
   private Logger getMyLogger() {
-    if(myLogger == null) {
+    if (myLogger == null) {
       myLogger = getLogger(this.getClass().getName());
     }
     return myLogger;
@@ -158,13 +219,15 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
   /**
     Remove a {@link LoggerRepositoryEventListener} from the repository.
+    @param listener listener
     @since 1.3*/
   public void removeLoggerRepositoryEventListener(
-    LoggerRepositoryEventListener listener) {
+    final LoggerRepositoryEventListener listener) {
     synchronized (repositoryEventListeners) {
       if (!repositoryEventListeners.contains(listener)) {
         getMyLogger().warn(
-          "Ignoring attempt to remove a non-registered LoggerRepositoryEventListener.");
+          "Ignoring attempt to remove a "
+                  + "non-registered LoggerRepositoryEventListener.");
       } else {
         repositoryEventListeners.remove(listener);
       }
@@ -174,12 +237,14 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
   /**
     Add a {@link LoggerEventListener} to the repository. The  listener
     will be called when repository events occur.
-    @since 1.3*/
-  public void addLoggerEventListener(LoggerEventListener listener) {
+    @param listener listener
+    @since 1.3
+   */
+  public void addLoggerEventListener(final LoggerEventListener listener) {
     synchronized (loggerEventListeners) {
       if (loggerEventListeners.contains(listener)) {
         getMyLogger().warn(
-          "Ignoring attempt to add a previously registerd LoggerEventListener.");
+         "Ignoring attempt to add a previously registerd LoggerEventListener.");
       } else {
         loggerEventListeners.add(listener);
       }
@@ -187,19 +252,22 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
   }
 
     /**
-       Add a {@link org.apache.log4j.spi.HierarchyEventListener} event to the repository.
+       Add a {@link org.apache.log4j.spi.HierarchyEventListener}
+     event to the repository.
+     @param listener listener
        @deprecated Superceded by addLoggerEventListener
     */
     public
-    void addHierarchyEventListener(final org.apache.log4j.spi.HierarchyEventListener listener) {
-        addLoggerEventListener(new org.apache.log4j.spi.HierarchyEventListenerAdapter(listener));
+    void addHierarchyEventListener(final HierarchyEventListener listener) {
+        addLoggerEventListener(new HierarchyEventListenerAdapter(listener));
     }
 
 
   /**
     Remove a {@link LoggerEventListener} from the repository.
+    @param listener listener to be removed
     @since 1.3*/
-  public void removeLoggerEventListener(LoggerEventListener listener) {
+  public void removeLoggerEventListener(final LoggerEventListener listener) {
     synchronized (loggerEventListeners) {
       if (!loggerEventListeners.contains(listener)) {
         getMyLogger().warn(
@@ -224,7 +292,11 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
     ht.clear();
   }
 
-  public void emitNoAppenderWarning(Category cat) {
+    /**
+     * Issue warning that there are no appenders in hierarchy.
+     * @param cat logger, not currently used.
+     */
+  public void emitNoAppenderWarning(final Category cat) {
     // No appenders in hierarchy, warn user only once.
     if (!this.emittedNoAppenderWarning) {
       //LogLog.warn(
@@ -238,10 +310,11 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
      Check if the named logger exists in the hierarchy. If so return
      its reference, otherwise returns <code>null</code>.
 
-     @param name The name of the logger to search for.
+     @param loggerName The name of the logger to search for.
+     @return true if logger exists.
   */
-  public Logger exists(String name) {
-    Object o = ht.get(new CategoryKey(name));
+  public Logger exists(final String loggerName) {
+    Object o = ht.get(new CategoryKey(loggerName));
 
     if (o instanceof Logger) {
       return (Logger) o;
@@ -252,18 +325,20 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
   /**
    * Return the name of this hierarchy.
+   * @return name of hierarchy
    */
   public String getName() {
     return name;
   }
 
-  /*
+  /**
    * Set the name of this repository.
    *
    * Note that once named, a repository cannot be rerenamed.
    * @since 1.3
+   * @param repoName name of hierarchy
    */
-  public void setName(String repoName) {
+  public void setName(final String repoName) {
     if (name == null) {
       name = repoName;
     } else if (!name.equals(repoName)) {
@@ -272,36 +347,36 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
     }
   }
 
-  /*
-   * Get the properties for this repository.
-   *
-   * @see org.apache.log4j.spi.LoggerRepository#getProperties()
-   *
+  /**
+   * {@inheritDoc}
    */
   public Map getProperties() {
     return properties;
   }
 
-  /*
-   * Get a property of this repository.
-   * @see org.apache.log4j.spi.LoggerRepository#getProperty(java.lang.String)
+  /**
+   * {@inheritDoc}
    */
-  public String getProperty(String key) {
+  public String getProperty(final String key) {
      return (String) properties.get(key);
   }
 
-  /*
+  /**
    * Set a property by key and value. The property will be shared by all
    * events in this repository.
+   * @param key property name
+   * @param value property value
    */
-  public void setProperty(String key, String value) {
+  public void setProperty(final String key,
+                          final String value) {
    properties.put(key, value);
   }
 
   /**
      The string form of {@link #setThreshold(Level)}.
+   @param levelStr symbolic name for level
   */
-  public void setThreshold(String levelStr) {
+  public void setThreshold(final String levelStr) {
     Level l = Level.toLevel(levelStr, null);
 
     if (l != null) {
@@ -317,18 +392,19 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
      @param l The minimum level for which logging requests are sent to
      their appenders.  */
-  public void setThreshold(Level l) {
+  public void setThreshold(final Level l) {
     if (l != null) {
       thresholdInt = l.level;
       threshold = l;
     }
   }
 
-  /* (non-Javadoc)
+  /**
+   * {@inheritDoc}
    * @since 1.3
    */
   public PluginRegistry getPluginRegistry() {
-   if(pluginRegistry == null) {
+   if (pluginRegistry == null) {
      pluginRegistry = new PluginRegistry(this);
    }
    return pluginRegistry;
@@ -341,7 +417,8 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
       @param logger The logger to which the appender was added.
       @param appender The appender added to the logger.
      */
-    public void fireAddAppenderEvent(final Category logger, Appender appender) {
+    public void fireAddAppenderEvent(final Category logger,
+                                     final Appender appender) {
         if (logger instanceof Logger) {
             fireAddAppenderEvent((Logger) logger, appender);
         }
@@ -354,12 +431,14 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
       @param appender The appender added to the logger.
       @since 1.3
      */
-    public void fireAddAppenderEvent(final Logger logger, Appender appender) {
+    public void fireAddAppenderEvent(final Logger logger,
+                                     final Appender appender) {
         ArrayList list = copyListenerList(loggerEventListeners);
         int size = list.size();
 
         for (int i = 0; i < size; i++) {
-          ((LoggerEventListener) list.get(i)).appenderAddedEvent(logger, appender);
+          ((LoggerEventListener) list.get(i)).
+                  appenderAddedEvent(logger, appender);
         }
     }
 
@@ -370,7 +449,8 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
       @param logger The logger from which the appender was removed.
       @param appender The appender removed from the logger.
       */
-    public void fireRemoveAppenderEvent(Category logger, Appender appender) {
+    public void fireRemoveAppenderEvent(final Category logger,
+                                        final Appender appender) {
        if (logger instanceof Logger) {
            fireRemoveAppenderEvent((Logger) logger, appender);
        }
@@ -382,7 +462,8 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
     @param logger The logger from which the appender was removed.
     @param appender The appender removed from the logger.
     @since 1.3*/
-  public void fireRemoveAppenderEvent(Logger logger, Appender appender) {
+  public void fireRemoveAppenderEvent(final Logger logger,
+                                      final Appender appender) {
     ArrayList list = copyListenerList(loggerEventListeners);
     int size = list.size();
 
@@ -397,7 +478,7 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
     {@link LoggerEventListener}.
     @param logger The logger which changed levels.
     @since 1.3*/
-  public void fireLevelChangedEvent(Logger logger) {
+  public void fireLevelChangedEvent(final Logger logger) {
     ArrayList list = copyListenerList(loggerEventListeners);
     int size = list.size();
 
@@ -421,8 +502,11 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
   }
 
   /**
-    Returns a copy of the given listener vector. */
-  private ArrayList copyListenerList(ArrayList list) {
+    Returns a copy of the given listener vector.
+    @param list original list
+    @return copy of list
+   */
+  private ArrayList copyListenerList(final ArrayList list) {
     ArrayList listCopy = null;
 
     synchronized (list) {
@@ -440,6 +524,7 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
   /**
      Returns a {@link Level} representation of the <code>enable</code>
      state.
+     @return current threshold level
 
      @since 1.2 */
   public Level getThreshold() {
@@ -466,11 +551,12 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
      returned.  Otherwise, a new logger will be instantiated and
      then linked with its existing ancestors as well as children.
 
-     @param name The name of the logger to retrieve.
+     @param loggerName The name of the logger to retrieve.
+     @return logger
 
   */
-  public Logger getLogger(String name) {
-    return getLogger(name, loggerFactory);
+  public Logger getLogger(final String loggerName) {
+    return getLogger(loggerName, loggerFactory);
   }
 
   /**
@@ -482,13 +568,15 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
       <code>factory</code> parameter and linked with its existing
       ancestors as well as children.
 
-      @param name The name of the logger to retrieve.
+      @param loggerName The name of the logger to retrieve.
       @param factory The factory that will make the new logger instance.
+      @return logger
 
   */
-  public Logger getLogger(String name, LoggerFactory factory) {
+  public Logger getLogger(final String loggerName,
+                          final LoggerFactory factory) {
     //System.out.println("getInstance("+name+") called.");
-    CategoryKey key = new CategoryKey(name);
+    CategoryKey key = new CategoryKey(loggerName);
 
 
     // Synchronize to prevent write conflicts. Read conflicts (in
@@ -501,8 +589,9 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
       if (o == null) {
         LogLog.debug(
-            "Creating new logger ["+name+"] in repository ["+getName()+"].");
-        logger = factory.makeNewLoggerInstance(name);
+            "Creating new logger [" + loggerName
+                    + "] in repository [" + getName() + "].");
+        logger = factory.makeNewLoggerInstance(loggerName);
         logger.setHierarchy(this);
         ht.put(key, logger);
         updateParents(logger);
@@ -510,11 +599,12 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
         return logger;
       } else if (o instanceof Logger) {
           LogLog.debug(
-            "Returning existing logger ["+name+"] in repository ["+getName()+"].");
+            "Returning existing logger [" + loggerName
+                    + "] in repository [" + getName() + "].");
         return (Logger) o;
       } else if (o instanceof ProvisionNode) {
         //System.out.println("("+name+") ht.get(this) returned ProvisionNode");
-        logger = factory.makeNewLoggerInstance(name);
+        logger = factory.makeNewLoggerInstance(loggerName);
         logger.setHierarchy(this);
         ht.put(key, logger);
         updateChildren((ProvisionNode) o, logger);
@@ -533,7 +623,9 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
      an {@link java.util.Enumeration Enumeration}.
 
      <p>The root logger is <em>not</em> included in the returned
-     {@link Enumeration}.  */
+     {@link Enumeration}.
+     @return enumerator of current loggers
+   */
   public Enumeration getCurrentLoggers() {
     // The accumlation in v is necessary because not all elements in
     // ht are Logger objects as there might be some ProvisionNodes
@@ -555,6 +647,7 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
   /**
    * Return the the list of previously encoutered {@link ErrorItem error items}.
+   * @return list of errors
    */
   public List getErrorList() {
     return errorList;
@@ -562,13 +655,16 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
   /**
    * Add an error item to the list of previously encountered errors.
+   * @param errorItem error to add to list of errors.
    * @since 1.3
    */
-  public void addErrorItem(ErrorItem errorItem) {
+  public void addErrorItem(final ErrorItem errorItem) {
     getErrorList().add(errorItem);
   }
 
   /**
+   * Get enumerator over current loggers.
+   * @return enumerator over current loggers
      @deprecated Please use {@link #getCurrentLoggers} instead.
    */
   public Enumeration getCurrentCategories() {
@@ -577,6 +673,7 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
   /**
      Get the renderer map for this hierarchy.
+   @return renderer map
   */
   public RendererMap getRendererMap() {
     return rendererMap;
@@ -586,6 +683,7 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
      Get the root of this hierarchy.
 
      @since 0.9.0
+   @return root of hierarchy
    */
   public Logger getRootLogger() {
     return root;
@@ -593,10 +691,13 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
   /**
      This method will return <code>true</code> if this repository is
-     disabled for <code>level</code> object passed as parameter and
+     disabled for <code>level</code> value passed as parameter and
      <code>false</code> otherwise. See also the {@link
-     #setThreshold(Level) threshold} emthod.  */
-  public boolean isDisabled(int level) {
+     #setThreshold(Level) threshold} method.
+   @param level numeric value for level.
+   @return true if disabled for specified level
+   */
+  public boolean isDisabled(final int level) {
     return thresholdInt > level;
   }
 
@@ -649,22 +750,25 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
   /**
      Used by subclasses to add a renderer to the hierarchy passed as parameter.
+   @param renderedClass class
+   @param renderer object used to render class.
    */
-  public void setRenderer(Class renderedClass, ObjectRenderer renderer) {
+  public void setRenderer(final Class renderedClass,
+                          final ObjectRenderer renderer) {
     rendererMap.put(renderedClass, renderer);
   }
 
-  /*
-   * @see org.apache.log4j.spi.LoggerRepository#isPristine()
+  /**
+   * {@inheritDoc}
    */
   public boolean isPristine() {
     return pristine;
   }
 
-  /*
-   * @see org.apache.log4j.spi.LoggerRepository#setPristine()
+  /**
+   * {@inheritDoc}
    */
-  public void setPristine(boolean state) {
+  public void setPristine(final boolean state) {
     pristine = state;
   }
 
@@ -687,10 +791,14 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
     shutdown(false);
   }
 
-  private void shutdown(boolean doingReset) {
+    /**
+     * Shutdown hierarchy.
+     * @param doingReset true is resetting hierarchy
+     */
+  private void shutdown(final boolean doingReset) {
 
     // stop this repo's scheduler if it has one
-     if(scheduler != null) {
+     if (scheduler != null) {
        scheduler.shutdown();
        scheduler = null;
      }
@@ -706,10 +814,10 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
       }
     }
 
-    Logger root = getRootLogger();
+    Logger rootLogger = getRootLogger();
 
     // begin by closing nested appenders
-    root.closeNestedAppenders();
+    rootLogger.closeNestedAppenders();
 
     synchronized (ht) {
       Enumeration cats = this.getCurrentLoggers();
@@ -720,7 +828,7 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
       }
 
       // then, remove all appenders
-      root.removeAllAppenders();
+      rootLogger.removeAllAppenders();
       cats = this.getCurrentLoggers();
 
       while (cats.hasMoreElements()) {
@@ -752,19 +860,21 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
      3) There entry is of type ProvisionNode for this potential parent.
 
         We add 'cat' to the list of children for this potential parent.
+        @param cat logger whose parents are updated
    */
-  private final void updateParents(Logger cat) {
-    String name = cat.name;
-    int length = name.length();
+  private void updateParents(final Logger cat) {
+    String loggerName = cat.name;
+    int length = loggerName.length();
     boolean parentFound = false;
 
 
     //System.out.println("UpdateParents called for " + name);
-    // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
+    // if name = "w.x.y.z",
+    // loop through "w.x.y", "w.x" and "w", but not "w.x.y.z"
     for (
-      int i = name.lastIndexOf('.', length - 1); i >= 0;
-        i = name.lastIndexOf('.', i - 1)) {
-      String substr = name.substring(0, i);
+      int i = loggerName.lastIndexOf('.', length - 1); i >= 0;
+        i = loggerName.lastIndexOf('.', i - 1)) {
+      String substr = loggerName.substring(0, i);
 
       //System.out.println("Updating parent : " + substr);
       CategoryKey key = new CategoryKey(substr); // simple constructor
@@ -772,14 +882,14 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
       // Create a provision node for a future parent.
       if (o == null) {
-        //System.out.println("No parent "+substr+" found. Creating ProvisionNode.");
+    //System.out.println("No parent "+substr+" found. Creating ProvisionNode.");
         ProvisionNode pn = new ProvisionNode(cat);
         ht.put(key, pn);
       } else if (o instanceof Logger) {
         parentFound = true;
         cat.parent = (Logger) o;
 
-        //System.out.println("Linking " + cat.name + " -> " + ((Category) o).name);
+       //System.out.println("Linking " + cat.name + " -> " + ((Logger) o).name);
         break; // no need to update the ancestors of the closest ancestor
       } else if (o instanceof ProvisionNode) {
         ((ProvisionNode) o).addElement(cat);
@@ -810,9 +920,12 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
 
          Otherwise, we set cat's parent field to c's parent and set
          c's parent field to cat.
+   @param pn provisional node
+   @param logger parent logger
 
   */
-  private final void updateChildren(ProvisionNode pn, Logger logger) {
+  private void updateChildren(final ProvisionNode pn,
+                                    final Logger logger) {
     //System.out.println("updateChildren called for " + logger.name);
     final int last = pn.size();
 
@@ -830,34 +943,55 @@ public class Hierarchy implements LoggerRepositoryEx, RendererSupport {
     }
   }
   /**
-   * Return this repository's own scheduler. The scheduler is lazily instantiated.
+   * Return this repository's own scheduler.
+   * The scheduler is lazily instantiated.
    * @return this repository's own scheduler.
    */
   public Scheduler getScheduler() {
-    if(scheduler == null) {
+    if (scheduler == null) {
       scheduler = new Scheduler();
       scheduler.setDaemon(true);
       scheduler.start();
     }
     return scheduler;
   }
-  
-  public void putObject(String key, Object value) {
+
+    /**
+     * Puts object by key.
+     * @param key key, may not be null.
+     * @param value object to associate with key.
+     */
+  public void putObject(final String key,
+                        final Object value) {
     objectMap.put(key, value);
   }
-  
-  public Object getObject(String key) {
+
+    /**
+     * Get object by key.
+     * @param key key, may not be null.
+     * @return object associated with key or null.
+     */
+  public Object getObject(final String key) {
     return objectMap.get(key);
   }
-  
-  public void setLoggerFactory(LoggerFactory loggerFactory) {
-    if (loggerFactory == null)
+
+    /**
+     * Set logger factory.
+     * @param factory logger factory.
+     */
+  public void setLoggerFactory(final LoggerFactory factory) {
+    if (factory == null) {
       throw new NullPointerException();
-    this.loggerFactory = loggerFactory;
+    }
+    this.loggerFactory = factory;
   }
 
+    /**
+     * Get logger factory.
+     * @return logger factory.
+     */
   public LoggerFactory getLoggerFactory() {
     return loggerFactory;
-  }  
+  }
 
 }
