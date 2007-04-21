@@ -105,7 +105,7 @@ public class LocationInfo implements java.io.Serializable {
 
     */
     public LocationInfo(Throwable t, String fqnOfCallingClass) {
-      if(t == null)
+      if(t == null || fqnOfCallingClass == null)
 	return;
 
       String s;
