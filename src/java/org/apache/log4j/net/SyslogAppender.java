@@ -272,18 +272,19 @@ public class SyslogAppender extends AppenderSkeleton {
   }
 
 
-  private void splitPacket(final String pri, final String packet) {
+  private void splitPacket(final String header, final String packet) {
       int byteCount = packet.getBytes().length;
       //
       //   if packet is less than RFC 3164 limit
       //      of 1024 bytes, then write it
-      //
-      if (byteCount <= 1024) {
+      //      (must allow for up 5to 5 characters in the PRI section
+      //          added by SyslogQuietWriter)
+      if (byteCount <= 1019) {
           sqw.write(packet);
       } else {
-          int split = pri.length() + (packet.length() - pri.length())/2;
-          splitPacket(pri, packet.substring(0, split) + "...");
-          splitPacket(pri, pri + "..." + packet.substring(split));
+          int split = header.length() + (packet.length() - header.length())/2;
+          splitPacket(header, packet.substring(0, split) + "...");
+          splitPacket(header, header + "..." + packet.substring(split));
       }      
   }
 
@@ -308,13 +309,11 @@ public class SyslogAppender extends AppenderSkeleton {
     }
 
     String hdr = getPacketHeader(event.timeStamp);
-    String pri = hdr;
     String packet = layout.format(event);
     if(facilityPrinting || hdr.length() > 0) {
         StringBuffer buf = new StringBuffer(hdr);
         if(facilityPrinting) {
             buf.append(facilityStr);
-            pri = buf.toString();
         }
         buf.append(packet);
         packet = buf.toString();
@@ -325,7 +324,7 @@ public class SyslogAppender extends AppenderSkeleton {
     //   if message has a remote likelihood of exceeding 1024 bytes
     //      when encoded, consider splitting message into multiple packets
     if (packet.length() > 256) {
-        splitPacket(pri, packet);
+        splitPacket(hdr, packet);
     } else {
         sqw.write(packet);
     }
