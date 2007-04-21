@@ -242,7 +242,7 @@ public class LoggingEvent implements java.io.Serializable {
      information is cached for future use.
    */
   public LocationInfo getLocationInformation() {
-    if(locationInfo == null) {
+    if(locationInfo == null && fqnOfCategoryClass != null) {
       locationInfo = new LocationInfo(new Throwable(), fqnOfCategoryClass);
     }
     return locationInfo;
