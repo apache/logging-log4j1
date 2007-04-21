@@ -215,5 +215,29 @@ public class LoggingEventTest extends TestCase {
       assertEquals(Level.ERROR, event.level);
   }
 
+    /**
+     * Tests LoggingEvent.getLocationInfo() when no FQCN is specified.
+     * See bug 41186.
+     */
+  public void testLocationInfoNoFQCN() {
+      Category root = Logger.getRootLogger();
+	  Priority level = Level.INFO;
+      LoggingEvent event =
+        new LoggingEvent(
+          null, root, 0L,  level, "Hello, world.", null);
+      LocationInfo info = event.getLocationInformation();
+	  //
+	  //  log4j 1.2 returns an object, its layout doesn't check for nulls.
+	  //  log4j 1.3 returns a null.
+	  //
+	  assertNotNull(info);
+	  if (info != null) {
+	     assertEquals("?", info.getLineNumber());
+		 assertEquals("?", info.getClassName());
+		 assertEquals("?", info.getFileName());
+		 assertEquals("?", info.getMethodName());
+	  }
+  }
+
 
 }
