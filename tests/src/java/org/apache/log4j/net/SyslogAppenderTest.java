@@ -545,4 +545,49 @@ public class SyslogAppenderTest extends TestCase {
       assertEquals("<14></table>", s[2].substring(0,12));
     }
 
+    /**
+     * Tests that syslog packets do not exceed 1024 bytes.
+     * See bug 42087.
+     * @throws Exception if exception during test.
+     */
+    public void testBigPackets() throws Exception {
+        DatagramSocket ds = new DatagramSocket();
+        ds.setSoTimeout(2000);
+
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("localhost:" + ds.getLocalPort());
+      appender.setName("name");
+      appender.setHeader(false);
+      PatternLayout pl = new PatternLayout("%m");
+      appender.setLayout(pl);
+      appender.activateOptions();
+
+      Logger l = Logger.getRootLogger();
+      l.addAppender(appender);
+      StringBuffer msgbuf = new StringBuffer();
+      while(msgbuf.length() < 8000) {
+          msgbuf.append("0123456789");
+      }
+      String msg = msgbuf.toString();
+      l.info(msg);
+      appender.close();
+      String[] s = new String[8];
+      byte[] buf = new byte[1200];
+      for(int i = 0; i < 8; i++) {
+          DatagramPacket p = new DatagramPacket(buf, 0, buf.length);
+          ds.receive(p);
+          assertTrue(p.getLength() <= 1024);
+          s[i] = new String(p.getData(), 0, p.getLength());
+      }
+      ds.close();
+      StringBuffer rcvbuf = new StringBuffer(s[0]);
+      rcvbuf.delete(0, 4);
+      for(int i = 1; i < 8; i++) {
+          rcvbuf.setLength(rcvbuf.length() - 3);
+          rcvbuf.append(s[i].substring(s[i].indexOf("...") + 3));
+      }
+      assertEquals(msg.length(), rcvbuf.length());
+      assertEquals(msg, rcvbuf.toString());
+    }
+
 }
