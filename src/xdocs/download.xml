@@ -65,6 +65,7 @@
        <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=41708">41708</a>: PropertyPrinter.printOptions breaking signature change in log4j 1.2.9</li>
        <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=41735">41735</a>: RollingFileAppender may delete files during rollover</li>
        <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=33708">33708</a>: XML configuration of loggerFactory does not work</li>
+       <li><a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=42087">42087</a>: SyslogAppender does not limit packet size to 1024 bytes</li>
       </ul>
    </li>
     </ul>

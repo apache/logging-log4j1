@@ -116,13 +116,21 @@ public class SyslogWriter extends Writer {
   }
   
   public
-  void write(String string) throws IOException {
-    byte[] bytes = string.getBytes();
-    DatagramPacket packet = new DatagramPacket(bytes, bytes.length,
-					       address, port);
+  void write(final String string) throws IOException {
 
-    if(this.ds != null && this.address != null)
-      ds.send(packet);
+    if(this.ds != null && this.address != null) {
+        byte[] bytes = string.getBytes();
+        //
+        //  syslog packets must be less than 1024 bytes
+        //
+        int bytesLength = bytes.length;
+        if (bytesLength >= 1024) {
+            bytesLength = 1024;
+        }
+        DatagramPacket packet = new DatagramPacket(bytes, bytesLength,
+                               address, port);
+        ds.send(packet);
+    }
     
   }
 
