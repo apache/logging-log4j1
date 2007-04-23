@@ -118,23 +118,19 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
     try {
       LoggerDynamicMBean loggerMBean = new LoggerDynamicMBean(logger);
       objectName = new ObjectName("log4j", "logger", name);
-      server.registerMBean(loggerMBean, objectName);
-
-      NotificationFilterSupport nfs = new NotificationFilterSupport();
-      nfs.enableType(ADD_APPENDER+logger.getName());
-
-      log.debug("---Adding logger ["+name+"] as listener.");
-
-      nbs.addNotificationListener(loggerMBean, nfs, null);
-
-
-      vAttributes.add(new MBeanAttributeInfo("logger="+name,
-					     "javax.management.ObjectName",
-					     "The "+name+" logger.",
-					     true,
-					     true, // this makes the object
-					     // clickable
-					     false));
+      
+      if (!server.isRegistered(objectName)) {
+        server.registerMBean(loggerMBean, objectName);
+        NotificationFilterSupport nfs = new NotificationFilterSupport();
+        nfs.enableType(ADD_APPENDER + logger.getName());
+        log.debug("---Adding logger [" + name + "] as listener.");
+        nbs.addNotificationListener(loggerMBean, nfs, null);
+        vAttributes.add(new MBeanAttributeInfo("logger=" + name, "javax.management.ObjectName",
+                "The " + name + " logger.", true, true, // this makes the object
+                // clickable
+                false));
+        
+      }
 
     } catch(Exception e) {
       log.error("Could not add loggerMBean for ["+name+"].", e);
