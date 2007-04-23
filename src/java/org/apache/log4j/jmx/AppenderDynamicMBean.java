@@ -193,14 +193,11 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
     try {
       LayoutDynamicMBean appenderMBean = new LayoutDynamicMBean(layout);
       objectName = new ObjectName("log4j:appender="+name);
-      server.registerMBean(appenderMBean, objectName);
-
-      dAttributes.add(new MBeanAttributeInfo("appender="+name,
-					     "javax.management.ObjectName",
-					     "The "+name+" layout.",
-					     true,
-					     true,
-					     false));
+      if (!server.isRegistered(objectName)) {
+        server.registerMBean(appenderMBean, objectName);
+        dAttributes.add(new MBeanAttributeInfo("appender=" + name, "javax.management.ObjectName",
+                "The " + name + " layout.", true, true, false));
+      }
 
     } catch(Exception e) {
       cat.error("Could not add DynamicLayoutMBean for ["+name+"].", e);
