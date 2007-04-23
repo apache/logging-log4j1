@@ -211,7 +211,7 @@ public class SocketAppender extends AppenderSkeleton {
         msg += " We will try again later.";
 	fireConnector(); // fire the connector thread
       } 
-      LogLog.error(msg, e);
+      LogLog.warn(msg);
     }
   }
 
