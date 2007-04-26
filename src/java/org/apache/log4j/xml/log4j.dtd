@@ -136,14 +136,14 @@ element. -->
 >
 
 <!ELEMENT triggeringPolicy ((param|filter)*)>
-<!ATTLIST plugin
-  name 		CDATA 	   #REQUIRED
+<!ATTLIST triggeringPolicy
+  name 		CDATA  #IMPLIED
   class 	CDATA  #REQUIRED
 >
 
 <!ELEMENT rollingPolicy (param*)>
-<!ATTLIST plugin
-  name 		CDATA 	   #REQUIRED
+<!ATTLIST rollingPolicy
+  name 		CDATA  #IMPLIED
   class 	CDATA  #REQUIRED
 >
 
