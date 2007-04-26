@@ -26,6 +26,7 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectOutputStream;
 
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.AppenderSkeleton;
 
@@ -210,6 +211,9 @@ public class SocketAppender extends AppenderSkeleton {
       if(reconnectionDelay > 0) {
         msg += " We will try again later.";
 	fireConnector(); // fire the connector thread
+      } else {
+          msg += " We are not retrying.";
+          errorHandler.error(msg, e, ErrorCode.GENERIC_FAILURE);
       } 
       LogLog.error(msg);
     }
@@ -246,6 +250,9 @@ public class SocketAppender extends AppenderSkeleton {
 	LogLog.warn("Detected problem with connection: "+e);
 	if(reconnectionDelay > 0) {
 	  fireConnector();
+	} else {
+	    errorHandler.error("Detected problem with connection, not reconnecting.", e,
+	               ErrorCode.GENERIC_FAILURE);
 	}
       }
     }

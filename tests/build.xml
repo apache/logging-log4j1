@@ -154,7 +154,8 @@
                                      OptionConverter, BoundedFIFO, 
                                      CyclicBuffer, OR, 
                                      LevelMatchFilter, PatternParser, 
-                                     PatternLayout, RFA, ERFA, DRFA, NTEventLogAppender, Syslog"/>
+                                     PatternLayout, RFA, ERFA, DRFA, 
+									 NTEventLogAppender, Syslog, Socket"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
@@ -414,6 +415,15 @@
       <test name="org.apache.log4j.nt.NTEventLogAppenderTest" />
     </junit>
   </target>
+
+  <target name="Socket" depends="build">
+      <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+        <classpath refid="tests.classpath"/>
+        <formatter type="plain" usefile="false"/>
+        <test name="org.apache.log4j.net.SocketAppenderTest" />
+      </junit>
+  </target>
+
 
   <!-- ================================================================= -->
   <!-- ========================= Very long Tests ======================= -->
