@@ -278,7 +278,7 @@ public class DOMConfigurator implements Configurator {
                 "] which does not implement org.apache.log4j.spi.AppenderAttachable.");
 	    }
 	  } else {
-          parseUnrecognizedElement(instance, appenderElement, props);
+          parseUnrecognizedElement(instance, currentElement, props);
       }
 	}
       }
@@ -907,7 +907,9 @@ public class DOMConfigurator implements Configurator {
 	  parseRoot(currentElement);
 	} else if(tagName.equals(RENDERER_TAG)) {
 	  parseRenderer(currentElement);
-	} else if (!tagName.equals(CATEGORY_FACTORY_TAG)) {
+	} else if (!(tagName.equals(APPENDER_TAG)
+            || tagName.equals(CATEGORY_FACTORY_TAG)
+            || tagName.equals(LOGGER_FACTORY_TAG))) {
         quietParseUnrecognizedElement(repository, currentElement, props);
     }
       }
