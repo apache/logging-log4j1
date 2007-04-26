@@ -17,28 +17,45 @@
 
 package org.apache.log4j.xml;
 
-import java.util.*;
-
-import java.net.URL;
-
-import org.w3c.dom.*;
-import java.lang.reflect.Method;
-import org.apache.log4j.*;
-import org.apache.log4j.spi.*;
-import org.apache.log4j.or.RendererMap;
-import org.apache.log4j.helpers.*;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.config.PropertySetter;
-
+import org.apache.log4j.helpers.FileWatchdog;
+import org.apache.log4j.helpers.Loader;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.or.RendererMap;
+import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.Filter;
+import org.apache.log4j.spi.LoggerFactory;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.RendererSupport;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.FactoryConfigurationError;
+import java.util.Hashtable;
+import java.util.Properties;
 
 // Contributors:   Mark Womack
 //                 Arun Katkere 
@@ -167,6 +184,48 @@ public class DOMConfigurator implements Configurator {
     return findAppenderByName(doc, appenderName);
   }
 
+    /**
+     * Delegates unrecognized content to created instance if
+     * it supports UnrecognizedElementParser.
+     * @since 1.2.15
+     * @param instance instance, may be null.
+     * @param element element, may not be null.
+     * @param props properties
+     * @throws IOException thrown if configuration of owner object
+     * should be abandoned.
+     */
+  private static void parseUnrecognizedElement(final Object instance,
+                                        final Element element,
+                                        final Properties props) throws Exception {
+      boolean recognized = false;
+      if (instance instanceof UnrecognizedElementHandler) {
+          recognized = ((UnrecognizedElementHandler) instance).parseUnrecognizedElement(
+                  element, props);
+      }
+      if (!recognized) {
+          LogLog.warn("Unrecognized element " + element.getNodeName());
+      }
+  }
+
+    /**
+      * Delegates unrecognized content to created instance if
+      * it supports UnrecognizedElementParser and catches and
+     *  logs any exception.
+      * @since 1.2.15
+      * @param instance instance, may be null.
+      * @param element element, may not be null.
+      * @param props properties
+      */
+   private static void quietParseUnrecognizedElement(final Object instance,
+                                          final Element element,
+                                          final Properties props) {
+      try {
+          parseUnrecognizedElement(instance, element, props);
+      } catch (Exception ex) {
+          LogLog.error("Error in extension content: ", ex);
+      }
+  }
+
   /**
      Used internally to parse an appender element.
    */
@@ -218,7 +277,9 @@ public class DOMConfigurator implements Configurator {
 			   refName+ "] to appender named ["+ appender.getName()+
                 "] which does not implement org.apache.log4j.spi.AppenderAttachable.");
 	    }
-	  }
+	  } else {
+          parseUnrecognizedElement(instance, appenderElement, props);
+      }
 	}
       }
       propSetter.activate();
@@ -267,7 +328,9 @@ public class DOMConfigurator implements Configurator {
 	  } else if(tagName.equals(ROOT_REF)) {
 	    Logger root = repository.getRootLogger();
 	    eh.setLogger(root);
-	  }
+	  } else {
+          quietParseUnrecognizedElement(eh, element, props);
+      }
 	}
       }
       propSetter.activate();
@@ -296,7 +359,9 @@ public class DOMConfigurator implements Configurator {
 	  String tagName = currentElement.getTagName();
 	  if(tagName.equals(PARAM_TAG)) {
             setParameter(currentElement, propSetter);
-	  } 
+	  } else {
+            quietParseUnrecognizedElement(filter, element, props);
+      }
 	}
       }
       propSetter.activate();
@@ -386,7 +451,9 @@ public class DOMConfigurator implements Configurator {
 	  currentElement = (Element)currentNode;
 	  if (currentElement.getTagName().equals(PARAM_TAG)) {
 	    setParameter(currentElement, propSetter);
-	  }
+	  } else {
+           quietParseUnrecognizedElement(factory, factoryElement, props);
+      }
 	}
       }
     }
@@ -448,7 +515,9 @@ public class DOMConfigurator implements Configurator {
 	  parseLevel(currentElement, cat, isRoot);
 	} else if(tagName.equals(PARAM_TAG)) {
           setParameter(currentElement, propSetter);
-	}
+	} else {
+        quietParseUnrecognizedElement(cat, catElement, props);
+    }
       }
     }
     propSetter.activate();
@@ -476,7 +545,9 @@ public class DOMConfigurator implements Configurator {
 	  String tagName = currentElement.getTagName();
 	  if(tagName.equals(PARAM_TAG)) {
             setParameter(currentElement, propSetter);
-	  }
+	  } else {
+          parseUnrecognizedElement(instance, layout_element, props);
+      }
 	}
       }
       
@@ -544,10 +615,7 @@ public class DOMConfigurator implements Configurator {
 
   protected
   void setParameter(Element elem, PropertySetter propSetter) {
-    String name = subst(elem.getAttribute(NAME_ATTR));
-    String value = (elem.getAttribute(VALUE_ATTR));
-    value = subst(OptionConverter.convertSpecialChars(value));
-    propSetter.setProperty(name, value);
+      setParameter(elem, propSetter, props);
   }
 
 
@@ -839,27 +907,106 @@ public class DOMConfigurator implements Configurator {
 	  parseRoot(currentElement);
 	} else if(tagName.equals(RENDERER_TAG)) {
 	  parseRenderer(currentElement);
-	}
+	} else if (!tagName.equals(CATEGORY_FACTORY_TAG)) {
+        quietParseUnrecognizedElement(repository, currentElement, props);
+    }
       }
     }
   }
 
   
   protected
-  String subst(String value) {
-    try {
-      return OptionConverter.substVars(value, props);
-    } catch(IllegalArgumentException e) {
-      LogLog.warn("Could not perform variable substitution.", e);
-      return value;
-    }
+  String subst(final String value) {
+      return subst(value, props);
   }
+
+    /**
+     * Substitutes property value for any references in expression.
+     *
+     * @param value value from configuration file, may contain
+     *              literal text, property references or both
+     * @param props properties.
+     * @return evaluated expression, may still contain expressions
+     *         if unable to expand.
+     * @since 1.2.15
+     */
+    public static String subst(final String value, final Properties props) {
+        try {
+            return OptionConverter.substVars(value, props);
+        } catch (IllegalArgumentException e) {
+            LogLog.warn("Could not perform variable substitution.", e);
+            return value;
+        }
+    }
+
+
+    /**
+     * Sets a parameter based from configuration file content.
+     *
+     * @param elem       param element, may not be null.
+     * @param propSetter property setter, may not be null.
+     * @param props      properties
+     * @since 1.2.15
+     */
+    public static void setParameter(final Element elem,
+                                    final PropertySetter propSetter,
+                                    final Properties props) {
+        String name = subst(elem.getAttribute("name"), props);
+        String value = (elem.getAttribute("value"));
+        value = subst(OptionConverter.convertSpecialChars(value), props);
+        propSetter.setProperty(name, value);
+    }
+
+    /**
+     * Creates an OptionHandler and processes any nested param elements
+     * but does not call activateOptions.  If the class also supports
+     * UnrecognizedElementParser, the parseUnrecognizedElement method
+     * will be call for any child elements other than param.
+     *
+     * @param element       element, may not be null.
+     * @param props         properties
+     * @param expectedClass interface or class expected to be implemented
+     *                      by created class
+     * @return created class or null.
+     * @throws Exception thrown if the contain object should be abandoned.
+     * @since 1.2.15
+     */
+    public static OptionHandler parseElement(final Element element,
+                                             final Properties props,
+                                             final Class expectedClass) throws Exception {
+        String clazz = subst(element.getAttribute("class"), props);
+        Object instance = OptionConverter.instantiateByClassName(clazz,
+                expectedClass, null);
+
+        if (instance instanceof OptionHandler) {
+            OptionHandler optionHandler = (OptionHandler) instance;
+            PropertySetter propSetter = new PropertySetter(optionHandler);
+            NodeList children = element.getChildNodes();
+            final int length = children.getLength();
+
+            for (int loop = 0; loop < length; loop++) {
+                Node currentNode = children.item(loop);
+                if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element currentElement = (Element) currentNode;
+                    String tagName = currentElement.getTagName();
+                    if (tagName.equals("param")) {
+                        setParameter(currentElement, propSetter, props);
+                    } else {
+                         parseUnrecognizedElement(instance, currentElement, props);
+                    }
+                }
+            }
+            return optionHandler;
+        }
+        return null;
+    }
+
 }
 
 
 class XMLWatchdog extends FileWatchdog {
 
-  XMLWatchdog(String filename) {
+    XMLWatchdog(String filename) {
     super(filename);
   }
 
