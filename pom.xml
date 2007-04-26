@@ -103,7 +103,7 @@
       </plugin>
     </plugins>      
     <sourceDirectory>src/java</sourceDirectory>
-    <testSourceDirectory>tests/src/java</testSourceDirectory>
+    <!-- testSourceDirectory>tests/src/java</testSourceDirectory -->
 </build>
 <repositories>
 	<repository>
