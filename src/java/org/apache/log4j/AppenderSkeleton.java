@@ -103,7 +103,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
     if(headFilter == null) {
       headFilter = tailFilter = newFilter;
     } else {
-      tailFilter.next = newFilter;
+      tailFilter.setNext(newFilter);
       tailFilter = newFilter;    
     }
   }
@@ -244,7 +244,7 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
       switch(f.decide(event)) {
       case Filter.DENY: return;
       case Filter.ACCEPT: break FILTER_LOOP;
-      case Filter.NEUTRAL: f = f.next;
+      case Filter.NEUTRAL: f = f.getNext();
       }
     }
     

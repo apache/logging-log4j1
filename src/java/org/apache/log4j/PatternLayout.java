@@ -417,8 +417,6 @@ public class PatternLayout extends Layout {
 
   private PatternConverter head;
 
-  private String timezone;
-
   /**
      Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
 

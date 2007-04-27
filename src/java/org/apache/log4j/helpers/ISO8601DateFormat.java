@@ -40,6 +40,7 @@ import java.text.ParsePosition;
    @since 0.7.5
 */
 public class ISO8601DateFormat extends AbsoluteTimeDateFormat {
+  private static final long serialVersionUID = -759840745298755296L;
 
   public
   ISO8601DateFormat() {

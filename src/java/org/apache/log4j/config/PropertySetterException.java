@@ -25,6 +25,7 @@ package org.apache.log4j.config;
  * @since 1.1
  */
 public class PropertySetterException extends Exception {
+  private static final long serialVersionUID = -1352613734254235861L;
   protected Throwable rootCause;
   
   public

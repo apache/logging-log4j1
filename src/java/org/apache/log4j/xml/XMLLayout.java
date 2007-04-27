@@ -20,11 +20,9 @@
 package org.apache.log4j.xml;
 
 import org.apache.log4j.Layout;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.DateLayout;
 import org.apache.log4j.helpers.Transform;
+import org.apache.log4j.spi.LocationInfo;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * The output of the XMLLayout consists of a series of log4j:event

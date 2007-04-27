@@ -366,6 +366,7 @@ public class DailyRollingFileAppender extends FileAppender {
  *  start of the next interval.  
  * */
 class RollingCalendar extends GregorianCalendar {
+  private static final long serialVersionUID = -3560331770601814177L;
 
   int type = DailyRollingFileAppender.TOP_OF_TROUBLE;
 

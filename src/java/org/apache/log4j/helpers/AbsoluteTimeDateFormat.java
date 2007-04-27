@@ -35,6 +35,7 @@ import java.text.DateFormat;
    @since 0.7.5
 */
 public class AbsoluteTimeDateFormat extends DateFormat {
+   private static final long serialVersionUID = -388856345976723342L;
 
   /**
      String constant used to specify {@link
