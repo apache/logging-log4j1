@@ -286,6 +286,9 @@ public class PatternLayoutTestCase extends TestCase {
   }
 
   void common() {
+    String oldThreadName = Thread.currentThread().getName();
+    Thread.currentThread().setName("main");
+
     int i = -1;
 
     logger.trace("Message " + ++i);
@@ -313,6 +316,8 @@ public class PatternLayoutTestCase extends TestCase {
     logger.warn("Message " + ++i , e);
     logger.error("Message " + ++i, e);
     logger.log(Level.FATAL, "Message " + ++i, e);
+
+    Thread.currentThread().setName(oldThreadName);
   }
 
 

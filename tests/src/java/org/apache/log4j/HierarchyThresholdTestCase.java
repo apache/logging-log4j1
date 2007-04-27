@@ -98,12 +98,17 @@ public class HierarchyThresholdTestCase extends TestCase {
 
   static 
   void common() {
+    String oldThreadName = Thread.currentThread().getName();
+    Thread.currentThread().setName("main");
+
     logger.log(XLevel.TRACE, "m0");
     logger.debug("m1");
     logger.info("m2");
     logger.warn("m3");
     logger.error("m4");
     logger.fatal("m5");
+
+    Thread.currentThread().setName(oldThreadName);
   }
 
   public static Test suite() {
