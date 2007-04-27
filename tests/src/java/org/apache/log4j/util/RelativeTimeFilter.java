@@ -17,8 +17,6 @@
 
 package org.apache.log4j.util;
 
-import java.io.*;
-
 import org.apache.oro.text.perl.Perl5Util;
 
 public class RelativeTimeFilter implements Filter {

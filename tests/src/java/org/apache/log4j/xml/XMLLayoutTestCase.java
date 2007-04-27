@@ -17,23 +17,20 @@
 
 package org.apache.log4j.xml;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import junit.framework.Test;
-
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
 import org.apache.log4j.FileAppender;
-import org.apache.log4j.xml.XMLLayout;
-import org.apache.log4j.util.Filter;
-import org.apache.log4j.util.ControlFilter;
-import org.apache.log4j.util.XMLTimestampFilter;
-import org.apache.log4j.util.XMLLineAttributeFilter;
-import org.apache.log4j.util.LineNumberFilter;
-import org.apache.log4j.util.Transformer;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.util.Compare;
+import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.JunitTestRunnerFilter;
+import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.SunReflectFilter;
+import org.apache.log4j.util.Transformer;
+import org.apache.log4j.util.XMLLineAttributeFilter;
+import org.apache.log4j.util.XMLTimestampFilter;
 
 public class XMLLayoutTestCase extends TestCase {
 
@@ -148,7 +145,7 @@ public class XMLLayoutTestCase extends TestCase {
 
     int i = -1;
  
-    X x = new X();
+    new X();
 
     logger.trace("Message " + ++i);
     root.trace("Message " + i);    
