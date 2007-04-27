@@ -17,17 +17,10 @@
 
 package org.apache.log4j.xml;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import junit.framework.Test;
-
 import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-import org.apache.log4j.util.Filter;
-import org.apache.log4j.util.LineNumberFilter;
-import org.apache.log4j.util.ControlFilter;
-import org.apache.log4j.util.ISO8601Filter;
-import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.Compare;
 
 public class CustomLevelTestCase extends TestCase {

@@ -17,19 +17,20 @@
 
 package org.apache.log4j.util;
 
-import java.io.*;
-
-import org.apache.oro.text.perl.Perl5Util;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
 
 public class Transformer {
 
   public 
   static 
-  void transform(String in, String out, Filter[] filters) throws FileNotFoundException, 
-                                                                 IOException,
+  void transform(String in, String out, Filter[] filters) throws IOException,
                                                                  UnexpectedFormatException {
 
-    Perl5Util util = new Perl5Util();
     String line;
     BufferedReader input = new BufferedReader(new FileReader(in));
     PrintStream output = new PrintStream(new FileOutputStream(out, false));
@@ -50,11 +51,9 @@ public class Transformer {
 
   public 
   static 
-  void transform(String in, String out, Filter filter) throws FileNotFoundException, 
-                                                              IOException,
+  void transform(String in, String out, Filter filter) throws IOException,
                                                               UnexpectedFormatException {
 
-    Perl5Util util = new Perl5Util();
     String line;
     BufferedReader input = new BufferedReader(new FileReader(in));
     PrintStream output = new PrintStream(new FileOutputStream(out));
