@@ -17,12 +17,11 @@
 
 package org.apache.log4j.nt;
 
-import org.apache.log4j.*;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Level;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Layout;
+import org.apache.log4j.TTCCLayout;
 import org.apache.log4j.helpers.LogLog;
-
-import java.io.*;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -43,11 +42,6 @@ public class NTEventLogAppender extends AppenderSkeleton {
   private String source = null;
   private String server = null;
 
-  private static final int FATAL  = Level.FATAL.toInt();
-  private static final int ERROR  = Level.ERROR.toInt();
-  private static final int WARN   = Level.WARN.toInt();
-  private static final int INFO   = Level.INFO.toInt();
-  private static final int DEBUG  = Level.DEBUG.toInt();
 
   public NTEventLogAppender() {
     this(null, null, null);

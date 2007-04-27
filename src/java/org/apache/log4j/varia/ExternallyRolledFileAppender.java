@@ -17,12 +17,13 @@
 
 package org.apache.log4j.varia;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.ServerSocket;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.RollingFileAppender;
 import org.apache.log4j.helpers.LogLog;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
    This appender listens on a socket on the port specified by the

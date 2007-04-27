@@ -17,35 +17,25 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Logger;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.spi.RendererSupport;
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.or.jms.MessageRenderer;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.helpers.LogLog;
 
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.TopicConnection;
-import javax.jms.Topic;
-import javax.jms.TopicConnectionFactory;
-import javax.jms.TopicSubscriber;
-import javax.jms.Session;
-import javax.jms.TopicSession;
-import javax.jms.ObjectMessage;
 import javax.jms.JMSException;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import javax.naming.InitialContext;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+import javax.jms.Topic;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
+import javax.jms.TopicSession;
+import javax.jms.TopicSubscriber;
 import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-import java.util.Properties;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
  * A simple application that consumes logging events sent by a {@link
@@ -72,9 +62,9 @@ public class JMSSink implements javax.jms.MessageListener {
     String configFile = args[4];
 
     if(configFile.endsWith(".xml")) {
-      new DOMConfigurator().configure(configFile);
+      DOMConfigurator.configure(configFile);
     } else {
-      new PropertyConfigurator().configure(configFile);
+      PropertyConfigurator.configure(configFile);
     }
     
     new JMSSink(tcfBindingName, topicBindingName, username, password);

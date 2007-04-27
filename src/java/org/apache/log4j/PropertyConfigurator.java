@@ -22,26 +22,23 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.DefaultCategoryFactory;
 import org.apache.log4j.config.PropertySetter;
-//import org.apache.log4j.config.PropertySetterException;
-import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.helpers.FileWatchdog;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.RendererSupport;
-import org.apache.log4j.or.RendererMap;
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.FileWatchdog;
 
-import java.util.Enumeration;
-import java.util.Properties;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.StringTokenizer;
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
    Allows the configuration of log4j from an external file.  See
@@ -406,7 +403,7 @@ public class PropertyConfigurator implements Configurator {
 
     String value = properties.getProperty(LogLog.DEBUG_KEY);
     if(value == null) {
-      value = properties.getProperty(LogLog.CONFIG_DEBUG_KEY);
+      value = properties.getProperty("log4j.configDebug");
       if(value != null)
 	LogLog.warn("[log4j.configDebug] is deprecated. Use [log4j.debug] instead.");
     }

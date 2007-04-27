@@ -49,7 +49,6 @@ public class PatternParser {
 
   private static final int LITERAL_STATE = 0;
   private static final int CONVERTER_STATE = 1;
-  private static final int MINUS_STATE = 2;
   private static final int DOT_STATE = 3;
   private static final int MIN_STATE = 4;
   private static final int MAX_STATE = 5;

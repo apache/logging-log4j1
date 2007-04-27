@@ -32,6 +32,8 @@ import java.text.DateFormat;
    @since 0.7.5
 */
 public class RelativeTimeDateFormat extends DateFormat {
+  private static final long serialVersionUID = 7055751607085611984L;
+
 
   protected final long startTime;
 

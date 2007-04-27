@@ -77,8 +77,7 @@ public class LocationInfo implements java.io.Serializable {
   static boolean inVisualAge = false;
   static {
     try {
-      Class dummy = Class.forName("com.ibm.uvm.tools.DebugSupport");
-      inVisualAge = true;
+      inVisualAge = Class.forName("com.ibm.uvm.tools.DebugSupport") != null;
       LogLog.debug("Detected IBM VisualAge environment.");
     } catch(Throwable e) {
       // nothing to do

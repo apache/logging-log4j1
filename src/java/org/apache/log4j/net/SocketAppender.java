@@ -19,16 +19,15 @@
 
 package org.apache.log4j.net;
 
-import java.net.InetAddress;
-import java.net.Socket;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.ObjectOutputStream;
-
+import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.AppenderSkeleton;
+
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
 
 /**
     Sends {@link LoggingEvent} objects to a remote a log server,

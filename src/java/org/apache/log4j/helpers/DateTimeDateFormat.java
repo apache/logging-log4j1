@@ -32,6 +32,7 @@ import java.text.DateFormatSymbols;
    @since 0.7.5
 */
 public class DateTimeDateFormat extends AbsoluteTimeDateFormat {
+  private static final long serialVersionUID = 5547637772208514971L;
 
   String[] shortMonths;
 
