@@ -46,9 +46,8 @@ public class SystemTime {
   static
   double systemCurrentTimeLoop() {
     long before = System.currentTimeMillis();
-    long l;
     for(int i = 0; i < RUN_LENGTH; i++) {
-      l = System.currentTimeMillis();
+      System.currentTimeMillis();
     }
     return (System.currentTimeMillis() - before)*1000.0/RUN_LENGTH;    
   }
@@ -56,9 +55,8 @@ public class SystemTime {
   static
   double currentThreadNameloop() {
     long before = System.currentTimeMillis();
-    String t;
     for(int i = 0; i < RUN_LENGTH; i++) {
-      t = Thread.currentThread().getName();
+      Thread.currentThread().getName();
     }
     return (System.currentTimeMillis() - before)*1000.0/RUN_LENGTH;    
   }  

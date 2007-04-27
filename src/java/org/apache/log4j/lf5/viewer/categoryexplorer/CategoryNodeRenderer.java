@@ -31,6 +31,8 @@ import java.net.URL;
 // Contributed by ThoughtWorks Inc.
 
 public class CategoryNodeRenderer extends DefaultTreeCellRenderer {
+  private static final long serialVersionUID = -6046702673278595048L;
+
   //--------------------------------------------------------------------------
   //   Constants:
   //--------------------------------------------------------------------------

@@ -120,7 +120,7 @@ public class UsingSocketAppenders {
         // closed. This is done to overcome some basic limitations with the
         // way the SocketServer and SocketAppender classes manage sockets.
         try {
-            Thread.currentThread().sleep(5000);
+            Thread.sleep(5000);
         } catch (InterruptedException ie) {
         }
 

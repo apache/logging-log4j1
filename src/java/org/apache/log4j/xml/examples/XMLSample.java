@@ -19,7 +19,6 @@ package org.apache.log4j.xml.examples;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.Logger;
-import java.net.*;
 
 /**
 
@@ -67,7 +66,6 @@ public class XMLSample {
   static
   void sample() {
     int i = -1;
-    Logger root = Logger.getRootLogger();
     cat.debug("Message " + ++i);
     cat.warn ("Message " + ++i);
     cat.error("Message " + ++i);

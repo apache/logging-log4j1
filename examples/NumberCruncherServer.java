@@ -17,12 +17,10 @@
 
 package examples;
 
-import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
 import java.rmi.Naming;
 import java.util.Vector;
-
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
@@ -62,6 +60,7 @@ import org.apache.log4j.PropertyConfigurator;
  */
 public class NumberCruncherServer extends UnicastRemoteObject
                                   implements  NumberCruncher {
+  private static final long serialVersionUID = 2626753561969426769L;
 
 
   static Logger logger = Logger.getLogger(NumberCruncherServer.class);
@@ -75,7 +74,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 
     // The client's host is an important source of information.
     try {
-      NDC.push(this.getClientHost());
+      NDC.push(getClientHost());
     }
     catch(java.rmi.server.ServerNotActiveException e) {
       // we are being called from same VM
@@ -149,7 +148,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 
   public static
   void delay(int millis) {
-    try{Thread.currentThread().sleep(millis);}
+    try{Thread.sleep(millis);}
     catch(InterruptedException e) {}
   }
   

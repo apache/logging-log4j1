@@ -30,6 +30,7 @@ import java.util.Enumeration;
 // Contributed by ThoughtWorks Inc.
 
 public class CategoryNode extends DefaultMutableTreeNode {
+  private static final long serialVersionUID = 5958994817693177319L;
   //--------------------------------------------------------------------------
   //   Constants:
   //--------------------------------------------------------------------------

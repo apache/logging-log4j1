@@ -41,6 +41,7 @@ import java.util.Vector;
 // Contributed by ThoughtWorks Inc.
 
 public class LogTable extends JTable {
+  private static final long serialVersionUID = 4867085140195148458L;
   //--------------------------------------------------------------------------
   //   Constants:
   //--------------------------------------------------------------------------

@@ -17,11 +17,8 @@
 
 package examples;
 
-import java.rmi.Remote;
-import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
 import java.rmi.Naming;
-import java.util.Vector;
 import java.io.*;
 
 /**

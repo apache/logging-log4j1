@@ -29,6 +29,8 @@ import java.awt.*;
 // Contributed by ThoughtWorks Inc.
 
 public class CategoryNodeEditorRenderer extends CategoryNodeRenderer {
+  private static final long serialVersionUID = -6094804684259929574L;
+
   //--------------------------------------------------------------------------
   //   Constants:
   //--------------------------------------------------------------------------

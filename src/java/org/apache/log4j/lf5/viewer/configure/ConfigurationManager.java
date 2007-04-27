@@ -66,7 +66,6 @@ public class ConfigurationManager extends Object {
   private static final String FIRST_CATEGORY_NAME = "Categories";
   private static final String LEVEL = "level";
   private static final String COLORLEVEL = "colorlevel";
-  private static final String COLOR = "color";
   private static final String RED = "red";
   private static final String GREEN = "green";
   private static final String BLUE = "blue";
@@ -225,7 +224,7 @@ public class ConfigurationManager extends Object {
 
   protected void processLogLevelColors(Document doc) {
     NodeList nodeList = doc.getElementsByTagName(COLORLEVEL);
-    Map logLevelColors = LogLevel.getLogLevelColorMap();
+    LogLevel.getLogLevelColorMap();
 
     for (int i = 0; i < nodeList.getLength(); i++) {
       Node n = nodeList.item(i);

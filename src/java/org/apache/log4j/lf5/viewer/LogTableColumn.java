@@ -31,6 +31,7 @@ import java.util.Map;
 // Contributed by ThoughtWorks Inc.
 
 public class LogTableColumn implements java.io.Serializable {
+  private static final long serialVersionUID = -4275827753626456547L;
 
   // log4j table columns.
   public final static LogTableColumn DATE = new LogTableColumn("Date");

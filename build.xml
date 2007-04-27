@@ -26,6 +26,13 @@
   <!-- The build.properties file defines the parth to local jar files -->
   <property file="build.properties"/>               
 
+  <!--   if a Maven build has been attempted,
+              the Maven repository can provide all the dependencies.  -->
+  <property name="m2_repo" location="${user.home}/.m2/repository"/>
+  <property name="javaee-api.jar" location="${m2_repo}/javaee/javaee-api/5/javaee-api-5.jar"/>
+  <property name="jmx-extra.jar" location="${m2_repo}/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1.jar"/>
+
+
   <!-- Read the system environment variables and stores them in properties, -->
   <!-- prefixed with "env". -->
   <property environment="env"/>

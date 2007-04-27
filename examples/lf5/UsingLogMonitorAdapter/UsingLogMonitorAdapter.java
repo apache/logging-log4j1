@@ -17,7 +17,6 @@
 package examples.lf5.UsingLogMonitorAdapter;
 
 import org.apache.log4j.lf5.LogLevel;
-import org.apache.log4j.lf5.util.AdapterLogRecord;
 import org.apache.log4j.lf5.util.LogMonitorAdapter;
 
 /**

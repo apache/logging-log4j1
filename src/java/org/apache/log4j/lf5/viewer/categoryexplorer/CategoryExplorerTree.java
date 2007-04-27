@@ -33,6 +33,7 @@ import java.awt.event.MouseEvent;
 // Contributed by ThoughtWorks Inc.
 
 public class CategoryExplorerTree extends JTree {
+  private static final long serialVersionUID = 8066257446951323576L;
   //--------------------------------------------------------------------------
   //   Constants:
   //--------------------------------------------------------------------------
