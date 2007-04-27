@@ -134,6 +134,9 @@ public class DOMTestCase extends TestCase {
   }
 
   void common() {
+    String oldThreadName = Thread.currentThread().getName();
+    Thread.currentThread().setName("main");
+
     int i = -1;
  
     logger.trace("Message " + ++i);
@@ -161,6 +164,7 @@ public class DOMTestCase extends TestCase {
     logger.error("Message " + ++i, e);
     root.error("Message " + i, e);    
 
+    Thread.currentThread().setName(oldThreadName);
   }
 
 

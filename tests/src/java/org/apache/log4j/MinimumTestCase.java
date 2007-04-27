@@ -84,7 +84,11 @@ public class MinimumTestCase extends TestCase {
     Layout layout = new TTCCLayout(AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT);
     Appender appender = new FileAppender(layout, "output/ttcc", false);
     root.addAppender(appender);    
+
+    String oldName = Thread.currentThread().getName();
+    Thread.currentThread().setName("main");
     common();
+    Thread.currentThread().setName(oldName);
 
     ControlFilter cf1 = new ControlFilter(new String[]{TTCC_PAT, 
        TTCC2_PAT, EXCEPTION1, EXCEPTION2, 

@@ -94,9 +94,14 @@ public class XMLLayoutTestCase extends TestCase {
     XMLLayout xmlLayout = new XMLLayout();
     xmlLayout.setLocationInfo(true);
     root.addAppender(new FileAppender(xmlLayout, TEMP, false));
+
+    String oldThreadName = Thread.currentThread().getName();
+    Thread.currentThread().setName("main");
     
     logger.trace("Message with embedded <![CDATA[<hello>hi</hello>]]>.");
     logger.debug("Message with embedded <![CDATA[<hello>hi</hello>]]>.");
+
+    Thread.currentThread().setName(oldThreadName);
 
     Transformer.transform(
       TEMP, FILTERED,
@@ -117,10 +122,17 @@ public class XMLLayoutTestCase extends TestCase {
   public void testNull() throws Exception {
     XMLLayout xmlLayout = new XMLLayout();
     root.addAppender(new FileAppender(xmlLayout, TEMP, false));
+
+    String oldThreadName = Thread.currentThread().getName();
+    Thread.currentThread().setName("main");
+
     logger.debug("hi");
     logger.debug(null);
     Exception e = new Exception((String) null);
     logger.debug("hi", e);
+
+    Thread.currentThread().setName(oldThreadName);
+
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] { new LineNumberFilter(),
@@ -131,6 +143,9 @@ public class XMLLayoutTestCase extends TestCase {
   }
   
   void common() {
+    String oldThreadName = Thread.currentThread().getName();
+    Thread.currentThread().setName("main");
+
     int i = -1;
  
     X x = new X();
@@ -159,6 +174,9 @@ public class XMLLayoutTestCase extends TestCase {
     
     logger.error("Message " + ++i, e);
     root.error("Message " + i, e);    
+
+
+    Thread.currentThread().setName(oldThreadName);
   }
 
   public static Test suite() {

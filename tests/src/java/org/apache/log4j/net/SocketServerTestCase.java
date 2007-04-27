@@ -350,6 +350,9 @@ public class SocketServerTestCase extends TestCase {
 
   static 
   void common(String dc, String key, Object o) {
+    String oldThreadName = Thread.currentThread().getName();
+    Thread.currentThread().setName("main");
+
     int i = -1; 
     NDC.push(dc); 
     MDC.put(key, o);
@@ -376,6 +379,8 @@ public class SocketServerTestCase extends TestCase {
     root.error("Message " + ++i, e);
     NDC.pop();
     MDC.remove(key);
+
+    Thread.currentThread().setName(oldThreadName);
   }
 
   public void delay(int secs) {
