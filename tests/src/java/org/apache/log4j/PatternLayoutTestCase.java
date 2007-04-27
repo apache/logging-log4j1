@@ -50,6 +50,7 @@ public class PatternLayoutTestCase extends TestCase {
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
   static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
+  static String EXCEPTION5 = "\\s*at .*\\(.*libgcj.*\\)";
 
   static String PAT0 = "\\[main]\\ (TRACE|DEBUG|INFO |WARN |ERROR|FATAL) .* - Message \\d{1,2}";
   static String PAT1 = Filter.ISO8601_PAT + " " + PAT0;
@@ -102,7 +103,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout2.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT1, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -116,7 +117,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout3.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT1, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -132,7 +133,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout4.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT2, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -146,7 +147,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout5.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT2, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -161,7 +162,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout6.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT3, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -176,7 +177,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout7.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT3, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -190,7 +191,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout8.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT4, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -204,7 +205,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout9.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT5, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -218,7 +219,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout10.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT6, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -232,7 +233,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout11.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT11a, PAT11b, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -246,7 +247,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout12.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT12, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -260,7 +261,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout13.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT13, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {
@@ -274,7 +275,7 @@ public class PatternLayoutTestCase extends TestCase {
     PropertyConfigurator.configure("input/patternLayout14.properties");
     common();
     ControlFilter cf1 = new ControlFilter(new String[]{PAT14, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     Transformer.transform(
       TEMP, FILTERED,
       new Filter[] {

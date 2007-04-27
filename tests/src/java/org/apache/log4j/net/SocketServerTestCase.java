@@ -84,6 +84,7 @@ public class SocketServerTestCase extends TestCase {
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
   static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
+  static String EXCEPTION5 = "\\s*at .*\\(.*libgcj.*\\)";
 
 
   static Logger logger = Logger.getLogger(SocketServerTestCase.class);
@@ -116,7 +117,7 @@ public class SocketServerTestCase extends TestCase {
     common("T1", "key1", "MDC-TEST1");
     delay(1);
     ControlFilter cf = new ControlFilter(new String[]{PAT1, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     
     Transformer.transform(
       TEMP, FILTERED,
@@ -140,7 +141,7 @@ public class SocketServerTestCase extends TestCase {
     common("T2", "key2", "MDC-TEST2");
     delay(1);
     ControlFilter cf = new ControlFilter(new String[]{PAT2, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     
     Transformer.transform(
       TEMP, FILTERED,
@@ -163,7 +164,7 @@ public class SocketServerTestCase extends TestCase {
     common("T3", "key3", "MDC-TEST3");
     delay(1);
     ControlFilter cf = new ControlFilter(new String[]{PAT3, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						       EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     
     Transformer.transform(
       TEMP, FILTERED,
@@ -194,7 +195,7 @@ public class SocketServerTestCase extends TestCase {
     if(!System.getProperty("java.version").startsWith("1.1.")) {
     
         ControlFilter cf = new ControlFilter(new String[]{PAT4, EXCEPTION1, 
-						           EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						           EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
         Transformer.transform(
           TEMP, FILTERED,
           new Filter[] { cf, new LineNumberFilter(), 
@@ -236,7 +237,7 @@ public class SocketServerTestCase extends TestCase {
     //    requires JDK 1.2 or later
     if(!System.getProperty("java.version").startsWith("1.1.")) {
         ControlFilter cf = new ControlFilter(new String[]{PAT5, EXCEPTION1, 
-						           EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						           EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     
         Transformer.transform(
           TEMP, FILTERED,
@@ -273,7 +274,7 @@ public class SocketServerTestCase extends TestCase {
     //    requires JDK 1.2 or later
     if(!System.getProperty("java.version").startsWith("1.1.")) {
         ControlFilter cf = new ControlFilter(new String[]{PAT6, EXCEPTION1, 
-						           EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						           EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     
         Transformer.transform(
           TEMP, FILTERED,
@@ -306,7 +307,7 @@ public class SocketServerTestCase extends TestCase {
     //    requires JDK 1.2 or later
     if(!System.getProperty("java.version").startsWith("1.1.")) {
         ControlFilter cf = new ControlFilter(new String[]{PAT7, EXCEPTION1, 
-						           EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						           EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     
         Transformer.transform(
           TEMP, FILTERED,
@@ -336,7 +337,7 @@ public class SocketServerTestCase extends TestCase {
     //    requires JDK 1.2 or later
     if(!System.getProperty("java.version").startsWith("1.1.")) {
         ControlFilter cf = new ControlFilter(new String[]{PAT8, EXCEPTION1, 
-						           EXCEPTION2, EXCEPTION3, EXCEPTION4});
+						           EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
     
         Transformer.transform(
           TEMP, FILTERED,
