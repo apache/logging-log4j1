@@ -45,6 +45,8 @@ public class DOMTestCase extends TestCase {
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
   static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
+  static String EXCEPTION5 = "\\s*at .*\\(.*libgcj.*\\)";
+
 
   static String TEST1_1A_PAT = 
                        "(TRACE|DEBUG|INFO |WARN |ERROR|FATAL) \\w*\\.\\w* - Message \\d";
@@ -77,10 +79,10 @@ public class DOMTestCase extends TestCase {
     common();
 
     ControlFilter cf1 = new ControlFilter(new String[]{TEST1_1A_PAT, TEST1_1B_PAT, 
-					       EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4});
+					       EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
 
     ControlFilter cf2 = new ControlFilter(new String[]{TEST1_2_PAT, 
-					       EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4});
+					       EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
 
     Transformer.transform(
       TEMP_A1, FILTERED_A1,
@@ -108,10 +110,10 @@ public class DOMTestCase extends TestCase {
     common();
 
     ControlFilter cf1 = new ControlFilter(new String[]{TEST1_1A_PAT, TEST1_1B_PAT, 
-					       EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4});
+					       EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
 
     ControlFilter cf2 = new ControlFilter(new String[]{TEST1_2_PAT, 
-					       EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4});
+					       EXCEPTION1, EXCEPTION2, EXCEPTION3, EXCEPTION4, EXCEPTION5});
 
     Transformer.transform(
       TEMP_A1 + ".4", FILTERED_A1 + ".4",

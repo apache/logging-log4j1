@@ -36,6 +36,7 @@ public class MinimumTestCase extends TestCase {
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
   static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
+  static String EXCEPTION5 = "\\s*at .*\\(.*libgcj.*\\)";
 
   //18 fevr. 2002 20:02:41,551 [main] FATAL ERR - Message 0
 
@@ -85,8 +86,9 @@ public class MinimumTestCase extends TestCase {
     root.addAppender(appender);    
     common();
 
-    ControlFilter cf1 = new ControlFilter(new String[]{TTCC_PAT, TTCC2_PAT, EXCEPTION1, 
-						       EXCEPTION2, EXCEPTION3, EXCEPTION4});
+    ControlFilter cf1 = new ControlFilter(new String[]{TTCC_PAT, 
+       TTCC2_PAT, EXCEPTION1, EXCEPTION2, 
+       EXCEPTION3, EXCEPTION4, EXCEPTION5 });
 
     Transformer.transform(
       "output/ttcc", FILTERED,
