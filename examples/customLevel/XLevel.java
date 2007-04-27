@@ -18,7 +18,6 @@
 package examples.customLevel;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
 
 
 /**
@@ -27,6 +26,7 @@ import org.apache.log4j.Priority;
 
  */
 public class XLevel extends Level {
+  private static final long serialVersionUID = 2626753561969426769L;
 
   static public final int  TRACE_INT   = Level.DEBUG_INT - 1;
   static public final int  LETHAL_INT  = Level.FATAL_INT + 1;

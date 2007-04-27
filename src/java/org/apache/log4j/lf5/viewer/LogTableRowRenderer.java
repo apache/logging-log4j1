@@ -34,6 +34,7 @@ import java.awt.*;
 // Contributed by ThoughtWorks Inc.
 
 public class LogTableRowRenderer extends DefaultTableCellRenderer {
+  private static final long serialVersionUID = -3951639953706443213L;
   //--------------------------------------------------------------------------
   //   Constants:
   //--------------------------------------------------------------------------

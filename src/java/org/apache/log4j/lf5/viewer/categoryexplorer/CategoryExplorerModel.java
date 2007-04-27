@@ -39,6 +39,8 @@ import java.util.Enumeration;
 // Contributed by ThoughtWorks Inc.
 
 public class CategoryExplorerModel extends DefaultTreeModel {
+  private static final long serialVersionUID = -3413887384316015901L;
+
   //--------------------------------------------------------------------------
   //   Constants:
   //--------------------------------------------------------------------------

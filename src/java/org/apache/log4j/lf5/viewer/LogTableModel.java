@@ -28,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 // Contributed by ThoughtWorks Inc.
 
 public class LogTableModel extends DefaultTableModel {
+  private static final long serialVersionUID = 3593300685868700894L;
   //--------------------------------------------------------------------------
   //   Constants:
   //--------------------------------------------------------------------------
