@@ -19,7 +19,7 @@
   <bannerLeft>
     <name>Apache log4j 1.2</name>
     <src>images/ls-logo.jpg</src>
-    <href>http://logging.apache.org/log4j/1.2</href>
+    <href>http://logging.apache.org/test/log4j/1.2</href>
   </bannerLeft>
   <bannerRight>
     <src>images/logo.jpg</src>
@@ -27,9 +27,9 @@
   <body>
     <breadcrumbs>
       <item name="Apache" href="http://www.apache.org/"/>
-      <item name="Logging Services" href="http://logging.apache.org/"/>
-      <item name="log4j" href="http://logging.apache.org/log4j/"/>
-      <item name="1.2" href="http://logging.apache.org/log4j/1.2/"/>
+      <item name="Logging Services" href="http://logging.apache.org/test/"/>
+      <item name="log4j" href="http://logging.apache.org/test/log4j/"/>
+      <item name="1.2" href="http://logging.apache.org/test/log4j/1.2/"/>
     </breadcrumbs>
   
 	<menu name="Get log4j 1.2">
@@ -59,13 +59,13 @@
 	<menu name="Documentation">
 		<item name="Introduction" href="/manual.html"/>
 		<item name="JavaDoc" href="/apidocs/index.html"/>
-		<item name="Books" href="/books.html"/>
+		<item name="Publications" href="/publications.html"/>
 	</menu>
 	
 	<menu name="Resources">
-		<item name="Sandbox" href="http://logging.apache.org/sandbox"/>
-		<item name="Catalog" href="http://logging.apache.org/catalog.html"/>
-		<item name="Wiki" href="http://wiki.apache.org/logging/log4j"/>
+		<item name="Sandbox" href="http://logging.apache.org/test/sandbox"/>
+		<item name="Catalog" href="http://logging.apache.org/test/catalog.html"/>
+		<item name="Wiki" href="http://wiki.apache.org/logging-log4j"/>
 	</menu>
   </body>
 </project>
