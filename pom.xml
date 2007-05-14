@@ -103,7 +103,6 @@
         </configuration>
       </plugin>
     </plugins>      
-    <sourceDirectory>src/java</sourceDirectory>
     <testSourceDirectory>tests/src/java</testSourceDirectory>
 </build>
 <repositories>
