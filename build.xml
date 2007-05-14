@@ -23,7 +23,7 @@
 <project name="log4j" default="usage" basedir="." >
 
   
-  <!-- The build.properties file defines the parth to local jar files -->
+  <!-- The build.properties file defines the path to local jar files -->
   <property file="build.properties"/>               
 
   <!--   if a Maven build has been attempted,
@@ -46,7 +46,7 @@
   <property name="deprecation" value="on"/>
 
   <!-- The directory where source files are stored. -->
-  <property name="java.source.dir" value="src/java/"/>
+  <property name="java.source.dir" value="src/main/java/"/>
 
   <!-- The directory where the package-list file is found, ./ or -->
   <!-- build/ -->
@@ -718,7 +718,7 @@
 
     <copy todir="${dist.tmp}/apache-log4j-${version}">
        <fileset dir="${base}"
-                includes="src/java/**,
+                includes="src/main/java/**,
            docs/**,
                      examples/**,
            build/*,
@@ -737,7 +737,7 @@
                 **/Makefile, **/goEnv.bat,
                      docs/pub-support/*,
                      ${dist.dir}/classes/org/**,
-                     src/java/org/apache/log4j/test/**/*,   
+                     src/main/java/org/apache/log4j/test/**/*,   
            **/.#*,
               **/*.o, **/*.res, **/*.h, **/EventLogCategories.rc"/>
     </copy>

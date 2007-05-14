@@ -44,7 +44,7 @@
   <property name="base" value="."/>
  
   <!-- The directory where source files are stored. -->
-  <property name="project.source.home" value="../src/java/"/>
+  <property name="project.source.home" value="../src/main/java/"/>
   <property name="project.classes.home" value="../dist/classes/"/>
   <property name="project.lib.home" value="../dist/lib/"/>
 
