@@ -45,8 +45,11 @@
 
   <property name="deprecation" value="on"/>
 
-  <!-- The directory where source files are stored. -->
+  <!-- The directory where java source files are stored. -->
   <property name="java.source.dir" value="src/main/java/"/>
+
+  <!-- The directory where resource files are stored. -->
+  <property name="resource.source.dir" value="src/main/resources/"/>
 
   <!-- The directory where the package-list file is found, ./ or -->
   <!-- build/ -->
@@ -92,7 +95,7 @@
   <!-- Directory for temporary files. -->
   <property name="dist.tmp" value="${dist.dir}/tmp"/>
   
-  <property name="javac.source" value="1.1"/>
+  <property name="javac.source" value="1.2"/>
   <property name="javac.target" value="1.1"/>
   
   <!--  destination for generated documentation on Apache web host  -->
@@ -111,6 +114,7 @@
     <pathelement location="${jmx.jar}"/>
     <pathelement location="${jmx-extra.jar}"/>
     <pathelement location="${jndi.jar}"/>
+    <pathelement location="${javaee-api.jar}"/>
   </path>
 
   <!-- Construct classpath for building the html pages-->
@@ -163,6 +167,7 @@
                 <classpath>
                     <pathelement location="${jmx.jar}"/>
                     <pathelement location="${jmx-extra.jar}"/>
+					<pathelement location="${javaee-api.jar}"/>
                 </classpath>
             </available>
         </and>
@@ -176,7 +181,8 @@
   <target name="jmsCheck">
     <available classname="javax.jms.Message" property="jms-present">
       <classpath>
-   <pathelement location="${jms.jar}"/>
+		<pathelement location="${jms.jar}"/>
+		<pathelement location="${javaee-api.jar}"/>
       </classpath>
     </available>
   </target>
@@ -192,9 +198,10 @@
   </target>
 
   <target name="javamailCheck">
-    <available classname="javax.mail.Message" property="javamail-present">
+    <available classname="javax.mail.MessageAware" property="javamail-present">
       <classpath>
-   <pathelement location="${javamail.jar}"/>
+		<pathelement location="${javamail.jar}"/>
+		<pathelement location="${javaee-api.jar}"/>
       </classpath>
     </available>
   </target>
@@ -242,8 +249,8 @@
     </javac>
     
     <copy todir="${javac.dest}">
-      <fileset dir="${java.source.dir}" includes="${stem}/lf5/**/*.properties"/>
-      <fileset dir="${java.source.dir}" includes="${stem}/lf5/viewer/images/*"/>
+      <fileset dir="${resource.source.dir}" includes="${stem}/lf5/**/*.properties"/>
+      <fileset dir="${resource.source.dir}" includes="${stem}/lf5/viewer/images/*"/>
     </copy>
 
   </target>
@@ -290,7 +297,7 @@
            classpath="${classpath}">
       <classpath refid="compile.classpath"/>
     </javac>
-    <copy file="${BSTEM}/xml/log4j.dtd" tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
+    <copy file="${resource.source.dir}/${stem}/xml/log4j.dtd" tofile="${javac.dest}/${stem}/xml/log4j.dtd" />
   </target>
 
  <target name="build.javamail" depends="init, javamail"
