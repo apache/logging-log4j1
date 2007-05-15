@@ -17,19 +17,21 @@
 -->
 <project name="Apache log4j 1.2">
   <bannerLeft>
-    <name>Apache log4j 1.2</name>
+    <name>Apache Logging Services Project</name>
     <src>images/ls-logo.jpg</src>
-    <href>http://logging.apache.org/log4j/1.2</href>
+    <href>http://logging.apache.org/</href>
   </bannerLeft>
   <bannerRight>
+    <name>Apache log4j</name>
     <src>images/logo.jpg</src>
+    <href>http://logging.apache.org/log4j</href>
   </bannerRight>  
   <body>
     <breadcrumbs>
       <item name="Apache" href="http://www.apache.org/"/>
       <item name="Logging Services" href="http://logging.apache.org/"/>
       <item name="log4j" href="http://logging.apache.org/log4j/"/>
-      <item name="1.2" href="http://logging.apache.org/log4j/1.2/"/>
+      <item name="1.2"  href="http://logging.apache.org:80/log4j/1.2/"/>
     </breadcrumbs>
   
 	<menu name="Get log4j 1.2">
