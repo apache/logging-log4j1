@@ -1,0 +1,77 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+
+
+<project name="ntdll" default="build" basedir=".">
+   <property name="target.dir" value="target"/>
+   <property name="object.dir" value="target/classes"/>
+   <property name="src.dir" location="${basedir}"/>
+   <property name="classes.dir" location="../../target/classes"/>
+   <property name="failonerror" value="false"/>
+   <property name="failifexecutionfails" value="${failonerror}"/>
+
+   <target name="clean" description="Deletes generated files">
+        <delete dir="${target.dir}"/>
+   </target>
+
+   <target name="windres" description="Compiles resources">
+        <mkdir dir="${object.dir}"/>
+    	<exec executable="windres"
+	   dir="${src.dir}"
+	   resultproperty="windres_status"
+	   failonerror="${failonerror}"
+	   failifexecutionfails="${failifexecutionfails}">
+      		<arg value="-o"/>
+      		<arg file="${object.dir}/NTEventLogAppender.o"/>
+      		<arg file="${src.dir}/NTEventLogAppender.rc"/>
+    	</exec>
+        <condition property="windres_success">
+	     <equals arg1="${windres_status}" arg2="0"/>
+        </condition>
+   </target>
+
+   <target name="compile" depends="windres" if="windres_success">
+    <javah class="org.apache.log4j.nt.NTEventLogAppender,org.apache.log4j.Priority"
+           destdir="${object.dir}"
+           classpath="${classes.dir}"/>
+    
+    <property name="jni.include.dir" location="${java.home}\..\include"/>
+    <exec executable="gcc">
+      <arg value="-Wall"/>
+      <arg value="-D_JNI_IMPLEMENTATION_"/>
+      <arg value="-Wl,--kill-at"/>
+      <arg value="-I${jni.include.dir}"/>
+      <arg value="-I${jni.include.dir}\win32"/>
+      <arg value="-I${object.dir}"/>
+      <arg value="-shared"/>
+      <arg file="${src.dir}/nteventlog.cpp"/>
+      <arg file="${object.dir}/NTEventLogAppender.o"/>
+      <arg value="-o"/>
+      <arg file="${target.dir}/NTEventLogAppender.dll"/>
+    </exec>
+   </target>
+
+   <target name="warn" depends="windres" unless="windres_success">
+	<echo>windres could not be found or failed.  
+MinGW toolkit must be on path to build NTEventLogAppender.dll</echo>
+   </target>
+
+   <target name="build" depends="compile, warn">
+   </target>
+
+</project>

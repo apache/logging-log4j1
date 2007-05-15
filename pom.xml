@@ -113,6 +113,28 @@
           </archive>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+		  <!--   generate NTEventLogAppender.dll    -->
+          <execution>
+            <phase>process-classes</phase>
+			<id>ntdll</id>
+            <configuration>
+              <tasks>
+				  <ant antfile="src/ntdll/build.xml">
+					  <property name="target.dir" location="target"/>
+					  <property name="classes.dir" location="target/classes"/>
+					  <property name="src.dir" location="src/ntdll"/>
+				  </ant>
+			  </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>	  
     </plugins>      
     <testSourceDirectory>tests/src/java</testSourceDirectory>
 </build>
