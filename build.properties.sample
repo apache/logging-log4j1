@@ -14,6 +14,14 @@
 # limitations under the License.
 #
 #
+
+#
+#   Providing a build.properties file is no longer 
+#      necessary for an Ant build as long as one Maven build
+#      has previously been performed.
+#
+
+
 #   base location of support directories
 #
 lib.home.dir=/java

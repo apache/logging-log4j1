@@ -117,11 +117,6 @@
     <pathelement location="${javaee-api.jar}"/>
   </path>
 
-  <!-- Construct classpath for building the html pages-->
-  <path id="site.classpath">
-    <pathelement location="${velocity.jar}"/>
-    <pathelement location="${jdom.jar}"/>
-  </path>
 
   <!-- ================================================================= -->
   <!-- Default target                                                    -->
@@ -576,10 +571,10 @@
     </javadoc>
 
     <!-- Extra files referenced by JavaDocs -->
-    <copy file="${java.source.dir}/org/apache/log4j/xml/log4j.dtd"
+    <copy file="${resource.source.dir}/org/apache/log4j/xml/log4j.dtd"
           tofile="${javadoc.dest}/org/apache/log4j/xml/log4j.dtd" />
     <copy todir="${javadoc.dest}/org/apache/log4j/xml/examples">
-      <fileset dir="${java.source.dir}/org/apache/log4j/xml/examples">
+      <fileset dir="examples/xml/org/apache/log4j/xml/examples">
         <include name="sample*.xml" />
         <include name="XMLSample.java" />
       </fileset>
@@ -644,81 +639,14 @@
 	  </target>  
 
   <!-- ============================================== -->
-  <!-- Build the site files using Anakia              -->
+  <!-- Build the site files using Maven              -->
   <!-- ============================================== -->
-  <target name="prepareSite">
-    <available classname="org.apache.velocity.anakia.AnakiaTask"
-      property="AnakiaTask.present">
-      <classpath refid="site.classpath"/>
-    </available>
+  <target name="site">
+	<exec executable="mvn">
+		<arg value="site"/>
+	</exec>
   </target>
 
-  <target name="checkSite" depends="prepareSite" unless="AnakiaTask.present">
-    <fail>
-      AnakiaTask is not present! Please check to make sure that
-      velocity.jar is in your classpath.
-    </fail>
-  </target>
-
-  <target name="clean-site">
-     <delete>
-         <fileset dir="${docs.dest}" includes="**/*.html">
-             <exclude name="FAQ.html"/>
-             <exclude name="TROUBLESHOOT.html"/>
-             <exclude name="manual.html"/>
-             <exclude name="overview.html"/>
-         </fileset>
-     </delete>
-  </target>
-
-  <target name="site" depends="checkSite" if="AnakiaTask.present">
-    <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
-      <classpath refid="site.classpath"/>
-    </taskdef>
- 
-    <mkdir dir="${docs.dest}/css"/>  
-    <copy file="docs/css/site.css" tofile="${docs.dest}/css/site.css"/>
-    
-    <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
-      extension=".html"
-      style="site.vsl"
-      projectFile="stylesheets/project.xml"
-      excludes="**/stylesheets/**, empty.xml"
-      includes="**/*.xml"
-      lastModifiedCheck="true"
-      templatePath="${xdocs.src}/stylesheets">
-    </anakia>
-
-  </target>
-
-<target name="deploy-site" depends="javadoc" description="Deploy log4j documentation">
-    <fail unless="apache.user">-Dapache.user=USERNAME must be specified.</fail>
-    <tar destfile="${packaging.dir}/apache-log4j12-site.tar.gz" compression="gzip">
-         <tarfileset dir="${javadoc.dest}" prefix="api-${version}"/>
-    </tar>
-    <exec executable="scp" dir="${packaging.dir}">
-         <arg value="apache-log4j12-site.tar.gz"/>
-         <arg value="${apache.user}@${apache.host}:"/>
-    </exec>
-    <exec executable="ssh">
-         <arg value="-l"/>
-         <arg value="${apache.user}"/>
-         <arg value="${apache.host}"/>
-         <arg value="tar"/>
-         <arg value="--directory=${apache.javadoc_dest}"/>
-         <arg value="-xvzf"/>
-         <arg value="apache-log4j12-site.tar.gz"/>
-    </exec>
-    <exec executable="ssh">
-      <arg value="-l"/>
-      <arg value="${apache.user}"/>
-      <arg value="${apache.host}"/>
-      <arg value="chmod"/>
-      <arg value="-R"/>
-      <arg value="g+w"/>
-      <arg value="${apache.javadoc_dest}"/>
-    </exec>
-</target>
 
  <!-- ================================================================= -->
  <!-- Build a complete distribution. Results go to ${dist.images}       -->
@@ -799,71 +727,6 @@
     <delete dir="${dist.tmp}" />
   </target>
   
-  <!-- This target will be incorporated init dist for the next release
-           currently it will repackage a previously built release   -->
-  <target name="maven-package" depends="jar" description="Prepares a Maven package">
-      <mkdir dir="${dist.dir}/poms"/>
-      <copy tofile="${dist.dir}/poms/log4j-${version}.pom" file="pom.xml"/>
-      <mkdir dir="${dist.dir}/licenses"/>
-      <copy todir="${dist.dir}/licenses" file="LICENSE"/>
-      
-	  <checksum forceOverwrite="yes" fileext=".md5">
-	  		<fileset dir="${jar.dest}" includes="${jar.filename} ${sources-jar.filename}"/>
-	  </checksum>           
-	  <checksum forceOverwrite="yes" fileext=".md5">
-	  		<fileset dir="${dist.dir}" includes="poms/log4j-${version}.pom licenses/LICENSE"/>
-	  </checksum>           
-	  <checksum forceOverwrite="yes" fileext=".sha1" algorithm="SHA">
-	  		<fileset dir="${jar.dest}" includes="${jar.filename} ${sources-jar.filename}"/>
-	  </checksum>
-	  <checksum forceOverwrite="yes" fileext=".sha1" algorithm="SHA">
-	  		<fileset dir="${dist.dir}" includes="poms/log4j-${version}.pom licenses/LICENSE"/>
-	  </checksum>           
-	  <mkdir dir="${dist.images}"/>
-      <!--  Does not include PGP signatures to allow for review prior to publication -->
-	  <tar tarfile="${dist.images}/apache-log4j-${version}-maven.tar.gz"
-         compression="gzip">
-         <tarfileset dir="${dist.dir}" includes="poms/* licenses/*" excludes="**/*.asc"/>
-         <tarfileset dir="${jar.dest}" includes="${jar.filename} ${jar.filename}.*" prefix="jars"  excludes="**/*.asc"/>
-         <tarfileset dir="${jar.dest}" includes="${sources-jar.filename} ${sources-jar.filename}.*" prefix="java-sources"  excludes="**/*.asc"/>
-      </tar>
-
-	  <exec executable="gpg" dir="${jar.dest}">
-	      <arg value="--armor"/>
-	      <arg value="--output"/>
-	      <arg value="${jar.filename}.asc"/>
-	      <arg value="--detach-sig"/>
-	      <arg value="${jar.filename}"/>	      
-	  </exec>           
-	  <exec executable="gpg" dir="${jar.dest}">
-	      <arg value="--armor"/>
-	      <arg value="--output"/>
-	      <arg value="${sources-jar.filename}.asc"/>
-	      <arg value="--detach-sig"/>
-	      <arg value="${sources-jar.filename}"/>	      
-	  </exec>           
-	  <exec executable="gpg" dir="${dist.dir}/poms">
-	      <arg value="--armor"/>
-	      <arg value="--output"/>
-	      <arg value="log4j-${version}.pom.asc"/>
-	      <arg value="--detach-sig"/>
-	      <arg value="log4j-${version}.pom"/>	      
-	  </exec>           
-	  <exec executable="gpg" dir="${dist.dir}/licenses">
-	      <arg value="--armor"/>
-	      <arg value="--output"/>
-	      <arg value="LICENSE.asc"/>
-	      <arg value="--detach-sig"/>
-	      <arg value="LICENSE"/>	      
-	  </exec>           
-	  <tar tarfile="${dist.images}/apache-log4j-${version}-maven-pgpsigs.tar.gz"
-         compression="gzip">
-         <tarfileset dir="${dist.dir}" includes="poms/*.asc licenses/*.asc"/>
-         <tarfileset dir="${jar.dest}" includes="${jar.filename}.asc" prefix="jars"/>
-         <tarfileset dir="${jar.dest}" includes="${sources-jar.filename}.asc" prefix="java-sources"/>
-      </tar>
-
-  </target>
 
     <!-- ================================================================= -->
     <!-- Build a complete distribution for release.                        -->
@@ -894,7 +757,6 @@
                    classname="org.apache.log4j.net.SMTPAppender"
                    classpath="${jar.dest}/${jar.filename}"/>
         <fail unless="javamail-found" message="JAVAMAIL was not found."/>
-        <antcall target="maven-package"/>
 	  <checksum forceOverwrite="yes" fileext=".md5">
 	  		<fileset dir="${dist.images}" includes="apache-log4j-${version}.tar.gz apache-log4j-${version}.zip"/>
 	  </checksum>           
