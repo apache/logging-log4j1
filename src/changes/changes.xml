@@ -21,11 +21,21 @@
   </properties>
   <body>
   
-    <release version="1.2.15" date="TBD" description="SyslogAppender enhancements and NTEventLogAppender fix.">
+    <release version="1.2.15" date="2007-05-15" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
+	   <action action="fix" issue="37930">Migrate to Maven based build and documentation.</action>
+	   <action action="fix" issue="40604">Prepare Maven release bundles.</action>
+	   <action action="fix" issue="42283">Eclipse compiler warning cleanup.</action>
+	   <action action="fix" issue="42281">JRockit VM and java-gcj fail unit tests.</action>
+	   <action action="fix" issue="21796">SocketAppender does not use FallbackErrorHandler</action>
+	   <action action="add" issue="42257">Enhance DOMConfigurator to delegate unrecognized elements to configured object.</action>
+	   <action action="add" issue="42108">Add LoggingEvent accessors.</action>
+	   <action action="fix" issue="42017">InstanceAlreadyExistsException using MBean.</action>
+	   <action action="fix" issue="29227">Reduce first connection failure severity in SocketAppender</action>
+	   <action action="fix" issue="42087">SyslogAppender does not limit packets to 1024 bytes.</action>
        <action action="fix" issue="41040">SyslogAppender: Added "header" property which if set to true will cause the appender
         to produce the HEADER part (timestamp and hostname) of the syslog packet.
         Default value is false for compatibility with previous behavior.</action>
-       <action action="fix" issue="XXXXX">SyslogAppender also now sends any header from the associated
+       <action action="fix" issue="40161">SyslogAppender also now sends any header from the associated
         layout when activateOptions is called or first logging event is sent and
         any footer when the appender is closed.</action>
     <action action="fix" issue="37282">SyslogAppender leaks descriptors</action>
@@ -39,6 +49,7 @@
 		use "regsvr32 NTDllEventLogAppender.dll" or manually remove the
 		HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Services/Eventlog/Application/Log4J
 		registry key.</action>
+	  <action action="fix" issue="39437">NTEventLogAppender.dll performs unnecessary code page conversion using code copied from book.</action>
  <action action="fix" issue="40944">PropertyConfigurator.configure(URL) does not close resource stream.</action>
  <action action="fix" issue="40937">In Turkish locale level "info" is not equivalent to "INFO"</action>
  <action action="fix" issue="41339">Javadoc of PatternLayout should use %n in TTCC layout examples</action>
@@ -51,6 +62,10 @@
  <action action="fix" issue="41735">RollingFileAppender may delete files during rollover</action>
  <action action="fix" issue="33708">XMLConfiguration of loggerFactory does not work</action>
  <action action="fix" issue="42087">SyslogAppender does not limit packet size to 1024 bytes</action>
+ <action action="fix" issue="40755">Update source per new ASF Header Policy.</action>
+ <action action="fix" issue="41373">DateLayoutTest fails if default Locale is not en_US.</action>
+ <action action="fix" issue="35324">Stacktrace may choke on null fields.</action>
+ <action action="add" issue="41575">Add projects.apache.org project descriptor.</action>
 </release>
 
       <release version="1.2.14" date="2006-09-18" description="AsyncAppender rewrite, Syslog and SMTPAppender enhancements.">
