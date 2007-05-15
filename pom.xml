@@ -24,6 +24,9 @@
   <packaging>jar</packaging>
   <name>Apache Log4j</name>
   <version>1.2.15</version>
+  <properties>
+    <currentVersion>1.2.15</currentVersion>
+  </properties>  
   <description>Apache Log4j</description>
   <url>http://logging.apache.org/log4j/1.2/</url>
   <issueManagement>
@@ -127,7 +130,7 @@
        <!--   ErrorHandlerTestCase is not run in Ant build either
 			<include>org/apache/log4j/varia/ErrorHandlerTestCase.java</include>
 		-->
-       <include>org/apache/log4j/helpers/OptionConverterTestCase.java</include>
+       <!-- include>org/apache/log4j/helpers/OptionConverterTestCase.java</include -->
       <include>org/apache/log4j/helpers/BoundedFIFOTestCase.java</include>
       <include>org/apache/log4j/helpers/CyclicBufferTestCase.java</include>
       <include>org/apache/log4j/helpers/PatternParserTestCase.java</include>
@@ -205,7 +208,15 @@
             </goals>
           </execution>
         </executions>
-      </plugin>	  
+      </plugin>	 
+	  <plugin>
+         <artifactId>maven-assembly-plugin</artifactId>
+         <configuration>
+           <descriptors>
+              <descriptor>src/assembly/bin.xml</descriptor>
+           </descriptors>
+        </configuration>
+	 </plugin>
     </plugins>      
     <testSourceDirectory>tests/src/java</testSourceDirectory>
 	<testResources>
@@ -290,7 +301,7 @@
  <distributionManagement>
     <site>
       <id>log4j12.website</id>
-      <url>scp://people.apache.org/www/logging.apache.org/test/log4j/1.2/</url>
+      <url>scp://people.apache.org/www/logging.apache.org/log4j/1.2/</url>
     </site>
   </distributionManagement> 
 </project>

@@ -18,9 +18,9 @@ Download Apache log4j 1.2
  ------
  ------
 
-Download Apache log4j 1.2.14
+Download Apache log4j 1.2.15
 
-  Apache log4j 1.2.14 is distributed under the {{{http://www.apache.org/licenses/LICENSE-2.0.html} Apache License, version 2.0}}.
+  Apache log4j 1.2.15 is distributed under the {{{http://www.apache.org/licenses/LICENSE-2.0.html} Apache License, version 2.0}}.
 
   The link in the Mirrors column should display a list of available mirrors with a
   default selection based on your inferred location.  If you do not see that page,
@@ -30,9 +30,9 @@ Download Apache log4j 1.2.14
 *-------------------------+---------+----------+-----------+
 |                         | Mirrors | Checksum | Signature |
 *-------------------------+---------+----------+-----------+
-| Apache log4j 1.2.14 (tar.gz)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/1.2.14/logging-log4j-1.2.14.tar.gz} logging-log4j-1.2.14.tar.gz}} | {{{http://www.apache.org/dist/logging/log4j/1.2.14/logging-log4j-1.2.14.tar.gz.md5} logging-log4j-1.2.14.tar.gz.md5}} | {{{http://www.apache.org/dist/logging/log4j/1.2.14/logging-log4j-1.2.14.tar.gz.asc} logging-log4j-1.2.14.tar.gz.asc}} |
+| Apache log4j 1.2.15 (tar.gz)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/1.2.15/apache-log4j-1.2.15.tar.gz} apache-log4j-1.2.15.tar.gz}} | {{{http://www.apache.org/dist/logging/log4j/1.2.15/apache-log4j-1.2.15.tar.gz.md5} apache-log4j-1.2.15.tar.gz.md5}} | {{{http://www.apache.org/dist/logging/log4j/1.2.15/apache-log4j-1.2.15.tar.gz.asc} apache-log4j-1.2.15.tar.gz.asc}} |
 *-------------------------+---------+----------+-----------+
-| Apache log4j 1.2.14 (zip)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/1.2.14/logging-log4j-1.2.14.zip} logging-log4j-1.2.14.zip}} | {{{http://www.apache.org/dist/logging/log4j/1.2.14/logging-log4j-1.2.14.zip.md5} logging-log4j-1.2.14.zip.md5}} | {{{http://www.apache.org/dist/logging/log4j/1.2.14/logging-log4j-1.2.14.zip.asc} logging-log4j-1.2.14.zip.asc}} |
+| Apache log4j 1.2.15 (zip)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/1.2.15/apache-log4j-1.2.15.zip} apache-log4j-1.2.15.zip}} | {{{http://www.apache.org/dist/logging/log4j/1.2.15/apache-log4j-1.2.15.zip.md5} apache-log4j-1.2.15.zip.md5}} | {{{http://www.apache.org/dist/logging/log4j/1.2.15/apache-log4j-1.2.15.zip.asc} apache-log4j-1.2.15.zip.asc}} |
 *-------------------------+---------+----------+-----------+
 
   Please read {{{http://httpd.apache.org/dev/verification.html}Verifying Apache HTTP Server Releases}}
