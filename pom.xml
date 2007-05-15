@@ -23,7 +23,7 @@
   <artifactId>log4j</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j</name>
-  <version>1.2.15</version>
+  <version>1.2.15-SNAPSHOT</version>
   <properties>
     <currentVersion>1.2.15</currentVersion>
   </properties>  
@@ -80,16 +80,6 @@
   </organization>
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
-          </dependency>
-        </dependencies>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -201,6 +191,23 @@
             <configuration>
               <tasks>
 				  <delete dir="tests/output"/>
+			  </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+		  <!--   Copy log4j.dtd and xml samples to Javadoc    -->
+          <execution>
+            <phase>site</phase>
+			<id>javadoc_xml</id>
+            <configuration>
+              <tasks>
+				  <copy todir="target/site/apidocs/org/apache/log4j/xml">
+					  <fileset file="src/main/resources/org/apache/log4j/xml/log4j.dtd"/>
+					  <fileset dir="examples/xml/org/apache/log4j/xml"
+						includes="examples/sample*.xml, examples/XMLSample.java"/>
+				  </copy>
 			  </tasks>
             </configuration>
             <goals>
