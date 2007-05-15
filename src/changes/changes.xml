@@ -180,7 +180,11 @@
 
       <release version="1.2.10" date="2005-04-28" description="Version 1.2.10 was not released following the accepted rules and process of
    the log4j project and Logging Services Project and was recalled and removed.
-   Please do not use version 1.2.10, it is not an official log4j release."/>
+   Please do not use version 1.2.10, it is not an official log4j release.">
+			<action>Version 1.2.10 was not released following the accepted rules and process of
+   the log4j project and Logging Services Project and was recalled and removed.
+   Please do not use version 1.2.10, it is not an official log4j release.</action>
+      </release>
 
        <release version="1.2.9" date="2004-11-01" description="Deprecation of obsolete methods">
             <action>  Log4j version 1.2.9, is identical to version 1.2.8, except that
