@@ -42,6 +42,8 @@ public class JunitTestRunnerFilter implements Filter {
       return null;
     } else if (in.indexOf("at junit.") >= 0 && in.indexOf("ui.TestRunner") >= 0) {
        return null;
+    } else if (in.indexOf("org.apache.maven") >= 0) {
+       return null;
     } else if (util.match("/\\sat /", in)) {
        return "\t" + in.trim();
     } else {
