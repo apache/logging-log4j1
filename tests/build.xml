@@ -175,7 +175,8 @@
   <!-- ============== Regression and Unit Tests follow ================= -->  
   <!-- ================================================================= -->
     <target name="Core" depends="build">
-      <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+      <junit printsummary="yes" fork="yes" 
+         haltonfailure="${haltonfailure}" dir="${basedir}">
         <classpath refid="tests.classpath"/>
         <formatter type="plain" usefile="false"/>
         <test name="org.apache.log4j.CoreTestSuite" />
@@ -184,7 +185,8 @@
 
 
   <target name="Minimum" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.MinimumTestCase" />
@@ -192,7 +194,8 @@
   </target>
 
   <target name="Logger" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+       haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.LoggerTestCase" />
@@ -200,7 +203,8 @@
   </target>
 
   <target name="PatternLayout" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.PatternLayoutTestCase" />
@@ -209,7 +213,8 @@
 
   <target name="HierarchyThreshold" depends="build">
     <delete file="output/temp"/>
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+       haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.HierarchyThresholdTestCase" />
@@ -217,7 +222,8 @@
   </target>
 
   <target name="DOM" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.xml.DOMTestCase" />
@@ -225,7 +231,8 @@
   </target>
 
   <target name="CustomLevel" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
       <test name="org.apache.log4j.xml.CustomLevelTestCase" />
@@ -233,7 +240,8 @@
   </target>
 
   <target name="CustomLogger" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
       <test name="org.apache.log4j.customLogger.XLoggerTestCase" />
@@ -242,64 +250,71 @@
 
   <target name="DefaultInit" depends="build">
     <!-- Delete possible cruft from previous runs. -->
-    <delete file="classes/log4j.xml"/>
-    <delete file="classes/log4j.properties"/>
+    <delete file="${basedir}/classes/log4j.xml"/>
+    <delete file="${basedir}/classes/log4j.properties"/>
 
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+       haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test fork="true" name="org.apache.log4j.defaultInit.TestCase1" />
     </junit>
 
-    <copy file="input/xml/defaultInit.xml" tofile="classes/log4j.xml"/>
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <copy file="${basedir}/input/xml/defaultInit.xml" tofile="${basedir}/classes/log4j.xml"/>
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test fork="true" name="org.apache.log4j.defaultInit.TestCase2" />      
     </junit>
-    <delete file="classes/log4j.xml"/>
+    <delete file="${basedir}/classes/log4j.xml"/>
 
     <!-- test handling of log4j.defaultInitOverride system property -->
-    <copy file="input/xml/defaultInit.xml" tofile="classes/log4j.xml"/>
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <copy file="${basedir}/input/xml/defaultInit.xml" tofile="${basedir}/classes/log4j.xml"/>
+    <junit printsummary="yes" fork="yes" 
+       haltonfailure="${haltonfailure}"  dir="${basedir}">
       <jvmarg value="-Dlog4j.defaultInitOverride=true"/>
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test fork="true" name="org.apache.log4j.defaultInit.TestCase1" />
     </junit>
-    <delete file="classes/log4j.xml"/>
+    <delete file="${basedir}/classes/log4j.xml"/>
 
     <!-- test default initialization from log4j.xml -->
-    <copy file="input/defaultInit3.properties" tofile="classes/log4j.properties"/>
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <copy file="${basedir}/input/defaultInit3.properties" tofile="${basedir}/classes/log4j.properties"/>
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test fork="true" name="org.apache.log4j.defaultInit.TestCase3" />      
     </junit>
-    <delete file="classes/log4j.properties"/>
+    <delete file="${basedir}/classes/log4j.properties"/>
 
     <!-- test default initialization from log4j.properties -->
-    <copy file="input/xml/defaultInit.xml" tofile="classes/log4j.xml"/>
-    <copy file="input/defaultInit3.properties" tofile="classes/log4j.properties"/>
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <copy file="${basedir}/input/xml/defaultInit.xml" tofile="${basedir}/classes/log4j.xml"/>
+    <copy file="${basedir}/input/defaultInit3.properties" tofile="${basedir}/classes/log4j.properties"/>
+    <junit printsummary="yes" fork="yes" 
+         haltonfailure="${haltonfailure}"  dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test fork="true" name="org.apache.log4j.defaultInit.TestCase4" />      
     </junit>
-    <delete file="classes/log4j.xml"/>
-    <delete file="classes/log4j.properties"/>
+    <delete file="${basedir}/classes/log4j.xml"/>
+    <delete file="${basedir}/classes/log4j.properties"/>
   </target>
 
   <target name="SocketServer" depends="build">
     <parallel>
-      <java classname="org.apache.log4j.net.ShortSocketServer" fork="yes">
+      <java classname="org.apache.log4j.net.ShortSocketServer" 
+          fork="yes" dir="${basedir}">
    <arg value="8"/> 
    <arg value="input/socketServer"/> 
    <classpath refid="tests.classpath"/>
       </java>
       <sequential>
    <sleep seconds="2"/>
-   <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+   <junit printsummary="yes" fork="yes" 
+       haltonfailure="${haltonfailure}" dir="${basedir}">
      <sysproperty key="testNumber" value="1"/>
      <classpath refid="tests.classpath"/>
      <formatter type="plain" usefile="false" />
@@ -310,7 +325,8 @@
   </target>
 
   <target name="XMLLayout" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
       <test name="org.apache.log4j.xml.XMLLayoutTestCase" />
@@ -318,7 +334,8 @@
   </target>
 
   <target name="AsyncAppender" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+      haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
       <test name="org.apache.log4j.AsyncAppenderTestCase" />
@@ -326,7 +343,8 @@
   </target>
 
   <target name="LevelMatchFilter" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+       haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.varia.LevelMatchFilterTestCase" />
@@ -334,7 +352,8 @@
   </target>
 
   <target name="ErrorHandler" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+         haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false" />
       <test name="org.apache.log4j.varia.ErrorHandlerTestCase" />
@@ -342,7 +361,8 @@
   </target>
 
   <target name="OptionConverter" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.helpers.OptionConverterTestCase" />
@@ -350,7 +370,8 @@
   </target>
 
   <target name="BoundedFIFO" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.helpers.BoundedFIFOTestCase" />
@@ -358,7 +379,8 @@
   </target>
 
   <target name="CyclicBuffer" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+         haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.helpers.CyclicBufferTestCase" />
@@ -366,7 +388,8 @@
   </target>
 
   <target name="PatternParser" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+       haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.helpers.PatternParserTestCase" />
@@ -375,7 +398,8 @@
 
 
   <target name="OR" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+       haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.or.ORTestCase" />
@@ -383,7 +407,8 @@
   </target>
 
   <target name="DRFA" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+       haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.DRFATestCase" />
@@ -391,7 +416,8 @@
   </target>
 
   <target name="RFA" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+       haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.RFATestCase" />
@@ -399,7 +425,8 @@
   </target>
 
   <target name="ERFA" depends="build">
-    <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}" dir="${basedir}">
       <classpath refid="tests.classpath"/>
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.varia.ERFATestCase" />
@@ -407,7 +434,8 @@
   </target>
 
   <target name="Syslog" depends="build">
-      <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+      <junit printsummary="yes" fork="yes" 
+          haltonfailure="${haltonfailure}" dir="${basedir}">
         <classpath refid="tests.classpath"/>
         <formatter type="plain" usefile="false"/>
         <test name="org.apache.log4j.net.SyslogAppenderTest" />
@@ -426,7 +454,8 @@
   </target>
 
   <target name="Socket" depends="build">
-      <junit printsummary="yes" fork="yes" haltonfailure="${haltonfailure}">
+      <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}" dir="${basedir}">
         <classpath refid="tests.classpath"/>
         <formatter type="plain" usefile="false"/>
         <test name="org.apache.log4j.net.SocketAppenderTest" />

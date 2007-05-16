@@ -33,7 +33,7 @@
 				<include>KEYS</include>
 				<include>LICENSE</include>
 				<include>NOTICE</include>
-				<include>contrib/**</include>
+				<include>contribs/**</include>
 				<include>examples/**</include>
 				<include>src/assembly/**</include>
 				<include>src/changes/**</include>
@@ -41,7 +41,10 @@
 				<include>src/ntdll/**</include>
 				<include>src/performance/**</include>
 				<include>src/site/**</include>
-				<include>tests/*</include>
+				<include>tests/README</include>
+				<include>tests/*.xml</include>
+				<include>tests/*.sample</include>
+				<include>tests/*.bat</include>
 				<include>tests/input/**</include>
 				<include>tests/resources/**</include>
 				<include>tests/src/**</include>

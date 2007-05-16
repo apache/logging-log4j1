@@ -3,6 +3,26 @@ versions of tools and jars used to build this version of the log4j library.
 
 Maven - 2.0.6; Available from http://maven.apache.org
 MinGW - MinGW-3.1.0-1.exe; Available from http://mingw.sourceforge.net/downloads.html (used to build NTEventLogAppender.dll)
-JDK - jdk1.3.1_18; Available from http://java.sun.com/products/archive/
+JDK - jdk1.4.2_13; Available from http://java.sun.com/products/archive/
 Windows 2000 SP4
+
+JMX 1.2.1 Reference Implementation must be downloaded 
+from http://java.sun.com/products/JavaManagement/download.html
+and lib/jmxtools.jar and lib/jmxri.jar installed with the 
+following commands:
+
+      mvn install:install-file -DgroupId=com.sun.jdmk -DartifactId=jmxtools \
+          -Dversion=1.2.1 -Dpackaging=jar -Dfile=/path/to/jmxtools.jar
+ 
+      mvn install:install-file -DgroupId=com.sun.jmx -DartifactId=jmxri \
+          -Dversion=1.2.1 -Dpackaging=jar -Dfile=/path/to/jmxri.jar
+
+JMS 1.1 must be downloaded from http://java.sun.com/products/jms/docs.html
+
+   mvn install:install-file -DgroupId=javax.jms -DartifactId=jms \
+       -Dversion=1.1 -Dpackaging=jar -Dfile=/path/to/jms.jar
+
+To build the release:
+
+mvn site assembly:assembly
 
