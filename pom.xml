@@ -1,29 +1,10 @@
-<!--
- Licensed to the Apache Software Foundation (ASF) under one or more
- contributor license agreements.  See the NOTICE file distributed with
- this work for additional information regarding copyright ownership.
- The ASF licenses this file to You under the Apache License, Version 2.0
- (the "License"); you may not use this file except in compliance with
- the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>log4j</groupId>
   <artifactId>log4j</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j</name>
-  <version>1.2.15-SNAPSHOT</version>
+  <version>1.2.15</version>
   <properties>
     <currentVersion>1.2.15</currentVersion>
   </properties>  
@@ -70,9 +51,9 @@
     </license>
   </licenses>
   <scm>
-       <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/branches/v1_2-branch</connection>
-       <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/branches/v1_2-branch</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/logging/log4j/branches/v1_2-branch</url>
+       <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15_rc2</connection>
+       <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15_rc2</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/logging/log4j/tags/v1_2_15_rc2</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
@@ -145,9 +126,16 @@
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-            </manifest>
+                <manifestSections>
+                <manifestSection>
+                    <name>org.apache.log4j</name>
+                    <manifestEntries>
+                        <Implementation-Title>log4j</Implementation-Title>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Implementation-Vendor>"Apache Software Foundation"</Implementation-Vendor>
+                    </manifestEntries>
+                </manifestSection>
+                </manifestSections>
           </archive>
         </configuration>
       </plugin>
@@ -161,10 +149,10 @@
             <configuration>
               <tasks>
 				  <ant antfile="src/ntdll/build.xml">
-					  <property name="target.dir" location="target"/>
-					  <property name="classes.dir" location="target/classes"/>
-					  <property name="src.dir" location="src/ntdll"/>
-                      <property name="jni.include.dir" location="${java.home}/../include"/>
+					  <property name="target.dir" location="target" />
+					  <property name="classes.dir" location="target/classes" />
+					  <property name="src.dir" location="src/ntdll" />
+                      <property name="jni.include.dir" location="${java.home}/../include" />
 				  </ant>
 			  </tasks>
             </configuration>
@@ -178,7 +166,7 @@
 			<id>mkdir_tests_output</id>
             <configuration>
               <tasks>
-				  <mkdir dir="tests/output"/>
+				  <mkdir dir="tests/output" />
 			  </tasks>
             </configuration>
             <goals>
@@ -190,24 +178,7 @@
 			<id>rmdir_tests_output</id>
             <configuration>
               <tasks>
-				  <delete dir="tests/output"/>
-			  </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-		  <!--   Copy log4j.dtd and xml samples to Javadoc    -->
-          <execution>
-            <phase>site</phase>
-			<id>javadoc_xml</id>
-            <configuration>
-              <tasks>
-				  <copy todir="target/site/apidocs/org/apache/log4j/xml">
-					  <fileset file="src/main/resources/org/apache/log4j/xml/log4j.dtd"/>
-					  <fileset dir="examples/xml/org/apache/log4j/xml"
-						includes="examples/sample*.xml, examples/XMLSample.java"/>
-				  </copy>
+				  <delete dir="tests/output" />
 			  </tasks>
             </configuration>
             <goals>
@@ -220,10 +191,10 @@
             <configuration>
                 <tasks>
 			  <ant dir="tests" target="runAll">
-				<property name="junit.jar" location="${user.home}/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar"/>
-				<property name="jakarta.oro.jar" location="${user.home}/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar"/>
-                        <property name="log4j.jar" location="target/classes"/>
-				<property name="project.lib.home" location="target"/>
+				<property name="junit.jar" location="${user.home}/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar" />
+				<property name="jakarta.oro.jar" location="${user.home}/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar" />
+                        <property name="log4j.jar" location="target/classes" />
+				<property name="project.lib.home" location="target" />
                     </ant> 
                 </tasks>
             </configuration>
@@ -231,7 +202,20 @@
               <goal>run</goal>
             </goals>
           </execution>
-
+          <!--   release builds will put SVN tags into the SCM page, this changes it back to a branch  -->
+          <execution>
+            <phase>site</phase>
+            <id>untag-site</id>
+            <configuration>
+                <tasks>
+                    <taskdef name="replaceregexp" classname="org.apache.tools.ant.taskdefs.optional.ReplaceRegExp" />                
+                   <replaceregexp file="target/site/source-repository.html" match="/tags/[^ ]*" replace="/branches/v1_2-branch" flags="g" />
+                </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
         </executions>
        <dependencies>
           <dependency>
@@ -250,14 +234,13 @@
              <version>3.8.1</version>
              <scope>test</scope>
           </dependency>
-          <!--  Comment out following dependency on Mac OS/X   -->
-          <dependency>
-             <groupId>com.sun</groupId>
-             <artifactId>tools</artifactId>
-             <version>1.4.2</version>
-             <scope>system</scope>
-             <systemPath>${java.home}/../lib/tools.jar</systemPath>
-          </dependency>        
+        <dependency>
+          <groupId>sun.jdk</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.4.2</version>
+          <scope>system</scope>
+          <systemPath>${tools.jar}</systemPath>
+        </dependency>
         </dependencies>
       </plugin>	 
 	  <plugin>
@@ -267,7 +250,35 @@
               <descriptor>src/assembly/bin.xml</descriptor>
            </descriptors>
         </configuration>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>assembly</goal>
+                </goals>
+            </execution>
+        </executions>
 	 </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>jar</goal>
+                    <goal>javadoc</goal>
+                </goals>
+            </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>jar</goal>
+                </goals>
+            </execution>
+        </executions>
+      </plugin>     
     </plugins>      
     <testSourceDirectory>tests/src/java</testSourceDirectory>
 	<testResources>
@@ -276,6 +287,26 @@
 		</testResource>
 	</testResources>
 </build>
+<profiles>
+    <profile>
+      <id>mac</id>
+      <activation>
+        <os><family>mac</family></os>
+      </activation>
+      <properties>
+         <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
+      </properties>
+    </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+      </properties>
+   </profile>
+  </profiles>
 <repositories>
 	<repository>
   		<id>java.net</id>
@@ -322,7 +353,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.0.1</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -337,17 +367,17 @@
         </reportSets>
       </plugin>
       <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.2</version>
-      </plugin>
-      <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jxr-maven-plugin</artifactId>
-          <version>2.0-beta-1</version>
+      </plugin>
+      <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+              <goals>site-deploy</goals>
+          </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>2.0-beta-2</version>
       	<reportSets>
           <reportSet>
             <reports>
@@ -363,11 +393,11 @@
   </reporting>
  <distributionManagement>
     <repository>
-      <id>log4j12.builds</id>
-      <url>scp://people.apache.org/www/people.apache.org/builds/logging/log4j/${project.version}/</url>
+      <id>logging.repo</id>
+      <url>scp://people.apache.org/www/people.apache.org/builds/logging/repo/</url>
     </repository>
     <site>
-      <id>log4j12.website</id>
+      <id>logging.site</id>
       <url>scp://people.apache.org/www/logging.apache.org/log4j/1.2/</url>
     </site>
   </distributionManagement> 

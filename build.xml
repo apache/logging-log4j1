@@ -29,7 +29,9 @@
   <!--   if a Maven build has been attempted,
               the Maven repository can provide all the dependencies.  -->
   <property name="m2_repo" location="${user.home}/.m2/repository"/>
-  <property name="javaee-api.jar" location="${m2_repo}/javaee/javaee-api/5/javaee-api-5.jar"/>
+  <property name="javamail.jar" location="${m2_repo}/javax/mail/mail/1.4/mail-1.4.jar"/>
+  <property name="jms.jar" location="${m2_repo}/javax/jms/jms/1.1/jms-1.1.jar"/>
+  <property name="jmx.jar" location="${m2_repo}/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar"/>
   <property name="jmx-extra.jar" location="${m2_repo}/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1.jar"/>
 
 
@@ -50,6 +52,9 @@
 
   <!-- The directory where resource files are stored. -->
   <property name="resource.source.dir" value="src/main/resources/"/>
+
+  <!-- The directory where javadoc files are stored. -->
+  <property name="javadoc.source.dir" value="src/main/javadoc/"/>
 
   <!-- The directory where the package-list file is found, ./ or -->
   <!-- build/ -->
@@ -85,9 +90,6 @@
 
   <!-- Some targets needs a more precise stem. -->
   <property name="BSTEM" value="${java.source.dir}/${stem}"/>
-
-  <!-- Original manifest.mf file before filtering. -->
-  <property name="manifest.src" value="build/manifest.mf"/>
 
   <!-- Directory where release images go. -->
   <property name="dist.images"  value="${dist.dir}/images"/>
@@ -452,20 +454,12 @@
   <!-- dependencies.                                                     -->
   <!-- ================================================================= -->
   <target name="jar" depends="log4j.jar, log4j-sources.jar">
-     <delete file="${jar.dest}/manifest.mf"/>
-  </target>
-
-  <target name="prejar" depends="init">
-    <mkdir dir="${jar.dest}"/>
-    <filter token="version" value="${version}" />
-    <copy file="${manifest.src}" tofile="${jar.dest}/manifest.mf"
-          filtering="true"/>
   </target>
 
  <!-- ================================================================= -->
  <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
  <!-- ================================================================= -->
-  <target name="log4j.jar" depends="build, prejar">
+  <target name="log4j.jar" depends="build">
     <delete>
       <fileset dir="${jar.dest}">
    			<include name="${jar.filename}"/>
@@ -492,8 +486,14 @@
                    ${stem}/or/sax/*.class,
                    ${stem}/or/jms/*.class,
                    ${stem}/config/*.class"
-         excludes="**/UnitTest**"
-         manifest="${jar.dest}/manifest.mf">
+         excludes="**/UnitTest**">
+		<manifest>
+			<section name="org/apache/log4j">
+				<attribute name="Implementation-Title" value="log4j"/>
+				<attribute name="Implementation-Version" value="${version}"/> 
+				<attribute name="Implementation-Vendor" value='"Apache Software Foundation"'/>
+			</section>
+		</manifest>         
          <metainf dir="." includes="NOTICE,LICENSE"/>
      </jar>
   </target>
@@ -502,15 +502,21 @@
  <!-- ================================================================= -->
  <!-- Create log4j-sources.jar                                          -->
  <!-- ================================================================= -->
-  <target name="log4j-sources.jar" depends="prejar">
+  <target name="log4j-sources.jar">
     <delete>
       <fileset dir="${jar.dest}" includes="${sources-jar.filename}"/>
     </delete>
 
     <jar jarfile="${jar.dest}/${sources-jar.filename}" basedir="${java.source.dir}"
-         includes="**/*.java"
-         manifest="${jar.dest}/manifest.mf">
-         <metainf dir="." includes="NOTICE,LICENSE"/>
+         includes="**/*.java">
+		<manifest>
+			<section name="org/apache/log4j">
+				<attribute name="Implementation-Title" value="log4j"/>
+				<attribute name="Implementation-Version" value="${version}"/> 
+				<attribute name="Implementation-Vendor" value='"Apache Software Foundation"'/>
+			</section>
+		</manifest>         
+		<metainf dir="." includes="NOTICE,LICENSE"/>
      </jar>
   </target>
 
@@ -571,13 +577,8 @@
     </javadoc>
 
     <!-- Extra files referenced by JavaDocs -->
-    <copy file="${resource.source.dir}/org/apache/log4j/xml/log4j.dtd"
-          tofile="${javadoc.dest}/org/apache/log4j/xml/log4j.dtd" />
-    <copy todir="${javadoc.dest}/org/apache/log4j/xml/examples">
-      <fileset dir="examples/xml/org/apache/log4j/xml/examples">
-        <include name="sample*.xml" />
-        <include name="XMLSample.java" />
-      </fileset>
+    <copy todir="${javadoc.dest}">
+      <fileset dir="${javadoc.source.dir}"/>
     </copy>
   </target>
 
