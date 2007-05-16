@@ -82,7 +82,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.3</version>
         <configuration>
           <workingDirectory>tests</workingDirectory>
           <reportFormat>plain</reportFormat>
@@ -137,7 +136,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.0.2</version>
         <configuration>
             <source>1.2</source>
             <target>1.1</target>
@@ -145,7 +143,6 @@
       </plugin>
 	  <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.1</version>
         <configuration>
           <archive>
             <manifest>
@@ -156,7 +153,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.1</version>
         <executions>
 		  <!--   generate NTEventLogAppender.dll    -->
           <execution>
@@ -266,7 +262,6 @@
       </plugin>	 
 	  <plugin>
          <artifactId>maven-assembly-plugin</artifactId>
-         <version>2.2-beta-1</version>
          <configuration>
            <descriptors>
               <descriptor>src/assembly/bin.xml</descriptor>
@@ -367,6 +362,10 @@
     </plugins>
   </reporting>
  <distributionManagement>
+    <repository>
+      <id>log4j12.builds</id>
+      <url>scp://people.apache.org/www/people.apache.org/builds/logging/log4j/${project.version}/</url>
+    </repository>
     <site>
       <id>log4j12.website</id>
       <url>scp://people.apache.org/www/logging.apache.org/log4j/1.2/</url>
