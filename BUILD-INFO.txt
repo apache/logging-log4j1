@@ -22,7 +22,5 @@ JMS 1.1 must be downloaded from http://java.sun.com/products/jms/docs.html
    mvn install:install-file -DgroupId=javax.jms -DartifactId=jms \
        -Dversion=1.1 -Dpackaging=jar -Dfile=/path/to/jms.jar
 
-To build the release:
 
-mvn site assembly:assembly
 

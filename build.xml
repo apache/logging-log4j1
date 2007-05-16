@@ -51,6 +51,9 @@
   <!-- The directory where resource files are stored. -->
   <property name="resource.source.dir" value="src/main/resources/"/>
 
+  <!-- The directory where javadoc files are stored. -->
+  <property name="javadoc.source.dir" value="src/main/javadoc/"/>
+
   <!-- The directory where the package-list file is found, ./ or -->
   <!-- build/ -->
   <property name="packaging.dir" value="build"/>
@@ -571,13 +574,8 @@
     </javadoc>
 
     <!-- Extra files referenced by JavaDocs -->
-    <copy file="${resource.source.dir}/org/apache/log4j/xml/log4j.dtd"
-          tofile="${javadoc.dest}/org/apache/log4j/xml/log4j.dtd" />
-    <copy todir="${javadoc.dest}/org/apache/log4j/xml/examples">
-      <fileset dir="examples/xml/org/apache/log4j/xml/examples">
-        <include name="sample*.xml" />
-        <include name="XMLSample.java" />
-      </fileset>
+    <copy todir="${javadoc.dest}">
+      <fileset dir="${javadoc.source.dir}"/>
     </copy>
   </target>
 

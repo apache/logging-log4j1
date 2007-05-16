@@ -197,23 +197,6 @@
               <goal>run</goal>
             </goals>
           </execution>
-		  <!--   Copy log4j.dtd and xml samples to Javadoc    -->
-          <execution>
-            <phase>site</phase>
-			<id>javadoc_xml</id>
-            <configuration>
-              <tasks>
-				  <copy todir="target/site/apidocs/org/apache/log4j/xml">
-					  <fileset file="src/main/resources/org/apache/log4j/xml/log4j.dtd"/>
-					  <fileset dir="examples/xml/org/apache/log4j/xml"
-						includes="examples/sample*.xml, examples/XMLSample.java"/>
-				  </copy>
-			  </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
           <execution>
             <phase>test</phase>
 		<id>runAll</id>
@@ -231,7 +214,24 @@
               <goal>run</goal>
             </goals>
           </execution>
-
+          <!--   release builds will put SVN tags into the SCM page, this changes it back to a branch  -->
+          <execution>
+            <phase>site</phase>
+            <id>untag-site</id>
+            <configuration>
+                <tasks>
+                    <taskdef name="replaceregexp"
+                        classname="org.apache.tools.ant.taskdefs.optional.ReplaceRegExp"/>                
+                   <replaceregexp file="target/site/source-repository.html"
+                                  match="/tags/[^ ]*"
+                                  replace="/branches/v1_2-branch"
+                                  flags="g"/>
+                </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
         </executions>
        <dependencies>
           <dependency>
@@ -250,14 +250,6 @@
              <version>3.8.1</version>
              <scope>test</scope>
           </dependency>
-          <!--  Comment out following dependency on Mac OS/X   -->
-          <dependency>
-             <groupId>com.sun</groupId>
-             <artifactId>tools</artifactId>
-             <version>1.4.2</version>
-             <scope>system</scope>
-             <systemPath>${java.home}/../lib/tools.jar</systemPath>
-          </dependency>        
         </dependencies>
       </plugin>	 
 	  <plugin>
@@ -267,7 +259,35 @@
               <descriptor>src/assembly/bin.xml</descriptor>
            </descriptors>
         </configuration>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>assembly</goal>
+                </goals>
+            </execution>
+        </executions>
 	 </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>jar</goal>
+                    <goal>javadoc</goal>
+                </goals>
+            </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>jar</goal>
+                </goals>
+            </execution>
+        </executions>
+      </plugin>     
     </plugins>      
     <testSourceDirectory>tests/src/java</testSourceDirectory>
 	<testResources>
@@ -276,6 +296,28 @@
 		</testResource>
 	</testResources>
 </build>
+<profiles>
+    <profile>
+      <!-- NOTE: This will not be activated on OS X, since classes.jar
+already has the tools in it. -->
+      <id>default-tools.jar</id>
+      <activation>
+        <property>
+          <name>java.vendor</name>
+          <value>Sun Microsystems Inc.</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>sun.jdk</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.4.2</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 <repositories>
 	<repository>
   		<id>java.net</id>
@@ -322,7 +364,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.0.1</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -337,17 +378,17 @@
         </reportSets>
       </plugin>
       <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.2</version>
-      </plugin>
-      <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jxr-maven-plugin</artifactId>
-          <version>2.0-beta-1</version>
+      </plugin>
+      <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+              <goals>site-deploy</goals>
+          </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>2.0-beta-2</version>
       	<reportSets>
           <reportSet>
             <reports>
