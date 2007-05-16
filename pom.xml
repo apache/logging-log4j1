@@ -145,9 +145,16 @@
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-            </manifest>
+                <manifestSections>
+                <manifestSection>
+                    <name>org.apache.log4j</name>
+                    <manifestEntries>
+                        <Implementation-Title>log4j</Implementation-Title>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Implementation-Vendor>"Apache Software Foundation"</Implementation-Vendor>
+                    </manifestEntries>
+                </manifestSection>
+                </manifestSections>
           </archive>
         </configuration>
       </plugin>
@@ -250,6 +257,13 @@
              <version>3.8.1</version>
              <scope>test</scope>
           </dependency>
+        <dependency>
+          <groupId>sun.jdk</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.4.2</version>
+          <scope>system</scope>
+          <systemPath>${tools.jar}</systemPath>
+        </dependency>
         </dependencies>
       </plugin>	 
 	  <plugin>
@@ -298,25 +312,23 @@
 </build>
 <profiles>
     <profile>
-      <!-- NOTE: This will not be activated on OS X, since classes.jar
-already has the tools in it. -->
-      <id>default-tools.jar</id>
+      <id>mac</id>
       <activation>
-        <property>
-          <name>java.vendor</name>
-          <value>Sun Microsystems Inc.</value>
-        </property>
+        <os><family>mac</family></os>
       </activation>
-      <dependencies>
-        <dependency>
-          <groupId>sun.jdk</groupId>
-          <artifactId>tools</artifactId>
-          <version>1.4.2</version>
-          <scope>system</scope>
-          <systemPath>${java.home}/../lib/tools.jar</systemPath>
-        </dependency>
-      </dependencies>
+      <properties>
+         <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
+      </properties>
     </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+      </properties>
+   </profile>
   </profiles>
 <repositories>
 	<repository>
@@ -404,11 +416,11 @@ already has the tools in it. -->
   </reporting>
  <distributionManagement>
     <repository>
-      <id>log4j12.builds</id>
-      <url>scp://people.apache.org/www/people.apache.org/builds/logging/log4j/${project.version}/</url>
+      <id>logging.repo</id>
+      <url>scp://people.apache.org/www/people.apache.org/builds/logging/repo/</url>
     </repository>
     <site>
-      <id>log4j12.website</id>
+      <id>logging.site</id>
       <url>scp://people.apache.org/www/logging.apache.org/log4j/1.2/</url>
     </site>
   </distributionManagement> 
