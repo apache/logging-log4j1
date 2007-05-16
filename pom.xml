@@ -87,6 +87,7 @@
           <workingDirectory>tests</workingDirectory>
           <reportFormat>plain</reportFormat>
 		  <forkMode>pertest</forkMode>
+          <skip>true</skip>
 		  <includes>
 			  <include>org/apache/log4j/LevelTest.java</include>
 		<include>org/apache/log4j/PriorityTest.java</include>
@@ -167,6 +168,7 @@
 					  <property name="target.dir" location="target"/>
 					  <property name="classes.dir" location="target/classes"/>
 					  <property name="src.dir" location="src/ntdll"/>
+                      <property name="jni.include.dir" location="${java.home}/../include"/>
 				  </ant>
 			  </tasks>
             </configuration>
@@ -216,7 +218,51 @@
               <goal>run</goal>
             </goals>
           </execution>
+          <execution>
+            <phase>test</phase>
+		<id>runAll</id>
+            <configuration>
+                <tasks>
+			  <ant dir="tests" target="runAll">
+				<property name="junit.jar" location="${user.home}/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar"/>
+				<property name="jakarta.oro.jar" location="${user.home}/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar"/>
+                        <property name="log4j.jar" location="target/classes"/>
+				<property name="project.lib.home" location="target"/>
+                    </ant> 
+                </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+
         </executions>
+       <dependencies>
+          <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
+            <version>1.6.5</version>
+          </dependency>
+          <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>1.6.5</version>
+          </dependency>
+  	    <dependency>
+             <groupId>junit</groupId>
+             <artifactId>junit</artifactId>
+             <version>3.8.1</version>
+             <scope>test</scope>
+          </dependency>
+          <!--  Comment out following dependency on Mac OS/X   -->
+          <dependency>
+             <groupId>com.sun</groupId>
+             <artifactId>tools</artifactId>
+             <version>1.4.2</version>
+             <scope>system</scope>
+             <systemPath>${java.home}/../lib/tools.jar</systemPath>
+          </dependency>        
+        </dependencies>
       </plugin>	 
 	  <plugin>
          <artifactId>maven-assembly-plugin</artifactId>
@@ -244,13 +290,23 @@
 </repositories>
 <dependencies>
   <dependency>
-    <groupId>javaee</groupId>
-    <artifactId>javaee-api</artifactId>
-    <version>5</version>
+    <groupId>javax.mail</groupId>
+    <artifactId>mail</artifactId>
+    <version>1.4</version>
+  </dependency>
+  <dependency>
+    <groupId>javax.jms</groupId>
+    <artifactId>jms</artifactId>
+    <version>1.1</version>
   </dependency>
  <dependency>
     <groupId>com.sun.jdmk</groupId>
     <artifactId>jmxtools</artifactId>
+    <version>1.2.1</version>
+  </dependency>
+ <dependency>
+    <groupId>com.sun.jmx</groupId>
+    <artifactId>jmxri</artifactId>
     <version>1.2.1</version>
   </dependency>
  <dependency>

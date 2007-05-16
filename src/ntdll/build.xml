@@ -21,7 +21,6 @@
    <property name="target.dir" value="target"/>
    <property name="object.dir" value="target/classes"/>
    <property name="src.dir" location="${basedir}"/>
-   <property name="classes.dir" location="../../target/classes"/>
    <property name="failonerror" value="false"/>
    <property name="failifexecutionfails" value="${failonerror}"/>
 
@@ -46,6 +45,7 @@
    </target>
 
    <target name="compile" depends="windres" if="windres_success">
+    <fail unless="classes.dir">-Dclasses.dir=/path/to/log4j/classes must be specified</fail>
     <javah class="org.apache.log4j.nt.NTEventLogAppender,org.apache.log4j.Priority"
            destdir="${object.dir}"
            classpath="${classes.dir}"/>

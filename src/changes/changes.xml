@@ -21,7 +21,7 @@
   </properties>
   <body>
   
-    <release version="1.2.15" date="2007-05-15" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
+    <release version="1.2.15" date="2007-05-16" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
 	   <action action="fix" issue="37930">Migrate to Maven based build and documentation.</action>
 	   <action action="fix" issue="40604">Prepare Maven release bundles.</action>
 	   <action action="fix" issue="42283">Eclipse compiler warning cleanup.</action>
