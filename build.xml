@@ -460,6 +460,7 @@
  <!-- Create log4j.jar, excluding tests and other odds and ends.        -->
  <!-- ================================================================= -->
   <target name="log4j.jar" depends="build">
+    <mkdir dir="${jar.dest}"/>
     <delete>
       <fileset dir="${jar.dest}">
    			<include name="${jar.filename}"/>
@@ -503,6 +504,7 @@
  <!-- Create log4j-sources.jar                                          -->
  <!-- ================================================================= -->
   <target name="log4j-sources.jar">
+    <mkdir dir="${jar.dest}"/>
     <delete>
       <fileset dir="${jar.dest}" includes="${sources-jar.filename}"/>
     </delete>
