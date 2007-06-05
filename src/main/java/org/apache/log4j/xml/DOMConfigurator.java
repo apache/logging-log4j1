@@ -959,7 +959,7 @@ public class DOMConfigurator implements Configurator {
     }
 
     /**
-     * Creates an OptionHandler and processes any nested param elements
+     * Creates an object and processes any nested param elements
      * but does not call activateOptions.  If the class also supports
      * UnrecognizedElementParser, the parseUnrecognizedElement method
      * will be call for any child elements other than param.
@@ -972,16 +972,15 @@ public class DOMConfigurator implements Configurator {
      * @throws Exception thrown if the contain object should be abandoned.
      * @since 1.2.15
      */
-    public static OptionHandler parseElement(final Element element,
+    public static Object parseElement(final Element element,
                                              final Properties props,
                                              final Class expectedClass) throws Exception {
         String clazz = subst(element.getAttribute("class"), props);
         Object instance = OptionConverter.instantiateByClassName(clazz,
                 expectedClass, null);
 
-        if (instance instanceof OptionHandler) {
-            OptionHandler optionHandler = (OptionHandler) instance;
-            PropertySetter propSetter = new PropertySetter(optionHandler);
+        if (instance != null) {
+            PropertySetter propSetter = new PropertySetter(instance);
             NodeList children = element.getChildNodes();
             final int length = children.getLength();
 
@@ -997,7 +996,7 @@ public class DOMConfigurator implements Configurator {
                     }
                 }
             }
-            return optionHandler;
+            return instance;
         }
         return null;
     }

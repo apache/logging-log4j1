@@ -44,7 +44,8 @@ element. -->
 <!-- Appenders may contain an error handler, a layout, optional parameters -->
 <!-- and filters. They may also reference (or include) other appenders. -->
 <!ELEMENT appender (errorHandler?, param*,
-      rollingPolicy?, triggeringPolicy?, layout?, filter*, appender-ref*)>
+      rollingPolicy?, triggeringPolicy?, connectionSource?,
+      layout?, filter*, appender-ref*)>
 <!ATTLIST appender
   name 		CDATA 	#REQUIRED
   class 	CDATA	#REQUIRED
@@ -129,9 +130,19 @@ element. -->
 >
 
 <!-- plugins must have a name and class and can have optional parameters -->
-<!ELEMENT plugin (param*)>
+<!ELEMENT plugin (param*, connectionSource?)>
 <!ATTLIST plugin
   name 		CDATA 	   #REQUIRED
+  class 	CDATA  #REQUIRED
+>
+
+<!ELEMENT connectionSource (dataSource?, param*)>
+<!ATTLIST connectionSource
+  class 	CDATA  #REQUIRED
+>
+
+<!ELEMENT dataSource (param*)>
+<!ATTLIST dataSource
   class 	CDATA  #REQUIRED
 >
 
