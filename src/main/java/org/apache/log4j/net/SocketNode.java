@@ -71,17 +71,19 @@ public class SocketNode implements Runnable {
     Logger remoteLogger;
 
     try {
-      while(true) {
-	// read an event from the wire
-	event = (LoggingEvent) ois.readObject();
-	// get a logger from the hierarchy. The name of the logger is taken to be the name contained in the event.
-	remoteLogger = hierarchy.getLogger(event.getLoggerName());
-	//event.logger = remoteLogger;
-	// apply the logger-level filter
-	if(event.getLevel().isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
-	  // finally log the event as if was generated locally
-	  remoteLogger.callAppenders(event);
-	}
+      if (ois != null) {
+          while(true) {
+	        // read an event from the wire
+	        event = (LoggingEvent) ois.readObject();
+	        // get a logger from the hierarchy. The name of the logger is taken to be the name contained in the event.
+	        remoteLogger = hierarchy.getLogger(event.getLoggerName());
+	        //event.logger = remoteLogger;
+	        // apply the logger-level filter
+	        if(event.getLevel().isGreaterOrEqual(remoteLogger.getEffectiveLevel())) {
+	        // finally log the event as if was generated locally
+	        remoteLogger.callAppenders(event);
+	      }
+        }
       }
     } catch(java.io.EOFException e) {
       logger.info("Caught java.io.EOFException closing conneciton.");
@@ -92,12 +94,20 @@ public class SocketNode implements Runnable {
       logger.info("Closing connection.");
     } catch(Exception e) {
       logger.error("Unexpected exception. Closing conneciton.", e);
-    }
-
-    try {
-      ois.close();
-    } catch(Exception e) {
-      logger.info("Could not close connection.", e);
+    } finally {
+      if (ois != null) {
+         try {
+            ois.close();
+         } catch(Exception e) {
+            logger.info("Could not close connection.", e);
+         }
+      }
+      if (socket != null) {
+        try {
+          socket.close();
+        } catch(IOException ex) {
+        }
+      }
     }
   }
 }
