@@ -23,14 +23,18 @@
    <property name="src.dir" location="${basedir}"/>
    <property name="failonerror" value="false"/>
    <property name="failifexecutionfails" value="${failonerror}"/>
-
+  
    <target name="clean" description="Deletes generated files">
         <delete dir="${target.dir}"/>
    </target>
 
    <target name="windres" description="Compiles resources">
+       <condition property="mingw-prefix" value="">
+          <os family="windows"/>
+       </condition>
+       <property name="mingw-prefix" value="i586-mingw32msvc-"/>
         <mkdir dir="${object.dir}"/>
-    	<exec executable="windres"
+    	<exec executable="${mingw-prefix}windres"
 	   dir="${src.dir}"
 	   resultproperty="windres_status"
 	   failonerror="${failonerror}"
@@ -50,13 +54,17 @@
            destdir="${object.dir}"
            classpath="${classes.dir}"/>
     
-    <property name="jni.include.dir" location="${java.home}\..\include"/>
-    <exec executable="gcc">
+    <property name="jni.include.dir" location="${java.home}/../include"/>
+    <property name="jni.win32.include.dir" location="${jni.include.dir}/win32"/>
+    <!--  check for Win32 version of jni_md.h, if not available fail build   -->
+    <available property="jni_md.h_available" file="${jni.win32.include.dir}/jni_md.h"/>
+    <fail unless="jni_md.h_available">${jni.win32.include.dir}/jni_md.h not found</fail>
+    <exec executable="${mingw-prefix}gcc">
       <arg value="-Wall"/>
       <arg value="-D_JNI_IMPLEMENTATION_"/>
       <arg value="-Wl,--kill-at"/>
+      <arg value="-I${jni.win32.include.dir}"/>
       <arg value="-I${jni.include.dir}"/>
-      <arg value="-I${jni.include.dir}\win32"/>
       <arg value="-I${object.dir}"/>
       <arg value="-shared"/>
       <arg file="${src.dir}/nteventlog.cpp"/>
