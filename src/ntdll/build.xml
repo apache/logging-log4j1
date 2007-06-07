@@ -23,6 +23,13 @@
    <property name="src.dir" location="${basedir}"/>
    <property name="failonerror" value="false"/>
    <property name="failifexecutionfails" value="${failonerror}"/>
+   <property name="jni.include.dir" location="${java.home}/../include"/>
+   <property environment="env"/>
+   <condition property="jni.win32.include.dir" value="${jni.include.dir}/win32">
+	<available file="${jni.include.dir}/win32"/>
+   </condition>
+   <property name="jni.win32.include.dir" value="${env.JNI_WIN32_INCLUDE_DIR}"/>
+   <available property="jni_md.h_available" file="${jni.win32.include.dir}/jni_md.h"/>
   
    <target name="clean" description="Deletes generated files">
         <delete dir="${target.dir}"/>
@@ -46,19 +53,20 @@
         <condition property="windres_success">
 	     <equals arg1="${windres_status}" arg2="0"/>
         </condition>
+        <condition property="do_compile">
+	    <and>
+                <isset property="windres_success"/>
+                <isset property="jni_md.h_available"/>
+            </and>
+        </condition>
    </target>
 
-   <target name="compile" depends="windres" if="windres_success">
+   <target name="compile" depends="windres" if="do_compile">
     <fail unless="classes.dir">-Dclasses.dir=/path/to/log4j/classes must be specified</fail>
     <javah class="org.apache.log4j.nt.NTEventLogAppender,org.apache.log4j.Priority"
            destdir="${object.dir}"
            classpath="${classes.dir}"/>
     
-    <property name="jni.include.dir" location="${java.home}/../include"/>
-    <property name="jni.win32.include.dir" location="${jni.include.dir}/win32"/>
-    <!--  check for Win32 version of jni_md.h, if not available fail build   -->
-    <available property="jni_md.h_available" file="${jni.win32.include.dir}/jni_md.h"/>
-    <fail unless="jni_md.h_available">${jni.win32.include.dir}/jni_md.h not found</fail>
     <exec executable="${mingw-prefix}gcc">
       <arg value="-Wall"/>
       <arg value="-D_JNI_IMPLEMENTATION_"/>
@@ -74,12 +82,15 @@
     </exec>
    </target>
 
-   <target name="warn" depends="windres" unless="windres_success">
-	<echo>windres could not be found or failed.  
-MinGW toolkit must be on path to build NTEventLogAppender.dll</echo>
+   <target name="windres-echo" depends="windres" unless="windres_success">
+	<echo>${mingw-prefix}windres could not be found or failed, NTEventLogAppender.dll build skipped.</echo>
    </target>
 
-   <target name="build" depends="compile, warn">
+   <target name="jni_md.h-echo" unless="jni_md.h_available">
+	<echo>${jni.win32.include.dir}/jni_md.h not found, NTEventLogAppender.dll build skipped.</echo>
+   </target>
+
+   <target name="build" depends="compile, windres-echo, jni_md.h-echo">
    </target>
 
 </project>
