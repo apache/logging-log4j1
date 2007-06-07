@@ -22,6 +22,7 @@
   <body>
   
     <release version="1.2.15" date="2007-06-05" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
+       <action action="fix" issue="42611">ERFATestCase fails on some JDK's.</action>
        <action action="fix" issue="42585">SocketNode can leak Sockets.</action>
 	   <action action="fix" issue="37930">Migrate to Maven based build and documentation.</action>
 	   <action action="fix" issue="40604">Prepare Maven release bundles.</action>

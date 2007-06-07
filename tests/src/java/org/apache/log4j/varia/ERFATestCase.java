@@ -27,6 +27,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.InetAddress;
 
 /**
  *  Test of ExternallyRolledFileAppender.
@@ -100,6 +101,10 @@ public class ERFATestCase extends TestCase {
         erfa.activateOptions();
       } catch(SecurityException ex) {
           return;
+      }
+      try {
+         Thread.sleep(100);
+      } catch(InterruptedException ex) {
       }
       root.addAppender(erfa);
 
