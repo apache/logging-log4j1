@@ -11,9 +11,8 @@ element. -->
 <!ELEMENT log4j:configuration (renderer*, appender*,plugin*, (category|logger)*,root?,
                                (categoryFactory|loggerFactory)?)>
 
-<!-- The "threshold" attribute takes a level value such that all -->
-<!-- logging statements with a level equal or below this value are -->
-<!-- disabled. -->
+<!-- The "threshold" attribute takes a level value below which -->
+<!-- all logging statements are disabled. -->
 
 <!-- Setting the "debug" enable the printing of internal log4j logging   -->
 <!-- statements.                                                         -->
