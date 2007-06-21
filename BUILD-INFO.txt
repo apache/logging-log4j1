@@ -32,3 +32,27 @@ $ mvn install:install-file -DgroupId=javax.jms -DartifactId=jms \
           -Dversion=1.1 -Dpackaging=jar -Dfile=~/jms1.1/lib/jms.jar
 $ cd log4j
 $ mvn site assembly:assembly
+
+
+If you intended to deploy jars to the repo or update the site,
+you need to copy your private keys for people.apache.org 
+over to ~/.ssh and update ~/maven-2.0.6/conf/settings.xml
+to specify user name and key location.
+
+    <server>
+      <id>logging.repo</id>
+      <username>USERNAME for people.apache.org</username>
+      <privateKey>/home/ubuntu/.ssh/id_rsa</privateKey>
+      <passphrase></passphrase>
+    </server>
+    <server>
+      <id>logging.site</id>
+      <username>USERNAME for people.apache.org</username>
+      <privateKey>/home/ubuntu/.ssh/id_rsa</privateKey>
+      <passphrase></passphrase>
+    </server>
+
+You should test your ssh connection to people.apache.org before
+attempting a deployment like:
+
+$ ssh -l USERNAME people.apache.org
