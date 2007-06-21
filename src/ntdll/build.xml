@@ -19,7 +19,7 @@
 
 <project name="ntdll" default="build" basedir=".">
    <property name="target.dir" value="target"/>
-   <property name="object.dir" value="target/classes"/>
+   <property name="object.dir" value="target/obj"/>
    <property name="src.dir" location="${basedir}"/>
    <property name="failonerror" value="false"/>
    <property name="failifexecutionfails" value="${failonerror}"/>
