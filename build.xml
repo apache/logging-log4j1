@@ -624,7 +624,7 @@
 	       <property name="reference.version" value="1.2.14"/>
 	       <property name="reference.jar" value="${m2_repo}/log4j/log4j/${reference.version}/log4j-${reference.version}.jar"/>
 	       <available property="reference.jar-available" file="${reference.jar}"/>
-	       <fail unless="reference.jar-available">reference-${reference.version}.jar not in maven repo.  Run mvn clirr:check to download.</fail>
+	       <fail unless="reference.jar-available">log4j-${reference.version}.jar not in maven repo.  Run mvn clirr:check to download.</fail>
 	       <taskdef resource="clirrtask.properties" 
 	           classpath="${clirr-core.jar};${bcel.jar}"/>
 	       <delete dir="target/clirr"/>
