@@ -392,6 +392,8 @@
           <artifactId>maven-release-plugin</artifactId>
           <configuration>
               <goals>site-deploy</goals>
+              <goals>assembly:assembly</goals>
+              <goals>deploy</goals>
           </configuration>
       </plugin>
       <plugin>
