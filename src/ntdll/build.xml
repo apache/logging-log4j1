@@ -71,6 +71,9 @@
       <arg value="-Wall"/>
       <arg value="-D_JNI_IMPLEMENTATION_"/>
       <arg value="-Wl,--kill-at"/>
+      <arg value="-fno-rtti"/>
+      <arg value="-fno-exceptions"/>
+      <arg value="-s"/>
       <arg value="-I${jni.win32.include.dir}"/>
       <arg value="-I${jni.include.dir}"/>
       <arg value="-I${object.dir}"/>
