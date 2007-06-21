@@ -46,7 +46,6 @@
   <!-- The directory where source files are stored. -->
   <property name="project.source.home" value="../src/main/java/"/>
   <property name="project.classes.home" value="../dist/classes/"/>
-  <property name="project.lib.home" value="../dist/lib/"/>
 
   <property name="tests.source.home" value="./src/java/"/>
   <property name="excludes" value=""/>
@@ -97,6 +96,10 @@
   </target>
 
   <target name="prepare">
+    <!--  if target directory available, use it
+             otherwise assume it is a distribution and jar is in root  -->
+    <available property="project.lib.home" value="../target" file="../target"/>
+    <property name="project.lib.home" value=".."/>
     <mkdir dir="./classes" />
     <mkdir dir="./output" />
     <condition property="is-windows" value="true">
