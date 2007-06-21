@@ -613,32 +613,38 @@
 	  <!-- Compare the current API with a previous release                   -->
 	  <!-- ================================================================= -->
 	  <target name="clirr" depends="jar" description="Check binary compatibility with arbitrary release">
-	  	   <fail unless="clirr-core.jar">-Dclirr-core.jar=PATH must be specified.</fail>
-	  	   <fail unless="bcel.jar">-Dbcel.jar=PATH must be specified.</fail>
-	  	   <fail unless="reference.jar">-Dreference.jar=PATH must be specified.</fail>
+	       <property name="clirr.version" value="0.6"/>
+	       <property name="clirr-core.jar" value="${m2_repo}/net/sf/clirr/clirr-core/${clirr.version}/clirr-core-${clirr.version}.jar"/>
+	       <available property="clirr-core.jar-available" file="${clirr-core.jar}"/>
+	       <fail unless="clirr-core.jar-available">clirr-core-${clirr.version}.jar not in maven repo.  Run mvn clirr:check to download.</fail>
+	       <property name="bcel.version" value="5.1"/>
+	       <property name="bcel.jar" value="${m2_repo}/bcel/bcel/${bcel.version}/bcel-${bcel.version}.jar"/>
+	       <available property="bcel.jar-available" file="${bcel.jar}"/>
+	       <fail unless="bcel.jar-available">bcel-${bcel.version}.jar not in maven repo.  Run mvn clirr:check to download.</fail>
+	       <property name="reference.version" value="1.2.14"/>
+	       <property name="reference.jar" value="${m2_repo}/log4j/log4j/${reference.version}/log4j-${reference.version}.jar"/>
+	       <available property="reference.jar-available" file="${reference.jar}"/>
+	       <fail unless="reference.jar-available">reference-${reference.version}.jar not in maven repo.  Run mvn clirr:check to download.</fail>
 	       <taskdef resource="clirrtask.properties" 
 	           classpath="${clirr-core.jar};${bcel.jar}"/>
-	       <delete dir="build/clirr"/>
-	       <mkdir dir="build/clirr/orig"/>
-	       <mkdir dir="build/clirr/new"/>
-	       <copy todir="build/clirr/orig">	       
+	       <delete dir="target/clirr"/>
+	       <mkdir dir="target/clirr/orig"/>
+	       <mkdir dir="target/clirr/new"/>
+	       <copy todir="target/clirr/orig">	       
 	       	    <fileset file="${jms.jar}"/>
 	       	    <fileset file="${jmx.jar}"/>
 				<fileset file="${reference.jar}"/>
 	       </copy>
-	       <copy todir="build/clirr/new">
+	       <copy todir="target/clirr/new">
 	       	    <fileset file="${jms.jar}"/>
 	       	    <fileset file="${jmx.jar}"/>
 	       	    <fileset dir="${jar.dest}" includes="${jar.filename}"/>
 	       </copy>
 	  	   <clirr failOnBinError="no" failOnSrcError="no">
-	  	        <origfiles dir="build/clirr/orig" includes="*.jar"/>
-	  	        <newfiles dir="build/clirr/new" includes="*.jar"/>
-	  	  	    <formatter type="xml" outfile="${docs.dest}/compatibility.xml"/>
+	  	        <origfiles dir="target/clirr/orig" includes="*.jar"/>
+	  	        <newfiles dir="target/clirr/new" includes="*.jar"/>
+	  	  	    <formatter type="xml" outfile="target/clirr/compatibility.xml"/>
 	  	  </clirr>
-	  	  <xslt in="${docs.dest}/compatibility.xml"
-	  	        out="${docs.dest}/compatibility.html"
-	  	        style="${basedir}/src/xdocs/stylesheets/compatibility.xslt"/>
 	  </target>  
 
   <!-- ============================================== -->

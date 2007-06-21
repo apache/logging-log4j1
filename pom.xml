@@ -297,6 +297,20 @@
             </execution>
         </executions>
       </plugin>     
+      <!--   
+           clirr:check will fail with NullPointerException
+                due to missing javax.jms.MessageListener,
+                however it will trigger download of supporting components
+                which can allow "ant clirr" to succeed.
+                Could possibly run on a JavaEE platform.
+       -->
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>clirr-maven-plugin</artifactId>
+          <configuration>
+          	  <comparisonVersion>1.2.14</comparisonVersion>
+          </configuration>
+      </plugin>
     </plugins>      
     <testSourceDirectory>tests/src/java</testSourceDirectory>
 	<testResources>
