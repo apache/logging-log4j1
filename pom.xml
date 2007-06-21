@@ -21,7 +21,7 @@
   <artifactId>log4j</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j</name>
-  <version>1.2.15-SNAPSHOT</version>
+  <version>1.2.15</version>
   <properties>
     <currentVersion>1.2.15</currentVersion>
   </properties>  
@@ -68,9 +68,9 @@
     </license>
   </licenses>
   <scm>
-       <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/branches/v1_2-branch</connection>
-       <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/branches/v1_2-branch</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/logging/log4j/branches/v1_2-branch</url>
+       <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15_rc3</connection>
+       <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15_rc3</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/logging/log4j/tags/v1_2_15_rc3</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
