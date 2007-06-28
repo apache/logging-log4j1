@@ -21,7 +21,7 @@
   </properties>
   <body>
   
-    <release version="1.2.15" date="2007-06-25" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
+    <release version="1.2.15" date="2007-06-27" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
        <action action="fix" issue="42694">Typo in log4j.dtd concerning threshold.</action>
        <action action="fix" issue="42611">ERFATestCase fails on some JDK's.</action>
        <action action="fix" issue="42585">SocketNode can leak Sockets.</action>
