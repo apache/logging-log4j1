@@ -16,25 +16,28 @@
  limitations under the License.
 
 -->
-<!DOCTYPE configuration SYSTEM 'log4j.dtd' >
+<!DOCTYPE log4j:configuration SYSTEM 'log4j.dtd'>
 
-<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/' debug="true">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'
+                     configDebug="true">
 
   <appender name="TEMP" class="org.apache.log4j.FileAppender">
     <param name="Append" value="false" />
     <param name="File"   value="output/temp" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%p - %m\n"/>
+      <param name="ConversionPattern"
+	value="%p %c - %m\n"/>
     </layout>
-    
-    <filter class="org.apache.log4j.filter.LevelMatchFilter">
-      <param name="LevelToMatch" value="WARN" />
-      <param name="AcceptOnMatch" value="true" />
+    <filter class="org.apache.log4j.filter.AndFilter">
+      <filter class="org.apache.log4j.filter.LevelMatchFilter">
+        <param name="LevelToMatch" value="WARN" />
+      </filter>
+      <filter class="org.apache.log4j.filter.LoggerMatchFilter">
+          <param name="LoggerToMatch" value="org.apache.log4j.filter.SimpleFilterTest" />
+      </filter>
     </filter>
-    
-    
     <filter class="org.apache.log4j.filter.DenyAllFilter"/>
-      
+
   </appender>
 
     <!-- Prevent internal log4j DEBUG messages from polluting the output. -->
@@ -43,7 +46,8 @@
     <logger name="org.apache.log4j.config"><level value="INFO" /></logger>
     <logger name="org.apache.log4j.FileAppender"><level value="INFO" /></logger>
 
+
   <root>
-    <appender-ref ref="TEMP" />	       
+    <appender-ref ref="TEMP" />
   </root>
 </log4j:configuration>
