@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.log4j.filter;
 
 import org.apache.log4j.Level;
@@ -32,6 +48,7 @@ public class SimpleFilterTest extends TestCase {
   public final static String TEMP = "output/temp";
   
   static String TEST1_PAT = "(DEBUG|INFO|WARN|ERROR|FATAL) - Message \\d";
+  static String TEST8_PAT = "WARN org.apache.log4j.filter.SimpleFilterTest - Message \\d";
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
@@ -66,7 +83,58 @@ public class SimpleFilterTest extends TestCase {
 
      assertTrue(Compare.compare(FILTERED, "witness/filter/simpleFilter.1"));
   }
-  
+
+    public void test6() throws Exception {
+      JoranConfigurator joc = new JoranConfigurator();
+      joc.doConfigure("./input/filter/simpleFilter6.xml", LogManager.getLoggerRepository());
+      joc.dumpErrors();
+      common();
+
+      ControlFilter cf = new ControlFilter(new String[]{TEST1_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3});
+
+
+      Transformer.transform(TEMP, FILTERED, new Filter[] {cf,
+          new LineNumberFilter(),
+          new SunReflectFilter(),
+          new JunitTestRunnerFilter()});
+
+       assertTrue(Compare.compare(FILTERED, "witness/filter/simpleFilter.6"));
+    }
+
+    public void test7() throws Exception {
+      JoranConfigurator joc = new JoranConfigurator();
+      joc.doConfigure("./input/filter/simpleFilter7.xml", LogManager.getLoggerRepository());
+      joc.dumpErrors();
+      common();
+
+      ControlFilter cf = new ControlFilter(new String[]{TEST1_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3});
+
+
+      Transformer.transform(TEMP, FILTERED, new Filter[] {cf,
+          new LineNumberFilter(),
+          new SunReflectFilter(),
+          new JunitTestRunnerFilter()});
+
+       assertTrue(Compare.compare(FILTERED, "witness/filter/simpleFilter.7"));
+    }
+
+    public void test8() throws Exception {
+      JoranConfigurator joc = new JoranConfigurator();
+      joc.doConfigure("./input/filter/simpleFilter8.xml", LogManager.getLoggerRepository());
+      joc.dumpErrors();
+      common();
+
+      ControlFilter cf = new ControlFilter(new String[]{TEST8_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3});
+
+
+      Transformer.transform(TEMP, FILTERED, new Filter[] {cf,
+          new LineNumberFilter(),
+          new SunReflectFilter(),
+          new JunitTestRunnerFilter()});
+
+       assertTrue(Compare.compare(FILTERED, "witness/filter/simpleFilter.8"));
+    }
+
   void common() {
     int i = -1;
  
@@ -93,10 +161,4 @@ public class SimpleFilterTest extends TestCase {
     root.error("Message " + i, e);    
   }
   
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new SimpleFilterTest("test1"));
-    return suite;
-   }
-
 }
