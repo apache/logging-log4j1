@@ -21,7 +21,18 @@
   <!-- The build.properties file defines the parth to local jar files -->
   <property file="build.properties"/>
 
-  <property name="version" value="1.3alpha-8"/>
+  <!--   if a Maven build has been attempted,
+              the Maven repository can provide all the dependencies.  -->
+  <property name="m2_repo" location="${user.home}/.m2/repository"/>
+  <property name="javamail.jar" location="${m2_repo}/javax/mail/mail/1.4/mail-1.4.jar"/>
+  <property name="jms.jar" location="${m2_repo}/javax/jms/jms/1.1/jms-1.1.jar"/>
+  <property name="jmx.jar" location="${m2_repo}/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar"/>
+  <property name="jmx-extra.jar" location="${m2_repo}/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1.jar"/>
+  <property name="oro.version" value="2.0.8"/>
+  <property name="jakarta-oro.jar" location="${m2_repo}/oro/oro/${oro.version}/oro-${oro.version}.jar"/>
+  <property name="servlet-api.version" value="2.5"/>
+  <property name="servlet-api.jar" location="${m2_repo}/javax/servlet/servlet-api/${servlet-api.version}/servlet-api-${servlet-api.version}.jar"/>
+  <property name="version" value="1.3alpha-9"/>
 
   <property name="target" value="1.2"/>
   <property name="source" value="1.3"/>
@@ -30,7 +41,7 @@
   <property name="base" value="."/>
 
   <!-- The directory where source files are stored. -->
-  <property name="java.source.dir" value="src/java/"/>
+  <property name="java.source.dir" value="src/main/java/"/>
 
   <!-- The directory where the package-list file is found, ./ or -->
   <!-- build/ -->
