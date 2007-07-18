@@ -9,7 +9,7 @@ FATAL - Message 4
 DEBUG - Message 5
 java.lang.Exception: Just testing
 	at org.apache.log4j.filter.SimpleFilterTest.common(X)
-	at org.apache.log4j.filter.SimpleFilterTest.test7(X)
+	at org.apache.log4j.filter.SimpleFilterTest.test11(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
@@ -22,7 +22,7 @@ java.lang.Exception: Just testing
 DEBUG - Message 5
 java.lang.Exception: Just testing
 	at org.apache.log4j.filter.SimpleFilterTest.common(X)
-	at org.apache.log4j.filter.SimpleFilterTest.test7(X)
+	at org.apache.log4j.filter.SimpleFilterTest.test11(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
@@ -35,7 +35,7 @@ java.lang.Exception: Just testing
 ERROR - Message 6
 java.lang.Exception: Just testing
 	at org.apache.log4j.filter.SimpleFilterTest.common(X)
-	at org.apache.log4j.filter.SimpleFilterTest.test7(X)
+	at org.apache.log4j.filter.SimpleFilterTest.test11(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
@@ -48,7 +48,7 @@ java.lang.Exception: Just testing
 ERROR - Message 6
 java.lang.Exception: Just testing
 	at org.apache.log4j.filter.SimpleFilterTest.common(X)
-	at org.apache.log4j.filter.SimpleFilterTest.test7(X)
+	at org.apache.log4j.filter.SimpleFilterTest.test11(X)
 	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)

@@ -135,6 +135,75 @@ public class SimpleFilterTest extends TestCase {
        assertTrue(Compare.compare(FILTERED, "witness/filter/simpleFilter.8"));
     }
 
+    public void test9() throws Exception {
+      JoranConfigurator joc = new JoranConfigurator();
+      joc.doConfigure("./input/filter/simpleFilter9.xml", LogManager.getLoggerRepository());
+      joc.dumpErrors();
+      common();
+
+      ControlFilter cf = new ControlFilter(new String[]{TEST1_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3});
+
+
+      Transformer.transform(TEMP, FILTERED, new Filter[] {cf,
+          new LineNumberFilter(),
+          new SunReflectFilter(),
+          new JunitTestRunnerFilter()});
+
+       assertTrue(Compare.compare(FILTERED, "witness/filter/simpleFilter.1"));
+    }
+
+    public void test10() throws Exception {
+      JoranConfigurator joc = new JoranConfigurator();
+      joc.doConfigure("./input/filter/simpleFilter10.xml", LogManager.getLoggerRepository());
+      joc.dumpErrors();
+      common();
+
+      ControlFilter cf = new ControlFilter(new String[]{TEST1_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3});
+
+
+      Transformer.transform(TEMP, FILTERED, new Filter[] {cf,
+          new LineNumberFilter(),
+          new SunReflectFilter(),
+          new JunitTestRunnerFilter()});
+
+       assertTrue(Compare.compare(FILTERED, "witness/filter/simpleFilter.6"));
+    }
+
+    public void test11() throws Exception {
+      JoranConfigurator joc = new JoranConfigurator();
+      joc.doConfigure("./input/filter/simpleFilter11.xml", LogManager.getLoggerRepository());
+      joc.dumpErrors();
+      common();
+
+      ControlFilter cf = new ControlFilter(new String[]{TEST1_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3});
+
+
+      Transformer.transform(TEMP, FILTERED, new Filter[] {cf,
+          new LineNumberFilter(),
+          new SunReflectFilter(),
+          new JunitTestRunnerFilter()});
+
+       assertTrue(Compare.compare(FILTERED, "witness/filter/simpleFilter.11"));
+    }
+
+    public void test12() throws Exception {
+      JoranConfigurator joc = new JoranConfigurator();
+      joc.doConfigure("./input/filter/simpleFilter12.xml", LogManager.getLoggerRepository());
+      joc.dumpErrors();
+      common();
+
+      ControlFilter cf = new ControlFilter(new String[]{TEST8_PAT, EXCEPTION1, EXCEPTION2, EXCEPTION3});
+
+
+      Transformer.transform(TEMP, FILTERED, new Filter[] {cf,
+          new LineNumberFilter(),
+          new SunReflectFilter(),
+          new JunitTestRunnerFilter()});
+
+       assertTrue(Compare.compare(FILTERED, "witness/filter/simpleFilter.8"));
+    }
+
+
   void common() {
     int i = -1;
  
