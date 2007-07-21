@@ -1100,11 +1100,43 @@ Licensed under the &lt;a href="http://www.apache.org/licenses/LICENSE-2.0"&gt;Ap
 
 	<target name="post-site" depends="checkout-site, update-site"/>
 	
+
+        <target name="mime=html">
+            <exec executable="svn">
+		<arg value="propset"/>
+                <arg value="svn:mime-type"/>
+                <arg value="text/html"/>
+                <arg value="${src.html}"/>
+            </exec>
+        </target>
+
+        <target name="mime=css">
+            <exec executable="svn">
+		<arg value="propset"/>
+                <arg value="svn:mime-type"/>
+                <arg value="text/css"/>
+                <arg value="${src.css}"/>
+            </exec>
+        </target>
+	
+
 	<target name="site-deploy">
 		<!-- Add any new files (and generate innocuous warnings for the existing content)  -->
-		<exec executable="csh" dir="target/site-deploy" failonerror="true">
+                <delete file="target/site-deploy/svn-commit.tmp~"/>
+		<exec executable="bash" dir="target/site-deploy" failonerror="true">
 			<arg line='-c "svn add --force *"'/>
 		</exec>
+                <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
+                <foreach target="mime=html" param="src.html">
+                        <path>
+                                <fileset dir="target/site-deploy" includes="**/*.html"/>
+                        </path>
+                </foreach>
+                <foreach target="mime=css" param="src.css">
+                        <path>
+                                <fileset dir="target/site-deploy" includes="**/*.css"/>
+                        </path>
+                </foreach>
 		<!--  requires that SVN_EDITOR, VISUAL or EDITOR being set to edit commit description -->
 		<exec executable="svn" dir="target/site-deploy" failonerror="true">
 		    <arg value="commit"/>
