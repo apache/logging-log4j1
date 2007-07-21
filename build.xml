@@ -104,6 +104,12 @@
   <property name="apache.javadoc_dest" value="/www/logging.apache.org/log4j/docs"/>
   <!--  Apache web host  -->
   <property name="apache.host" value="people.apache.org"/>
+  
+  <!--  destination for Maven generated documentation -->
+	<property name="svnrepo.url" value="file:///Users/curta/repos/mock"/>
+	<property name="svnsite.url" value="${svnrepo.url}/logging/site/trunk/docs/log4j/1.2"/>
+	<available property="svn-available" file="target/site-deploy/.svn"/>
+  
 
 
   <!-- Construct compile classpath -->
@@ -795,6 +801,34 @@
        tab="remove"
        tablength="3"/>
 </target>
+
+	<target name="checkout-site" unless="svn-available">
+		<exec executable="svn">
+			<arg value="co"/>
+			<arg value="${svnsite.url}"/>
+			<arg value="target/site-deploy"/>
+		</exec>
+	</target>
+
+	<target name="update-site" if="svn-available">
+		<exec executable="svn" dir="target/site-deploy" failonerror="true">
+			<arg value="update"/>
+		</exec>
+	</target>
+
+	<target name="post-site" depends="checkout-site, update-site"/>
+	
+	<target name="site-deploy">
+		<!-- Add any new files (and generate innocuous warnings for the existing content)  -->
+		<exec executable="csh" dir="target/site-deploy" failonerror="true">
+			<arg line='-c "svn add --force *"'/>
+		</exec>
+		<!--  requires that SVN_EDITOR, VISUAL or EDITOR being set to edit commit description -->
+		<exec executable="svn" dir="target/site-deploy" failonerror="true">
+		    <arg value="commit"/>
+		</exec>
+	</target>
+
 
 </project>
 

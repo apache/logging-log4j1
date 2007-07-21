@@ -62,12 +62,15 @@
 		<item name="Introduction" href="/manual.html"/>
 		<item name="JavaDoc" href="/apidocs/index.html"/>
 		<item name="Publications" href="/publications.html"/>
-	</menu>
-	
-	<menu name="Resources">
-		<item name="Sandbox" href="http://logging.apache.org/sandbox"/>
-		<item name="Catalog" href="http://logging.apache.org/catalog.html"/>
 		<item name="Wiki" href="http://wiki.apache.org/logging-log4j"/>
 	</menu>
+	
+	<menu name="Apache">
+		<item name="Home" href="http://www.apache.org"/>	
+		<item name="Sponsorship" href="http://www.apache.org/foundation/sponsorship.html"/>
+		<item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
+		<item name="Conferences" href="http://www.apachecon.com"/>
+	</menu>
+	
   </body>
 </project>
