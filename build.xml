@@ -106,7 +106,7 @@
   <property name="apache.host" value="people.apache.org"/>
   
   <!--  destination for Maven generated documentation -->
-	<property name="svnrepo.url" value="file:///Users/curta/repos/mock"/>
+    <property name="svnrepo.url" value="https://svn.apache.org/repos/asf"/>
 	<property name="svnsite.url" value="${svnrepo.url}/logging/site/trunk/docs/log4j/1.2"/>
 	<available property="svn-available" file="target/site-deploy/.svn"/>
   
