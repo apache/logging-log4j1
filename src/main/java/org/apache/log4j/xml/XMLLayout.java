@@ -24,6 +24,9 @@ import org.apache.log4j.helpers.Transform;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
+import java.util.Set;
+import java.util.Arrays;
+
 /**
  * The output of the XMLLayout consists of a series of log4j:event
  * elements as defined in the <a
@@ -64,6 +67,7 @@ public class XMLLayout extends Layout {
 
   private StringBuffer buf = new StringBuffer(DEFAULT_SIZE);
   private boolean locationInfo = false;
+  private boolean properties = false;
  
   /**
    * The <b>LocationInfo</b> option takes a boolean value. By default,
@@ -86,7 +90,23 @@ public class XMLLayout extends Layout {
   public boolean getLocationInfo() {
     return locationInfo;
   }
-  
+
+    /**
+     * Sets whether MDC key-value pairs should be output, default false.
+     * @param flag new value.
+     */
+  public void setProperties(final boolean flag) {
+      properties = flag;
+  }
+
+    /**
+     * Gets whether MDC key-value pairs should be output.
+     * @return true if MDC key-value pairs are output.
+     */
+  public boolean getProperties() {
+      return properties;
+  }
+
   /** No options to activate. */
   public void activateOptions() {
   }
@@ -151,6 +171,27 @@ public class XMLLayout extends Layout {
       buf.append("\" line=\"");
       buf.append(locationInfo.getLineNumber());
       buf.append("\"/>\r\n");
+    }
+
+    if (properties) {
+        Set keySet = event.getPropertyKeySet();
+        if (keySet.size() > 0) {
+            buf.append("<log4j:properties>\r\n");
+            Object[] keys = keySet.toArray();
+            Arrays.sort(keys);
+            for (int i = 0; i < keys.length; i++) {
+                String key = keys[i].toString();
+                Object val = event.getMDC(key);
+                if (val != null) {
+                    buf.append("<log4j:data name=\"");
+                    buf.append(Transform.escapeTags(key));
+                    buf.append("\" value=\"");
+                    buf.append(Transform.escapeTags(val.toString()));
+                    buf.append("\"/>\r\n");
+                }
+            }
+            buf.append("</log4j:properties>\r\n");
+        }
     }
     
     buf.append("</log4j:event>\r\n\r\n");
