@@ -23,6 +23,7 @@ import junit.framework.TestSuite;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.MDC;
 import org.apache.log4j.util.Compare;
 import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.JunitTestRunnerFilter;
@@ -31,6 +32,8 @@ import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.XMLLineAttributeFilter;
 import org.apache.log4j.util.XMLTimestampFilter;
+
+import java.util.Hashtable;
 
 public class XMLLayoutTestCase extends TestCase {
 
@@ -138,6 +141,54 @@ public class XMLLayoutTestCase extends TestCase {
           new SunReflectFilter()});
     assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.null"));
   }
+
+    /**
+     * Tests the format of the MDC portion of the layout to ensure
+     * the key-value pairs we put in turn up in the output file.
+     * @throws Exception
+     */
+    public void testMDC() throws Exception {
+      XMLLayout xmlLayout = new XMLLayout();
+      xmlLayout.setProperties(true);
+      root.addAppender(new FileAppender(xmlLayout, TEMP, false));
+
+      Hashtable context = MDC.getContext();
+      if (context != null) {
+          context.clear();
+      }
+      MDC.put("key1", "val1");
+      MDC.put("key2", "val2");
+
+      logger.debug("Hello");
+      Transformer.transform(
+        TEMP, FILTERED,
+        new Filter[] { new LineNumberFilter(),
+            new JunitTestRunnerFilter(),
+            new XMLTimestampFilter()});
+      assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.mdc.1"));
+    }
+
+    public void testMDCEscaped() throws Exception {
+      XMLLayout xmlLayout = new XMLLayout();
+      xmlLayout.setProperties(true);
+      root.addAppender(new FileAppender(xmlLayout, TEMP, false));
+
+      Hashtable context = MDC.getContext();
+      if (context != null) {
+          context.clear();
+      }
+      MDC.put("blahAttribute", "<blah value='blah'>");
+      MDC.put("<blahKey value='blah'/>", "blahValue");
+
+      logger.debug("Hello");
+      Transformer.transform(
+        TEMP, FILTERED,
+        new Filter[] { new LineNumberFilter(),
+            new JunitTestRunnerFilter(),
+            new XMLTimestampFilter() });
+      assertTrue(Compare.compare(FILTERED, "witness/xmlLayout.mdc.2"));
+    }
+
   
   void common() {
     String oldThreadName = Thread.currentThread().getName();
@@ -182,6 +233,8 @@ public class XMLLayoutTestCase extends TestCase {
     suite.addTest(new XMLLayoutTestCase("locationInfo"));
     suite.addTest(new XMLLayoutTestCase("testCDATA"));
     suite.addTest(new XMLLayoutTestCase("testNull"));
+    suite.addTest(new XMLLayoutTestCase("testMDC"));
+    suite.addTest(new XMLLayoutTestCase("testMDCEscaped"));
     return suite;
   }
 
