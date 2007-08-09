@@ -328,7 +328,7 @@ public class DOMConfigurator implements Configurator {
 	    Logger root = repository.getRootLogger();
 	    eh.setLogger(root);
 	  } else {
-          quietParseUnrecognizedElement(eh, element, props);
+          quietParseUnrecognizedElement(eh, currentElement, props);
       }
 	}
       }
@@ -359,7 +359,7 @@ public class DOMConfigurator implements Configurator {
 	  if(tagName.equals(PARAM_TAG)) {
             setParameter(currentElement, propSetter);
 	  } else {
-            quietParseUnrecognizedElement(filter, element, props);
+            quietParseUnrecognizedElement(filter, currentElement, props);
       }
 	}
       }
@@ -451,7 +451,7 @@ public class DOMConfigurator implements Configurator {
 	  if (currentElement.getTagName().equals(PARAM_TAG)) {
 	    setParameter(currentElement, propSetter);
 	  } else {
-           quietParseUnrecognizedElement(factory, factoryElement, props);
+           quietParseUnrecognizedElement(factory, currentElement, props);
       }
 	}
       }
@@ -515,7 +515,7 @@ public class DOMConfigurator implements Configurator {
 	} else if(tagName.equals(PARAM_TAG)) {
           setParameter(currentElement, propSetter);
 	} else {
-        quietParseUnrecognizedElement(cat, catElement, props);
+        quietParseUnrecognizedElement(cat, currentElement, props);
     }
       }
     }
@@ -545,7 +545,7 @@ public class DOMConfigurator implements Configurator {
 	  if(tagName.equals(PARAM_TAG)) {
             setParameter(currentElement, propSetter);
 	  } else {
-          parseUnrecognizedElement(instance, layout_element, props);
+          parseUnrecognizedElement(instance, currentElement, props);
       }
 	}
       }
