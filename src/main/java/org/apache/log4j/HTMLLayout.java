@@ -135,27 +135,29 @@ public class HTMLLayout extends Layout {
     sbuf.append(event.timeStamp - LoggingEvent.getStartTime());
     sbuf.append("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td title=\"" + event.getThreadName() + " thread\">");
-    sbuf.append(Transform.escapeTags(event.getThreadName()));
+    String escapedThread = Transform.escapeTags(event.getThreadName());
+    sbuf.append("<td title=\"" + escapedThread + " thread\">");
+    sbuf.append(escapedThread);
     sbuf.append("</td>" + Layout.LINE_SEP);
 
     sbuf.append("<td title=\"Level\">");
     if (event.getLevel().equals(Level.DEBUG)) {
       sbuf.append("<font color=\"#339933\">");
-      sbuf.append(event.getLevel());
+      sbuf.append(Transform.escapeTags(String.valueOf(event.getLevel())));
       sbuf.append("</font>");
     }
     else if(event.getLevel().isGreaterOrEqual(Level.WARN)) {
       sbuf.append("<font color=\"#993300\"><strong>");
-      sbuf.append(event.getLevel());
+      sbuf.append(Transform.escapeTags(String.valueOf(event.getLevel())));
       sbuf.append("</strong></font>");
     } else {
-      sbuf.append(event.getLevel());
+      sbuf.append(Transform.escapeTags(String.valueOf(event.getLevel())));
     }
     sbuf.append("</td>" + Layout.LINE_SEP);
 
-    sbuf.append("<td title=\"" + event.getLoggerName() + " category\">");
-    sbuf.append(Transform.escapeTags(event.getLoggerName()));
+    String escapedLogger = Transform.escapeTags(event.getLoggerName());
+    sbuf.append("<td title=\"" + escapedLogger + " category\">");
+    sbuf.append(escapedLogger);
     sbuf.append("</td>" + Layout.LINE_SEP);
 
     if(locationInfo) {

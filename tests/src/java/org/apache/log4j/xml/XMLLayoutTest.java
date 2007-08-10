@@ -22,6 +22,7 @@ import org.apache.log4j.LayoutTest;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
+import org.apache.log4j.MDC;
 import org.apache.log4j.spi.LoggingEvent;
 
 import org.w3c.dom.Document;
@@ -32,6 +33,7 @@ import org.xml.sax.InputSource;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Hashtable;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -86,10 +88,10 @@ public class XMLLayoutTest extends LayoutTest {
     final Element element, final LoggingEvent event) {
     assertEquals("log4j:event", element.getTagName());
     assertEquals(
-      "org.apache.log4j.xml.XMLLayoutTest", element.getAttribute("logger"));
+      event.getLoggerName(), element.getAttribute("logger"));
     assertEquals(
       Long.toString(event.timeStamp), element.getAttribute("timestamp"));
-    assertEquals("INFO", element.getAttribute("level"));
+    assertEquals(event.getLevel().toString(), element.getAttribute("level"));
     assertEquals(event.getThreadName(), element.getAttribute("thread"));
   }
 
@@ -141,6 +143,31 @@ public class XMLLayoutTest extends LayoutTest {
     assertEquals(msg, messageNode.getNodeValue().substring(0, msg.length()));
     assertNull(messageNode.getNextSibling());
   }
+
+    /**
+     * Checks a log4j:properties element against expectations.
+     * @param element element, may not be null.
+     * @param key key.
+     * @param value value.
+     */
+    private void checkPropertiesElement(
+      final Element element, final String key, final String value) {
+      assertEquals("log4j:properties", element.getTagName());
+
+      int childNodeCount = 0;
+      for(Node child = element.getFirstChild();
+               child != null;
+               child = child.getNextSibling()) {
+          if (child.getNodeType() == Node.ELEMENT_NODE) {
+              assertEquals("log4j:data", child.getNodeName());
+              Element childElement = (Element) child;
+              assertEquals(key, childElement.getAttribute("name"));
+              assertEquals(value, childElement.getAttribute("value"));
+              childNodeCount++;
+          }
+      }
+      assertEquals(1, childNodeCount);  
+    }
 
   /**
    * Tests formatted results.
@@ -308,4 +335,98 @@ public class XMLLayoutTest extends LayoutTest {
     XMLLayout layout = new XMLLayout();
     layout.activateOptions();
   }
+
+    /**
+     * Level with arbitrary toString value.
+     */
+    private static final class ProblemLevel extends Level {
+        /**
+         * Construct new instance.
+         * @param levelName level name, may not be null.
+         */
+        public ProblemLevel(final String levelName) {
+            super(6000, levelName, 6);
+        }
+    }
+
+    /**
+     * Tests problematic characters in multiple fields.
+     * @throws Exception if parser can not be constructed or source is not a valid XML document.
+     */
+    public void testProblemCharacters() throws Exception {
+      String problemName = "com.example.bar<>&\"'";
+      Logger logger = Logger.getLogger(problemName);
+      Level level = new ProblemLevel(problemName);
+      Exception ex = new IllegalArgumentException(problemName);
+      String threadName = Thread.currentThread().getName();
+      Thread.currentThread().setName(problemName);
+      NDC.push(problemName);
+      Hashtable mdcMap = MDC.getContext();
+      if (mdcMap != null) {
+          mdcMap.clear();
+      }
+      MDC.put(problemName, problemName);
+      LoggingEvent event =
+        new LoggingEvent(
+          problemName, logger, level, problemName, ex);
+      XMLLayout layout = (XMLLayout) createLayout();
+      layout.setProperties(true);
+      String result = layout.format(event);
+      mdcMap = MDC.getContext();
+      if (mdcMap != null) {
+          mdcMap.clear();
+      }
+      Thread.currentThread().setName(threadName);
+
+      Element parsedResult = parse(result);
+      checkEventElement(parsedResult, event);
+
+      int childElementCount = 0;
+
+      for (
+        Node node = parsedResult.getFirstChild(); node != null;
+          node = node.getNextSibling()) {
+        switch (node.getNodeType()) {
+        case Node.ELEMENT_NODE:
+          childElementCount++;
+          switch(childElementCount) {
+              case 1:
+              checkMessageElement((Element) node, problemName);
+              break;
+
+              case 2:
+              checkNDCElement((Element) node, problemName);
+              break;
+
+              case 3:
+              checkThrowableElement((Element) node, ex);
+              break;
+
+              case 4:
+              checkPropertiesElement((Element) node, problemName, problemName);
+              break;
+
+              default:
+              fail("Unexpected element");
+              break;
+          }
+
+          break;
+
+        case Node.COMMENT_NODE:
+          break;
+
+        case Node.TEXT_NODE:
+
+          //  should only be whitespace
+          break;
+
+        default:
+          fail("Unexpected node type");
+
+          break;
+        }
+      }
+    }
+
 }

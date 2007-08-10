@@ -33,18 +33,23 @@ public class Transform {
 
   /**
    * This method takes a string which may contain HTML tags (ie,
-   * &lt;b&gt;, &lt;table&gt;, etc) and replaces any '<' and '>'
+   * &lt;b&gt;, &lt;table&gt;, etc) and replaces any
+   * '<',  '>' , '&' or '"'
    * characters with respective predefined entity references.
    *
    * @param input The text to be converted.
-   * @return The input string with the characters '<' and '>' replaced with
-   *  &amp;lt; and &amp;gt; respectively.  
+   * @return The input string with the special characters replaced.
    * */
-  static public String escapeTags(String input) {
-    //Check if the string is null or zero length -- if so, return
-    //what was sent in.
+  static public String escapeTags(final String input) {
+    //Check if the string is null, zero length or devoid of special characters
+    // if so, return what was sent in.
 
-    if( input == null || input.length() == 0 ) {
+    if(input == null
+       || input.length() == 0
+       || (input.indexOf('"') == -1 &&
+           input.indexOf('&') == -1 &&
+           input.indexOf('<') == -1 &&
+           input.indexOf('>') == -1)) {
       return input;
     }
 
@@ -57,12 +62,18 @@ public class Transform {
     int len = input.length();
     for(int i=0; i < len; i++) {
       ch = input.charAt(i);
-      if(ch == '<') {
-	buf.append("&lt;");
+      if (ch > '>') {
+          buf.append(ch);
+      } else if(ch == '<') {
+	      buf.append("&lt;");
       } else if(ch == '>') {
-	buf.append("&gt;");
+	      buf.append("&gt;");
+      } else if(ch == '&') {
+	      buf.append("&amp;");
+      } else if(ch == '"') {
+	      buf.append("&quot;");
       } else {
-	buf.append(ch);
+	      buf.append(ch);
       }
     }
     return buf.toString();
@@ -77,30 +88,26 @@ public class Transform {
   * section are the responsibility of the calling method.
   * @param str The String that is inserted into an existing CDATA Section within buf.  
   * */
-  static public void appendEscapingCDATA(StringBuffer buf, String str) {
-    if(str == null) {
-      buf.append("");
-      return;
-    } 
-    
-    int end = str.indexOf(CDATA_END);
-    if (end < 0) {
-      buf.append(str);
-      return;
-    }
-    
-    int start = 0;
-    while (end > -1) {
-      buf.append(str.substring(start,end));
-      buf.append(CDATA_EMBEDED_END);
-      start = end + CDATA_END_LEN;
-      if (start < str.length()) {
-	end = str.indexOf(CDATA_END, start);
-      } else {
-	return;
+  static public void appendEscapingCDATA(final StringBuffer buf,
+                                         final String str) {
+      if (str != null) {
+          int end = str.indexOf(CDATA_END);
+          if (end < 0) {
+              buf.append(str);
+          } else {
+              int start = 0;
+              while (end > -1) {
+                  buf.append(str.substring(start, end));
+                  buf.append(CDATA_EMBEDED_END);
+                  start = end + CDATA_END_LEN;
+                  if (start < str.length()) {
+                      end = str.indexOf(CDATA_END, start);
+                  } else {
+                      return;
+                  }
+              }
+              buf.append(str.substring(start));
+          }
       }
-    }
-    
-    buf.append(str.substring(start));
   }
 }
