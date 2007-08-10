@@ -22,6 +22,7 @@
   <body>
   
     <release version="1.2.15" date="2007-06-27" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
+       <action action="fix" issue="34874">Notice to use UTF-8 or UTF-16 encoding added to XML and HTMLLayout javadoc.</action>
        <action action="fix" issue="34875">XML and HTMLLayout do not always escape special characters.</action>
        <action action="add" issue="43078">Optionally render MDC content in XMLLayout</action>
        <action action="fix" issue="42694">Typo in log4j.dtd concerning threshold.</action>
