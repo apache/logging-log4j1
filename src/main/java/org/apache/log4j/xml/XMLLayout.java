@@ -115,7 +115,7 @@ public class XMLLayout extends Layout {
   /**
    * Formats a {@link org.apache.log4j.spi.LoggingEvent} in conformance with the log4j.dtd.
    * */
-  public String format(LoggingEvent event) {
+  public String format(final LoggingEvent event) {
 
     // Reset working buffer. If the buffer is too large, then we need a new
     // one in order to avoid the penalty of creating a large array.
@@ -128,13 +128,13 @@ public class XMLLayout extends Layout {
     // We yield to the \r\n heresy.
 
     buf.append("<log4j:event logger=\"");
-    buf.append(event.getLoggerName());
+    buf.append(Transform.escapeTags(event.getLoggerName()));
     buf.append("\" timestamp=\"");
     buf.append(event.timeStamp);
     buf.append("\" level=\"");
-    buf.append(event.getLevel());
+    buf.append(Transform.escapeTags(String.valueOf(event.getLevel())));
     buf.append("\" thread=\"");
-    buf.append(event.getThreadName());
+    buf.append(Transform.escapeTags(event.getThreadName()));
     buf.append("\">\r\n");
 
     buf.append("<log4j:message><![CDATA[");
@@ -167,7 +167,7 @@ public class XMLLayout extends Layout {
       buf.append("\" method=\"");
       buf.append(Transform.escapeTags(locationInfo.getMethodName()));
       buf.append("\" file=\"");
-      buf.append(locationInfo.getFileName());
+      buf.append(Transform.escapeTags(locationInfo.getFileName()));
       buf.append("\" line=\"");
       buf.append(locationInfo.getLineNumber());
       buf.append("\"/>\r\n");
@@ -186,7 +186,7 @@ public class XMLLayout extends Layout {
                     buf.append("<log4j:data name=\"");
                     buf.append(Transform.escapeTags(key));
                     buf.append("\" value=\"");
-                    buf.append(Transform.escapeTags(val.toString()));
+                    buf.append(Transform.escapeTags(String.valueOf(val)));
                     buf.append("\"/>\r\n");
                 }
             }
