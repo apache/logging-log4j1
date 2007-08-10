@@ -22,9 +22,14 @@ import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.helpers.Transform;
 
 /**
-   This layout outputs events in a HTML table.
-
-   @author Ceki G&uuml;lc&uuml;
+ * This layout outputs events in a HTML table.
+ *
+ * Appenders using this layout should have their encoding
+ * set to UTF-8 or UTF-16, otherwise events containing
+ * non ASCII characters could result in corrupted
+ * log files.
+ *
+ *  @author Ceki G&uuml;lc&uuml;
  */
 public class HTMLLayout extends Layout {
 

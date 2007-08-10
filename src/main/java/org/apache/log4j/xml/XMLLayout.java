@@ -57,6 +57,11 @@ import java.util.Arrays;
  * prior to log4j 1.2 (final release) and "1.2" for relase 1.2 and
  * later.
  *
+ * Appenders using this layout should have their encoding
+ * set to UTF-8 or UTF-16, otherwise events containing
+ * non ASCII characters could result in corrupted
+ * log files. 
+ *
  * @author Ceki  G&uuml;lc&uuml;
  * @since 0.9.0 
  * */
