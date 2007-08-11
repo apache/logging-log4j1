@@ -203,7 +203,7 @@ public class LoggingEvent implements java.io.Serializable {
        @param properties MDC properties
      */
     public LoggingEvent(final String fqnOfCategoryClass,
-                        final Logger logger,
+                        final Category logger,
                         final long timeStamp,
                         final Level level,
                         final Object message,
@@ -237,6 +237,7 @@ public class LoggingEvent implements java.io.Serializable {
       }
     }
 
+
   /**
      Set the location information for this logging event. The collected
      information is cached for future use.
@@ -262,6 +263,15 @@ public class LoggingEvent implements java.io.Serializable {
   public String getLoggerName() {
     return categoryName;
   }
+
+    /**
+     * Gets the logger of the event.
+     * Use should be restricted to cloning events.
+     * @since 1.2.15
+     */
+    public Category getLogger() {
+      return logger;
+    }
 
   /**
      Return the message for this logging event.
