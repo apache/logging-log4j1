@@ -33,7 +33,6 @@ import org.apache.log4j.Category;
  * Tests LoggingEvent.
  *
  * @author Curt Arnold
- * @since 1.3
  */
 public class LoggingEventTest extends TestCase {
   /**
