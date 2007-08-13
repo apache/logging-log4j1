@@ -1,9 +1,10 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -15,10 +16,12 @@
  */
 package org.apache.log4j.helpers;
 
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.Layout;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
-
+import org.apache.log4j.spi.LocationInfo;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,7 +42,6 @@ import java.util.Date;
    @author Anders Kristensen
 
    @since 0.8.2
-   @deprecated Since 1.3
 */
 public class PatternParser {
 
@@ -47,7 +49,6 @@ public class PatternParser {
 
   private static final int LITERAL_STATE = 0;
   private static final int CONVERTER_STATE = 1;
-  private static final int MINUS_STATE = 2;
   private static final int DOT_STATE = 3;
   private static final int MIN_STATE = 4;
   private static final int MAX_STATE = 5;
@@ -469,7 +470,7 @@ public class PatternParser {
   }
 
 
-  private static class LocationPatternConverter extends PatternConverter {
+  private class LocationPatternConverter extends PatternConverter {
     int type;
 
     LocationPatternConverter(FormattingInfo formattingInfo, int type) {

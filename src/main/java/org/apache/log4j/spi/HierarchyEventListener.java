@@ -17,9 +17,7 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.Category;
-
+import org.apache.log4j.*;
 
 /**
    Listen to events occuring within a {@link
@@ -27,13 +25,20 @@ import org.apache.log4j.Category;
 
    @author Ceki G&uuml;lc&uuml;
    @since 1.2
-   @deprecated Superceded by LoggerEventListener.
-
+   
  */
 public interface HierarchyEventListener {
+
+ 
   //public
   //void categoryCreationEvent(Category cat);
-  public void addAppenderEvent(Category cat, Appender appender);
 
-  public void removeAppenderEvent(Category cat, Appender appender);
+
+  public
+  void addAppenderEvent(Category cat, Appender appender);
+
+  public
+  void removeAppenderEvent(Category cat, Appender appender);
+
+
 }

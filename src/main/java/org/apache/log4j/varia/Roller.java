@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,19 +35,17 @@ import java.net.Socket;
    
 
    @author Ceki G&uuml;lc&uuml;
-   @since version 0.9.0
-   @deprecated 1.3
- */
+   @since version 0.9.0 */
 public class Roller {
 
-  private static final Logger logger = Logger.getLogger(Roller.class);
+  static Logger cat = Logger.getLogger(Roller.class);
   
 
-  private static String host;
-  private static int port;
+  static String host;
+  static int port;
 
   // Static class.
-  private Roller() {
+  Roller() {
   }
 
   /**
@@ -58,7 +56,7 @@ public class Roller {
    */
   public 
   static 
-  void main(final String argv[]) {
+  void main(String argv[]) {
 
     BasicConfigurator.configure();
 
@@ -70,16 +68,16 @@ public class Roller {
     roll();
   }
 
-  private static
-  void usage(final String msg) {
+  static
+  void usage(String msg) {
     System.err.println(msg);
     System.err.println( "Usage: java " + Roller.class.getName() +
 			"host_name port_number");
     System.exit(1);
   }
 
-  private static
-  void init(final String hostArg, final String portArg) {
+  static 
+  void init(String hostArg, String portArg) {
     host = hostArg;
     try {
       port =  Integer.parseInt(portArg);
@@ -89,11 +87,6 @@ public class Roller {
     }
   }
 
-  /**
-   * Sends a roll request on the specified port.
-   *
-   * @deprecated Deprecated since ExternallyRolledFileAppender is deprecated
-   */
   static
   void roll() {
     try {
@@ -103,13 +96,13 @@ public class Roller {
       dos.writeUTF(ExternallyRolledFileAppender.ROLL_OVER);
       String rc = dis.readUTF();
       if(ExternallyRolledFileAppender.OK.equals(rc)) {
-	     logger.info("Roll over signal acknowledged by remote appender.");
+	cat.info("Roll over signal acknowledged by remote appender.");
       } else {
-        logger.warn("Unexpected return code "+rc+" from remote entity.");
-	    System.exit(2);
+	cat.warn("Unexpected return code "+rc+" from remote entity.");
+	System.exit(2);
       }
     } catch(IOException e) {
-      logger.error("Could not send roll signal on host "+host+" port "+port+" .",
+      cat.error("Could not send roll signal on host "+host+" port "+port+" .",
 		e);
       System.exit(2);
     }

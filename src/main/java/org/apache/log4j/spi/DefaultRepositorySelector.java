@@ -15,37 +15,23 @@
  * limitations under the License.
  */
 
+
+
 package org.apache.log4j.spi;
 
-/**
- * Trivial implementation of RepositorySelectorEx which takes
- * a fixed repository.
- */
-public class DefaultRepositorySelector implements RepositorySelectorEx {
-  
-  private LoggerRepository defaultRepository;
 
-  /**
-   * Constructs a new instance.
-   * @param repository cannot be null
-   */
-  public DefaultRepositorySelector(final LoggerRepository repository) {
-    if (repository == null)
-      throw new NullPointerException();
-    this.defaultRepository = repository;
+public class DefaultRepositorySelector implements RepositorySelector {
+
+  final LoggerRepository repository;
+
+  public
+  DefaultRepositorySelector(LoggerRepository repository) {
+    this.repository = repository;
   }
 
-  public LoggerRepository getLoggerRepository() {
-    return defaultRepository;
-  }
-  
-  /**
-   * Does nothing, always returns null.
-   * 
-   * @return Always null
-   */
-  public LoggerRepository detachRepository(final String name) {
-    // do nothing, as the default repository cannot be removed
-    return null;
+  public
+  LoggerRepository getLoggerRepository() {
+    return repository;
   }
 }
+

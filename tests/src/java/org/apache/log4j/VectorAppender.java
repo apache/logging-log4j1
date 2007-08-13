@@ -18,20 +18,28 @@
 package org.apache.log4j;
 
 import java.util.Vector;
+import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.helpers.Transform;
+import org.apache.log4j.helpers.LogLog;
 
 /**
    An appender that appends logging events to a vector.
    @author Ceki  G&uuml;lc&uuml;
 */
 public class VectorAppender extends AppenderSkeleton {
-  public Vector vector;
 
-  long delay = 0;
+  public Vector vector;
   
   public VectorAppender() {
-    super(true);
     vector = new Vector();
+  }
+
+  /**
+     Does nothing.
+  */
+  public void activateOptions() {
   }
 
 
@@ -41,30 +49,25 @@ public class VectorAppender extends AppenderSkeleton {
 
   */
   public void append(LoggingEvent event) {
-    if(delay > 0) {
-      try {
-        Thread.sleep(delay);
-      } catch (Exception e) {
-      }
+    //System.out.println("---Vector appender called with message ["+event.getRenderedMessage()+"].");
+    //System.out.flush();
+    try {
+      Thread.currentThread().sleep(100);
+    } catch(Exception e) {
     }
-
     vector.addElement(event);
-  }
+   }
 
-  /**
-   * Returns a vector of {@link LoggingEvent}.
-   */
   public Vector getVector() {
     return vector;
   }
 
   public synchronized void close() {
-    if (this.closed) {
+    if(this.closed)
       return;
-    }
-
     this.closed = true;
   }
+
 
   public boolean isClosed() {
     return closed;
@@ -73,19 +76,4 @@ public class VectorAppender extends AppenderSkeleton {
   public boolean requiresLayout() {
     return false;
   }
-  
-  /**
-   * Returns a delay to log.
-   */
-  public long getDelay() {
-    return delay;
-  }
-
-  /**
-   * Sets a delay to log.
-   */  
-  public void setDelay(long delay) {
-    this.delay = delay;
-  }
-
 }

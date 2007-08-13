@@ -1,12 +1,13 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,20 +17,16 @@
 
 package org.apache.log4j.helpers;
 
-import java.io.IOException;
-import java.io.Writer;
 
-import java.net.DatagramPacket;
+import java.io.Writer;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.DatagramPacket;
 import java.net.UnknownHostException;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import java.net.SocketException;
+import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
-
 
 /**
    SyslogWriter is a wrapper around the java.net.DatagramSocket class
@@ -38,14 +35,18 @@ import java.net.MalformedURLException;
    @since 0.7.3
 */
 public class SyslogWriter extends Writer {
-  private static final int SYSLOG_PORT = 514;
+
+  final int SYSLOG_PORT = 514;
+  /**
+   *  Host string from last constructed SyslogWriter.
+   *  @deprecated
+   */
+  static String syslogHost;
+  
   private InetAddress address;
   private final int port;
   private DatagramSocket ds;
 
-  private Logger logger = LogManager.getLogger(SyslogWriter.class);
-  private StringBuffer buf = new StringBuffer();
-  
   /**
    *  Constructs a new instance of SyslogWriter.
    *  @param syslogHost host name, may not be null.  A port
@@ -54,7 +55,9 @@ public class SyslogWriter extends Writer {
    *  address, enclose the IPv6 address in square brackets before appending
    *  the colon and decimal port number.
    */
-  public SyslogWriter(final String syslogHost) {
+  public
+  SyslogWriter(final String syslogHost) {
+    SyslogWriter.syslogHost = syslogHost;
     if (syslogHost == null) {
         throw new NullPointerException("syslogHost");
     }
@@ -78,7 +81,7 @@ public class SyslogWriter extends Writer {
                 urlPort = url.getPort();
             }
         } catch(MalformedURLException e) {
-      		logger.warn("Malformed URL: will attempt to interpret as InetAddress.", e);
+      		LogLog.error("Malformed URL: will attempt to interpret as InetAddress.", e);
         }
     }
     
@@ -87,59 +90,56 @@ public class SyslogWriter extends Writer {
     }
     port = urlPort;
 
-    try {
+    try {      
       this.address = InetAddress.getByName(host);
-    } catch (UnknownHostException e) {
-      logger.error(
-        "Could not find " + host + ". All logging will FAIL.", e);
+    }
+    catch (UnknownHostException e) {
+      LogLog.error("Could not find " + host +
+			 ". All logging will FAIL.", e);
     }
 
     try {
       this.ds = new DatagramSocket();
-    } catch (SocketException e) {
+    }
+    catch (SocketException e) {
       e.printStackTrace();
-      logger.error(
-        "Could not instantiate DatagramSocket to " + host
-        + ". All logging will FAIL.", e);
+      LogLog.error("Could not instantiate DatagramSocket to " + host +
+			 ". All logging will FAIL.", e);
     }
+    
   }
 
-  public void write(char[] charArray, int offset, int len) throws IOException {
-    buf.append(charArray, offset, len);
-  }
 
-  public void write(String str) throws IOException {
-    buf.append(str); 
-  }
-
-  /**
-   * Sends the pending data.
-   */
-  public void flush() throws IOException {
-    if (buf.length() == 0)
-      return;
-    // logging here can be problematic during shutdown when writing the footer
-    // logger.debug("Writing out [{}]", buf);
-    byte[] bytes = buf.toString().getBytes();
-    DatagramPacket packet =
-      new DatagramPacket(bytes, bytes.length, address, port);
-
-    ds.send(packet);
-
-    // clean up for next time
-    buf.setLength(0);
-  }
-
-  /**
-   * Closes the datagram socket.
-   */
-  public void close() {
-    try {
-      flush();
-    } catch (IOException e) {
-      // should throw it ... can't change method sig. though
-    }
-    ds.close();
+  public
+  void write(char[] buf, int off, int len) throws IOException {
+    this.write(new String(buf, off, len));
   }
   
+  public
+  void write(final String string) throws IOException {
+
+    if(this.ds != null && this.address != null) {
+        byte[] bytes = string.getBytes();
+        //
+        //  syslog packets must be less than 1024 bytes
+        //
+        int bytesLength = bytes.length;
+        if (bytesLength >= 1024) {
+            bytesLength = 1024;
+        }
+        DatagramPacket packet = new DatagramPacket(bytes, bytesLength,
+                               address, port);
+        ds.send(packet);
+    }
+    
+  }
+
+  public
+  void flush() {}
+
+  public void close() {
+      if (ds != null) {
+          ds.close();
+      }
+  }
 }

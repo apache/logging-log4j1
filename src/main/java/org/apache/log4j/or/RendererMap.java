@@ -1,12 +1,13 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,83 +17,54 @@
 
 package org.apache.log4j.or;
 
+import org.apache.log4j.spi.RendererSupport;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.spi.ComponentBase;
-import org.apache.log4j.spi.RendererSupport;
-
 import java.util.Hashtable;
-
 
 /**
    Map class objects to an {@link ObjectRenderer}.
 
    @author Ceki G&uuml;lc&uuml;
    @since version 1.0 */
-public class RendererMap extends ComponentBase {
-  static ObjectRenderer defaultRenderer = new DefaultRenderer();
+public class RendererMap {
+
   Hashtable map;
 
-  public RendererMap() {
+  static ObjectRenderer defaultRenderer = new DefaultRenderer();
+
+  public
+  RendererMap() {
     map = new Hashtable();
   }
 
   /**
-   * Add a renderer to the current logger repository
-   * 
-   * @param renderedClassName
-   * @param renderingClassName
-   */
-  public void addRenderer(String renderedClassName,
-    String renderingClassName) {
-    getLogger().debug(
-      "Rendering class: [{}, Rendered class: [{}].", renderingClassName, 
-      renderedClassName);
-
-    ObjectRenderer renderer =
-      (ObjectRenderer) OptionConverter.instantiateByClassName(
-          renderingClassName, ObjectRenderer.class, null);
-      
-    if (renderer == null) {
-      getLogger().error(
-        "Could not instantiate renderer [" + renderingClassName + "].");
+     Add a renderer to a hierarchy passed as parameter.
+  */
+  static
+  public
+  void addRenderer(RendererSupport repository, String renderedClassName,
+		   String renderingClassName) {
+    LogLog.debug("Rendering class: ["+renderingClassName+"], Rendered class: ["+
+		 renderedClassName+"].");
+    ObjectRenderer renderer = (ObjectRenderer)
+             OptionConverter.instantiateByClassName(renderingClassName,
+						    ObjectRenderer.class,
+						    null);
+    if(renderer == null) {
+      LogLog.error("Could not instantiate renderer ["+renderingClassName+"].");
       return;
     } else {
       try {
-        Class renderedClass = Loader.loadClass(renderedClassName);
-        if(repository != null && repository instanceof RendererSupport) {
-          ((RendererSupport)repository).setRenderer(renderedClass, renderer);
-        }
-      } catch (ClassNotFoundException e) {
-        getLogger().error("Could not find class [" + renderedClassName + "].", e);
+	Class renderedClass = Loader.loadClass(renderedClassName);
+	repository.setRenderer(renderedClass, renderer);
+      } catch(ClassNotFoundException e) {
+	LogLog.error("Could not find class ["+renderedClassName+"].", e);
       }
     }
   }
 
-  /**
-   * Add a renderer to a hierarchy passed as parameter
-   * 
-   * @deprecated As of release 1.3, replaced by {@link #addRenderer(String,String)}.  Left here only to provide binary compatibility with 1.2.xx and will be removed in a future release.
-   */
-  static public void addRenderer(RendererSupport repository, String renderedClassName,
-           String renderingClassName) {
-    ObjectRenderer renderer =
-      (ObjectRenderer) OptionConverter.instantiateByClassName(
-          renderingClassName, ObjectRenderer.class, null);
-      
-    if (renderer == null) {
-      return;
-    } else {
-      try {
-        Class renderedClass = Loader.loadClass(renderedClassName);
-        if(repository != null) {
-          repository.setRenderer(renderedClass, renderer);
-        }
-      } catch (ClassNotFoundException e) {
-        ;
-      }
-    }
-  }
 
   /**
      Find the appropriate renderer for the class type of the
@@ -100,24 +72,26 @@ public class RendererMap extends ComponentBase {
      {@link #get(Class)} method. Once a renderer is found, it is
      applied on the object <code>o</code> and the result is returned
      as a {@link String}. */
-  public String findAndRender(Object o) {
-    if (o == null) {
+  public
+  String findAndRender(Object o) {
+    if(o == null)
       return null;
-    } else {
+    else
       return get(o.getClass()).doRender(o);
-    }
   }
+
 
   /**
      Syntactic sugar method that calls {@link #get(Class)} with the
      class of the object parameter. */
-  public ObjectRenderer get(Object o) {
-    if (o == null) {
+  public
+  ObjectRenderer get(Object o) {
+    if(o == null)
       return null;
-    } else {
+    else
       return get(o.getClass());
-    }
   }
+
 
   /**
      Search the parents of <code>clazz</code> for a renderer. The
@@ -167,53 +141,58 @@ public class RendererMap extends ComponentBase {
      algorithm. However, the present algorithm should be acceptable in
      the vast majority of circumstances.
 
-  */
-  public ObjectRenderer get(Class clazz) {
+ */
+  public
+  ObjectRenderer get(Class clazz) {
     //System.out.println("\nget: "+clazz);
     ObjectRenderer r = null;
-    for (Class c = clazz; c != null; c = c.getSuperclass()) {
+    for(Class c = clazz; c != null; c = c.getSuperclass()) {
       //System.out.println("Searching for class: "+c);
       r = (ObjectRenderer) map.get(c);
-      if (r != null) {
-        return r;
+      if(r != null) {
+	return r;
       }
       r = searchInterfaces(c);
-      if (r != null) {
-        return r;
-      }
+      if(r != null)
+	return r;
     }
     return defaultRenderer;
   }
 
   ObjectRenderer searchInterfaces(Class c) {
     //System.out.println("Searching interfaces of class: "+c);
+
     ObjectRenderer r = (ObjectRenderer) map.get(c);
-    if (r != null) {
+    if(r != null) {
       return r;
     } else {
       Class[] ia = c.getInterfaces();
-      for (int i = 0; i < ia.length; i++) {
-        r = searchInterfaces(ia[i]);
-        if (r != null) {
-          return r;
-        }
+      for(int i = 0; i < ia.length; i++) {
+	r = searchInterfaces(ia[i]);
+	if(r != null)
+	  return r;
       }
     }
     return null;
   }
 
-  public ObjectRenderer getDefaultRenderer() {
+
+  public
+  ObjectRenderer getDefaultRenderer() {
     return defaultRenderer;
   }
 
-  public void clear() {
+
+  public
+  void clear() {
     map.clear();
   }
 
   /**
      Register an {@link ObjectRenderer} for <code>clazz</code>.
   */
-  public void put(Class clazz, ObjectRenderer or) {
+  public
+  void put(Class clazz, ObjectRenderer or) {
     map.put(clazz, or);
   }
 }

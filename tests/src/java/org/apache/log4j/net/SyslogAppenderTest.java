@@ -17,13 +17,6 @@
 
 package org.apache.log4j.net;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
-import java.net.SocketException;
-import java.util.StringTokenizer;
-
 import junit.framework.TestCase;
 
 import org.apache.log4j.AsyncAppender;
@@ -32,20 +25,24 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.helpers.SyslogWriter;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.VectorErrorHandler;
+import org.apache.log4j.HTMLLayout;
+
+import java.util.StringTokenizer;
+import java.net.DatagramSocket;
+import java.net.DatagramPacket;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.Date;
+import java.util.Calendar;
 
 
 /**
  *    Tests for SyslogAppender
  *
- * @author Curt Arnold
- **/
+ *
+ * */
 public class SyslogAppenderTest extends TestCase {
-  
-  DatagramSocket ds;
-  DatagramPacket p = new DatagramPacket(new byte[1000], 0, 1000);
-  
   /**
    * Create new instance of SyslogAppenderTest.
    * @param testName test name
@@ -53,23 +50,16 @@ public class SyslogAppenderTest extends TestCase {
   public SyslogAppenderTest(final String testName) {
     super(testName);
   }
-  
-  protected void setUp() throws Exception {
-    ds = new DatagramSocket();
-    ds.setSoTimeout(2000);    
-  }
 
   /**
     * Resets configuration after every test.
   */
-  protected void tearDown() {
-    ds.close();    
+  public void tearDown() {
     LogManager.resetConfiguration();
   }
 
   /**
    * Test default constructor.
-   * @deprecated Since getFacilityPrinting is deprecated
    */
   public void testDefaultConstructor() {
     SyslogAppender appender = new SyslogAppender();
@@ -82,7 +72,6 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
    * Test two parameter constructor.
-   * @deprecated Since getFacilityPrinting is deprecated
    */
   public void testTwoParamConstructor() {
     Layout layout = new PatternLayout();
@@ -96,7 +85,6 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
    * Test two parameter constructor with unexpected facility.
-   * @deprecated Since getFacilityPrinting is deprecated
    */
   public void testTwoParamConstructorBadFacility() {
     Layout layout = new PatternLayout();
@@ -110,7 +98,6 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
    * Test three parameter constructor.
-   * @deprecated Since getFacilityPrinting is deprecated
    */
   public void testThreeParamConstructor() {
     Layout layout = new PatternLayout();
@@ -125,7 +112,6 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
    * Test getFacilityString for expected facility codes.
-   * @deprecated Since getFacilityString is deprecated
    */
   public void testGetFacilityString() {
     String expected =
@@ -149,7 +135,6 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
    * Test getFacilityString for some unexpected facility codes.
-   * @deprecated Since getFacilityString is deprecated
    */
   public void testGetFacilityStringUnexpected() {
     assertNull(SyslogAppender.getFacilityString(1));
@@ -202,7 +187,6 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
    * Test setFacilityPrinting.
-   * @deprecated Since get/setFacilityPrinting are deprecated
    */
   public void testSetFacilityPrinting() {
     SyslogAppender appender = new SyslogAppender();
@@ -274,7 +258,6 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
    * Tests calling setFacility after appender has been activated.
-   * @deprecated Since setErrorHandler is deprecated
    */
   public void testSetFacilityAfterActivation() {
     SyslogAppender appender = new SyslogAppender();
@@ -284,8 +267,7 @@ public class SyslogAppenderTest extends TestCase {
     appender.setFacility("user");
     appender.setLayout(new PatternLayout("%m%n"));
 
-    org.apache.log4j.VectorErrorHandler errorHandler =
-      new org.apache.log4j.VectorErrorHandler();
+    VectorErrorHandler errorHandler = new VectorErrorHandler();
     appender.setErrorHandler(errorHandler);
     appender.activateOptions();
     appender.setFacility("kern");
@@ -300,8 +282,6 @@ public class SyslogAppenderTest extends TestCase {
   public void testAppendBelowThreshold() {
     SyslogAppender appender = new SyslogAppender();
     appender.setThreshold(Level.ERROR);
-    appender.setSyslogHost("localhost");
-    appender.setLayout(new PatternLayout("%m%n"));
     appender.activateOptions();
 
     Logger logger = Logger.getRootLogger();
@@ -312,34 +292,33 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
    * Tests that append method drops messages below threshold.
-   * @deprecated Since setErrorHandler is deprecated
    */
   public void testAppendNoHost() {
     SyslogAppender appender = new SyslogAppender();
     appender.setName("foo");
     appender.setThreshold(Level.INFO);
 
-    org.apache.log4j.VectorErrorHandler errorHandler =
-      new org.apache.log4j.VectorErrorHandler();
+    VectorErrorHandler errorHandler = new VectorErrorHandler();
     appender.setErrorHandler(errorHandler);
     appender.setLayout(new PatternLayout("%m%n"));
+    appender.activateOptions();
+
+    Logger logger = Logger.getRootLogger();
+    logger.addAppender(appender);
+    logger.info(
+      "Should not be logged by SyslogAppenderTest.testAppendNoHost.");
+    assertEquals(1, errorHandler.size());
 
     //
-    //   log4j 1.2 would not throw exception on activateOptions
-    //     but would call ErrorHandler on first log attempt
+    //  Appender is misspelled in implementation
     //
-    try {
-      appender.activateOptions();
-    } catch (IllegalStateException ex) {
-      return;
-    }
-
-    fail("Expected IllegalStateException");
+    assertEquals(
+      "No syslog host is set for SyslogAppedender named \"foo\".",
+      errorHandler.getMessage(0));
   }
 
   /**
    * Tests append method under normal conditions.
-   * @deprecated Since setErrorHandler is deprecated
    */
   public void testAppend() {
     SyslogAppender appender = new SyslogAppender();
@@ -349,8 +328,7 @@ public class SyslogAppenderTest extends TestCase {
     appender.setFacility("user");
     appender.setLayout(new PatternLayout("%m%n"));
 
-    org.apache.log4j.VectorErrorHandler errorHandler =
-      new org.apache.log4j.VectorErrorHandler();
+    VectorErrorHandler errorHandler = new VectorErrorHandler();
     appender.setErrorHandler(errorHandler);
     appender.activateOptions();
 
@@ -374,7 +352,7 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
     *  Tests SyslogAppender with IPv6 address.
-    */  
+    */
   public void testIPv6() {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("::1");
@@ -382,7 +360,7 @@ public class SyslogAppenderTest extends TestCase {
 
   /**
     *  Tests SyslogAppender with IPv6 address enclosed in square brackets.
-    */  
+    */
   public void testIPv6InBrackets() {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("[::1]");
@@ -391,7 +369,7 @@ public class SyslogAppenderTest extends TestCase {
   /**
     *  Tests SyslogAppender with IPv6 address enclosed in square brackets
     *     followed by port specification.
-    */  
+    */
   public void testIPv6AndPort() {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("[::1]:1514");
@@ -400,74 +378,216 @@ public class SyslogAppenderTest extends TestCase {
   /**
     *  Tests SyslogAppender with host name enclosed in square brackets
     *     followed by port specification.
-    */  
+    */
   public void testHostNameAndPort() {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("localhost:1514");
   }
 
+
   /**
     *  Tests SyslogAppender with IPv4 address followed by port specification.
-    */  
+    */
   public void testIPv4AndPort() {
       SyslogAppender appender = new SyslogAppender();
       appender.setSyslogHost("127.0.0.1:1514");
   }
-  
-  private String toString(DatagramPacket p){
-    return new String(p.getData(), 0, p.getLength());
-  }
-  
-  public void testActualLogging() throws Exception {
-    SyslogAppender appender = new SyslogAppender();
-    appender.setSyslogHost("localhost:" + ds.getLocalPort());
-    appender.setName("name");
-    PatternLayout pl = new PatternLayout("%m");
-    pl.setFooter("EOF");
-    appender.setLayout(pl);
-    appender.activateOptions();
-    
-    Logger l = Logger.getRootLogger();
-    l.addAppender(appender);
-    l.info("greetings");
-    ds.receive(p);
-    String s = toString(p);
-    StringTokenizer st = new StringTokenizer(s, "<>() ");
-    assertEquals("14", st.nextToken());
-    assertEquals(3, st.nextToken().length());
-    st.nextToken(); // date
-    st.nextToken(); // time
-    assertEquals(appender.getLocalHostname(), st.nextToken());
-    assertEquals("greetings", st.nextToken());
-  }
-  
-  public void testLoggingHeaderFooter() throws Exception { 
-    SyslogAppender appender = new SyslogAppender();
-    appender.setSyslogHost("localhost:" + ds.getLocalPort());
-    appender.setName("name");
 
-    PatternLayout pl = new PatternLayout("%m");
-    pl.setHeader("HI");
-    pl.setFooter("BYE");
-    appender.setLayout(pl);
-    appender.activateOptions();
-    ds.receive(p);
-    String s = toString(p);
-    assertEquals(true, s.endsWith("HI"));
+    private static String[] log(final boolean header,
+                                final String msg,
+                                final Exception ex,
+                                final int packets) throws Exception {
+        DatagramSocket ds = new DatagramSocket();
+        ds.setSoTimeout(2000);
 
-    appender.close();
-    ds.receive(p);
-    s = toString(p);
-    assertEquals(true, s.endsWith("BYE"));
-  }
-  
-  public void testLeak() throws IOException { 
-    DatagramSocket ds = new DatagramSocket();
-    for (int i = 0; i < 100; i++) {
-      SyslogWriter sw = new SyslogWriter("localhost:" + ds.getLocalPort());
-      sw.close();
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("localhost:" + ds.getLocalPort());
+      appender.setName("name");
+      appender.setHeader(header);
+      PatternLayout pl = new PatternLayout("%m");
+      appender.setLayout(pl);
+      appender.activateOptions();
+
+      Logger l = Logger.getRootLogger();
+      l.addAppender(appender);
+      if (ex == null) {
+        l.info(msg);
+      } else {
+        l.error(msg, ex);
+      }
+      appender.close();
+      String[] retval = new String[packets];
+      byte[] buf = new byte[1000];
+      for(int i = 0; i < packets; i++) {
+          DatagramPacket p = new DatagramPacket(buf, 0, buf.length);
+          ds.receive(p);
+          retval[i] = new String(p.getData(), 0, p.getLength());
+      }
+      ds.close();
+      return retval;
     }
-    ds.close();
-  }
-  
+
+    public void testActualLogging() throws Exception {
+      String s = log(false, "greetings", null, 1)[0];
+      StringTokenizer st = new StringTokenizer(s, "<>() ");
+      assertEquals("14", st.nextToken());
+      assertEquals("greetings", st.nextToken());
+    }
+
+    /**
+     * Exception with printStackTrace that breaks earlier SyslogAppender.
+     */
+    private static class MishandledException extends Exception {
+        /*
+         *   Create new instance.
+         */
+        public MishandledException() {
+        }
+
+        /**
+         * Print stack trace.
+         * @param w print writer, may not be null.
+         */
+        public void printStackTrace(final java.io.PrintWriter w) {
+             w.println("Mishandled stack trace follows:");
+             w.println("");
+             w.println("No tab here");
+             w.println("\ttab here");
+             w.println("\t");
+        }
+    }
+
+    /**
+     * Tests fix for bug 40502.
+     * @throws Exception on IOException.
+     */
+    public void testBadTabbing() throws Exception {
+        String[] s = log(false, "greetings", new MishandledException(), 6);
+        StringTokenizer st = new StringTokenizer(s[0], "<>() ");
+        assertEquals("11", st.nextToken());
+        assertEquals("greetings", st.nextToken());
+        assertEquals("<11>Mishandled stack trace follows:", s[1]);
+        assertEquals("<11>", s[2]);
+        assertEquals("<11>No tab here", s[3]);
+        assertEquals("<11>" + SyslogAppender.TAB + "tab here", s[4]);
+        assertEquals("<11>" + SyslogAppender.TAB, s[5]);
+    }
+
+    /**
+     * Tests presence of timestamp if header = true.
+     *
+     * @throws Exception if IOException.
+     */
+    public void testHeaderLogging() throws Exception {
+      Date preDate = new Date();
+      String s = log(true, "greetings", null, 1)[0];
+      Date postDate = new Date();
+      assertEquals("<14>", s.substring(0, 4));
+
+      String syslogDateStr = s.substring(4, 20);
+      SimpleDateFormat fmt = new SimpleDateFormat("MMM dd HH:mm:ss ", Locale.ENGLISH);
+      Date syslogDate = fmt.parse(syslogDateStr);
+      Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+      cal.setTime(syslogDate);
+      int syslogMonth = cal.get(Calendar.MONTH);
+      int syslogDay = cal.get(Calendar.DATE);
+      if (syslogDay < 10) {
+          assertEquals(' ', syslogDateStr.charAt(4));
+      }
+      cal.setTime(preDate);
+      int preMonth = cal.get(Calendar.MONTH);
+      cal.set(Calendar.MILLISECOND, 0);
+      preDate = cal.getTime();
+      int syslogYear;
+      if (preMonth == syslogMonth) {
+          syslogYear = cal.get(Calendar.YEAR);
+      } else {
+          cal.setTime(postDate);
+          syslogYear = cal.get(Calendar.YEAR);
+      }
+      cal.setTime(syslogDate);
+      cal.set(Calendar.YEAR, syslogYear);
+      syslogDate = cal.getTime();
+      assertTrue(syslogDate.compareTo(preDate) >= 0);
+      assertTrue(syslogDate.compareTo(postDate) <= 0);
+    }
+
+
+    /**
+     * Tests that any header or footer in layout is sent.
+     * @throws Exception if exception during test.
+     */
+    public void testLayoutHeader() throws Exception {
+        DatagramSocket ds = new DatagramSocket();
+        ds.setSoTimeout(2000);
+
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("localhost:" + ds.getLocalPort());
+      appender.setName("name");
+      appender.setHeader(false);
+      HTMLLayout pl = new HTMLLayout();
+      appender.setLayout(pl);
+      appender.activateOptions();
+
+      Logger l = Logger.getRootLogger();
+      l.addAppender(appender);
+      l.info("Hello, World");
+      appender.close();
+      String[] s = new String[3];
+      byte[] buf = new byte[1000];
+      for(int i = 0; i < 3; i++) {
+          DatagramPacket p = new DatagramPacket(buf, 0, buf.length);
+          ds.receive(p);
+          s[i] = new String(p.getData(), 0, p.getLength());
+      }
+      ds.close();
+      assertEquals("<14><!DOCTYPE", s[0].substring(0,13));
+      assertEquals("<14></table>", s[2].substring(0,12));
+    }
+
+    /**
+     * Tests that syslog packets do not exceed 1024 bytes.
+     * See bug 42087.
+     * @throws Exception if exception during test.
+     */
+    public void testBigPackets() throws Exception {
+        DatagramSocket ds = new DatagramSocket();
+        ds.setSoTimeout(2000);
+
+      SyslogAppender appender = new SyslogAppender();
+      appender.setSyslogHost("localhost:" + ds.getLocalPort());
+      appender.setName("name");
+      appender.setHeader(false);
+      PatternLayout pl = new PatternLayout("%m");
+      appender.setLayout(pl);
+      appender.activateOptions();
+
+      Logger l = Logger.getRootLogger();
+      l.addAppender(appender);
+      StringBuffer msgbuf = new StringBuffer();
+      while(msgbuf.length() < 8000) {
+          msgbuf.append("0123456789");
+      }
+      String msg = msgbuf.toString();
+      l.info(msg);
+      appender.close();
+      String[] s = new String[8];
+      byte[] buf = new byte[1200];
+      for(int i = 0; i < 8; i++) {
+          DatagramPacket p = new DatagramPacket(buf, 0, buf.length);
+          ds.receive(p);
+          assertTrue(p.getLength() <= 1024);
+          s[i] = new String(p.getData(), 0, p.getLength());
+      }
+      ds.close();
+      StringBuffer rcvbuf = new StringBuffer(s[0]);
+      rcvbuf.delete(0, 4);
+      for(int i = 1; i < 8; i++) {
+          rcvbuf.setLength(rcvbuf.length() - 3);
+          rcvbuf.append(s[i].substring(s[i].indexOf("...") + 3));
+      }
+      assertEquals(msg.length(), rcvbuf.length());
+      assertEquals(msg, rcvbuf.toString());
+    }
+
 }

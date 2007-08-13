@@ -116,7 +116,10 @@ public class SerializationTestHelper {
       FileInputStream is = new FileInputStream(witnessFile);
       int bytesRead = is.read(expected);
       is.close();
-      TestCase.assertEquals(bytesRead, actual.length);
+
+      if(bytesRead < endCompare) {
+          TestCase.assertEquals(bytesRead, actual.length);
+      }
 
       int endScan = actual.length;
 

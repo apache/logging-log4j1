@@ -20,6 +20,7 @@ package org.apache.log4j;
 import junit.framework.TestCase;
 
 import org.apache.log4j.util.SerializationTestHelper;
+import java.util.Locale;
 
 
 /**
@@ -57,7 +58,13 @@ public class LevelTest extends TestCase {
       SerializationTestHelper.deserializeStream(
         "witness/serialization/info.bin");
     assertTrue(obj instanceof Level);
-    assertTrue(obj == Level.INFO);
+    Level info = (Level) obj;
+    assertEquals("INFO", info.toString());
+    //
+    //  JDK 1.1 doesn't support readResolve necessary for the assertion
+    if (!System.getProperty("java.version").startsWith("1.1.")) {
+       assertTrue(obj == Level.INFO);
+    }
   }
 
   /**
@@ -94,34 +101,34 @@ public class LevelTest extends TestCase {
     /**
      * Tests Level.TRACE_INT.
      */
-    public void testTraceInt() {
-        assertEquals(5000, Level.TRACE_INT);
-    }
+  public void testTraceInt() {
+      assertEquals(5000, Level.TRACE_INT);
+  }
 
     /**
      * Tests Level.TRACE.
      */
-    public void testTrace() {
-        assertEquals("TRACE", Level.TRACE.toString());
-        assertEquals(5000, Level.TRACE.toInt());
-        assertEquals(7, Level.TRACE.getSyslogEquivalent());
-    }
+  public void testTrace() {
+      assertEquals("TRACE", Level.TRACE.toString());
+      assertEquals(5000, Level.TRACE.toInt());
+      assertEquals(7, Level.TRACE.getSyslogEquivalent());
+  }
 
     /**
      * Tests Level.toLevel(Level.TRACE_INT).
      */
-    public void testIntToTrace() {
-        Level trace = Level.toLevel(5000);
-        assertEquals("TRACE", trace.toString());
-    }
+  public void testIntToTrace() {
+      Level trace = Level.toLevel(5000);
+      assertEquals("TRACE", trace.toString());
+  }
 
     /**
      * Tests Level.toLevel("TRACE");
      */
-    public void testStringToTrace() {
-          Level trace = Level.toLevel("TRACE");
-          assertEquals("TRACE", trace.toString());
-    }
+  public void testStringToTrace() {
+        Level trace = Level.toLevel("TRACE");
+        assertEquals("TRACE", trace.toString());
+  }
 
     /**
      * Tests that Level extends Priority.
@@ -232,6 +239,27 @@ public class LevelTest extends TestCase {
   public void testToLevelNull() {
       Level level = Level.toLevel(null, Level.FATAL);
       assertEquals("FATAL", level.toString());
+  }
+
+    /**
+     * Test that dotless lower I + "nfo" is recognized as INFO.
+     */
+  public void testDotlessLowerI() {
+      Level level = Level.toLevel("\u0131nfo");
+      assertEquals("INFO", level.toString());
+  }
+
+    /**
+     * Test that dotted lower I + "nfo" is recognized as INFO
+     * even in Turkish locale.
+     */
+  public void testDottedLowerI() {
+      Locale defaultLocale = Locale.getDefault();
+      Locale turkey = new Locale("tr", "TR");
+      Locale.setDefault(turkey);
+      Level level = Level.toLevel("info");
+      Locale.setDefault(defaultLocale);
+      assertEquals("INFO", level.toString());
   }
 
 

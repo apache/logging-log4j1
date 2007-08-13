@@ -26,6 +26,7 @@ package org.apache.log4j.spi;
    @since 0.8.1
  */
 public interface OptionHandler {
+
   /**
      Activate the options that were previously set with calls to option
      setters.
@@ -39,4 +40,23 @@ public interface OptionHandler {
      org.apache.log4j.FileAppender#setAppend Append} options both of
      which are ambigous until the other is also set.  */
   void activateOptions();
+
+  /**
+     Return list of strings that the OptionHandler instance recognizes.
+
+     @deprecated We now use JavaBeans style getters/setters.
+   */
+  //  String[] getOptionStrings();
+
+  /**
+     Set <code>option</code> to <code>value</code>.
+
+     <p>The handling of each option depends on the OptionHandler
+     instance. Some options may become active immediately whereas
+     other may be activated only when {@link #activateOptions} is
+     called.
+
+     @deprecated We now use JavaBeans style getters/setters.
+  */
+  //void setOption(String option, String value);
 }

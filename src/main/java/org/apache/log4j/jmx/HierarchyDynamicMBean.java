@@ -1,9 +1,10 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -20,12 +21,10 @@ package org.apache.log4j.jmx;
 import java.lang.reflect.Constructor;
 import org.apache.log4j.*;
 
-import org.apache.log4j.spi.LoggerEventListener;
+import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.LoggerRepositoryEx;
 import org.apache.log4j.helpers.OptionConverter;
 
-import java.util.Enumeration;
 import java.util.Vector;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanConstructorInfo;
@@ -51,17 +50,14 @@ import javax.management.NotificationFilterSupport;
 import javax.management.ListenerNotFoundException;
 
 public class HierarchyDynamicMBean extends AbstractDynamicMBean
-                                   implements LoggerEventListener,
+                                   implements HierarchyEventListener,
                                               NotificationBroadcaster {
 
-  private static Logger log = Logger.getLogger(HierarchyDynamicMBean.class);
+  static final String ADD_APPENDER = "addAppender.";
+  static final String THRESHOLD = "threshold";
 
-  private static final String ADD_APPENDER = "addAppender.";
-  private static final String REMOVE_APPENDER = "removeAppender.";
-  private static final String THRESHOLD = "threshold";
-
-  private MBeanConstructorInfo[] dConstructors = new MBeanConstructorInfo[2];
-  private MBeanOperationInfo[] dOperations = new MBeanOperationInfo[2];
+  private MBeanConstructorInfo[] dConstructors = new MBeanConstructorInfo[1];
+  private MBeanOperationInfo[] dOperations = new MBeanOperationInfo[1];
 
   private Vector vAttributes = new Vector();
   private String dClassName = this.getClass().getName();
@@ -69,37 +65,24 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
      "This MBean acts as a management facade for org.apache.log4j.Hierarchy.";
 
   private NotificationBroadcasterSupport nbs = new NotificationBroadcasterSupport();
-  private LoggerRepository repository;
 
-  /**
-   * Construct with a default repository.
-   */
+
+  private LoggerRepository hierarchy;
+
+  private static Logger log = Logger.getLogger(HierarchyDynamicMBean.class);
+
   public HierarchyDynamicMBean() {
-    this(LogManager.getLoggerRepository());
-  }
-
-  /**
-   * Construct with a logger repository.
-   * @param repository cannot be null
-   */
-  public HierarchyDynamicMBean(LoggerRepository repository) {
-    if (repository == null)
-      throw new NullPointerException();
-    this.repository = repository;
+    hierarchy = LogManager.getLoggerRepository();
     buildDynamicMBeanInfo();
   }
 
   private
   void buildDynamicMBeanInfo() {
     Constructor[] constructors = this.getClass().getConstructors();
-    String cdesc = "Constructs a HierarchyDynamicMBean instance";
     dConstructors[0] = new MBeanConstructorInfo(
-         cdesc,
+         "HierarchyDynamicMBean(): Constructs a HierarchyDynamicMBean instance",
 	 constructors[0]);
-    dConstructors[1] = new MBeanConstructorInfo(
-         cdesc,
-         constructors[1]);
-    
+
     vAttributes.add(new MBeanAttributeInfo(THRESHOLD,
 					   "java.lang.String",
 					   "The \"threshold\" state of the hiearchy.",
@@ -111,70 +94,43 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
     params[0] = new MBeanParameterInfo("name", "java.lang.String",
 				       "Create a logger MBean" );
     dOperations[0] = new MBeanOperationInfo("addLoggerMBean",
-				    "add a loggerMBean",
+				    "addLoggerMBean(): add a loggerMBean",
 				    params ,
 				    "javax.management.ObjectName",
 				    MBeanOperationInfo.ACTION);
-    dOperations[1] = new MBeanOperationInfo("addLoggerMBeans",
-            "add a loggerMBean for all loggers",
-            new MBeanParameterInfo[0],
-            null,
-            MBeanOperationInfo.ACTION);
-    
   }
 
-  /**
-   * Adds a logger MBean, returning a new {@link ObjectName} or returning null if the logger does not exist.
-   * @param name name of the logger.
-   * @return
-   */
-  public ObjectName addLoggerMBean(String name) {
-    Logger log = repository.exists(name);
-    if (log != null) {
-      return addLoggerMBean(log);
+
+  public
+  ObjectName addLoggerMBean(String name) {
+    Logger cat = LogManager.exists(name);
+
+    if(cat != null) {
+      return addLoggerMBean(cat);
     } else {
       return null;
     }
   }
 
-  /**
-   * Adds a logger MBean for all loggers.
-   */
-  public
-  void addLoggerMBeans() {
-    Enumeration e = repository.getCurrentLoggers();
-    while (e.hasMoreElements()) {
-      Logger l = (Logger)e.nextElement();
-      addLoggerMBean(l);
-    }
-  }
-
-  /**
-   * Adds a logger MBean by Logger, returning a new registered MBean.
-   */
-  public ObjectName addLoggerMBean(Logger logger) {
+  ObjectName addLoggerMBean(Logger logger) {
     String name = logger.getName();
     ObjectName objectName = null;
     try {
       LoggerDynamicMBean loggerMBean = new LoggerDynamicMBean(logger);
-      objectName = new ObjectName(getObjectName().getDomain(), "logger", name);
-      getServer().registerMBean(loggerMBean, objectName);
-
-      NotificationFilterSupport nfs = new NotificationFilterSupport();
-      nfs.enableType(ADD_APPENDER+logger.getName());
-
-      log.debug("---Adding logger ["+name+"] as listener.");
-
-      nbs.addNotificationListener(loggerMBean, nfs, null);
-
-
-      vAttributes.add(new MBeanAttributeInfo("logger_"+name,
-					     "javax.management.ObjectName",
-					     "The "+name+" logger.",
-					     true,
-					     true, // this makes the object
-					     // clickable
-					     false));
+      objectName = new ObjectName("log4j", "logger", name);
+      
+      if (!server.isRegistered(objectName)) {
+        server.registerMBean(loggerMBean, objectName);
+        NotificationFilterSupport nfs = new NotificationFilterSupport();
+        nfs.enableType(ADD_APPENDER + logger.getName());
+        log.debug("---Adding logger [" + name + "] as listener.");
+        nbs.addNotificationListener(loggerMBean, nfs, null);
+        vAttributes.add(new MBeanAttributeInfo("logger=" + name, "javax.management.ObjectName",
+                "The " + name + " logger.", true, true, // this makes the object
+                // clickable
+                false));
+        
+      }
 
     } catch(Exception e) {
       log.error("Could not add loggerMBean for ["+name+"].", e);
@@ -227,11 +183,8 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
     }
     // Check for a recognized operation name and call the corresponding operation
 
-    if( operationName.equals("addLoggerMBean")) {
+    if(operationName.equals("addLoggerMBean")) {
       return addLoggerMBean((String)params[0]);
-    } else if (operationName.equals("addLoggerMBeans")) {
-      addLoggerMBeans();
-      return null;
     } else {
       throw new ReflectionException(
 	    new NoSuchMethodException(operationName),
@@ -257,7 +210,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
 
     // Check for a recognized attributeName and call the corresponding getter
     if (attributeName.equals(THRESHOLD)) {
-      return repository.getThreshold();
+      return hierarchy.getThreshold();
     } else if(attributeName.startsWith("logger")) {
       int k = attributeName.indexOf("%3D");
       String val = attributeName;
@@ -279,11 +232,9 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
 
   }
 
-  public void levelChangedEvent(Logger logger) {
-    // TODO Auto-generated method stub    
-  }
 
-  public void appenderAddedEvent(Logger logger, Appender appender) {
+  public
+  void addAppenderEvent(Category logger, Appender appender) {
     log.debug("addAppenderEvent called: logger="+logger.getName()+
 	      ", appender="+appender.getName());
     Notification n = new Notification(ADD_APPENDER+logger.getName(), this, 0);
@@ -292,23 +243,20 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
     nbs.sendNotification(n);
   }
 
-  public void appenderRemovedEvent(Logger logger, Appender appender) {
-    log.debug("removeAppenderCalled: logger=" + logger.getName()+
+ public
+  void removeAppenderEvent(Category cat, Appender appender) {
+    log.debug("removeAppenderCalled: logger="+cat.getName()+
 	      ", appender="+appender.getName());
-    Notification n = new Notification(REMOVE_APPENDER+logger.getName(), this, 0);
-    n.setUserData(appender);
-    log.debug("sending notification.");
-    nbs.sendNotification(n);
   }
 
   public
   void postRegister(java.lang.Boolean registrationDone) {
     log.debug("postRegister is called.");
-    ((LoggerRepositoryEx)repository).addLoggerEventListener(this);
-    Logger root = repository.getRootLogger();
+    hierarchy.addHierarchyEventListener(this);
+    Logger root = hierarchy.getRootLogger();
     addLoggerMBean(root);
   }
-  
+
   public
   void removeNotificationListener(NotificationListener listener)
                                          throws ListenerNotFoundException {
@@ -339,9 +287,10 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
 
     if(name.equals(THRESHOLD)) {
       Level l = OptionConverter.toLevel((String) value,
-					   repository.getThreshold());
-      repository.setThreshold(l);
+					   hierarchy.getThreshold());
+      hierarchy.setThreshold(l);
     }
-  }
 
+
+  }
 }

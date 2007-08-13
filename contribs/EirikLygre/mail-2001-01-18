@@ -1,0 +1,27 @@
+Delivered-To: urba-cgu@urbanet.ch 
+To: Ceki Gulcu <cgu@urbanet.ch> 
+From: Eirik_Lygre/evita/no%EVITA@evita.no 
+Subject: Re: Suggestion for new appender "DailyFileAppender" 
+Date: Thu, 18 Jan 2001 20:18:27 +0100 
+X-MIMETrack: Serialize by Router on domino1/evita/no(Release 5.0.5 |September 22, 2000) at 
+ 18.01.2001 20:18:30 
+
+
+
+This version subclasses GregorianCalendar, to get access to the
+millis-variable used in the Calendar-classes (it is protected).
+
+
+What do you think?
+
+
+Eirik
+
+
+++++++++++
+Eirik Lygre
+eirik.lygre@evita.no
+e-vita as, Stortorvet 3, Oslo
+Mobil: (+47) 905 66476
+Fax: (+47) 23 35 70 51
+ DailyFileAppender1.jav 

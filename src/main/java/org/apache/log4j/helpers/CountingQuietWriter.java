@@ -1,9 +1,10 @@
 /*
- * Copyright 1999,2006 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -19,6 +20,7 @@ package org.apache.log4j.helpers;
 import java.io.Writer;
 import java.io.IOException;
 
+import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.ErrorCode;
 
 /**
@@ -26,20 +28,14 @@ import org.apache.log4j.spi.ErrorCode;
 
    @author Heinz Richter, heinz.richter@frogdot.com
    @since 0.8.1
-   @deprecated
 
    */
 public class CountingQuietWriter extends QuietWriter {
 
   protected long count;
 
-    /**
-     * @deprecated
-     * @param writer
-     * @param eh
-     */
   public
-  CountingQuietWriter(Writer writer, org.apache.log4j.spi.ErrorHandler eh) {
+  CountingQuietWriter(Writer writer, ErrorHandler eh) {
     super(writer, eh);
   }
 

@@ -17,31 +17,25 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.joran.JoranConfigurator;
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.xml.DOMConfigurator;
 
-
-
-import javax.jms.TopicConnection;
-import javax.jms.Topic;
-import javax.jms.TopicConnectionFactory;
-import javax.jms.TopicSubscriber;
-import javax.jms.Session;
-import javax.jms.TopicSession;
-import javax.jms.ObjectMessage;
 import javax.jms.JMSException;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import javax.naming.InitialContext;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+import javax.jms.Topic;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
+import javax.jms.TopicSession;
+import javax.jms.TopicSubscriber;
 import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
  * A simple application that consumes logging events sent by a {@link
@@ -68,9 +62,7 @@ public class JMSSink implements javax.jms.MessageListener {
     String configFile = args[4];
 
     if(configFile.endsWith(".xml")) {
-      JoranConfigurator jc = new JoranConfigurator();
-      LoggerRepository repository = LogManager.getLoggerRepository();
-      jc.doConfigure(configFile, repository);
+      DOMConfigurator.configure(configFile);
     } else {
       PropertyConfigurator.configure(configFile);
     }
@@ -78,14 +70,14 @@ public class JMSSink implements javax.jms.MessageListener {
     new JMSSink(tcfBindingName, topicBindingName, username, password);
 
     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-    // Loop until the word "exit" is typed or EOF
+    // Loop until the word "exit" is typed
     System.out.println("Type \"exit\" to quit JMSSink.");
     while(true){
-      String s = stdin.readLine();
-      if (s == null || s.equalsIgnoreCase("exit")) {
-        System.out.println("Exiting. Kill the application if it does not exit "
-            + "due to daemon threads.");
-        return; 
+      String s = stdin.readLine( );
+      if (s.equalsIgnoreCase("exit")) {
+	System.out.println("Exiting. Kill the application if it does not exit "
+			   + "due to daemon threads.");
+	return; 
       }
     } 
   }

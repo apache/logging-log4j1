@@ -17,16 +17,13 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.AppenderSkeleton;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
-
-import java.io.*;
-
-import java.net.*;
-
-import java.util.*;
-
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.helpers.LogLog;
 
 /**
   <p>The TelnetAppender is a log4j appender that specializes in
@@ -55,18 +52,13 @@ import java.util.*;
 
    @author <a HREF="mailto:jay@v-wave.com">Jay Funnell</a>
 */
+
 public class TelnetAppender extends AppenderSkeleton {
+
   private SocketHandler sh;
   private int port = 23;
 
-    /**
-     * Creates a TelnetAppender.
-     */
-  public TelnetAppender() {
-      super(false);
-  }
-
-  /**
+  /** 
       This appender requires a layout to format the text to the
       attached client(s). */
   public boolean requiresLayout() {
@@ -79,51 +71,40 @@ public class TelnetAppender extends AppenderSkeleton {
     try {
       sh = new SocketHandler(port);
       sh.start();
-    } catch (IOException e) {
-      getLogger().error("Could not active TelnetAppender options for TelnetAppender named "+getName(), e);
-      throw new IllegalStateException("Could not create a SocketHandler for TelnetAppender named "+getName());
     }
-    super.activateOptions();
+    catch(Exception e) {
+      e.printStackTrace();
+    }
   }
 
-  public int getPort() {
+  public
+  int getPort() {
     return port;
   }
 
-  public void setPort(int port) {
+  public
+  void setPort(int port) {
     this.port = port;
   }
 
+
   /** shuts down the appender. */
   public void close() {
-    if (sh != null) {
-      sh.close();
-      try {
-        sh.join();
-      } catch (InterruptedException e) {
-      }
-    }
+    sh.finalize();
   }
 
   /** Handles a log event.  For this appender, that means writing the
     message to each connected client.  */
   protected void append(LoggingEvent event) {
-    if(sh == null || !sh.hasConnections()) {
-      return;
-    }
-
     sh.send(this.layout.format(event));
-
-    if (layout.ignoresThrowable()) {
+    if(layout.ignoresThrowable()) {
       String[] s = event.getThrowableStrRep();
-
       if (s != null) {
-        int len = s.length;
-
-        for (int i = 0; i < len; i++) {
-          sh.send(s[i]);
-          sh.send(Layout.LINE_SEP);
-        }
+	int len = s.length;
+	for(int i = 0; i < len; i++) {
+	  sh.send(s[i]);
+	  sh.send(Layout.LINE_SEP);
+	}
       }
     }
   }
@@ -134,107 +115,72 @@ public class TelnetAppender extends AppenderSkeleton {
       clients.  It is threaded so that clients can connect/disconnect
       asynchronously. */
   protected class SocketHandler extends Thread {
+
+    private boolean done = false;
     private Vector writers = new Vector();
     private Vector connections = new Vector();
     private ServerSocket serverSocket;
     private int MAX_CONNECTIONS = 20;
-    
-    private String encoding = "UTF-8";
-    
-    public SocketHandler(int port) throws IOException {
-      serverSocket = new ServerSocket(port);
-      setName("TelnetAppender-" + getName() + "-" + port);
-    }
 
-    public void finalize() {
-      close();
-    }
-    
     /** make sure we close all network connections when this handler is destroyed. */
-    public void close() {
-      for (Enumeration e = connections.elements(); e.hasMoreElements();) {
+    public void finalize() {
+      for(Enumeration e = connections.elements();e.hasMoreElements();) {
         try {
-          ((Socket) e.nextElement()).close();
-        } catch (IOException ex) {
+          ((Socket)e.nextElement()).close();
+        } catch(Exception ex) {
         }
       }
-      
-      interrupt();
       try {
         serverSocket.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }      
+      } catch(Exception ex) {
+      }
+      done = true;
     }
 
     /** sends a message to each of the clients in telnet-friendly output. */
     public void send(String message) {
-      boolean hasWriterError = false;
-      for (Enumeration e = writers.elements(); e.hasMoreElements();) {
-        PrintWriter writer = (PrintWriter) e.nextElement();
+      Enumeration ce = connections.elements();
+      for(Enumeration e = writers.elements();e.hasMoreElements();) {
+        Socket sock = (Socket)ce.nextElement();
+        PrintWriter writer = (PrintWriter)e.nextElement();
         writer.print(message);
-        hasWriterError |= writer.checkError();
-
-      }
-      //
-      //   if any writer had an error then
-      //       check all writers and remove any bad ones
-      if(hasWriterError) {
-         for (int i = writers.size() - 1; i >= 0; i--) {
-            if (((PrintWriter) writers.elementAt(i)).checkError()) {
-                writers.remove(i);
-                connections.remove(i);
-            }
-         }
+        if(writer.checkError()) {
+          // The client has closed the connection, remove it from our list:
+          connections.remove(sock);
+          writers.remove(writer);
+        }
       }
     }
 
-    /**
-        Continually accepts client connections.  Client connections
-        are refused when MAX_CONNECTIONS is reached.
+    /** 
+	Continually accepts client connections.  Client connections
+        are refused when MAX_CONNECTIONS is reached. 
     */
     public void run() {
-      while (!Thread.interrupted()) {
+      while(!done) {
         try {
           Socket newClient = serverSocket.accept();
-
-          // Bugzilla 26117: use an encoding to support EBCDIC machines
-          // Could make encoding a JavaBean property or even make TelnetAppender
-          // extend WriterAppender, which already has encoding support.
-          PrintWriter pw = new PrintWriter(new OutputStreamWriter(newClient.getOutputStream(), encoding));
-
-          if (connections.size() < MAX_CONNECTIONS) {
+          PrintWriter pw = new PrintWriter(newClient.getOutputStream());
+          if(connections.size() < MAX_CONNECTIONS) {
             connections.addElement(newClient);
             writers.addElement(pw);
-            pw.print(
-              "TelnetAppender v1.0 (" + connections.size()
-              + " active connections)\r\n\r\n");
+            pw.print("TelnetAppender v1.0 (" + connections.size() 
+		     + " active connections)\r\n\r\n");
             pw.flush();
           } else {
             pw.print("Too many connections.\r\n");
             pw.flush();
             newClient.close();
           }
-        } catch (Exception e) {
-          if (!Thread.interrupted())
-            getLogger().error("Encountered error while in SocketHandler loop.", e);
-          break;
+        } catch(Exception e) {
+          LogLog.error("Encountered error while in SocketHandler loop.", e);
         }
       }
-
-      try {
-        serverSocket.close();
-      } catch (IOException ex) {
-      }
-
     }
-    
-    /**
-     *  Determines if socket hander has any active connections.
-     *  @return true if any active connections.
-     */
-    public boolean hasConnections() {
-       return connections.size() > 0;
+
+    public SocketHandler(int port) throws IOException {
+      serverSocket = new ServerSocket(port);
     }
+
   }
 }

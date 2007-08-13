@@ -20,15 +20,14 @@ package org.apache.log4j.xml;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import org.apache.log4j.*;
-import org.apache.log4j.joran.JoranConfigurator;
+import org.apache.log4j.Logger;
 import org.apache.log4j.util.Compare;
 
-
 public class CustomLevelTestCase extends TestCase {
+
   static String TEMP = "output/temp";
-  Logger root;
+
+  Logger root; 
   Logger logger;
 
   public CustomLevelTestCase(String name) {
@@ -40,71 +39,51 @@ public class CustomLevelTestCase extends TestCase {
     logger = Logger.getLogger(CustomLevelTestCase.class);
   }
 
-  public void tearDown() {
+  public void tearDown() {  
     root.getLoggerRepository().resetConfiguration();
-
-    Logger logger = LogManager.getLoggerRepository().getLogger("LOG4J");
-    logger.setAdditivity(false);
-    logger.addAppender(
-      new ConsoleAppender(new PatternLayout("log4j: %-22c{2} - %m%n")));
   }
 
   public void test1() throws Exception {
-    org.apache.log4j.BasicConfigurator.configure();
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.doConfigure("input/xml/customLevel1.xml", LogManager.getLoggerRepository());
-    jc.dumpErrors();
-    
+    DOMConfigurator.configure("input/xml/customLevel1.xml");
     common();
-    assertTrue(Compare.compare(TEMP, "witness/xml/customLevel.1"));
+    assertTrue(Compare.compare(TEMP, "witness/customLevel.1"));
   }
 
   public void test2() throws Exception {
-    org.apache.log4j.BasicConfigurator.configure();
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.doConfigure("input/xml/customLevel2.xml", LogManager.getLoggerRepository());
-    jc.dumpErrors();
-    
+    DOMConfigurator.configure("input/xml/customLevel2.xml");
     common();
-    assertTrue(Compare.compare(TEMP, "witness/xml/customLevel.2"));
+    assertTrue(Compare.compare(TEMP, "witness/customLevel.2"));
   }
 
   public void test3() throws Exception {
-    org.apache.log4j.BasicConfigurator.configure();
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.doConfigure("input/xml/customLevel3.xml", LogManager.getLoggerRepository());
-    jc.dumpErrors();
-    
+    DOMConfigurator.configure("input/xml/customLevel3.xml");
     common();
-    assertTrue(Compare.compare(TEMP, "witness/xml/customLevel.3"));
+    assertTrue(Compare.compare(TEMP, "witness/customLevel.3"));
   }
 
   public void test4() throws Exception {
-    org.apache.log4j.BasicConfigurator.configure();
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.doConfigure("input/xml/customLevel4.xml", LogManager.getLoggerRepository());
-    jc.dumpErrors();
-
+    DOMConfigurator.configure("input/xml/customLevel4.xml");
     common();
-    assertTrue(Compare.compare(TEMP, "witness/xml/customLevel.4"));
+    assertTrue(Compare.compare(TEMP, "witness/customLevel.4"));
   }
+
 
   void common() {
     int i = 0;
     logger.debug("Message " + ++i);
-    logger.info("Message " + ++i);
-    logger.warn("Message " + ++i);
+    logger.info ("Message " + ++i);
+    logger.warn ("Message " + ++i);
     logger.error("Message " + ++i);
     logger.log(XLevel.TRACE, "Message " + ++i);
   }
-  
+
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new CustomLevelTestCase("test1"));
     suite.addTest(new CustomLevelTestCase("test2"));
     suite.addTest(new CustomLevelTestCase("test3"));
     suite.addTest(new CustomLevelTestCase("test4"));
-
     return suite;
   }
+
 }

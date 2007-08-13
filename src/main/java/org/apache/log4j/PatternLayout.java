@@ -1,12 +1,13 @@
 /*
- * Copyright 1999,2005 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,30 +17,30 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.PatternConverter;
-import org.apache.log4j.pattern.BridgePatternConverter;
+import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.PatternParser;
+import org.apache.log4j.helpers.PatternConverter;
 
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
 //                 Anders Kristensen <akristensen@dynamicsoft.com>
 
 /**
-  * <p>A flexible layout configurable with pattern string. The goal of this class
-  * is to {@link #format format} a {@link LoggingEvent} and return the results
-  * in a {#link StringBuffer}. The format of the result depends on the
-  * <em>conversion pattern</em>.
-  * <p>
-  *
-  * <p>The conversion pattern is closely related to the conversion
-  * pattern of the printf function in C. A conversion pattern is
-  * composed of literal text and format control expressions called
-  * <em>conversion specifiers</em>.
-  *
-  * <p><i>Note that you are free to insert any literal text within the
-  * conversion pattern.</i>
-  * </p>
+
+   A flexible layout configurable with pattern string.
+
+   <p>The goal of this class is to {@link #format format} a {@link
+   LoggingEvent} and return the results as a String. The results
+   depend on the <em>conversion pattern</em>.
+
+   <p>The conversion pattern is closely related to the conversion
+   pattern of the printf function in C. A conversion pattern is
+   composed of literal text and format control expressions called
+   <em>conversion specifiers</em>.
+
+   <p><i>You are free to insert any literal text within the conversion
+   pattern.</i>
 
    <p>Each conversion specifier starts with a percent sign (%) and is
    followed by optional <em>format modifiers</em> and a <em>conversion
@@ -117,16 +118,32 @@ import org.apache.log4j.spi.LoggingEvent;
      </tr>
 
    <tr> <td align=center><b>d</b></td> <td>Used to output the date of
-         the logging event. The date conversion specifier may be
-         followed by a set of braces containing a
-         date and time pattern strings {@link java.text.SimpleDateFormat},
-         <em>ABSOLUTE</em>, <em>DATE</em> or <em>ISO8601</em>
-          and a set of braces containing a time zone id per 
-          {@link java.util.TimeZone#getTimeZone(String)}.           
-          For example, <b>%d{HH:mm:ss,SSS}</b>,
-         <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>,
-         <b>%d{DATE}</b> or <b>%d{HH:mm:ss}{GMT+0}</b>. If no date format specifier is given then
-         ISO8601 format is assumed.  
+	 the logging event. The date conversion specifier may be
+	 followed by a <em>date format specifier</em> enclosed between
+	 braces. For example, <b>%d{HH:mm:ss,SSS}</b> or
+	 <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>.  If no
+	 date format specifier is given then ISO8601 format is
+	 assumed.
+
+	 <p>The date format specifier admits the same syntax as the
+	 time pattern string of the {@link
+	 java.text.SimpleDateFormat}. Although part of the standard
+	 JDK, the performance of <code>SimpleDateFormat</code> is
+	 quite poor.
+
+	 <p>For better results it is recommended to use the log4j date
+	 formatters. These can be specified using one of the strings
+	 "ABSOLUTE", "DATE" and "ISO8601" for specifying {@link
+	 org.apache.log4j.helpers.AbsoluteTimeDateFormat
+	 AbsoluteTimeDateFormat}, {@link
+	 org.apache.log4j.helpers.DateTimeDateFormat DateTimeDateFormat}
+	 and respectively {@link
+	 org.apache.log4j.helpers.ISO8601DateFormat
+	 ISO8601DateFormat}. For example, <b>%d{ISO8601}</b> or
+	 <b>%d{ABSOLUTE}</b>.
+
+	 <p>These dedicated date formatters perform significantly
+	 better than {@link java.text.SimpleDateFormat}.
      </td>
    </tr>
 
@@ -137,7 +154,7 @@ import org.apache.log4j.spi.LoggingEvent;
    issued.
 
    <p><b>WARNING</b> Generating caller location information is
-   extremely slow. Its use should be avoided unless execution speed
+   extremely slow. It's use should be avoided unless execution speed
    is not an issue.
 
    </tr>
@@ -214,7 +231,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
      <td align=center><b>r</b></td>
 
-     <td>Used to output the number of milliseconds elapsed since the construction 
+     <td>Used to output the number of milliseconds elapsed from the construction 
      of the layout until the creation of the logging event.</td>
    </tr>
 
@@ -240,46 +257,18 @@ import org.apache.log4j.spi.LoggingEvent;
    <tr>
      <td align=center><b>X</b></td>
 
-     <td>
-
+     <td> 
+     
      <p>Used to output the MDC (mapped diagnostic context) associated
      with the thread that generated the logging event. The <b>X</b>
-     conversion character can be followed by the key for the
+     conversion character <em>must</em> be followed by the key for the
      map placed between braces, as in <b>%X{clientNumber}</b> where
      <code>clientNumber</code> is the key. The value in the MDC
-     corresponding to the key will be output. If no additional sub-option
-     is specified, then the entire contents of the MDC key value pair set
-     is output using a format {{key1,val1},{key2,val2}}</p>
-
+     corresponding to the key will be output.</p>
+     
      <p>See {@link MDC} class for more details.
      </p>
-
-     </td>
-   </tr>
-
-      <tr>
-     <td align=center><b>properties</b></td>
-
-     <td>
-     <p>Used to output the Properties associated
-     with the logging event. The <b>properties</b>
-     conversion word can be followed by the key for the
-     map placed between braces, as in <b>%properties{application}</b> where
-     <code>application</code> is the key. The value in the Properties bundle
-     corresponding to the key will be output. If no additional sub-option
-     is specified, then the entire contents of the Properties key value pair set
-     is output using a format {{key1,val1},{key2,val2}}</p>
-     </td>
-   </tr>
-
-            <tr>
-     <td align=center><b>throwable</b></td>
-
-     <td>
-     <p>Used to output the Throwable trace that has been bound to the LoggingEvent, by
-     default this will output the full trace as one would normally find by a call to Throwable.printStackTrace().
-     The throwable conversion word can be followed by an option in the form <b>%throwable{short}</b>
-     which will only output the first line of the ThrowableInformation.</p>
+     
      </td>
    </tr>
 
@@ -404,49 +393,29 @@ import org.apache.log4j.spi.LoggingEvent;
 
    @since 0.8.2 */
 public class PatternLayout extends Layout {
+
+
   /** Default pattern string for log output. Currently set to the
       string <b>"%m%n"</b> which just prints the application supplied
       message. */
-  public static final String DEFAULT_CONVERSION_PATTERN = "%m%n";
+  public final static String DEFAULT_CONVERSION_PATTERN ="%m%n";
 
   /** A conversion pattern equivalent to the TTCCCLayout.
       Current value is <b>%r [%t] %p %c %x - %m%n</b>. */
-  public static final String TTCC_CONVERSION_PATTERN =
-    "%r [%t] %p %c %x - %m%n";
+  public final static String TTCC_CONVERSION_PATTERN
+                                             = "%r [%t] %p %c %x - %m%n";
 
-    /**
-     * Initial size of internal buffer, no longer used.
-     * @deprecated since 1.3
-     */
+
   protected final int BUF_SIZE = 256;
-
-    /**
-     * Maximum capacity of internal buffer, no longer used.
-     * @deprecated since 1.3
-     */
   protected final int MAX_CAPACITY = 1024;
 
-  /**
-   * Customized pattern conversion rules are stored under this key in the
-   * {@link org.apache.log4j.spi.LoggerRepository LoggerRepository} object store.
-   */
-  public static final String PATTERN_RULE_REGISTRY = "PATTERN_RULE_REGISTRY";
 
+  // output buffer appended to when format() is invoked
+  private StringBuffer sbuf = new StringBuffer(BUF_SIZE);
 
-  /**
-    *  Initial converter for pattern.
-    */
+  private String pattern;
+
   private PatternConverter head;
-
-  /**
-   * Conversion pattern.
-   */
-  private String conversionPattern;
-
-  /**
-   * True if any element in pattern formats information from exceptions.
-   */
-  private boolean handlesExceptions;
 
   /**
      Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
@@ -458,89 +427,81 @@ public class PatternLayout extends Layout {
   }
 
   /**
-    * Constructs a PatternLayout using the supplied conversion pattern.
-   * @param pattern conversion pattern.
+     Constructs a PatternLayout using the supplied conversion pattern.
   */
-  public PatternLayout(final String pattern) {
-    this.conversionPattern = pattern;
-    head = createPatternParser(
-            (pattern == null) ? DEFAULT_CONVERSION_PATTERN : pattern).parse();
-    if (head instanceof BridgePatternConverter) {
-        handlesExceptions = !((BridgePatternConverter) head).ignoresThrowable();
+  public PatternLayout(String pattern) {
+    this.pattern = pattern;
+    head = createPatternParser((pattern == null) ? DEFAULT_CONVERSION_PATTERN :
+			     pattern).parse();
+  }
+
+   /**
+     Set the <b>ConversionPattern</b> option. This is the string which
+     controls formatting and consists of a mix of literal content and
+     conversion specifiers.
+   */
+  public
+  void setConversionPattern(String conversionPattern) {
+    pattern = conversionPattern;
+    head = createPatternParser(conversionPattern).parse();
+  }
+
+  /**
+     Returns the value of the <b>ConversionPattern</b> option.
+   */
+  public
+  String getConversionPattern() {
+    return pattern;
+  }
+
+  /**
+     Does not do anything as options become effective
+  */
+  public
+  void activateOptions() {
+    // nothing to do.
+  }
+
+ /**
+     The PatternLayout does not handle the throwable contained within
+     {@link LoggingEvent LoggingEvents}. Thus, it returns
+     <code>true</code>.
+
+     @since 0.8.4 */
+  public
+  boolean ignoresThrowable() {
+    return true;
+  }
+
+  /**
+    Returns PatternParser used to parse the conversion string. Subclasses
+    may override this to return a subclass of PatternParser which recognize
+    custom conversion characters.
+
+    @since 0.9.0
+  */
+  protected PatternParser createPatternParser(String pattern) {
+    return new PatternParser(pattern);
+  }
+
+
+  /**
+     Produces a formatted string as specified by the conversion pattern.
+  */
+  public String format(LoggingEvent event) {
+    // Reset working stringbuffer
+    if(sbuf.capacity() > MAX_CAPACITY) {
+      sbuf = new StringBuffer(BUF_SIZE);
     } else {
-        handlesExceptions = false;
-    }
-  }
-
-  /**
-   * Set the <b>ConversionPattern</b> option. This is the string which
-   * controls formatting and consists of a mix of literal content and
-   * conversion specifiers.
-   *
-   * @param conversionPattern conversion pattern.
-  */
-  public void setConversionPattern(final String conversionPattern) {
-    this.conversionPattern =
-      OptionConverter.convertSpecialChars(conversionPattern);
-      head = createPatternParser(this.conversionPattern).parse();
-      if (head instanceof BridgePatternConverter) {
-          handlesExceptions = !((BridgePatternConverter) head).ignoresThrowable();
-      } else {
-          handlesExceptions = false;
-      }
-  }
-
-  /**
-   *  Returns the value of the <b>ConversionPattern</b> option.
-   * @return conversion pattern.
-   */
-  public String getConversionPattern() {
-    return conversionPattern;
-  }
-
-
-    /**
-      Returns PatternParser used to parse the conversion string. Subclasses
-      may override this to return a subclass of PatternParser which recognize
-      custom conversion characters.
-
-      @since 0.9.0
-    */
-    protected org.apache.log4j.helpers.PatternParser createPatternParser(String pattern) {
-      return new org.apache.log4j.pattern.BridgePatternParser(pattern,
-              repository, getLogger());
+      sbuf.setLength(0);
     }
 
+    PatternConverter c = head;
 
-  /**
-    Activates the conversion pattern. Do not forget to call this method after
-    you change the parameters of the PatternLayout instance.
-  */
-  public void activateOptions() {
-      // nothing to do.
-  }
-
-
-  /**
-   *  Formats a logging event to a writer.
-   * @param event logging event to be formatted.
-  */
-  public String format(final LoggingEvent event) {
-      StringBuffer buf = new StringBuffer();
-      for(PatternConverter c = head;
-          c != null;
-          c = c.next) {
-          c.format(buf, event);
-      }
-      return buf.toString();
-  }
-
-  /**
-   * Will return false if any of the conversion specifiers in the pattern
-   * handles {@link Exception Exceptions}.
-   * @return true if the pattern formats any information from exceptions.
-   */
-  public boolean ignoresThrowable() {
-    return !handlesExceptions;
+    while(c != null) {
+      c.format(sbuf, event);
+      c = c.next;
+    }
+    return sbuf.toString();
   }
 }

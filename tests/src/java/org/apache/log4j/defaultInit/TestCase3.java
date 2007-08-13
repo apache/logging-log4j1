@@ -18,7 +18,10 @@
 package org.apache.log4j.defaultInit;
 
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import junit.framework.Test;
 
+import java.util.Vector;
 import java.util.Enumeration;
 
 import org.apache.log4j.*;
@@ -36,7 +39,7 @@ public class TestCase3 extends TestCase {
     LogManager.shutdown();
   }
 
-  public void testProperties() {
+  public void propertiesTest() {
     Logger root = Logger.getRootLogger();
     boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
     assertTrue(rootIsConfigured);
@@ -45,11 +48,11 @@ public class TestCase3 extends TestCase {
     assertEquals(appender.getName(), "D3");
   }
 
-/**  public static Test suite() {
+  public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new TestCase3("propertiesTest"));
     return suite;
   }
-**/
+
 }
 

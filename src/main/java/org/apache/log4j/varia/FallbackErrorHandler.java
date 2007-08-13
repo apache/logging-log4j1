@@ -14,30 +14,121 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 package org.apache.log4j.varia;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.ErrorHandler;
-import org.apache.log4j.spi.LoggingEvent;
-
+import  org.apache.log4j.spi.ErrorHandler;
+import  org.apache.log4j.spi.LoggingEvent;
+import  org.apache.log4j.Appender;
+import  org.apache.log4j.Logger;
+import  org.apache.log4j.helpers.LogLog;
+import java.util.Vector;
+ 
 /**
-   <code>ErrorHandler</code> and its implementations are no longer
-   utilized by Log4j.  The <code>ErrorHandler</code> interface and any
-   implementations of it are only here to provide binary runtime
-   compatibility with versions previous to 1.3, most specifically
-   1.2.xx versions.  All methods are NOP's.
-
-   @author Ceki G&uuml;lc&uuml;
-   @deprecated As of 1.3
- */
+  *
+  * The <code>FallbackErrorHandler</code> implements the ErrorHandler
+  * interface such that a secondary appender may be specified.  This
+  * secondary appender takes over if the primary appender fails for
+  * whatever reason.
+  *
+  * <p>The error message is printed on <code>System.err</code>, and
+  * logged in the new secondary appender.
+  *
+  * @author Ceki G&uuml;c&uuml;
+  * */
 public class FallbackErrorHandler implements ErrorHandler {
-  public void setLogger(Logger logger) {}
-  public void activateOptions() {}
-  public void error(String message, Exception e, int errorCode) {}
-  public void error(String message, Exception e, int errorCode, LoggingEvent event) {}
-  public void error(String message) {}
-  public void setAppender(Appender appender) {}
-  public void setBackupAppender(Appender appender) {}
+
+
+  Appender backup;
+  Appender primary;
+  Vector loggers;
+
+  public FallbackErrorHandler() {
+  }
+  
+
+  /**
+     <em>Adds</em> the logger passed as parameter to the list of
+     loggers that we need to search for in case of appender failure.
+  */
+  public 
+  void setLogger(Logger logger) {
+    LogLog.debug("FB: Adding logger [" + logger.getName() + "].");
+    if(loggers == null) {
+      loggers = new Vector();
+    }
+    loggers.addElement(logger);
+  }
+
+
+  /**
+     No options to activate.
+  */
+  public 
+  void activateOptions() {
+  }
+
+
+  /**
+     Prints the message and the stack trace of the exception on
+     <code>System.err</code>.  */
+  public
+  void error(String message, Exception e, int errorCode) { 
+    error(message, e, errorCode, null);
+  }
+
+  /**
+     Prints the message and the stack trace of the exception on
+     <code>System.err</code>.
+   */
+  public
+  void error(String message, Exception e, int errorCode, LoggingEvent event) {
+    LogLog.debug("FB: The following error reported: " + message, e);
+    LogLog.debug("FB: INITIATING FALLBACK PROCEDURE.");
+    if (loggers != null) {
+    	for(int i = 0; i < loggers.size(); i++) {
+      		Logger l = (Logger) loggers.elementAt(i);
+      		LogLog.debug("FB: Searching for ["+primary.getName()+"] in logger ["
+		   		+l.getName() + "].");
+      		LogLog.debug("FB: Replacing ["+primary.getName()+"] by ["
+		   		+ backup.getName() + "] in logger ["+ l.getName() +"].");
+      		l.removeAppender(primary);
+      		LogLog.debug("FB: Adding appender ["+backup.getName()+"] to logger "
+		   		+  l.getName());
+      		l.addAppender(backup);
+        }
+    }    
+  }
+
+
+  /**
+     Print a the error message passed as parameter on
+     <code>System.err</code>.  
+  */
+  public 
+  void error(String message) {
+    //if(firstTime) {
+    //LogLog.error(message);
+    //firstTime = false;
+    //}
+  }
+  
+  /**
+     The appender to which this error handler is attached.
+   */
+  public
+  void setAppender(Appender primary) {
+    LogLog.debug("FB: Setting primary appender to [" + primary.getName() + "].");
+    this.primary = primary;
+  }
+
+  /**
+     Set the backup appender.
+   */
+  public
+  void setBackupAppender(Appender backup) {
+    LogLog.debug("FB: Setting backup appender to [" + backup.getName() + "].");
+    this.backup = backup;
+  }
+  
 }

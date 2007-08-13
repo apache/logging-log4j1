@@ -1,9 +1,10 @@
 /*
- * Copyright 1999-2006 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -23,14 +24,10 @@ import org.apache.log4j.spi.LoggingEvent;
 
 /**
    <code>BoundedFIFO</code> serves as the bounded first-in-first-out
-   buffer previously used by the {@link org.apache.log4j.AsyncAppender}.
+   buffer heavily used by the {@link org.apache.log4j.AsyncAppender}.
    
    @author Ceki G&uuml;lc&uuml; 
-   @since version 0.9.1
-
-   @deprecated Since 1.3.
-
- */
+   @since version 0.9.1 */
 public class BoundedFIFO {
   
   LoggingEvent[] buf;
@@ -94,8 +91,8 @@ public class BoundedFIFO {
   }
 
   /**
-     Return <code>true</code> if the buffer is full, that is the
-     number of elements in the buffer equals the buffer size. */
+     Return <code>true</code> if the buffer is full, that is, whether
+     the number of elements in the buffer equals the buffer size. */
   public 
   boolean isFull() {
     return numElements == maxSize;

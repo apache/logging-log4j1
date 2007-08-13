@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,435 +18,141 @@
 package org.apache.log4j;
 
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import junit.framework.Test;
 
-import org.apache.log4j.spi.LoggingEvent;
-
-import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.log4j.*;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.varia.NullAppender;
 
 /**
- *  Tests for AsyncAppender.
- *
- * @author Curt Arnold
- *
+   A superficial but general test of log4j.
  */
-public final class AsyncAppenderTestCase extends TestCase {
-  /**
-   * root logger.
-   */
-  private final Logger root = Logger.getRootLogger();
+public class AsyncAppenderTestCase extends TestCase {
 
-  /**
-   * appender under test.
-   */
-  private AsyncAppender asyncAppender;
-
-  /**
-   * Create new instance of test.
-   * @param name test name.
-   */
-  public AsyncAppenderTestCase(final String name) {
+  public AsyncAppenderTestCase(String name) {
     super(name);
   }
 
-  /**
-   * Create a vector appender with a 10 ms delay.
-   * @return new VectorAppender.
-   */
-  private static VectorAppender createDelayedAppender() {
-    VectorAppender vectorAppender = new VectorAppender();
-    vectorAppender.setDelay(10);
-
-    return vectorAppender;
+  public void setUp() {
   }
 
-  /**
-   * Create new appender and attach to root logger.
-   * @param wrappedAppender appender wrapped by async logger.
-   * @param bufferSize buffer size.
-   * @return new AsyncAppender.
-   */
-  private static AsyncAppender createAsyncAppender(
-    final Appender wrappedAppender, final int bufferSize) {
-    AsyncAppender async = new AsyncAppender();
-    async.addAppender(wrappedAppender);
-    async.setBufferSize(bufferSize);
-    async.activateOptions();
-    Logger.getRootLogger().addAppender(async);
-
-    return async;
-  }
-
-  /**
-   * Performs post test cleanup.
-   */
   public void tearDown() {
-    if (asyncAppender != null) {
-      asyncAppender.close();
-    }
-
     LogManager.shutdown();
   }
 
-  /**
-   * Tests writing to an AsyncAppender after calling close.
-   */
-  public void testClose() {
-    VectorAppender vectorAppender = createDelayedAppender();
-    asyncAppender =
-      createAsyncAppender(vectorAppender, AsyncAppender.DEFAULT_BUFFER_SIZE);
-    asyncAppender.setName("async-testClose");
+  // this test checks whether it is possible to write to a closed AsyncAppender
+  public void closeTest() throws Exception {    
+    Logger root = Logger.getRootLogger();
+    Layout layout = new SimpleLayout();
+    VectorAppender vectorAppender = new VectorAppender();
+    AsyncAppender asyncAppender = new AsyncAppender();
+    asyncAppender.setName("async-CloseTest");
+    asyncAppender.addAppender(vectorAppender);
+    root.addAppender(asyncAppender); 
 
     root.debug("m1");
     asyncAppender.close();
     root.debug("m2");
-
+    
     Vector v = vectorAppender.getVector();
-    assertEquals(1, v.size());
+    assertEquals(v.size(), 1);
+  }
+
+  // this test checks whether appenders embedded within an AsyncAppender are also 
+  // closed 
+  public void test2() {
+    Logger root = Logger.getRootLogger();
+    Layout layout = new SimpleLayout();
+    VectorAppender vectorAppender = new VectorAppender();
+    AsyncAppender asyncAppender = new AsyncAppender();
+    asyncAppender.setName("async-test2");
+    asyncAppender.addAppender(vectorAppender);
+    root.addAppender(asyncAppender); 
+
+    root.debug("m1");
+    asyncAppender.close();
+    root.debug("m2");
+    
+    Vector v = vectorAppender.getVector();
+    assertEquals(v.size(), 1);
     assertTrue(vectorAppender.isClosed());
   }
 
-  /**
-   * Tests that bad appenders do not silently fail forever
-   * on the dispatching thread.
-   *
-   * @throws InterruptedException if test is interrupted while sleeping.
-   */
-  public void testBadAppender() throws InterruptedException {
-    Appender nullPointerAppender = new NullPointerAppender();
-    asyncAppender =
-      createAsyncAppender(
-        nullPointerAppender, AsyncAppender.DEFAULT_BUFFER_SIZE);
+  // this test checks whether appenders embedded within an AsyncAppender are also 
+  // closed 
+  public void test3() {
+    int LEN = 200;
+    Logger root = Logger.getRootLogger();
+    Layout layout = new SimpleLayout();
+    VectorAppender vectorAppender = new VectorAppender();
+    AsyncAppender asyncAppender = new AsyncAppender();
+    asyncAppender.setName("async-test3");
+    asyncAppender.addAppender(vectorAppender);
+    root.addAppender(asyncAppender); 
 
-    //
-    //  NullPointerException should kill dispatching thread
-    //     before sleep returns.
-    root.info("Message");
-    Thread.sleep(100);
-
-    try {
-      //
-      //   subsequent call should be synchronous
-      //     and result in a NullPointerException on this thread.
-      root.info("Message");
-      fail("Should have thrown exception");
-    } catch (NullPointerException ex) {
-      assertNotNull(ex);
+    for(int i = 0; i < LEN; i++) {
+      root.debug("message"+i);
     }
-  }
-
-  /**
-   * Test logging to AsyncAppender from many threads.
-   * @throws InterruptedException if test is interrupted while sleeping.
-   */
-  public void testManyLoggingThreads() throws InterruptedException {
-    BlockableVectorAppender blockableAppender = new BlockableVectorAppender();
-    asyncAppender = createAsyncAppender(blockableAppender, 5);
-
-    //
-    //   create threads
-    //
-    final int threadCount = 10;
-    Thread[] threads = new Thread[threadCount];
-    final int repetitions = 20;
-    Greeter greeter = new Greeter(root, repetitions);
-
-    for (int i = 0; i < threads.length; i++) {
-      threads[i] = new Thread(greeter);
-    }
-
-    //
-    //   block underlying appender
-    synchronized (blockableAppender.getMonitor()) {
-      //
-      //   start threads holding for queue to open up
-      for (int i = 0; i < threads.length; i++) {
-        threads[i].start();
-      }
-    }
-
-    //   dispatcher now running free
-    //
-    //   wait until all threads complete
-    for (int i = 0; i < threads.length; i++) {
-      threads[i].join(2000);
-      assertFalse(threads[i].isAlive());
-    }
-
+    
+    System.out.println("Done loop.");
+    System.out.flush();
     asyncAppender.close();
-    assertEquals(
-      threadCount * repetitions, blockableAppender.getVector().size());
-  }
-
-  /**
-   *  Tests interruption handling on logging threads.
-
-   * @throws InterruptedException if test is interrupted while sleeping.
-   */
-  public void testInterruptWhileLogging() throws InterruptedException {
-    BlockableVectorAppender blockableAppender = new BlockableVectorAppender();
-    asyncAppender = createAsyncAppender(blockableAppender, 5);
-
-    Thread greeter = new Thread(new Greeter(root, 100));
-
-    synchronized (blockableAppender.getMonitor()) {
-      //  Start greeter
-      greeter.start();
-
-      //   Give it enough time to fill buffer
-      Thread.sleep(100);
-
-      //
-      //   Interrupt should stop greeter after next logging event
-      greeter.interrupt();
-    }
-
-    greeter.join();
-    asyncAppender.close();
-
-    Vector events = blockableAppender.getVector();
-
-    //
-    //   0-5 popped off of buffer by dispatcher before being blocked
-    //   5 in buffer before it filled up
-    //   1 before Thread.sleep in greeter
-    assertTrue(events.size() <= 11);
-  }
-
-  /**
-   *  Tests interruption handling in AsyncAppender.close.
-   *
-   * @throws InterruptedException if test is interrupted while sleeping.
-   *
-   */
-  public void testInterruptWhileClosing() throws InterruptedException {
-    BlockableVectorAppender blockableAppender = new BlockableVectorAppender();
-    asyncAppender = createAsyncAppender(blockableAppender, 5);
-
-    Thread greeter = new Thread(new Greeter(root, 100));
-    Thread closer = new Thread(new Closer(asyncAppender));
-
-    synchronized (blockableAppender.getMonitor()) {
-      greeter.start();
-      Thread.sleep(100);
-      closer.start();
-      Thread.sleep(100);
-      closer.interrupt();
-    }
-
-    greeter.join();
-    closer.join();
-  }
-
-  /**
-   *  Tests killing the dispatch thread.
-   *
-   * @throws InterruptedException if test is interrupted while sleeping.
-   *
-   */
-  public void testInterruptDispatcher() throws InterruptedException {
-    BlockableVectorAppender blockableAppender = new BlockableVectorAppender();
-    asyncAppender = createAsyncAppender(blockableAppender, 5);
-    assertTrue(asyncAppender.getAllAppenders().hasMoreElements());
-    root.info("Hello, World");
-
-    //
-    //  sleep long enough for that to get dispatched
-    //
-    Thread.sleep(50);
-
-    Thread dispatcher = blockableAppender.getDispatcher();
-    assertNotNull(dispatcher);
-    dispatcher.interrupt();
-    Thread.sleep(50);
-    root.info("Hello, World");
-
-    //
-    //  interrupting the dispatch thread should
-    //     degrade to synchronous dispatching of logging requests
-    Enumeration iter = asyncAppender.getAllAppenders();
-    assertTrue(iter.hasMoreElements());
-    assertSame(blockableAppender, iter.nextElement());
-    assertFalse(iter.hasMoreElements());
-    assertEquals(2, blockableAppender.getVector().size());
-  }
-
-  /**
-   * Tests getBufferSize.
-   */
-  public void testGetBufferSize() {
-    asyncAppender = new AsyncAppender();
-    assertEquals(
-      AsyncAppender.DEFAULT_BUFFER_SIZE, asyncAppender.getBufferSize());
-  }
-
-  /**
-   * Tests setBufferSize(0).
-   */
-  public void testSetBufferSizeZero() {
-    VectorAppender vectorAppender = createDelayedAppender();
-    asyncAppender = createAsyncAppender(vectorAppender, 0);
-    assertEquals(1, asyncAppender.getBufferSize());
-
-    //
-    //   any logging request will deadlock.
-    root.debug("m1");
     root.debug("m2");
-    asyncAppender.close();
-
+    
     Vector v = vectorAppender.getVector();
-    assertEquals(2, v.size());
+    assertEquals(v.size(), LEN);
+    assertTrue(vectorAppender.isClosed());
   }
 
-  /**
-   * Tests setBufferSize(-10).
-   */
-  public void testSetBufferSizeNegative() {
-    asyncAppender = new AsyncAppender();
+    private static class NullPointerAppender extends AppenderSkeleton {
+          public NullPointerAppender() {
+          }
 
-    try {
-      asyncAppender.setBufferSize(-10);
-      fail("Should have thrown NegativeArraySizeException");
-    } catch (NegativeArraySizeException ex) {
-      assertNotNull(ex);
+
+          /**
+             This method is called by the {@link org.apache.log4j.AppenderSkeleton#doAppend}
+             method.
+
+          */
+          public void append(org.apache.log4j.spi.LoggingEvent event) {
+              throw new NullPointerException();
+          }
+
+          public void close() {
+          }
+
+          public boolean requiresLayout() {
+            return false;
+          }
     }
-  }
 
-  /**
-   * Tests getAllAppenders.
-   */
-  public void testGetAllAppenders() {
-    VectorAppender vectorAppender = createDelayedAppender();
-    asyncAppender = createAsyncAppender(vectorAppender, 5);
-
-    Enumeration iter = asyncAppender.getAllAppenders();
-    assertTrue(iter.hasMoreElements());
-    assertSame(vectorAppender, iter.nextElement());
-    assertFalse(iter.hasMoreElements());
-  }
-
-  /**
-   * Tests getAppender.
-   */
-  public void testGetAppender() {
-    VectorAppender vectorAppender = createDelayedAppender();
-    vectorAppender.setName("test");
-    asyncAppender = createAsyncAppender(vectorAppender, 5);
-
-    Appender appender = asyncAppender.getAppender("test");
-    assertSame(vectorAppender, appender);
-  }
-
-  /**
-   * Test getLocationInfo.
-   */
-  public void testGetLocationInfo() {
-    asyncAppender = new AsyncAppender();
-    assertFalse(asyncAppender.getLocationInfo());
-  }
-
-  /**
-   * Tests isAttached.
-   */
-  public void testIsAttached() {
-    VectorAppender vectorAppender = createDelayedAppender();
-    asyncAppender = createAsyncAppender(vectorAppender, 5);
-    assertTrue(asyncAppender.isAttached(vectorAppender));
-    assertFalse(asyncAppender.isAttached(asyncAppender));
-    assertFalse(asyncAppender.isAttached(new BlockableVectorAppender()));
-  }
-
-  /**
-   * Tests requiresLayout.
-   *
-   * @deprecated feature under test is deprecated.
-   */
-  public void testRequiresLayout() {
-    asyncAppender = new AsyncAppender();
-    assertFalse(asyncAppender.requiresLayout());
-  }
-
-  /**
-   * Tests removeAllAppenders.
-   */
-  public void testRemoveAllAppenders() {
-    VectorAppender vectorAppender = createDelayedAppender();
-    asyncAppender = new AsyncAppender();
-    asyncAppender.addAppender(vectorAppender);
-    assertTrue(asyncAppender.getAllAppenders().hasMoreElements());
-    asyncAppender.removeAllAppenders();
-
-    Enumeration iter = asyncAppender.getAllAppenders();
-    assertTrue((iter == null) || !iter.hasMoreElements());
-  }
-
-  /**
-   * Tests removeAppender(Appender).
-   */
-  public void testRemoveAppender() {
-    VectorAppender vectorAppender = createDelayedAppender();
-    vectorAppender.setName("test");
-    asyncAppender = new AsyncAppender();
-    asyncAppender.addAppender(vectorAppender);
-    assertTrue(asyncAppender.getAllAppenders().hasMoreElements());
-
-    VectorAppender appender2 = new VectorAppender();
-    appender2.setName("test");
-    asyncAppender.removeAppender(appender2);
-    assertTrue(asyncAppender.getAllAppenders().hasMoreElements());
-    asyncAppender.removeAppender(vectorAppender);
-    assertFalse(asyncAppender.getAllAppenders().hasMoreElements());
-  }
-
-  /**
-   * Tests removeAppender(String).
-   */
-  public void testRemoveAppenderByName() {
-    VectorAppender vectorAppender = createDelayedAppender();
-    vectorAppender.setName("test");
-    asyncAppender = new AsyncAppender();
-    asyncAppender.addAppender(vectorAppender);
-    assertTrue(asyncAppender.getAllAppenders().hasMoreElements());
-    asyncAppender.removeAppender("TEST");
-    assertTrue(asyncAppender.getAllAppenders().hasMoreElements());
-    asyncAppender.removeAppender("test");
-    assertFalse(asyncAppender.getAllAppenders().hasMoreElements());
-  }
 
     /**
-     * Tests discarding of messages when buffer is full.
+     * Tests that a bad appender will switch async back to sync.
+     * See bug 23021
+     * @since 1.2.12
+     * @throws Exception thrown if Thread.sleep is interrupted
      */
-    public void testDiscard() {
-        BlockableVectorAppender blockableAppender = new BlockableVectorAppender();
-        asyncAppender = createAsyncAppender(blockableAppender, 5);
-        assertTrue(asyncAppender.getBlocking());
-        asyncAppender.setBlocking(false);
-        assertFalse(asyncAppender.getBlocking());
-        Greeter greeter = new Greeter(root, 100);
-        synchronized(blockableAppender.getMonitor()) {
-            greeter.run();
-            root.error("That's all folks.");
-        }
-        asyncAppender.close();
-        Vector events = blockableAppender.getVector();
-        //
-        //  0-5 event pulled from buffer by dispatcher before blocking
-        //  5 events in buffer
-        //  1 summary event
-        //
-        assertTrue(events.size() <= 11);
-        //
-        //  last message should start with "Discarded"
-        LoggingEvent event = (LoggingEvent) events.get(events.size() - 1);
-        assertEquals("Discarded", event.getMessage().toString().substring(0, 9));
-        assertSame(Level.ERROR, event.getLevel());
-        for (int i = 0; i < events.size() - 1; i++) {
-            event = (LoggingEvent) events.get(i);
-            assertEquals("Hello, World", event.getMessage().toString());
+    public void testBadAppender() throws Exception {
+        Appender nullPointerAppender = new NullPointerAppender();
+        AsyncAppender asyncAppender = new AsyncAppender();
+        asyncAppender.addAppender(nullPointerAppender);
+        asyncAppender.setBufferSize(5);
+        asyncAppender.activateOptions();
+        Logger root = Logger.getRootLogger();
+        root.addAppender(nullPointerAppender);
+        try {
+           root.info("Message");
+           Thread.sleep(10);
+           root.info("Message");
+           fail("Should have thrown exception");
+        } catch(NullPointerException ex) {
+
         }
     }
-
 
     /**
      * Tests location processing when buffer is full and locationInfo=true.
@@ -515,193 +221,109 @@ public final class AsyncAppenderTestCase extends TestCase {
     }
 
     /**
-     * Tests behavior when wrapped appender
-     *    makes log request on dispatch thread.
-     *
-     * See bug 30106
+     *  Logging request runnable.
      */
-    public void testLoggingInDispatcher() throws InterruptedException {
-        BlockableVectorAppender appender = new BlockableVectorAppender();
-        asyncAppender =
-          createAsyncAppender(appender, 2);
-        //
-        //   triggers several log requests on dispatch thread
-        //
-        root.fatal("Anybody up there...");
-        Thread.sleep(100);
-        asyncAppender.close();
+    private static final class Greeter implements Runnable {
+      /**
+       * Logger.
+       */
+      private final Logger logger;
 
-        Vector events = appender.getVector();
-        //
-        //  last message should start with "Discarded"
-        LoggingEvent event = (LoggingEvent) events.get(events.size() - 1);
-        assertEquals("Discarded", event.getMessage().toString().substring(0, 9));
-    }
+      /**
+       * Repetitions.
+       */
+      private final int repetitions;
 
-
-  /**
-   * Appender that throws a NullPointerException on calls to append.
-   * Used to test behavior of AsyncAppender when dispatching to
-   * misbehaving appenders.
-   */
-  private static final class NullPointerAppender extends AppenderSkeleton {
-    /**
-     * Create new instance.
-     */
-    public NullPointerAppender() {
-      super(true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void append(final LoggingEvent event) {
-      throw new NullPointerException();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void close() {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean requiresLayout() {
-      return false;
-    }
-  }
-
-  /**
-   *  Logging request runnable.
-   */
-  private static final class Greeter implements Runnable {
-    /**
-     * Logger.
-     */
-    private final Logger logger;
-
-    /**
-     * Repetitions.
-     */
-    private final int repetitions;
-
-    /**
-     * Create new instance.
-     * @param logger logger, may not be null.
-     * @param repetitions repetitions.
-     */
-    public Greeter(final Logger logger, final int repetitions) {
-      if (logger == null) {
-        throw new IllegalArgumentException("logger");
-      }
-
-      this.logger = logger;
-      this.repetitions = repetitions;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void run() {
-      try {
-        for (int i = 0; i < repetitions; i++) {
-          logger.info("Hello, World");
-          Thread.sleep(1);
+      /**
+       * Create new instance.
+       * @param logger logger, may not be null.
+       * @param repetitions repetitions.
+       */
+      public Greeter(final Logger logger, final int repetitions) {
+        if (logger == null) {
+          throw new IllegalArgumentException("logger");
         }
-      } catch (InterruptedException ex) {
-        Thread.currentThread().interrupt();
+
+        this.logger = logger;
+        this.repetitions = repetitions;
       }
-    }
-  }
 
-  /**
-   * Vector appender that can be explicitly blocked.
-   */
-  private static final class BlockableVectorAppender extends VectorAppender {
-    /**
-     * Monitor object used to block appender.
-     */
-    private final Object monitor = new Object();
-
-    /**
-     * Thread of last call to append.
-     */
-    private Thread dispatcher;
-
-    /**
-     * Create new instance.
-     */
-    public BlockableVectorAppender() {
-      super();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void append(final LoggingEvent event) {
-      synchronized (monitor) {
-        dispatcher = Thread.currentThread();
-        super.append(event);
-          //
-          //   if fatal, echo messages for testLoggingInDispatcher
-          //
-          if (event.getLevel() == Level.FATAL) {
-              Logger logger = event.getLogger();
-              logger.error(event.getMessage().toString());
-              logger.warn(event.getMessage().toString());
-              logger.info(event.getMessage().toString());
-              logger.debug(event.getMessage().toString());
+      /**
+       * {@inheritDoc}
+       */
+      public void run() {
+        try {
+          for (int i = 0; i < repetitions; i++) {
+            logger.info("Hello, World");
+            Thread.sleep(1);
           }
+        } catch (InterruptedException ex) {
+          Thread.currentThread().interrupt();
+        }
       }
     }
 
-    /**
-     * Get monitor object.
-     * @return monitor.
-     */
-    public Object getMonitor() {
-      return monitor;
-    }
+
 
     /**
-     * Get thread of previous call to append.
-     * @return thread, may be null.
+     * Vector appender that can be explicitly blocked.
      */
-    public Thread getDispatcher() {
-      synchronized (monitor) {
-        return dispatcher;
-      }
-    }
-  }
+    private static final class BlockableVectorAppender extends VectorAppender {
+      /**
+       * Monitor object used to block appender.
+       */
+      private final Object monitor = new Object();
 
-  /**
-   * Closes appender.
-   */
-  private static final class Closer implements Runnable {
-    /**
-     * Appender.
-     */
-    private final AsyncAppender appender;
+      /**
+       * Thread of last call to append.
+       */
+      private Thread dispatcher;
 
-    /**
-     * Create new instance.
-     * @param appender appender, may not be null.
-     */
-    public Closer(final AsyncAppender appender) {
-      if (appender == null) {
-        throw new IllegalArgumentException("appender");
+      /**
+       * Create new instance.
+       */
+      public BlockableVectorAppender() {
+        super();
       }
 
-      this.appender = appender;
+      /**
+       * {@inheritDoc}
+       */
+      public void append(final LoggingEvent event) {
+        synchronized (monitor) {
+          dispatcher = Thread.currentThread();
+          super.append(event);
+            //
+            //   if fatal, echo messages for testLoggingInDispatcher
+            //
+            if (event.getLevel() == Level.FATAL) {
+                Logger logger = Logger.getLogger(event.getLoggerName());
+                logger.error(event.getMessage().toString());
+                logger.warn(event.getMessage().toString());
+                logger.info(event.getMessage().toString());
+                logger.debug(event.getMessage().toString());
+            }
+        }
+      }
+
+      /**
+       * Get monitor object.
+       * @return monitor.
+       */
+      public Object getMonitor() {
+        return monitor;
+      }
+
+      /**
+       * Get thread of previous call to append.
+       * @return thread, may be null.
+       */
+      public Thread getDispatcher() {
+        synchronized (monitor) {
+          return dispatcher;
+        }
+      }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void run() {
-      appender.close();
-    }
-  }
+
 }

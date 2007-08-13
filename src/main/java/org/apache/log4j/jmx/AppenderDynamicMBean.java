@@ -1,9 +1,10 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -114,7 +115,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 					    MBeanOperationInfo.ACTION);
 
     params = new MBeanParameterInfo[1];
-    params[0] = new MBeanParameterInfo("layoutClass", "java.lang.String",
+    params[0] = new MBeanParameterInfo("layout class", "java.lang.String",
 				       "layout class");
 
     dOperations[1] = new MBeanOperationInfo("setLayout",
@@ -188,17 +189,15 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
     String name = appender.getName()+",layout="+layout.getClass().getName();
     cat.debug("Adding LayoutMBean:"+name);
+    ObjectName objectName = null;
     try {
       LayoutDynamicMBean appenderMBean = new LayoutDynamicMBean(layout);
-      ObjectName objectName = new ObjectName(getObjectName().getDomain(), "appender", name);
-      getServer().registerMBean(appenderMBean, objectName);
-
-      dAttributes.add(new MBeanAttributeInfo("appender="+name,
-					     "javax.management.ObjectName",
-					     "The "+name+" layout.",
-					     true,
-					     true,
-					     false));
+      objectName = new ObjectName("log4j:appender="+name);
+      if (!server.isRegistered(objectName)) {
+        server.registerMBean(appenderMBean, objectName);
+        dAttributes.add(new MBeanAttributeInfo("appender=" + name, "javax.management.ObjectName",
+                "The " + name + " layout.", true, true, false));
+      }
 
     } catch(Exception e) {
       cat.error("Could not add DynamicLayoutMBean for ["+name+"].", e);
@@ -226,7 +225,7 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
     cat.debug("getAttribute called with ["+attributeName+"].");
     if(attributeName.startsWith("appender="+appender.getName()+",layout")) {
       try {
-	return new ObjectName(getObjectName().getDomain() + ":" + attributeName);
+	return new ObjectName("log4j:"+attributeName );
       } catch(Exception e) {
 	cat.error("attributeName", e);
       }
@@ -306,10 +305,12 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
   }
 
   public
-  ObjectName preRegister(MBeanServer server, ObjectName objectName) {
-    super.preRegister(server, objectName);
+  ObjectName preRegister(MBeanServer server, ObjectName name) {
+    cat.debug("preRegister called. Server="+server+ ", name="+name);
+    this.server = server;
     registerLayoutMBean(appender.getLayout());
-    return objectName;
+
+    return name;
   }
 
 

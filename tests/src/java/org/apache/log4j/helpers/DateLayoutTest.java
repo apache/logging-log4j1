@@ -24,15 +24,14 @@ import org.apache.log4j.spi.LoggingEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Date;
+import java.util.Calendar;
 
 
 /**
  * Tests for DateLayout.
- * @deprecated since DateLayout is deprecated.
+ *
  */
 public class DateLayoutTest extends LayoutTest {
   /**
@@ -69,7 +68,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests DateLayout.NULL_DATE_FORMAT constant.
-   * @deprecated since DateLayout is deprecated.
    */
   public void testNullDateFormat() {
     assertEquals("NULL", DateLayout.NULL_DATE_FORMAT);
@@ -77,7 +75,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests DateLayout.RELATIVE constant.
-   * @deprecated since DateLayout is deprecated.
    */
   public void testRelativeTimeDateFormat() {
     assertEquals("RELATIVE", DateLayout.RELATIVE_TIME_DATE_FORMAT);
@@ -131,7 +128,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests setDateFormat.
-   * @deprecated since DateLayout is deprecated.
    */
   public void testSetDateFormat() {
     DateLayout layout = (DateLayout) createLayout();
@@ -141,7 +137,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests setTimeZone.
-   * @deprecated since DateLayout is deprecated.
    */
   public void testSetTimeZone() {
     DateLayout layout = (DateLayout) createLayout();
@@ -151,7 +146,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests 2 parameter setDateFormat with null.
-   * @deprecated since DateLayout is deprecated.
    */
   public void testSetDateFormatNull() {
     DateLayout layout = (DateLayout) createLayout();
@@ -160,7 +154,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests 2 parameter setDateFormat with "NULL".
-   * @deprecated since DateLayout is deprecated.
    */
   public void testSetDateFormatNullString() {
     DateLayout layout = (DateLayout) createLayout();
@@ -169,7 +162,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests 2 parameter setDateFormat with "RELATIVE".
-   * @deprecated since DateLayout is deprecated.
    */
   public void testSetDateFormatRelative() {
     DateLayout layout = (DateLayout) createLayout();
@@ -178,7 +170,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests 2 parameter setDateFormat with "ABSOLUTE".
-   * @deprecated since DateLayout is deprecated.
    */
   public void testSetDateFormatAbsolute() {
     DateLayout layout = (DateLayout) createLayout();
@@ -187,7 +178,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests 2 parameter setDateFormat with "DATETIME".
-   * @deprecated since DateLayout is deprecated.
    */
   public void testSetDateFormatDateTime() {
     DateLayout layout = (DateLayout) createLayout();
@@ -196,7 +186,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests 2 parameter setDateFormat with "ISO8601".
-   * @deprecated since DateLayout is deprecated.
    */
   public void testSetDateFormatISO8601() {
     DateLayout layout = (DateLayout) createLayout();
@@ -205,7 +194,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests 2 parameter setDateFormat with "HH:mm:ss".
-   * @deprecated since DateLayout is deprecated.
    */
   public void testSetDateFormatSimple() {
     DateLayout layout = (DateLayout) createLayout();
@@ -214,7 +202,6 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests activateOptions.
-   * @deprecated since DateLayout is deprecated.
    */
   public void testActivateOptions() {
     DateLayout layout = (DateLayout) createLayout();
@@ -225,13 +212,13 @@ public class DateLayoutTest extends LayoutTest {
 
   /**
    * Tests setDateFormat(DateFormat, TimeZone).
-   * @deprecated since DateLayout is deprecated.
    */
   public void testSetDateFormatWithFormat() {
     DateFormat format = new SimpleDateFormat("HH:mm");
     DateLayout layout = (DateLayout) createLayout();
     layout.setDateFormat(format, TimeZone.getDefault());
   }
+
 
     /**
      * Tests IS08601DateFormat class.
@@ -261,10 +248,8 @@ public class DateLayoutTest extends LayoutTest {
       assertEquals(expected, actual);
   }
 
-
   /**
    * Concrete Layout class for tests.
-   * @deprecated
    */
   private static final class MockLayout extends DateLayout {
     /**

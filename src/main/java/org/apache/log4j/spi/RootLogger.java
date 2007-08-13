@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,14 +17,14 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.log4j.*;
+import org.apache.log4j.helpers.LogLog;
 
 
 // Contibutors: Mathias Bogaert
 
 /**
-   RootLogger sits at the top of the category hierachy. It is a
+   RootLogger sits at the top of the logger hierachy. It is a
    regular logger except that it provides several guarantees.
 
    <p>First, it cannot be assigned a <code>null</code>
@@ -36,11 +36,9 @@ import org.apache.log4j.Logger;
 
  */
 public final class RootLogger extends Logger {
-  
   /**
-   * Constructs using a level.
-   * The root category names itself as "root". However, the root
-   * category cannot be retrieved by name.
+     The root logger names itself as "root". However, the root
+     logger cannot be retrieved by name.
   */
   public RootLogger(Level level) {
     super("root");
@@ -48,14 +46,7 @@ public final class RootLogger extends Logger {
   }
 
   /**
-   * Constructs using a default {@link Level#DEBUG} threshold level.
-   */
-  public RootLogger() {
-    this(Level.DEBUG);
-  }
-
-  /**
-     Return the assigned level value without walking the category
+     Return the assigned level value without walking the logger
      hierarchy.
   */
   public final Level getChainedLevel() {
@@ -69,13 +60,11 @@ public final class RootLogger extends Logger {
      @since 0.8.3 */
   public final void setLevel(Level level) {
     if (level == null) {
-      if (repository instanceof LoggerRepositoryEx) {
-        ((LoggerRepositoryEx) repository).addErrorItem(
-          new ErrorItem(
-            "You have tried to set a null level to root.", new Exception()));
-      }
+      LogLog.error(
+        "You have tried to set a null level to root.", new Throwable());
     } else {
       this.level = level;
     }
   }
+
 }

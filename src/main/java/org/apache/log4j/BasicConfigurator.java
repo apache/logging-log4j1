@@ -1,9 +1,10 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -14,10 +15,10 @@
  * limitations under the License.
  */
 
-
 // Contibutors: "Luke Blanshard" <Luke@quiq.com>
 //              "Mark DONSZELMANN" <Mark.Donszelmann@cern.ch>
 //              "Muly Oved" <mulyoved@hotmail.com>
+
 package org.apache.log4j;
 
 
@@ -31,6 +32,7 @@ package org.apache.log4j;
    @since 0.8.1
    @author Ceki G&uuml;lc&uuml; */
 public class BasicConfigurator {
+
   protected BasicConfigurator() {
   }
 
@@ -38,18 +40,21 @@ public class BasicConfigurator {
      Add a {@link ConsoleAppender} that uses {@link PatternLayout}
      using the {@link PatternLayout#TTCC_CONVERSION_PATTERN} and
      prints to <code>System.out</code> to the root category.  */
-  public static void configure() {
+  static
+  public
+  void configure() {
     Logger root = Logger.getRootLogger();
-    root.addAppender(
-      new ConsoleAppender(
-        new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+    root.addAppender(new ConsoleAppender(
+           new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
   }
 
   /**
      Add <code>appender</code> to the root category.
      @param appender The appender to add to the root category.
   */
-  public static void configure(Appender appender) {
+  static
+  public
+  void configure(Appender appender) {
     Logger root = Logger.getRootLogger();
     root.addAppender(appender);
   }
@@ -60,7 +65,9 @@ public class BasicConfigurator {
      <code>Category.getDefaultHierarchy().resetConfiguration()</code>.
 
      See {@link Hierarchy#resetConfiguration()} for more details.  */
-  public static void resetConfiguration() {
+  public
+  static
+  void resetConfiguration() {
     LogManager.resetConfiguration();
   }
 }
