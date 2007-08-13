@@ -128,7 +128,7 @@ public class XMLLayoutTestCase extends TestCase {
 
   /**
    * Tests the format of the MDC portion of the layout to ensure
-   * the KVP's we put in turn up in the output file.
+   * the key-value pairs we put in turn up in the output file.
    * @throws Exception
    */
   public void testMDC() throws Exception {
