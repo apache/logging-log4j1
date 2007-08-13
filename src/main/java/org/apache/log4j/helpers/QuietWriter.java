@@ -1,9 +1,10 @@
 /*
- * Copyright 1999-2006 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -19,33 +20,24 @@ package org.apache.log4j.helpers;
 import java.io.Writer;
 import java.io.FilterWriter;
 import java.io.IOException;
+import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.ErrorCode;
 
 
 /**
    QuietWriter does not throw exceptions when things go
-   wrong. Instead, it delegates error handling to its {@link
-      org.apache.log4j.spi.ErrorHandler}.
+   wrong. Instead, it delegates error handling to its {@link ErrorHandler}. 
 
    @author Ceki G&uuml;lc&uuml;
 
    @since 0.7.3
-   @deprecated
 */
 public class QuietWriter extends FilterWriter {
 
-    /**
-     * @deprecated
-     */
-  protected org.apache.log4j.spi.ErrorHandler errorHandler;
+  protected ErrorHandler errorHandler;
 
-    /**
-     * @deprecated
-     * @param writer
-     * @param errorHandler
-     */
   public
-  QuietWriter(Writer writer, org.apache.log4j.spi.ErrorHandler errorHandler) {
+  QuietWriter(Writer writer, ErrorHandler errorHandler) {
     super(writer);
     setErrorHandler(errorHandler);
   }
@@ -72,7 +64,7 @@ public class QuietWriter extends FilterWriter {
 
 
   public
-  void setErrorHandler(org.apache.log4j.spi.ErrorHandler eh) {
+  void setErrorHandler(ErrorHandler eh) {
     if(eh == null) {
       // This is a programming error on the part of the enclosing appender.
       throw new IllegalArgumentException("Attempted to set null ErrorHandler.");

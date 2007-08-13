@@ -17,9 +17,8 @@
 
 package org.apache.log4j.spi;
 
-
 /**
-
+   
    Implementions of this interface allow certain appenders to decide
    when to perform an appender specific action.
 
@@ -30,9 +29,10 @@ package org.apache.log4j.spi;
 
   @author Ceki G&uuml;lc&uuml;
   @since version 1.0
-
+   
  */
 public interface TriggeringEventEvaluator {
+  
   /**
      Is this the triggering event?
    */

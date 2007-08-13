@@ -1,0 +1,17 @@
+INFO   (   Server:main      ) systemsunion.LoggingServer.SocketServer2 - Connected to client at RDDSOWE2/129.153.78.195
+INFO   (   Server:main      ) systemsunion.LoggingServer.SocketServer2 - Starting new socket node.
+INFO   (   Server:main      ) systemsunion.LoggingServer.SocketServer2 - Waiting to accept a new client.
+INFO   ( RDDSOWE2:main      ) systemsunion.SSTS.system                 - ClosedownController: starting
+INFO   (   Server:main      ) systemsunion.LoggingServer.SocketServer2 - Connected to client at RDDSOWE2/129.153.78.195
+INFO   (   Server:main      ) systemsunion.LoggingServer.SocketServer2 - Starting new socket node.
+INFO   (   Server:main      ) systemsunion.LoggingServer.SocketServer2 - Waiting to accept a new client.
+INFO   ( RDDSOWE2:main      ) systemsunion.SSTS.system                 - ClosedownController: starting
+INFO   ( RDDSOWE2:AWT-EventQueue-0) systemsunion.SSTS.components             - Packing component Operator
+INFO   ( RDDSOWE2:AWT-EventQueue-0) systemsunion.SSTS.components             - Packing class file d:/SSDev/SSTS/components\Operator\Operator.class for component Operator
+INFO   ( RDDSOWE2:AWT-EventQueue-0) systemsunion.SSTS.components             - Packing class file d:/SSDev/SSTS/components\Operator\Operator.class for component Operator
+INFO   ( RDDSOWE2:AWT-EventQueue-0) systemsunion.SSTS.components             - Packing proxy class file d:/SSDev/SSTS/components\Operator\OperatorProxy.class for component Operator
+INFO   ( RDDSOWE2:AWT-EventQueue-0) systemsunion.SSTS.components             - Packing class file d:/SSDev/SSTS/components\Operator\OperatorProxy.class for component Operator
+INFO   ( RDDSOWE2:AWT-EventQueue-0) systemsunion.SSTS.components             - Packing test XML page file d:/SSDev/SSTS/components\Operator\Operator.XML for component Operator
+INFO   ( RDDSOWE2:AWT-EventQueue-0) systemsunion.SSTS.components             - Packing class file d:/SSDev/SSTS/components\Operator\Operator.XML for component Operator
+INFO   ( RDDSOWE2:AWT-EventQueue-0) systemsunion.SSTS.components             - Packing descriptor file d:/SSDev/SSTS/components\Operator\OperatorDeploymentDescriptor.XML for component Operator
+INFO   ( RDDSOWE2:AWT-EventQueue-0) systemsunion.SSTS.components             - Packing class file d:/SSDev/SSTS/components\Operator\OperatorDeploymentDescriptor.XML for component Operator

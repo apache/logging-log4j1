@@ -30,7 +30,7 @@ public class PropertyConfiguratorTest extends TestCase {
     }
 
     /**
-     * Test for bug 19108.
+     * Test for bug 40944.
      * Did not catch IllegalArgumentException on Properties.load
      * and close input stream.
      * @throws IOException if IOException creating properties file.
@@ -47,7 +47,7 @@ public class PropertyConfiguratorTest extends TestCase {
     }
 
     /**
-     * Test for bug 19108.
+     * Test for bug 40944.
      * configure(URL) never closed opened stream.
      * @throws IOException if IOException creating properties file.
      */
@@ -63,7 +63,7 @@ public class PropertyConfiguratorTest extends TestCase {
     }
 
     /**
-     * Test for bug 19108.
+     * Test for bug 40944.
      * configure(URL) did not catch IllegalArgumentException and
      * did not close stream.
      * @throws IOException if IOException creating properties file.

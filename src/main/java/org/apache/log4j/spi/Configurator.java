@@ -18,18 +18,16 @@
 package org.apache.log4j.spi;
 
 import org.apache.log4j.spi.LoggerRepository;
-
-import java.io.InputStream;
 import java.net.URL;
-
 
 /**
    Implemented by classes capable of configuring log4j using a URL.
-
+   
    @since 1.0
    @author Anders Kristensen
  */
 public interface Configurator {
+
   /**
      Special level value signifying inherited behaviour. The current
      value of this string constant is <b>inherited</b>. {@link #NULL}
@@ -42,6 +40,8 @@ public interface Configurator {
      <b>null</b>. */
   public static final String NULL = "null";
 
+
+
   /**
      Interpret a resource pointed by a URL and set up log4j accordingly.
 
@@ -49,7 +49,7 @@ public interface Configurator {
      parameter.
 
      @param url The URL to parse
-     @param repository The repository to operate upon.
+     @param repository The hierarchy to operation upon.
    */
   void doConfigure(URL url, LoggerRepository repository);
 }

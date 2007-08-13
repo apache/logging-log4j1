@@ -1,9 +1,10 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -130,9 +131,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 
    @author Eirik Lygre
-   @author Ceki G&uuml;lc&uuml;
-   @deprecated Since log4j 1.3, use org.apache.log4j.rolling.RollingFileAppender instead.
- */
+   @author Ceki G&uuml;lc&uuml; */
 public class DailyRollingFileAppender extends FileAppender {
 
 
@@ -173,7 +172,9 @@ public class DailyRollingFileAppender extends FileAppender {
 
   SimpleDateFormat sdf;
 
-  private final RollingCalendar rc = new RollingCalendar();
+  RollingCalendar rc = new RollingCalendar();
+
+  int checkPeriod = TOP_OF_TROUBLE;
 
   // The gmtTimeZone is used only in computeCheckPeriod() method.
   static final TimeZone gmtTimeZone = TimeZone.getTimeZone("GMT");
@@ -362,12 +363,12 @@ public class DailyRollingFileAppender extends FileAppender {
 /**
  *  RollingCalendar is a helper class to DailyRollingFileAppender.
  *  Given a periodicity type and the current time, it computes the
- *  start of the next interval.
- *  @deprecated Since log4j 1.3.
+ *  start of the next interval.  
  * */
 class RollingCalendar extends GregorianCalendar {
+  private static final long serialVersionUID = -3560331770601814177L;
 
-  private int type = DailyRollingFileAppender.TOP_OF_TROUBLE;
+  int type = DailyRollingFileAppender.TOP_OF_TROUBLE;
 
   RollingCalendar() {
     super();

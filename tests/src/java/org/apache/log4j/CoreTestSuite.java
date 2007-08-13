@@ -18,29 +18,26 @@ package org.apache.log4j;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.apache.log4j.spi.LoggingEventTest;
 
 
 /**
  * Suite of log4j class level unit tests.
  *
  * @author Curt Arnold
- * @since 1.3
  */
 public class CoreTestSuite {
     /**
      * Constructs test suite.
      * @return test suite
-     * @deprecated since some tests in suite test deprecated classes.
      */
     public static Test suite() {
         TestSuite s = new TestSuite();
-        s.addTestSuite(org.apache.log4j.pattern.NameAbbreviatorTest.class);
-        s.addTestSuite(org.apache.log4j.pattern.PatternParserTest.class);
-        s.addTestSuite(org.apache.log4j.rolling.helper.FileNamePatternTestCase.class);
-        s.addTestSuite(org.apache.log4j.pattern.FormattingInfoTest.class);
+        s.addTestSuite(LoggingEventTest.class);
         s.addTestSuite(org.apache.log4j.LevelTest.class);
         s.addTestSuite(org.apache.log4j.PriorityTest.class);
         s.addTestSuite(org.apache.log4j.CategoryTest.class);
+        s.addTestSuite(org.apache.log4j.FileAppenderTest.class);
         s.addTestSuite(org.apache.log4j.LogManagerTest.class);
         s.addTestSuite(org.apache.log4j.helpers.LogLogTest.class);
         s.addTestSuite(org.apache.log4j.LayoutTest.class);
@@ -50,6 +47,8 @@ public class CoreTestSuite {
         s.addTestSuite(org.apache.log4j.HTMLLayoutTest.class);
         s.addTestSuite(org.apache.log4j.PatternLayoutTest.class);
         s.addTestSuite(org.apache.log4j.spi.LoggingEventTest.class);
+        s.addTestSuite(org.apache.log4j.spi.ThrowableInformationTest.class);
+        s.addTestSuite(org.apache.log4j.spi.LocationInfoTest.class);
         s.addTestSuite(org.apache.log4j.PropertyConfiguratorTest.class);
         return s;
     }

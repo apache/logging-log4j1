@@ -20,7 +20,7 @@ package org.apache.log4j.util;
 import org.apache.oro.text.perl.Perl5Util;
 
 /**
- * The sun.reflect.* lines are not present in all JDKs.
+ * The sun.reflect.* and java.lang.reflect.* lines are not present in all JDKs.
  * 
  * @author Ceki Gulcu
  */
@@ -33,8 +33,18 @@ public class SunReflectFilter implements Filter {
     }
     if (util.match("/at sun.reflect/", in)) {
       return null;
-    } else {
-      return in;
     }
+    if (in.indexOf("at java.lang.reflect.Method") >= 0) {
+      return null;
+    }
+    if (in.indexOf("Compiled Code") >= 0) {
+        if(in.indexOf("junit.framework.TestSuite") >= 0) {
+            return util.substitute("s/Compiled Code/TestSuite.java:XXX/", in);
+        }
+    }
+    if (util.match("/\\(Method.java:.*\\)/", in)) {
+      return util.substitute("s/\\(Method.java:.*\\)/(Native Method)/", in);
+    }
+    return in;
   }
 }

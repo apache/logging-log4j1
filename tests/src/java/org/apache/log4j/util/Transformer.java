@@ -28,52 +28,40 @@ public class Transformer {
 
   public 
   static 
-  void transform(String in, String out, Filter[] filters) throws FileNotFoundException, 
-                                                                 IOException,
+  void transform(String in, String out, Filter[] filters) throws IOException,
                                                                  UnexpectedFormatException {
 
     String line;
     BufferedReader input = new BufferedReader(new FileReader(in));
     PrintStream output = new PrintStream(new FileOutputStream(out, false));
   
-    try {
-      // Initialization of input and output omitted
-      while ((line = input.readLine()) != null) {
-        // apply all filters
-        for (int i = 0; i < filters.length; i++) {
-          line = filters[i].filter(line);
-        }
-        if (line != null) {
-          output.println(line);
-        }
+    // Initialization of input and output omitted
+    while((line = input.readLine()) != null) {
+      // apply all filters
+      for(int i = 0; i < filters.length; i++) {
+	line = filters[i].filter(line);
       }
-    } finally {
-      input.close();
-      output.close();
-    }    
+      if(line != null) {
+	output.println(line);
+      }
+    }
   }
 
 
 
   public 
   static 
-  void transform(String in, String out, Filter filter) throws FileNotFoundException, 
-                                                              IOException,
+  void transform(String in, String out, Filter filter) throws IOException,
                                                               UnexpectedFormatException {
 
     String line;
     BufferedReader input = new BufferedReader(new FileReader(in));
     PrintStream output = new PrintStream(new FileOutputStream(out));
   
-    try {
-      // Initialization of input and output omitted
-      while((line = input.readLine()) != null) {
-        line = filter.filter(line);
-        output.println(line);
-      }
-    } finally {
-      input.close();
-      output.close();
+    // Initialization of input and output omitted
+    while((line = input.readLine()) != null) {
+      line = filter.filter(line);
+      output.println(line);
     }
   }
 

@@ -17,6 +17,7 @@
 
 package org.apache.log4j;
 
+import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.Vector;
@@ -27,10 +28,8 @@ import java.util.Vector;
  * by appenders.
  *
  * @author Curt Arnold
- * @deprecated since ErrorHandler is deprecated
  */
-public final class VectorErrorHandler
-  implements org.apache.log4j.spi.ErrorHandler {
+public final class VectorErrorHandler implements ErrorHandler {
   /**
    * Logger.
    */

@@ -1,9 +1,10 @@
 /*
- * Copyright 1999,2006 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -46,7 +47,7 @@ import java.util.Map;
  * </p>
  * <p/>
  * <b>Important note:</b> The <code>AsyncAppender</code> can only be script
- * configured using the {@link org.apache.log4j.joran.JoranConfigurator}.
+ * configured using the {@link org.apache.log4j.xml.DOMConfigurator}.
  * </p>
  *
  * @author Ceki G&uuml;lc&uuml;
@@ -103,7 +104,6 @@ public class AsyncAppender extends AppenderSkeleton
    * Create new instance.
    */
   public AsyncAppender() {
-    super(true);
     appenders = new AppenderAttachableImpl();
 
     //
@@ -150,10 +150,12 @@ public class AsyncAppender extends AppenderSkeleton
       return;
     }
 
-    // extract all the thread dependent information now as later it will
-    // be too late.
-    event.prepareForDeferredProcessing();
-
+    // Set the NDC and thread name for the calling thread as these
+    // LoggingEvent fields were not set at event creation time.
+    event.getNDC();
+    event.getThreadName();
+    // Get a copy of this thread's MDC.
+    event.getMDCCopy();
     if (locationInfo) {
       event.getLocationInformation();
     }
@@ -239,7 +241,7 @@ public class AsyncAppender extends AppenderSkeleton
       dispatcher.join();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      getLogger().error(
+      org.apache.log4j.helpers.LogLog.error(
         "Got an InterruptedException while waiting for the "
         + "dispatcher to finish.", e);
     }
@@ -466,10 +468,10 @@ public class AsyncAppender extends AppenderSkeleton
 
       return new LoggingEvent(
               "org.apache.log4j.AsyncAppender.DONT_REPORT_LOCATION",
-               maxEvent.getLogger(),
-               maxEvent.getLevel(),
-               msg,
-               null);
+              Logger.getLogger(maxEvent.getLoggerName()),
+              maxEvent.getLevel(),
+              msg,
+              null);
     }
   }
 
@@ -537,12 +539,12 @@ public class AsyncAppender extends AppenderSkeleton
           //
           synchronized (buffer) {
             int bufferSize = buffer.size();
-            isActive = !parent.isClosed();
+            isActive = !parent.closed;
 
             while ((bufferSize == 0) && isActive) {
               buffer.wait();
               bufferSize = buffer.size();
-              isActive = !parent.isClosed();
+              isActive = !parent.closed;
             }
 
             if (bufferSize > 0) {

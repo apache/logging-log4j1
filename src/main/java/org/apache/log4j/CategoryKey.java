@@ -1,9 +1,10 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -16,13 +17,14 @@
 
 package org.apache.log4j;
 
-
 /**
-   CategoryKey is heavily used internally to accelerate hash table searches.
-   @author Ceki G&uuml;lc&uuml;
+   CategoryKey is a wrapper for String that apparently accellerated
+   hash table lookup in early JVM's.
+   @author Ceki G&uuml;lc&uuml; 
 */
 class CategoryKey {
-  String name;
+
+  String   name;  
   int hashCache;
 
   CategoryKey(String name) {
@@ -30,19 +32,21 @@ class CategoryKey {
     hashCache = name.hashCode();
   }
 
-  public final int hashCode() {
+  final
+  public  
+  int hashCode() {
     return hashCache;
   }
 
-  public final boolean equals(Object rArg) {
-    if (this == rArg) {
+  final
+  public
+  boolean equals(Object rArg) {
+    if(this == rArg)
       return true;
-    }
-
-    if ((rArg != null) && (CategoryKey.class == rArg.getClass())) {
-      return name.equals(((CategoryKey) rArg).name);
-    } else {
+    
+    if(rArg != null && CategoryKey.class == rArg.getClass()) 
+      return  name.equals(((CategoryKey)rArg ).name);
+    else 
       return false;
-    }
   }
 }

@@ -1,9 +1,10 @@
 /*
- * Copyright 1999-2006 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -17,6 +18,7 @@
 package org.apache.log4j.config;
 
 import org.apache.log4j.Appender;
+import org.apache.log4j.Category;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -27,7 +29,7 @@ import java.util.Hashtable;
 
 /**
    Prints the configuration of the log4j default hierarchy
-   (which needs to be auto-initialized) as a properties file
+   (which needs to be auto-initialized) as a propoperties file
    on a {@link PrintWriter}.
    
    @author  Anders Kristensen
@@ -89,7 +91,7 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
   }
   
   protected
-  void printOptions(PrintWriter out, Logger cat) {
+  void printOptions(PrintWriter out, Category cat) {
     Enumeration appenders = cat.getAllAppenders();
     Level prio = cat.getLevel();
     String appenderString = (prio == null ? "" : prio.toString());
@@ -121,7 +123,11 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
     }
     if (!cat.getAdditivity() && cat != Logger.getRootLogger()) {
     	out.println("log4j.additivity." + cat.getName() + "=false");    
-    }    
+    }
+  }
+
+  protected void printOptions(PrintWriter out, Logger cat) {
+      printOptions(out, (Category) cat);
   }
   
   protected

@@ -1,9 +1,10 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -69,6 +70,8 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
   void handleNotification(Notification notification, Object handback) {
     cat.debug("Received notification: "+notification.getType());
     registerAppenderMBean((Appender) notification.getUserData() );
+
+
   }
 
   private
@@ -97,9 +100,9 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
 
 
     MBeanParameterInfo[] params = new MBeanParameterInfo[2];
-    params[0] = new MBeanParameterInfo("className", "java.lang.String",
+    params[0] = new MBeanParameterInfo("class name", "java.lang.String",
 				       "add an appender to this logger");
-    params[1] = new MBeanParameterInfo("appenderName", "java.lang.String",
+    params[1] = new MBeanParameterInfo("appender name", "java.lang.String",
 				       "name of the appender");
 
     dOperations[0] = new MBeanOperationInfo("addAppender",
@@ -168,9 +171,9 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
       } else {
 	return l.toString();
       }
-    } else if(attributeName.startsWith("appender_")) {
+    } else if(attributeName.startsWith("appender=")) {
       try {
-	return new ObjectName(getObjectName().getDomain() + ":" + attributeName);
+	return new ObjectName("log4j:"+attributeName );
       } catch(Exception e) {
 	cat.error("Could not create ObjectName" + attributeName);
       }
@@ -250,21 +253,16 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
 
   void registerAppenderMBean(Appender appender) {
     String name = appender.getName();
-    if (name == null)
-      name = appender.toString();
     cat.debug("Adding AppenderMBean for appender named "+name);
     ObjectName objectName = null;
     try {
       AppenderDynamicMBean appenderMBean = new AppenderDynamicMBean(appender);
-      objectName = new ObjectName(getObjectName().getDomain(), "appender", name);
-      getServer().registerMBean(appenderMBean, objectName);
-
-      dAttributes.add(new MBeanAttributeInfo("appender_"+name,
-					     "javax.management.ObjectName",
-					     "The "+name+" appender.",
-					     true,
-					     true,
-					     false));
+      objectName = new ObjectName("log4j", "appender", name);
+      if (!server.isRegistered(objectName)) {
+        server.registerMBean(appenderMBean, objectName);
+        dAttributes.add(new MBeanAttributeInfo("appender=" + name, "javax.management.ObjectName",
+                "The " + name + " appender.", true, true, false));
+      }
 
     } catch(Exception e) {
       cat.error("Could not add appenderMBean for ["+name+"].", e);

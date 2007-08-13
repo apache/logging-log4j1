@@ -1,0 +1,58 @@
+This is a detailed instruction to reproduce the log4j distribution
+either to verify that the release is reproducable or to prepare
+a hot-fix.
+
+Install VMWare Player or Workstation appropriate for machine.
+
+Download Ubuntu-6.06-1 desktop from http://www.vmware.com/vmtn/appliances/directory/ubuntu.html
+
+Launch Ubuntu 6.06-1 in VMWare Player (user name and password are ubuntu)
+
+Launch Synaptics Package Manager (System > Administration > Synaptic Package Manager), select all available repositories (Settings > Repositories), press Reload button to update list of available packages.  Select the following packages for installation: Subversion, mingw32, sun-java6-jdk.  Press Apply to install.  Exit Synaptics.
+
+Download Maven-2.0.6 from http://maven.apache.org
+Download JMX 1.2.1 Reference Implementation from 
+   http://java.sun.com/products/JavaManagement/download.html
+Download JMS 1.1 from http://java.sun.com/products/jms/docs.html
+Unzip all in ~
+
+Copy include/win32/jni_md.h from a Windows JDK to ~
+
+From a command prompt:
+
+$ export JAVA_HOME=/usr/lib/jvm/java-6-sun
+$ export PATH=$JAVA_HOME/bin:/home/ubuntu/maven-2.0.6/bin:$PATH
+$ export JNI_WIN32_INCLUDE_DIR=/home/ubuntu
+$ svn co https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15 log4j
+$ mvn install:install-file -DgroupId=com.sun.jdmk -DartifactId=jmxtools \
+          -Dversion=1.2.1 -Dpackaging=jar -Dfile=~/jmx-1_2_1-bin/lib/jmxtools.jar
+$ mvn install:install-file -DgroupId=com.sun.jmx -DartifactId=jmxri \
+          -Dversion=1.2.1 -Dpackaging=jar -Dfile=~/jmx-1_2_1-bin/lib/jmxri.jar
+$ mvn install:install-file -DgroupId=javax.jms -DartifactId=jms \
+          -Dversion=1.1 -Dpackaging=jar -Dfile=~/jms1.1/lib/jms.jar
+$ cd log4j
+$ mvn site assembly:assembly
+
+
+If you intended to deploy jars to the repo or update the site,
+you need to copy your private keys for people.apache.org 
+over to ~/.ssh and update ~/maven-2.0.6/conf/settings.xml
+to specify user name and key location.
+
+    <server>
+      <id>logging.repo</id>
+      <username>USERNAME for people.apache.org</username>
+      <privateKey>/home/ubuntu/.ssh/id_rsa</privateKey>
+      <passphrase></passphrase>
+    </server>
+    <server>
+      <id>logging.site</id>
+      <username>USERNAME for people.apache.org</username>
+      <privateKey>/home/ubuntu/.ssh/id_rsa</privateKey>
+      <passphrase></passphrase>
+    </server>
+
+You should test your ssh connection to people.apache.org before
+attempting a deployment like:
+
+$ ssh -l USERNAME people.apache.org

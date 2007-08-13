@@ -34,7 +34,7 @@ import org.apache.log4j.spi.LoggingEvent;
   See <a href=doc-files/MyPatternParser.java><b>source</b></a> code
    for more details.
   
-  @see org.apache.log4j.MyPatternLayout
+  @see org.apache.log4j.examples.MyPatternLayout
   @see org.apache.log4j.helpers.PatternParser
   @see org.apache.log4j.PatternLayout
 

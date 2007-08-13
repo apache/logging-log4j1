@@ -23,14 +23,13 @@ import org.apache.log4j.Logger;
 import java.util.Random;
 
 /*
-  Stress test the Category class.
+  Stress test the Logger class.
 
 */
 
 class StressCategory {
 
-  static Level[] level = new Level[] {Level.TRACE,
-				      Level.DEBUG, 
+  static Level[] level = new Level[] {Level.DEBUG, 
 				      Level.INFO, 
 				      Level.WARN,
 				      Level.ERROR,
@@ -180,11 +179,21 @@ class StressCategory {
     }
   }
 
+  //  static
+  //void provisionNodesDump() {
+  //for (Enumeration e = CategoryFactory.ht.keys(); e.hasMoreElements() ;) {
+  //  CategoryKey key = (CategoryKey) e.nextElement();
+  //  Object c = CategoryFactory.ht.get(key);
+  //  if(c instanceof  ProvisionNode) 
+  //((ProvisionNode) c).dump(key.name);
+  //}
+  //}
+  
   static
   boolean checkCorrectness(int i) {
     CT localCT = ct[i];
 
-    // Can't perform test if category is not instantiated
+    // Can't perform test if logger is not instantiated
     if(localCT == null) 
       return true;
     
@@ -241,5 +250,3 @@ class StressCategory {
     }
   }
 }
-
-// End of class: StressCategory.java

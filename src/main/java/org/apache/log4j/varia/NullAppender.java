@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,9 +17,8 @@
 
 package org.apache.log4j.varia;
 
-
-import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
   * A NullAppender merely exists, it never outputs a message to any
@@ -31,14 +30,19 @@ public class NullAppender extends AppenderSkeleton {
   private static NullAppender instance = new NullAppender();
 
   public NullAppender() {
-      super(true);
+  }
+
+  /** 
+   * There are no options to acticate.
+   * */
+  public void activateOptions() {
   }
 
   /**
    * Whenever you can, use this method to retreive an instance instead
    * of instantiating a new one with <code>new</code>.
    * */
-  static public NullAppender getInstance() {
+  public NullAppender getInstance() {
     return instance;
   }
 
@@ -56,13 +60,11 @@ public class NullAppender extends AppenderSkeleton {
    * */
   protected void append(LoggingEvent event) {
   }
-    /**
-     * Gets whether appender requires a layout.
-     * @return false
-     */
+
+  /**
+    * NullAppenders do not need a layout.  
+    * */
   public boolean requiresLayout() {
-      return false;
+    return false;
   }
-
-
 }

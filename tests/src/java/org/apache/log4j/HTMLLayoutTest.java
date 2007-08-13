@@ -18,16 +18,14 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggingEvent;
-
 import org.w3c.dom.Document;
-
 import org.xml.sax.InputSource;
-
-import java.io.Reader;
-import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Hashtable;
 
 
 /**
@@ -174,7 +172,69 @@ public class HTMLLayoutTest extends LayoutTest {
         "org.apache.log4j.Logger", logger, Level.WARN, "Hello, World", ex);
     result = layout.format(event2);
     assertEquals(
-      Layout.LINE_SEP + "<tr class=",
-      result.substring(0, Layout.LINE_SEP.length() + 10));
+      Layout.LINE_SEP + "<tr>",
+      result.substring(0, Layout.LINE_SEP.length() + 4));
   }
+
+
+    /**
+     * Level with arbitrary toString value.
+     */
+    private static final class ProblemLevel extends Level {
+        /**
+         * Construct new instance.
+         * @param levelName level name, may not be null.
+         */
+        public ProblemLevel(final String levelName) {
+            super(6000, levelName, 6);
+        }
+    }
+    
+    /**
+     * Tests problematic characters in multiple fields.
+     * @throws Exception if parser can not be constructed
+     *  or source is not a valid XML document.
+     */
+    public void testProblemCharacters() throws Exception {
+      String problemName = "com.example.bar<>&\"'";
+      Logger logger = Logger.getLogger(problemName);
+      Level level = new ProblemLevel(problemName);
+      Exception ex = new IllegalArgumentException(problemName);
+      String threadName = Thread.currentThread().getName();
+      Thread.currentThread().setName(problemName);
+      NDC.push(problemName);
+      Hashtable mdcMap = MDC.getContext();
+      if (mdcMap != null) {
+          mdcMap.clear();
+      }
+      MDC.put(problemName, problemName);
+      LoggingEvent event =
+        new LoggingEvent(
+          problemName, logger, level, problemName, ex);
+      HTMLLayout layout = (HTMLLayout) createLayout();
+      String result = layout.format(event);
+      mdcMap = MDC.getContext();
+      if (mdcMap != null) {
+        mdcMap.clear();
+      }
+
+      Thread.currentThread().setName(threadName);
+
+      //
+      //  do a little fixup to make output XHTML
+      //
+      StringBuffer buf = new StringBuffer(
+              "<!DOCTYPE table [<!ENTITY nbsp ' '>]><table>");
+      buf.append(result);
+      buf.append("</table>");
+      String doc = buf.toString();
+      for(int i = doc.lastIndexOf("<br>");
+          i != -1;
+          i = doc.lastIndexOf("<br>", i - 1)) {
+          buf.replace(i, i + 4, "<br/>");
+      }
+
+      parse(buf.toString());
+    }
+
 }

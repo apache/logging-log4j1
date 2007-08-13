@@ -50,4 +50,13 @@ public class MyPatternLayout extends PatternLayout {
     return new MyPatternParser(
       pattern == null ? DEFAULT_CONVERSION_PATTERN : pattern);
   }
+  
+  public
+  static void main(String[] args) {
+    Layout layout = new MyPatternLayout("[counter=%.10#] - %m%n");
+    Logger logger = Logger.getLogger("some.cat");
+    logger.addAppender(new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT));
+    logger.debug("Hello, log");
+    logger.info("Hello again...");    
+  }
 }

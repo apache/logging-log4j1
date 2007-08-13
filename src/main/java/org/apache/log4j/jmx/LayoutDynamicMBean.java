@@ -1,9 +1,10 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -21,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.OptionConverter;
+import org.apache.log4j.spi.OptionHandler;
 
 import java.util.Vector;
 import java.util.Hashtable;
@@ -151,8 +153,10 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
     throws MBeanException,
     ReflectionException {
 
-    if(operationName.equals("activateOptions")) {
-      layout.activateOptions();
+    if(operationName.equals("activateOptions") &&
+                     layout instanceof OptionHandler) {
+      OptionHandler oh = (OptionHandler) layout;
+      oh.activateOptions();
       return "Options activated.";
     }
     return null;

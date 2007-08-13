@@ -17,14 +17,16 @@
 
 package org.apache.log4j.defaultInit;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import junit.framework.Test;
+
+import java.util.Vector;
 
 import org.apache.log4j.*;
 
-
 public class TestCase1 extends TestCase {
+
   public TestCase1(String name) {
     super(name);
   }
@@ -45,7 +47,8 @@ public class TestCase1 extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new TestCase1("noneTest"));
-
     return suite;
   }
+
 }
+

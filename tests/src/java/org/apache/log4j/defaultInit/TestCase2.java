@@ -17,16 +17,17 @@
 
 package org.apache.log4j.defaultInit;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import junit.framework.Test;
+
+import java.util.Vector;
+import java.util.Enumeration;
 
 import org.apache.log4j.*;
 
-import java.util.Enumeration;
-
-
 public class TestCase2 extends TestCase {
+
   public TestCase2(String name) {
     super(name);
   }
@@ -42,7 +43,6 @@ public class TestCase2 extends TestCase {
     Logger root = Logger.getRootLogger();
     boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
     assertTrue(rootIsConfigured);
-
     Enumeration e = root.getAllAppenders();
     Appender appender = (Appender) e.nextElement();
     assertEquals(appender.getName(), "D1");
@@ -51,7 +51,8 @@ public class TestCase2 extends TestCase {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new TestCase2("xmlTest"));
-
     return suite;
   }
+
 }
+

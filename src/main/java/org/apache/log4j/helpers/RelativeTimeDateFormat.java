@@ -1,9 +1,10 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -17,20 +18,22 @@
 package org.apache.log4j.helpers;
 
 import java.util.Date;
-import java.util.TimeZone;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
 import java.text.DateFormat;
 
 /**
    Formats a {@link Date} by printing the number of milliseconds
-   elapsed since the construction of the format.  This is the fastest
+   elapsed since construction of the format.  This is the fastest
    printing DateFormat in the package.
    
    @author Ceki G&uuml;lc&uuml;
+   
    @since 0.7.5
 */
 public class RelativeTimeDateFormat extends DateFormat {
+  private static final long serialVersionUID = 7055751607085611984L;
+
 
   protected final long startTime;
 
@@ -59,14 +62,4 @@ public class RelativeTimeDateFormat extends DateFormat {
   Date parse(java.lang.String s, ParsePosition pos) {
     return null;
   }  
-
-  /**
-   * Sets the timezone.
-   * Ignored by this formatter, but intercepted to prevent
-   * NullPointerException in superclass.
-   * @param tz TimeZone timezone
-   */
-  public void setTimeZone(final TimeZone tz) {
-  }
-  
 }

@@ -1,9 +1,10 @@
 /*
- * Copyright 1999,2006 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -16,15 +17,16 @@
 
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.OptionConverter;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
+import java.io.FileOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.File;
 
+import org.apache.log4j.spi.ErrorCode;
+import org.apache.log4j.helpers.QuietWriter;
+import org.apache.log4j.helpers.LogLog;
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 //              Ben Sandee
@@ -36,22 +38,18 @@ import java.io.Writer;
  *  has been deprecated and then removed. See the replacement
  *  solutions: {@link WriterAppender} and {@link ConsoleAppender}.
  *
- * @author Ceki G&uuml;lc&uuml;
+ * @author Ceki G&uuml;lc&uuml; 
  * */
 public class FileAppender extends WriterAppender {
 
-  /**
-   * The default size of the IO buffer. 
+  /** Controls file truncatation. The default value for this variable
+   * is <code>true</code>, meaning that by default a
+   * <code>FileAppender</code> will append to an existing file and not
+   * truncate it.
+   *
+   * <p>This option is meaningful only if the FileAppender opens the
+   * file.
    */
-  private static final int DEFAULT_BUFFER_SIZE = 8 * 1024;
-  /** 
-   * Controls whether to append to or truncate an existing file. 
-   * The default value for this variable is 
-   * <code>true</code>, meaning that by default a <code>FileAppender</code> will
-   *  append to an existing file and not truncate it. 
-   * 
-   * <p>This option is meaningful only if the FileAppender opens the file.
-  */
   protected boolean fileAppend = true;
 
   /**
@@ -63,13 +61,16 @@ public class FileAppender extends WriterAppender {
   protected boolean bufferedIO = false;
 
   /**
-     The size of the IO buffer. Default is 8K. */
-  protected int bufferSize = DEFAULT_BUFFER_SIZE;
+   * Determines the size of IO buffer be. Default is 8K. 
+   */
+  protected int bufferSize = 8*1024;
+
 
   /**
      The default constructor does not do anything.
   */
-  public FileAppender() {
+  public
+  FileAppender() {
   }
 
   /**
@@ -85,12 +86,11 @@ public class FileAppender extends WriterAppender {
     then buffered IO will be used to write to the output file.
 
   */
-  public FileAppender(
-    Layout layout, String filename, boolean append, boolean bufferedIO,
-    int bufferSize) throws IOException {
+  public
+  FileAppender(Layout layout, String filename, boolean append, boolean bufferedIO,
+	       int bufferSize) throws IOException {
     this.layout = layout;
     this.setFile(filename, append, bufferedIO, bufferSize);
-    activateOptions();
   }
 
   /**
@@ -102,11 +102,11 @@ public class FileAppender extends WriterAppender {
     appended to. Otherwise, the file designated by
     <code>filename</code> will be truncated before being opened.
   */
-  public FileAppender(Layout layout, String filename, boolean append)
-    throws IOException {
+  public
+  FileAppender(Layout layout, String filename, boolean append)
+                                                             throws IOException {
     this.layout = layout;
     this.setFile(filename, append, false, bufferSize);
-    activateOptions();
   }
 
   /**
@@ -115,9 +115,9 @@ public class FileAppender extends WriterAppender {
     destination for this appender.
 
     <p>The file will be appended to.  */
-  public FileAppender(Layout layout, String filename) throws IOException {
+  public
+  FileAppender(Layout layout, String filename) throws IOException {
     this(layout, filename, true);
-    activateOptions();
   }
 
   /**
@@ -133,18 +133,21 @@ public class FileAppender extends WriterAppender {
     // Trim spaces from both ends. The users probably does not want
     // trailing spaces in file names.
     String val = file.trim();
-    fileName = OptionConverter.stripDuplicateBackslashes(val);
+    fileName = val;
   }
 
   /**
       Returns the value of the <b>Append</b> option.
    */
-  public boolean getAppend() {
+  public
+  boolean getAppend() {
     return fileAppend;
   }
 
+
   /** Returns the value of the <b>File</b> option. */
-  public String getFile() {
+  public
+  String getFile() {
     return fileName;
   }
 
@@ -154,47 +157,62 @@ public class FileAppender extends WriterAppender {
      <b>Append</b> properties.
 
      @since 0.8.1 */
-  public void activateOptions() {
-    if (fileName != null) {
+  public
+  void activateOptions() {
+    if(fileName != null) {
       try {
-        setFile(fileName, fileAppend, bufferedIO, bufferSize);
-        super.activateOptions();
-      } catch (java.io.IOException e) {
-        getLogger().error(
-          "setFile(" + fileName + "," + fileAppend + ") call failed.", e);
+	setFile(fileName, fileAppend, bufferedIO, bufferSize);
+      }
+      catch(java.io.IOException e) {
+	errorHandler.error("setFile("+fileName+","+fileAppend+") call failed.",
+			   e, ErrorCode.FILE_OPEN_FAILURE);
       }
     } else {
-      getLogger().error("File option not set for appender [{}].", name);
-      getLogger().warn("Are you using FileAppender instead of ConsoleAppender?");
+      //LogLog.error("File option not set for appender ["+name+"].");
+      LogLog.warn("File option not set for appender ["+name+"].");
+      LogLog.warn("Are you using FileAppender instead of ConsoleAppender?");
     }
   }
 
-  /**
-   * Closes the previously opened file.
-   * 
-   * @deprecated Use the super class' {@link #closeWriter} method instead.
-   */
-  protected void closeFile() {
-    closeWriter();
+ /**
+     Closes the previously opened file.
+  */
+  protected
+  void closeFile() {
+    if(this.qw != null) {
+      try {
+	this.qw.close();
+      }
+      catch(java.io.IOException e) {
+	// Exceptionally, it does not make sense to delegate to an
+	// ErrorHandler. Since a closed appender is basically dead.
+	LogLog.error("Could not close " + qw, e);
+      }
+    }
   }
 
   /**
      Get the value of the <b>BufferedIO</b> option.
 
-     <p>BufferedIO will significantly increase performance on heavily
+     <p>BufferedIO will significatnly increase performance on heavily
      loaded systems.
 
   */
-  public boolean getBufferedIO() {
+  public
+  boolean getBufferedIO() {
     return this.bufferedIO;
   }
+
 
   /**
      Get the size of the IO buffer.
   */
-  public int getBufferSize() {
+  public
+  int getBufferSize() {
     return this.bufferSize;
   }
+
+
 
   /**
      The <b>Append</b> option takes a boolean value. It is set to
@@ -206,7 +224,8 @@ public class FileAppender extends WriterAppender {
      <p>Note: Actual opening of the file is made when {@link
      #activateOptions} is called, not when the options are set.
    */
-  public void setAppend(boolean flag) {
+  public
+  void setAppend(boolean flag) {
     fileAppend = flag;
   }
 
@@ -216,22 +235,24 @@ public class FileAppender extends WriterAppender {
      will be opened and the resulting {@link java.io.Writer} wrapped
      around a {@link BufferedWriter}.
 
-     BufferedIO will significantly increase performance on heavily
+     BufferedIO will significatnly increase performance on heavily
      loaded systems.
 
   */
-  public void setBufferedIO(boolean bufferedIO) {
+  public
+  void setBufferedIO(boolean bufferedIO) {
     this.bufferedIO = bufferedIO;
-
-    if (bufferedIO) {
+    if(bufferedIO) {
       immediateFlush = false;
     }
   }
 
+
   /**
      Set the size of the IO buffer.
   */
-  public void setBufferSize(int bufferSize) {
+  public
+  void setBufferSize(int bufferSize) {
     this.bufferSize = bufferSize;
   }
 
@@ -246,83 +267,78 @@ public class FileAppender extends WriterAppender {
     or one of its subclasses, set its properties one by one and then
     call activateOptions.</b>
 
-    @param filename The path to the log file.
+    @param fileName The path to the log file.
     @param append   If true will append to fileName. Otherwise will
-        truncate fileName.
-    @param bufferedIO
-    @param bufferSize
-    
-    @throws IOException
-        
-   */
-  public synchronized void setFile(
-    String filename, boolean append, boolean bufferedIO, int bufferSize)
-    throws IOException {
-    getLogger().debug("setFile called: {}, {}", fileName, append?"true":"false");
+        truncate fileName.  */
+  public
+  synchronized
+  void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize)
+                                                            throws IOException {
+    LogLog.debug("setFile called: "+fileName+", "+append);
 
     // It does not make sense to have immediate flush and bufferedIO.
-    if (bufferedIO) {
+    if(bufferedIO) {
       setImmediateFlush(false);
     }
 
-    closeWriter();
-
+    reset();
     FileOutputStream ostream = null;
     try {
-        //
-        //   attempt to create file
-        //
-        ostream = new FileOutputStream(filename, append);
+          //
+          //   attempt to create file
+          //
+          ostream = new FileOutputStream(fileName, append);
     } catch(FileNotFoundException ex) {
-        //
-        //   if parent directory does not exist then
-        //      attempt to create it and try to create file
-        //      see bug 9150
-        //
-        File parentDir = new File(new File(filename).getParent());
-        if(!parentDir.exists() && parentDir.mkdirs()) {
-            ostream = new FileOutputStream(filename, append);
-        } else {
-            throw ex;
-        }
+          //
+          //   if parent directory does not exist then
+          //      attempt to create it and try to create file
+          //      see bug 9150
+          //
+          String parentName = new File(fileName).getParent();
+          if (parentName != null) {
+             File parentDir = new File(parentName);
+             if(!parentDir.exists() && parentDir.mkdirs()) {
+                ostream = new FileOutputStream(fileName, append);
+             } else {
+                throw ex;
+             }
+          } else {
+             throw ex;
+          }
     }
     Writer fw = createWriter(ostream);
-
-    if (bufferedIO) {
+    if(bufferedIO) {
       fw = new BufferedWriter(fw, bufferSize);
     }
-    setQWForFiles(fw);
-
+    this.setQWForFiles(fw);
+    this.fileName = fileName;
     this.fileAppend = append;
     this.bufferedIO = bufferedIO;
-    this.fileName = filename;
     this.bufferSize = bufferSize;
     writeHeader();
-    getLogger().debug("setFile ended");
+    LogLog.debug("setFile ended");
   }
 
-    /**
-       Sets the quiet writer being used.
 
-       This method is overriden by {@link RollingFileAppender}.
-     */
-    protected
-    void setQWForFiles(final Writer writer) {
-       this.qw = createQuietWriter(writer);
-    }
+  /**
+     Sets the quiet writer being used.
 
-
-    /**
-       Close any previously opened file and call the parent's
-       <code>reset</code>.
-     @deprecated
-     */
-    protected
-    void reset() {
-      closeFile();
-      this.fileName = null;
-      super.reset();
-    }
+     This method is overriden by {@link RollingFileAppender}.
+   */
+  protected
+  void setQWForFiles(Writer writer) {
+     this.qw = new QuietWriter(writer, errorHandler);
+  }
 
 
+  /**
+     Close any previously opened file and call the parent's
+     <code>reset</code>.  */
+  protected
+  void reset() {
+    closeFile();
+    this.fileName = null;
+    super.reset();
+  }
 }
+

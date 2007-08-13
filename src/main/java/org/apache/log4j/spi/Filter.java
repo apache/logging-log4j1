@@ -39,7 +39,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
    <p>If the value {@link #DENY} is returned, then the log event is
    dropped immediately without consulting with the remaining
-   filters.
+   filters. 
 
    <p>If the value {@link #NEUTRAL} is returned, then the next filter
    in the chain is consulted. If there are no more filters in the
@@ -47,10 +47,10 @@ import org.apache.log4j.spi.LoggingEvent;
    filters, the default behaviour is to log all logging events.
 
    <p>If the value {@link #ACCEPT} is returned, then the log
-   event is logged without consulting the remaining filters.
+   event is logged without consulting the remaining filters. 
 
    <p>The philosophy of log4j filters is largely inspired from the
-   Linux ipchains.
+   Linux ipchains. 
 
    <p>Note that filtering is only supported by the {@link
    org.apache.log4j.xml.DOMConfigurator DOMConfigurator}. The {@link
@@ -59,12 +59,20 @@ import org.apache.log4j.spi.LoggingEvent;
 
    @author Ceki G&uuml;lc&uuml;
    @since 0.9.0 */
-public abstract class Filter extends ComponentBase implements OptionHandler {
+public abstract class Filter implements OptionHandler {
+
+  /**
+     Points to the next filter in the filter chain.
+
+     @deprecated As of 1.2.12, use {@link #getNext} and {@link #setNext} instead
+   */
+  public Filter next;
+
   /**
      The log event must be dropped immediately without consulting
      with the remaining filters, if any, in the chain.  */
-  public static final int DENY = -1;
-
+  public static final int DENY    = -1;
+  
   /**
      This filter is neutral with respect to the log event. The
      remaining filters, if any, should be consulted for a final decision.
@@ -74,23 +82,20 @@ public abstract class Filter extends ComponentBase implements OptionHandler {
   /**
      The log event must be logged immediately without consulting with
      the remaining filters, if any, in the chain.  */
-  public static final int ACCEPT = 1;
+  public static final int ACCEPT  = 1;
 
-  /**
-     Points to the next filter in the filter chain.
-     
-     @deprecated As of 1.2.12, use {@link #getNext} and {@link #setNext} instead
-   */
-  public Filter next;
 
   /**
      Usually filters options become active when set. We provide a
      default do-nothing implementation for convenience.
   */
-  public void activateOptions() {
+  public
+  void activateOptions() {
   }
 
-  /**
+
+
+  /**     
      <p>If the decision is <code>DENY</code>, then the event will be
      dropped. If the decision is <code>NEUTRAL</code>, then the next
      filter, if any, will be invoked. If the decision is ACCEPT then
@@ -98,9 +103,11 @@ public abstract class Filter extends ComponentBase implements OptionHandler {
      the chain.
 
      @param event The LoggingEvent to decide upon.
-   */
-  public abstract int decide(LoggingEvent event);
- 
+     @return decision The decision of the filter.  */
+  abstract
+  public
+  int decide(LoggingEvent event);
+
   /**
    * Set the next filter pointer.
    */ 

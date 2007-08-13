@@ -51,7 +51,6 @@ public class DRFATestCase extends TestCase {
 
     /**
      * Test prediction of check period.
-     * @deprecated since class under test is deprecated.
      */
   public
   void testComputeCheckPeriod() {
@@ -89,7 +88,6 @@ public class DRFATestCase extends TestCase {
 
     /**
      *   Test of RollingCalendar.
-     * @deprecated since class under test is deprecated.
      */
   public
   void testRC1() {
@@ -132,7 +130,6 @@ public class DRFATestCase extends TestCase {
 
     /**
      * RollingCalendar test.
-     * @deprecated since class under test is deprecated.
      */
   public
   void testRC2() {
@@ -204,7 +201,6 @@ public class DRFATestCase extends TestCase {
 
     /**
      * RollingCalendar test.
-     * @deprecated since class under test is deprecated.
      */
   public
   void testRC3() {
@@ -285,7 +281,6 @@ public class DRFATestCase extends TestCase {
      * Common test code for 3 parameter constructor.
      *
      * @throws IOException if IOException during test.
-     * @deprecated since class under test is deprecated.
      */
    public void test3Param(final String datePattern,
                           final String filename) throws IOException {
@@ -303,7 +298,6 @@ public class DRFATestCase extends TestCase {
      * Creates an appender with an unrecognized top-of-year pattern.
      *
      * @throws IOException if IOException during test.
-     * @deprecated since class under test is deprecated.
      */
     public void testTopOfYear() throws IOException {
         try {
@@ -318,7 +312,6 @@ public class DRFATestCase extends TestCase {
      * Creates an appender with a top-of-month pattern.
      *
      * @throws IOException if IOException during test.
-     * @deprecated since class under test is deprecated.
      */
     public void testTopOfMonth() throws IOException {
         test3Param("'.'yyyy-MM", "output/drfa_topOfMonth.log");
@@ -329,7 +322,6 @@ public class DRFATestCase extends TestCase {
      * Creates an appender with a top-of-week pattern.
      *
      * @throws IOException if IOException during test.
-     * @deprecated since class under test is deprecated.
      */
     public void testTopOfWeek() throws IOException {
         test3Param("'.'yyyy-w", "output/drfa_topOfWeek.log");
@@ -339,7 +331,6 @@ public class DRFATestCase extends TestCase {
      * Creates an appender with a top-of-day pattern.
      *
      * @throws IOException if IOException during test.
-     * @deprecated since class under test is deprecated.
      */
     public void testTopOfDay() throws IOException {
         test3Param("'.'yyyy-MM-dd", "output/drfa_topOfDay.log");
@@ -350,7 +341,6 @@ public class DRFATestCase extends TestCase {
      * Creates an appender with a half day pattern.
      *
      * @throws IOException if IOException during test.
-     * @deprecated since class under test is deprecated.
      */
     public void testHalfDay() throws IOException {
         test3Param("'.'yyyy-MM-dd-a", "output/drfa_halfDay.log");
@@ -360,7 +350,6 @@ public class DRFATestCase extends TestCase {
      * Creates an appender with a top-of-hour pattern.
      *
      * @throws IOException if IOException during test.
-     * @deprecated since class under test is deprecated.
      */
     public void testTopOfHour() throws IOException {
         test3Param("'.'yyyy-MM-dd-HH", "output/drfa_topOfHour.log");
@@ -370,7 +359,6 @@ public class DRFATestCase extends TestCase {
      * Creates an appender with a top-of-day pattern.
      *
      * @throws IOException if IOException during test.
-     * @deprecated since class under test is deprecated.
      */
     public void testTopOfMinute() throws IOException {
         test3Param("'.'yyyy-MM-dd-HH-mm", "output/drfa_topOfMinute.log");
@@ -380,7 +368,6 @@ public class DRFATestCase extends TestCase {
      * Attempts to rollOver with no date pattern set.
      *
      * @throws IOException if IOException during test.
-     * @deprecated since class under test is deprecated.
      */
     public void testRolloverNoPattern() throws IOException {
         Layout layout = new SimpleLayout();
@@ -400,7 +387,6 @@ public class DRFATestCase extends TestCase {
      *
      * @throws IOException
      * @throws InterruptedException
-     * @deprecated since class under test is deprecated.
      */
     public void testMinuteRollover() throws IOException, InterruptedException {
         Layout layout = new SimpleLayout();

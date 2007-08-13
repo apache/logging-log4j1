@@ -19,6 +19,8 @@ package org.apache.log4j;
 
 import junit.framework.TestCase;
 
+import java.util.Locale;
+
 
 /**
  * Tests of Priority.
@@ -183,4 +185,28 @@ public class PriorityTest extends TestCase {
   public void testToPriorityIntPriority() {
     assertTrue(Priority.toPriority(17, Priority.DEBUG) == Priority.DEBUG);
   }
+
+    /**
+     * Test that dotless lower I + "nfo" is recognized as INFO.
+     * @deprecated
+     */
+  public void testDotlessLowerI() {
+      Priority level = Priority.toPriority("\u0131nfo");
+      assertEquals("INFO", level.toString());
+  }
+
+    /**
+     * Test that dotted lower I + "nfo" is recognized as INFO
+     * even in Turkish locale.
+     * @deprecated
+     */
+  public void testDottedLowerI() {
+      Locale defaultLocale = Locale.getDefault();
+      Locale turkey = new Locale("tr", "TR");
+      Locale.setDefault(turkey);
+      Priority level = Priority.toPriority("info");
+      Locale.setDefault(defaultLocale);
+      assertEquals("INFO", level.toString());
+  }
+
 }

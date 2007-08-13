@@ -1,9 +1,10 @@
 /*
- * Copyright 1999-2005 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -16,6 +17,7 @@
 
 package org.apache.log4j.jmx;
 
+//import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import javax.management.DynamicMBean;
 import javax.management.AttributeList;
@@ -30,16 +32,9 @@ import org.apache.log4j.Logger;
 public abstract class AbstractDynamicMBean implements DynamicMBean,
                                                       MBeanRegistration {
 
-  private String dClassName = getClass().getName();
-  
-  /**
-   * Name of the registered MBean.
-   */
-  private ObjectName objectName;
-  
-  /** {@link MBeanServer} instance, set when registration done. */
-  private MBeanServer server;
-  
+  String dClassName;
+  MBeanServer server;
+
   /**
    * Enables the to get the values of several attributes of the Dynamic MBean.
    */
@@ -117,30 +112,20 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
   void postRegister(java.lang.Boolean registrationDone) {
   }
 
+
+
   public
   void preDeregister() {
     getLogger().debug("preDeregister called.");
   }
 
   public
-  ObjectName preRegister(MBeanServer server, ObjectName objectName) {
-    getLogger().debug("preRegister called. Server="+server+ ", name="+objectName);
+  ObjectName preRegister(MBeanServer server, ObjectName name) {
+    getLogger().debug("preRegister called. Server="+server+ ", name="+name);
     this.server = server;
-    this.objectName = objectName;
-    return objectName;
+    return name;
   }
 
-  /**
-   * Returns the registered object name of this MBean.
-   */
-  protected ObjectName getObjectName() {
-    return objectName;
-  }
 
-  /**
-   * Returns the registered MBeanServer of this MBean.
-   */
-  protected MBeanServer getServer() {
-    return server;
-  }
+
 }

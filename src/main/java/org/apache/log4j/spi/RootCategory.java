@@ -17,57 +17,59 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import  org.apache.log4j.*;
+import  org.apache.log4j.helpers.LogLog;
 
 // Contibutors: Mathias Bogaert
 
 /**
- * This class is deprecated and will be removed in future releases of log4j.
- * 
- * @author Ceki G&uuml;lc&uuml;
  * @deprecated Replaced by {@link RootLogger}.  
  */
-public final class RootCategory extends Logger {
+final public class RootCategory extends Logger {
+
   /**
      The root category names itself as "root". However, the root
-     category cannot be retrieved by name.
+     category cannot be retrieved by name.  
   */
-  public RootCategory(Level level) {
+  public
+  RootCategory(Level level) {
     super("root");
     setLevel(level);
   }
 
+  
   /**
      Return the assigned level value without walking the category
      hierarchy.
   */
-  public final Level getChainedLevel() {
+  final
+  public 
+  Level getChainedLevel() {
     return level;
   }
 
   /**
-     Setting a null value to the level of the root logger may have catastrophic
+     Setting a null value to the level of the root category may have catastrophic
      results. We prevent this here.
 
      @since 0.8.3 */
-  public final void setLevel(Level level) {
-    if (level == null) {
-      if (repository instanceof LoggerRepositoryEx) {
-        ((LoggerRepositoryEx) repository).addErrorItem(
-          new ErrorItem(
-            "You have tried to set a null level to root.", new Exception()));
-      }
-    } else {
+  final  
+  public
+  void setLevel(Level level) {
+    if(level == null) {
+      LogLog.error("You have tried to set a null level to root.",
+		   new Throwable());
+    }
+    else {
       this.level = level;
     }
   }
 
-    final
-    public
-    void setPriority(Level level) {
-      setLevel(level);
-    }
-    
+  final  
+  public
+  void setPriority(Level level) {
+    setLevel(level);
+  }
 
+  
 }

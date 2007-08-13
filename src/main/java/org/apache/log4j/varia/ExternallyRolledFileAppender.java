@@ -17,12 +17,13 @@
 
 package org.apache.log4j.varia;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.ServerSocket;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.RollingFileAppender;
 import org.apache.log4j.helpers.LogLog;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
    This appender listens on a socket on the port specified by the
@@ -43,9 +44,7 @@ import org.apache.log4j.helpers.LogLog;
 
 
    @author Ceki G&uuml;lc&uuml;
-   @since version 0.9.0
-   @deprecated since 1.3, use org.apache.log4j.rolling.RollingFileAppender.
- */
+   @since version 0.9.0 */
 public class ExternallyRolledFileAppender extends RollingFileAppender {
 
   /**
@@ -104,9 +103,7 @@ public class ExternallyRolledFileAppender extends RollingFileAppender {
   }
 }
 
-/**
- * @deprecated since log4j 1.3.
- */
+
 class HUP extends Thread {
 
   int port;
@@ -135,9 +132,6 @@ class HUP extends Thread {
   }
 }
 
-/**
- * @deprecated since log4j 1.3.
- */
 class HUPNode implements Runnable {
 
   Socket socket;

@@ -17,16 +17,16 @@
 
 package org.apache.log4j;
 
+import org.apache.log4j.helpers.DateLayoutTest;
 import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
  * Test for TTCCLayout.
- * @deprecated Since TTCCLayoutTest is deprecated
  *
  * @author Curt Arnold
  */
-public class TTCCLayoutTest extends org.apache.log4j.helpers.DateLayoutTest {
+public class TTCCLayoutTest extends DateLayoutTest {
   /**
    * Construct new instance of TTCCLayoutTest.
    *
@@ -38,7 +38,6 @@ public class TTCCLayoutTest extends org.apache.log4j.helpers.DateLayoutTest {
 
   /**
    * @{inheritDoc}
-   * @deprecated since TTCCLayout is deprecated.
    */
   protected Layout createLayout() {
     return new TTCCLayout();
@@ -46,7 +45,6 @@ public class TTCCLayoutTest extends org.apache.log4j.helpers.DateLayoutTest {
 
   /**
    * Tests format.
-   * @deprecated since TTCCLayout is deprecated.
    */
   public void testFormat() {
     NDC.clear();
@@ -78,7 +76,6 @@ public class TTCCLayoutTest extends org.apache.log4j.helpers.DateLayoutTest {
 
   /**
    * Tests getThreadPrinting and setThreadPrinting.
-   * @deprecated since TTCCLayout is deprecated.
    */
   public void testGetSetThreadPrinting() {
     TTCCLayout layout = new TTCCLayout();
@@ -91,7 +88,6 @@ public class TTCCLayoutTest extends org.apache.log4j.helpers.DateLayoutTest {
 
   /**
    * Tests getCategoryPrefixing and setCategoryPrefixing.
-   * @deprecated since TTCCLayout is deprecated.
    */
   public void testGetSetCategoryPrefixing() {
     TTCCLayout layout = new TTCCLayout();
@@ -104,7 +100,6 @@ public class TTCCLayoutTest extends org.apache.log4j.helpers.DateLayoutTest {
 
   /**
    * Tests getContextPrinting and setContextPrinting.
-   * @deprecated since TTCCLayout is deprecated.
    */
   public void testGetSetContextPrinting() {
     TTCCLayout layout = new TTCCLayout();
