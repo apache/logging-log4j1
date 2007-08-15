@@ -68,7 +68,7 @@ public class XMLDecoder implements Decoder {
      */
   private static final String BEGINPART =
     "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
-    + "<!DOCTYPE log4j:eventSet SYSTEM \"log4j.dtd\">"
+    + "<!DOCTYPE log4j:eventSet SYSTEM \"http://localhost/log4j.dtd\">"
     + "<log4j:eventSet version=\"1.2\" "
     + "xmlns:log4j=\"http://jakarta.apache.org/log4j/\">";
     /**
@@ -165,7 +165,6 @@ public class XMLDecoder implements Decoder {
 
       InputSource inputSource =
         new InputSource(new StringReader(buf.toString()));
-      inputSource.setSystemId("dummy://log4j.dtd");
       document = docBuilder.parse(inputSource);
     } catch (Exception e) {
       e.printStackTrace();
