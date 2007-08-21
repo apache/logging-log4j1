@@ -70,7 +70,9 @@ public class MDC {
   static
   public
   void put(String key, Object o) {
-    mdc.put0(key, o);
+     if (mdc != null) {
+         mdc.put0(key, o);
+     }
   }
   
   /**
@@ -81,7 +83,10 @@ public class MDC {
   static 
   public
   Object get(String key) {
-    return mdc.get0(key);
+    if (mdc != null) {
+        return mdc.get0(key);
+    }
+    return null;
   }
 
   /**
@@ -92,7 +97,9 @@ public class MDC {
   static 
   public
   void remove(String key) {
-    mdc.remove0(key);
+    if (mdc != null) {
+        mdc.remove0(key);
+    }
   }
 
 
@@ -101,13 +108,17 @@ public class MDC {
    * intended to be used internally.  
    * */
   public static Hashtable getContext() {
-    return mdc.getContext0();
+    if (mdc != null) {
+        return mdc.getContext0();
+    } else {
+        return null;
+    }
   }
 
 
   private
   void put0(String key, Object o) {
-    if(java1) {
+    if(java1 || tlm == null) {
       return;
     } else {
       Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
@@ -121,7 +132,7 @@ public class MDC {
   
   private
   Object get0(String key) {
-    if(java1) {
+    if(java1 || tlm == null) {
       return null;
     } else {       
       Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
@@ -135,7 +146,7 @@ public class MDC {
 
   private
   void remove0(String key) {
-    if(!java1) {
+    if(!java1 && tlm != null) {
       Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
       if(ht != null) {
         ht.remove(key);
@@ -146,7 +157,7 @@ public class MDC {
 
   private
   Hashtable getContext0() {
-     if(java1) {
+     if(java1 || tlm == null) {
       return null;
     } else {       
       return (Hashtable) ((ThreadLocalMap)tlm).get();

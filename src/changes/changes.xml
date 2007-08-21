@@ -22,7 +22,8 @@
   <body>
   
     <release version="1.2.15" date="2007-06-27" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
-       <action action="fix" issue="34874">Notice to use UTF-8 or UTF-16 encoding added to XML and HTMLLayout javadoc.</action>
+       <action action="fix" issue="43181">NullPointerException in MDC on Tomcat reload.</action>
+        <action action="fix" issue="34874">Notice to use UTF-8 or UTF-16 encoding added to XML and HTMLLayout javadoc.</action>
        <action action="fix" issue="34875">XML and HTMLLayout do not always escape special characters.</action>
        <action action="add" issue="43078">Optionally render MDC content in XMLLayout</action>
        <action action="fix" issue="42694">Typo in log4j.dtd concerning threshold.</action>
@@ -77,7 +78,7 @@
       <release version="1.2.14" date="2006-09-18" description="AsyncAppender rewrite, Syslog and SMTPAppender enhancements.">
       <action action="fix" issue="38137">Monitor deadlock in AsyncAppender.</action>
       <action action="fix" issue="28006">AsyncAppender: Dispatcher should run at normal prio.</action>
-      <action action="fix" issue="40159">AsyncAppender wait forever when buffer is full.</action>
+      <action action="fix" issue="37904">AsyncAppender wait forever when buffer is full.</action>
       <action action="add" issue="38982">Add non-blocking option for AsyncAppender.</action>
       <action action="add" issue="39687">Add SyslogPort option to SyslogAppender.</action>
       <action action="add" issue="19125">Add cc and bcc addresses to SMTPAppender.</action>
