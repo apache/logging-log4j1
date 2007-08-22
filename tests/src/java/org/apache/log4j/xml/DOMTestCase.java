@@ -299,4 +299,14 @@ public class DOMTestCase extends TestCase {
       assertNull(Logger.getRootLogger().getAppender("V1"));
   }
 
+
+    /**
+     * Test checks that configureAndWatch does initial configuration, see bug 33502.
+      * @throws Exception if IO error.
+     */
+  public void testConfigureAndWatch() throws Exception {
+    DOMConfigurator.configureAndWatch("input/xml/DOMTestCase1.xml");
+    assertNotNull(Logger.getRootLogger().getAppender("A1"));
+  }
+
 }
