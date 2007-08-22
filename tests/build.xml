@@ -34,6 +34,8 @@
   <property name="jakarta.oro.jar" location="${m2_repo}/oro/oro/${oro.version}/oro-${oro.version}.jar"/>
   <property name="checkstyle.version" value="4.1"/>
   <property name="checkstyle.jar" location="${m2_repo}/checkstyle/checkstyle/${checkstyle.version}/checkstyle-${checkstyle.version}.jar"/>
+  <property name="javamail.jar" location="${m2_repo}/javax/mail/mail/1.4/mail-1.4.jar"/>
+  <property name="activation.jar" location="${m2_repo}/javax/activation/activation/1.1/activation-1.1.jar"/>
 
 
   <!-- Read the system environment variables and stores them in properties, -->
@@ -65,6 +67,8 @@
     <pathelement location="${jaxp.parser.jar}"/>
     <pathelement location="${clover.jar}"/>
     <pathelement location="${junit.jar}"/>
+    <pathelement location="${javamail.jar}"/>
+    <pathelement location="${activation.jar}"/>
     <pathelement path="${java.class.path}"/>
   </path>
 

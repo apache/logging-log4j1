@@ -20,12 +20,16 @@ package org.apache.log4j.net;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.Layout;
+import org.apache.log4j.xml.UnrecognizedElementHandler;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.TriggeringEventEvaluator;
+import org.apache.log4j.spi.OptionHandler;
+import org.w3c.dom.Element;
+
 import java.util.Properties;
 import java.util.Date;
 
@@ -53,9 +57,18 @@ import javax.mail.internet.AddressException;
    keeps memory requirements at a reasonable level while still
    delivering useful application context.
 
+   By default, an email message will be sent when an ERROR or higher
+   severity message is appended.  The triggering criteria can be
+   modified by setting the evaluatorClass property with the name
+   of a class implementing TriggeringEventEvaluator, setting the evaluator
+   property with an instance of TriggeringEventEvaluator or
+   nesting a triggeringPolicy element where the specified
+   class implements TriggeringEventEvaluator.
+
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
-public class SMTPAppender extends AppenderSkeleton {
+public class SMTPAppender extends AppenderSkeleton
+        implements UnrecognizedElementHandler {
   private String to;
   /**
    * Comma separated list of cc recipients.
@@ -115,6 +128,10 @@ public class SMTPAppender extends AppenderSkeleton {
 	    }
      } catch(MessagingException e) {
        LogLog.error("Could not activate SMTPAppender options.", e );
+     }
+
+     if (evaluator instanceof OptionHandler) {
+         ((OptionHandler) evaluator).activateOptions();
      }
   }
   
@@ -533,6 +550,44 @@ public class SMTPAppender extends AppenderSkeleton {
   public boolean getSMTPDebug() {
     return smtpDebug;
   }
+
+    /**
+     * Sets triggering evaluator.
+     * @param trigger triggering event evaluator.
+     * @since 1.2.15
+     */
+  public final void setEvaluator(final TriggeringEventEvaluator trigger) {
+      if (trigger == null) {
+          throw new NullPointerException("trigger");
+      }
+      this.evaluator = trigger;
+  }
+
+    /**
+     * Get triggering evaluator.
+     * @return triggering event evaluator.
+     * @since 1.2.15
+     */
+  public final TriggeringEventEvaluator getEvaluator() {
+      return evaluator;
+  }
+
+  /** {@inheritDoc} */
+  public boolean parseUnrecognizedElement(final Element element,
+                                          final Properties props) throws Exception {
+      if ("triggeringPolicy".equals(element.getNodeName())) {
+          Object triggerPolicy =
+                  org.apache.log4j.xml.DOMConfigurator.parseElement(
+                          element, props, TriggeringEventEvaluator.class);
+          if (triggerPolicy instanceof TriggeringEventEvaluator) {
+              setEvaluator((TriggeringEventEvaluator) triggerPolicy);
+          }
+          return true;
+      }
+
+      return false;
+  }
+
 }
 
 class DefaultEvaluator implements TriggeringEventEvaluator {
