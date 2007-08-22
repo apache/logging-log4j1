@@ -22,6 +22,7 @@
   <body>
   
     <release version="1.2.15" date="2007-06-27" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
+        <action action="fix" issue="37560">XMLLayout does not escape CDATA sections within NDC or throwables.</action>
        <action action="add" issue="33502">Added test to confirm that DOMConfigurator.configureAndWatch does configure.</action>
         <action action="fix" issue="32527">Default initialization with XML file halts program if JAXP not available.</action>
         <action action="add" issue="17531">Add reset option to PropertyConfigurator and DOMConfigurator.</action>
