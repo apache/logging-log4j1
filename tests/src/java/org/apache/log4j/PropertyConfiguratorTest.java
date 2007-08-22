@@ -15,10 +15,14 @@
  * limitations under the License.
  */
 package org.apache.log4j;
-import java.io.*;
-import junit.framework.*;
-import org.apache.log4j.PropertyConfigurator;
+
+import junit.framework.TestCase;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 
 /**
  * Test property configurator.
@@ -77,6 +81,21 @@ public class PropertyConfiguratorTest extends TestCase {
         PropertyConfigurator.configure(url);
         assertTrue(file.delete());
         assertFalse(file.exists());
+    }
+
+    /**
+     * Test processing of log4j.reset property, see bug 17531.
+     *
+     */
+    public void testReset() {
+        VectorAppender appender = new VectorAppender();
+        appender.setName("A1");
+        Logger.getRootLogger().addAppender(appender);
+        Properties props = new Properties();
+        props.put("log4j.reset", "true");
+        PropertyConfigurator.configure(props);
+        assertNull(Logger.getRootLogger().getAppender("A1"));
+        LogManager.resetConfiguration();
     }
 
 }
