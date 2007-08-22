@@ -22,6 +22,7 @@
   <body>
   
     <release version="1.2.15" date="2007-06-27" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
+       <action action="fix" issue="14350">Error message always logged to LogLog when calling close on TelnetAppender.</action> 
        <action action="add" issue="32572">Add configurable triggeringPolicy for SMTPAppender.</action> 
        <action action="fix" issue="43181">NullPointerException in MDC on Tomcat reload.</action>
         <action action="fix" issue="34874">Notice to use UTF-8 or UTF-16 encoding added to XML and HTMLLayout javadoc.</action>
