@@ -119,11 +119,15 @@ public class LogManager {
       // configuration to the OptionConverter.selectAndConfigure
       // method.
       if(url != null) {
-	LogLog.debug("Using URL ["+url+"] for automatic log4j configuration.");      
-	OptionConverter.selectAndConfigure(url, configuratorClassName, 
+	    LogLog.debug("Using URL ["+url+"] for automatic log4j configuration.");
+        try {
+            OptionConverter.selectAndConfigure(url, configuratorClassName,
 					   LogManager.getLoggerRepository());
+        } catch (NoClassDefFoundError e) {
+            LogLog.warn("Error during default initialization", e);
+        }
       } else {
-	LogLog.debug("Could not find resource: ["+configurationOptionStr+"].");
+	    LogLog.debug("Could not find resource: ["+configurationOptionStr+"].");
       }
     }  
   } 
