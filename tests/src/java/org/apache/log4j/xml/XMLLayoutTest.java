@@ -28,6 +28,7 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import org.xml.sax.InputSource;
 
@@ -428,5 +429,55 @@ public class XMLLayoutTest extends LayoutTest {
         }
       }
     }
+
+    /**
+      * Tests CDATA element within NDC content.  See bug 37560.
+      */
+    public void testNDCWithCDATA() throws Exception {
+        Logger logger = Logger.getLogger("com.example.bar");
+        Level level = Level.INFO;
+        String ndcMessage ="<envelope><faultstring><![CDATA[The EffectiveDate]]></faultstring><envelope>";
+        NDC.push(ndcMessage);
+        LoggingEvent event =
+          new LoggingEvent(
+            "com.example.bar", logger, level, "Hello, World", null);
+        Layout layout = createLayout();
+        String result = layout.format(event);
+        NDC.clear();
+        Element parsedResult = parse(result);
+        NodeList ndcs = parsedResult.getElementsByTagName("log4j:NDC");
+        assertEquals(1, ndcs.getLength());
+        StringBuffer buf = new StringBuffer();
+        for(Node child = ndcs.item(0).getFirstChild();
+                child != null;
+                child = child.getNextSibling()) {
+            buf.append(child.getNodeValue());
+        }
+        assertEquals(ndcMessage, buf.toString());
+   }
+
+    /**
+      * Tests CDATA element within exception.  See bug 37560.
+      */
+    public void testExceptionWithCDATA() throws Exception {
+        Logger logger = Logger.getLogger("com.example.bar");
+        Level level = Level.INFO;
+        String exceptionMessage ="<envelope><faultstring><![CDATA[The EffectiveDate]]></faultstring><envelope>";
+        LoggingEvent event =
+          new LoggingEvent(
+            "com.example.bar", logger, level, "Hello, World", new Exception(exceptionMessage));
+        Layout layout = createLayout();
+        String result = layout.format(event);
+        Element parsedResult = parse(result);
+        NodeList throwables = parsedResult.getElementsByTagName("log4j:throwable");
+        assertEquals(1, throwables.getLength());
+        StringBuffer buf = new StringBuffer();
+        for(Node child = throwables.item(0).getFirstChild();
+                child != null;
+                child = child.getNextSibling()) {
+            buf.append(child.getNodeValue());
+        }
+        assertTrue(buf.toString().indexOf(exceptionMessage) != -1);
+   }
 
 }

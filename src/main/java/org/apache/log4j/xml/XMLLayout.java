@@ -151,7 +151,7 @@ public class XMLLayout extends Layout {
     String ndc = event.getNDC();
     if(ndc != null) {
       buf.append("<log4j:NDC><![CDATA[");
-      buf.append(ndc);
+      Transform.appendEscapingCDATA(buf, ndc);
       buf.append("]]></log4j:NDC>\r\n");       
     }
     
@@ -159,8 +159,8 @@ public class XMLLayout extends Layout {
     if(s != null) {
       buf.append("<log4j:throwable><![CDATA[");
       for(int i = 0; i < s.length; i++) {
-	buf.append(s[i]);
-	buf.append("\r\n");
+          Transform.appendEscapingCDATA(buf, s[i]);
+	      buf.append("\r\n");
       }
       buf.append("]]></log4j:throwable>\r\n");
     }
