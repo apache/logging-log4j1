@@ -345,6 +345,10 @@
           	  <comparisonVersion>1.2.14</comparisonVersion>
           </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rat-maven-plugin</artifactId>
+      </plugin>    
     </plugins>      
     <testSourceDirectory>tests/src/java</testSourceDirectory>
 	<testResources>
