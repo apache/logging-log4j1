@@ -44,6 +44,7 @@ element. -->
   xmlns:log4j              CDATA #FIXED "http://jakarta.apache.org/log4j/" 
   threshold                (all|trace|debug|info|warn|error|fatal|off|null) "null"
   debug                    (true|false|null)  "null"
+  reset                    (true|false) "false"
 >
 
 <!-- renderer elements allow the user to customize the conversion of  -->

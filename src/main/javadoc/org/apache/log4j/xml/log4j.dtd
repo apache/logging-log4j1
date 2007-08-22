@@ -14,7 +14,6 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
 -->
 
 <!-- Authors: Chris Taylor, Ceki Gulcu. -->
@@ -45,6 +44,7 @@ element. -->
   xmlns:log4j              CDATA #FIXED "http://jakarta.apache.org/log4j/" 
   threshold                (all|trace|debug|info|warn|error|fatal|off|null) "null"
   debug                    (true|false|null)  "null"
+  reset                    (true|false) "false"
 >
 
 <!-- renderer elements allow the user to customize the conversion of  -->
@@ -154,12 +154,12 @@ element. -->
 
 <!ELEMENT connectionSource (dataSource?, param*)>
 <!ATTLIST connectionSource
-  class 	CDATA  #REQUIRED
+  class        CDATA  #REQUIRED
 >
 
 <!ELEMENT dataSource (param*)>
 <!ATTLIST dataSource
-  class 	CDATA  #REQUIRED
+  class        CDATA  #REQUIRED
 >
 
 <!ELEMENT triggeringPolicy ((param|filter)*)>
@@ -194,7 +194,7 @@ element. -->
 
 
 <!ELEMENT log4j:event (log4j:message, log4j:NDC?, log4j:throwable?, 
-                       log4j:locationInfo?) >
+                       log4j:locationInfo?, log4j:properties?) >
 
 <!-- The timestamp format is application dependent. -->
 <!ATTLIST log4j:event
@@ -202,6 +202,7 @@ element. -->
     level      CDATA #REQUIRED
     thread     CDATA #REQUIRED
     timestamp  CDATA #REQUIRED
+    time       CDATA #IMPLIED
 >
 
 <!ELEMENT log4j:message (#PCDATA)>
@@ -215,4 +216,12 @@ element. -->
   method CDATA	#REQUIRED
   file   CDATA	#REQUIRED
   line   CDATA	#REQUIRED
+>
+
+<!ELEMENT log4j:properties (log4j:data*)>
+
+<!ELEMENT log4j:data EMPTY>
+<!ATTLIST log4j:data
+  name   CDATA	#REQUIRED
+  value  CDATA	#REQUIRED
 >

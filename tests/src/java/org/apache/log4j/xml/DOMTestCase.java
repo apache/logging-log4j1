@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.VectorAppender;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
@@ -283,6 +284,19 @@ public class DOMTestCase extends TestCase {
       //         should use default factory
       Logger logger2 = Logger.getLogger("org.apache.log4j.xml.DOMTestCase.testLoggerFactory1.2");
       assertFalse(logger2 instanceof CustomLogger);
+  }
+
+    /**
+     * Tests that reset="true" on log4j:configuration element resets
+     * repository before configuration.
+     * @throws Exception thrown on error.
+     */
+  public void testReset() throws Exception {
+      VectorAppender appender = new VectorAppender();
+      appender.setName("V1");
+      Logger.getRootLogger().addAppender(appender);
+      DOMConfigurator.configure("input/xml/testReset.xml");
+      assertNull(Logger.getRootLogger().getAppender("V1"));
   }
 
 }

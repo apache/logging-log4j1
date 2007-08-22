@@ -103,6 +103,11 @@ public class PropertyConfigurator implements Configurator {
       LoggerFactory}.  Currently set to "<code>log4j.loggerFactory</code>".  */
   public static final String LOGGER_FACTORY_KEY = "log4j.loggerFactory";
 
+    /**
+     * If property set to true, then hierarchy will be reset before configuration.
+     */
+  private static final String RESET_KEY = "log4j.reset";
+
   static final private String INTERNAL_ROOT_NAME = "root";
 
   /**
@@ -229,6 +234,11 @@ public class PropertyConfigurator implements Configurator {
 
     The usage of custom logger factories is discouraged and no longer
     documented.
+
+    <h3>Resetting Hierarchy</h3>
+
+    The hierarchy will be reset before configuration when
+    log4j.reset=true is present in the properties file.
 
     <h3>Example</h3>
 
@@ -400,7 +410,6 @@ public class PropertyConfigurator implements Configurator {
   */
   public
   void doConfigure(Properties properties, LoggerRepository hierarchy) {
-
     String value = properties.getProperty(LogLog.DEBUG_KEY);
     if(value == null) {
       value = properties.getProperty("log4j.configDebug");
@@ -410,6 +419,14 @@ public class PropertyConfigurator implements Configurator {
 
     if(value != null) {
       LogLog.setInternalDebugging(OptionConverter.toBoolean(value, true));
+    }
+
+      //
+      //   if log4j.reset=true then
+      //        reset hierarchy
+    String reset = properties.getProperty(RESET_KEY);
+    if (reset != null && OptionConverter.toBoolean(reset, false)) {
+          hierarchy.resetConfiguration();
     }
 
     String thresholdStr = OptionConverter.findAndSubst(THRESHOLD_PREFIX,
