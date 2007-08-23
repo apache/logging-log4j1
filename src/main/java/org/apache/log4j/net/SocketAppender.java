@@ -23,10 +23,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.helpers.Constants;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
@@ -238,7 +236,7 @@ public class SocketAppender extends AppenderSkeleton {
 	   event.getLocationInformation();
 	}
     if (application != null) {
-        event.setProperty(Constants.APPLICATION_KEY, application);
+        event.setProperty("application", application);
     }
 	oos.writeObject(event);
 	//LogLog.debug("=========Flushing.");
