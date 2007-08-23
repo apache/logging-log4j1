@@ -124,7 +124,6 @@ public class SocketAppender extends AppenderSkeleton {
   ObjectOutputStream oos;
   int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
   boolean locationInfo = false;
-  private String hostname;
   private String application;
 
   private Connector connector;
@@ -162,16 +161,6 @@ public class SocketAppender extends AppenderSkeleton {
      Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
   */
   public void activateOptions() {
-    try {
-	  hostname = InetAddress.getLocalHost().getHostName();
-	} catch (UnknownHostException uhe) {
-	  try {
-      hostname = InetAddress.getLocalHost().getHostAddress();
-    } catch (UnknownHostException uhe2) {
-	    hostname = "unknown";
-    }
-  }
-
     connect(address, port);
   }
 
@@ -251,10 +240,6 @@ public class SocketAppender extends AppenderSkeleton {
     if (application != null) {
         event.setProperty(Constants.APPLICATION_KEY, application);
     }
-    if (hostname != null) {
-        event.setProperty(Constants.HOSTNAME_KEY, hostname);
-      }
-
 	oos.writeObject(event);
 	//LogLog.debug("=========Flushing.");
 	oos.flush();
