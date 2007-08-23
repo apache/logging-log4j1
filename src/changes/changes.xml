@@ -22,6 +22,7 @@
   <body>
   
     <release version="1.2.15" date="2007-06-27" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
+	   <action action="add" issue="43202">Add 'application' property support to SocketAppender (from 1.3)</action>
         <action action="fix" issue="43200">Log4JEntityResolver will return null if log4j.dtd can not be found on classpath.</action>
         <action action="fix" issue="37736">HierarchyEventListener.removeAppenderEvent never called.</action>
         <action action="fix" issue="37560">XMLLayout does not escape CDATA sections within NDC or throwables.</action>
