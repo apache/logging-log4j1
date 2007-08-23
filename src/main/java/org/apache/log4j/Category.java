@@ -34,12 +34,14 @@ package org.apache.log4j;
 import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.apache.log4j.helpers.AppenderAttachableImpl;
 
 import java.util.Enumeration;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 
 /**
@@ -855,6 +857,22 @@ public class Category implements AppenderAttachable {
     }
   }
 
+    /**
+      *  LoggerRepository forgot the fireRemoveAppenderEvent method,
+      *     if using the stock Hierarchy implementation, then call its fireRemove.
+      *     Custom repositories can implement HierarchyEventListener if they
+      *     want remove notifications.
+     * @param appender appender, may be null.
+     */
+   private void fireRemoveAppenderEvent(final Appender appender) {
+       if (appender != null) {
+         if (repository instanceof Hierarchy) {
+           ((Hierarchy) repository).fireRemoveAppenderEvent(this, appender);
+         } else if (repository instanceof HierarchyEventListener) {
+             ((HierarchyEventListener) repository).removeAppenderEvent(this, appender);
+         }
+       }
+   }
 
   /**
      Remove all previously added appenders from this Category
@@ -866,10 +884,18 @@ public class Category implements AppenderAttachable {
   public
   void removeAllAppenders() {
     if(aai != null) {
+      Vector appenders = new Vector();
+      for (Enumeration iter = aai.getAllAppenders(); iter.hasMoreElements();) {
+          appenders.add(iter.nextElement());
+      }
       aai.removeAllAppenders();
+      for(Enumeration iter = appenders.elements(); iter.hasMoreElements();) {
+          fireRemoveAppenderEvent((Appender) iter.nextElement());
+      }
       aai = null;
     }
   }
+
 
   /**
      Remove the appender passed as parameter form the list of appenders.
@@ -881,7 +907,11 @@ public class Category implements AppenderAttachable {
   void removeAppender(Appender appender) {
     if(appender == null || aai == null)
       return;
+    boolean wasAttached = aai.isAttached(appender);
     aai.removeAppender(appender);
+    if (wasAttached) {
+        fireRemoveAppenderEvent(appender);
+    }
   }
 
   /**
@@ -893,7 +923,11 @@ public class Category implements AppenderAttachable {
   public
   void removeAppender(String name) {
     if(name == null || aai == null) return;
+    Appender appender = aai.getAppender(name);
     aai.removeAppender(name);
+    if (appender != null) {
+        fireRemoveAppenderEvent(appender);
+    }
   }
 
   /**

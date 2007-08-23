@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.RootLogger;
 import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.HierarchyEventListener;
 
 import java.util.Enumeration;
 import java.util.Locale;
@@ -397,6 +398,84 @@ public class LoggerTestCase extends TestCase {
         assertTrue(tracer.isTraceEnabled());
         assertFalse(root.isTraceEnabled());
     }
+
+  private static final class CountingHierarchyEventListener implements HierarchyEventListener {
+      private int addEventCount;
+      private int removeEventCount;
+
+      public CountingHierarchyEventListener() {
+          addEventCount = removeEventCount = 0;
+      }
+      public void addAppenderEvent(Category cat, Appender appender) {
+          addEventCount++;
+      }
+
+      public void removeAppenderEvent(Category cat, Appender appender) {
+          removeEventCount++;
+      }
+
+      public int getAddEventCount() {
+          return addEventCount;
+      }
+      public int getRemoveEventCount() {
+          return removeEventCount;
+      }
+  }
+
+
+  public void testAppenderEvent1() {
+      CountingHierarchyEventListener listener = new CountingHierarchyEventListener();
+      LogManager.getLoggerRepository().addHierarchyEventListener(listener);
+      CountingAppender appender = new CountingAppender();
+      Logger root =  Logger.getRootLogger();
+      root.addAppender(appender);
+      assertEquals(1, listener.getAddEventCount());
+      assertEquals(0, listener.getRemoveEventCount());
+      root.removeAppender(appender);
+      assertEquals(1, listener.getAddEventCount());
+      assertEquals(1, listener.getRemoveEventCount());
+  }
+
+  public void testAppenderEvent2() {
+        CountingHierarchyEventListener listener = new CountingHierarchyEventListener();
+        LogManager.getLoggerRepository().addHierarchyEventListener(listener);
+        CountingAppender appender = new CountingAppender();
+        appender.setName("A1");
+        Logger root =  Logger.getRootLogger();
+        root.addAppender(appender);
+        assertEquals(1, listener.getAddEventCount());
+        assertEquals(0, listener.getRemoveEventCount());
+        root.removeAppender(appender.getName());
+        assertEquals(1, listener.getAddEventCount());
+        assertEquals(1, listener.getRemoveEventCount());
+  }
+
+  public void testAppenderEvent3() {
+          CountingHierarchyEventListener listener = new CountingHierarchyEventListener();
+          LogManager.getLoggerRepository().addHierarchyEventListener(listener);
+          CountingAppender appender = new CountingAppender();
+          Logger root =  Logger.getRootLogger();
+          root.addAppender(appender);
+          assertEquals(1, listener.getAddEventCount());
+          assertEquals(0, listener.getRemoveEventCount());
+          root.removeAllAppenders();
+          assertEquals(1, listener.getAddEventCount());
+          assertEquals(1, listener.getRemoveEventCount());
+    }
+
+
+    public void testAppenderEvent4() {
+            CountingHierarchyEventListener listener = new CountingHierarchyEventListener();
+            LogManager.getLoggerRepository().addHierarchyEventListener(listener);
+            CountingAppender appender = new CountingAppender();
+            Logger root =  Logger.getRootLogger();
+            root.addAppender(appender);
+            assertEquals(1, listener.getAddEventCount());
+            assertEquals(0, listener.getRemoveEventCount());
+            LogManager.resetConfiguration();
+            assertEquals(1, listener.getAddEventCount());
+            assertEquals(1, listener.getRemoveEventCount());
+      }
 
   static private class CountingAppender extends AppenderSkeleton {
 
