@@ -55,6 +55,23 @@ public class XMLLayoutTest extends LayoutTest {
     super(testName, "text/plain", false, null, null);
   }
 
+    /**
+     * Clear MDC and NDC before test.
+     */
+  public void setUp() {
+      NDC.clear();
+      if (MDC.getContext() != null) {
+        MDC.getContext().clear();
+      }
+  }
+
+    /**
+     * Clear MDC and NDC after test.
+     */
+  public void tearDown() {
+      setUp();
+  }
+
   /**
    * @{inheritDoc}
    */
