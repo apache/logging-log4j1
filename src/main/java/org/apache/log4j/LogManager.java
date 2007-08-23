@@ -22,6 +22,7 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.RepositorySelector;
 import org.apache.log4j.spi.DefaultRepositorySelector;
 import org.apache.log4j.spi.RootLogger;
+import org.apache.log4j.spi.NOPLoggerRepository;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
@@ -170,6 +171,11 @@ public class LogManager {
   static
   public
   LoggerRepository getLoggerRepository() {
+    if (repositorySelector == null) {
+        repositorySelector = new DefaultRepositorySelector(new NOPLoggerRepository());
+        guard = null;
+        LogLog.error("LogMananger.repositorySelector was null likely due to error in class reloading, using NOPLoggerRepository.");
+    }
     return repositorySelector.getLoggerRepository();
   }
 
@@ -180,7 +186,7 @@ public class LogManager {
   static 
   Logger getRootLogger() {
      // Delegate the actual manufacturing of the logger to the logger repository.
-    return repositorySelector.getLoggerRepository().getRootLogger();
+    return getLoggerRepository().getRootLogger();
   }
 
   /**
@@ -188,9 +194,9 @@ public class LogManager {
   */
   public
   static 
-  Logger getLogger(String name) {
+  Logger getLogger(final String name) {
      // Delegate the actual manufacturing of the logger to the logger repository.
-    return repositorySelector.getLoggerRepository().getLogger(name);
+    return getLoggerRepository().getLogger(name);
   }
 
  /**
@@ -198,9 +204,9 @@ public class LogManager {
   */
   public
   static 
-  Logger getLogger(Class clazz) {
+  Logger getLogger(final Class clazz) {
      // Delegate the actual manufacturing of the logger to the logger repository.
-    return repositorySelector.getLoggerRepository().getLogger(clazz.getName());
+    return getLoggerRepository().getLogger(clazz.getName());
   }
 
 
@@ -209,33 +215,33 @@ public class LogManager {
   */
   public
   static 
-  Logger getLogger(String name, LoggerFactory factory) {
+  Logger getLogger(final String name, final LoggerFactory factory) {
      // Delegate the actual manufacturing of the logger to the logger repository.
-    return repositorySelector.getLoggerRepository().getLogger(name, factory);
+    return getLoggerRepository().getLogger(name, factory);
   }  
 
   public
   static
-  Logger exists(String name) {
-    return repositorySelector.getLoggerRepository().exists(name);
+  Logger exists(final String name) {
+    return getLoggerRepository().exists(name);
   }
 
   public
   static
   Enumeration getCurrentLoggers() {
-    return repositorySelector.getLoggerRepository().getCurrentLoggers();
+    return getLoggerRepository().getCurrentLoggers();
   }
 
   public
   static
   void shutdown() {
-    repositorySelector.getLoggerRepository().shutdown();
+    getLoggerRepository().shutdown();
   }
 
   public
   static
   void resetConfiguration() {
-    repositorySelector.getLoggerRepository().resetConfiguration();
+    getLoggerRepository().resetConfiguration();
   }
 }
 
