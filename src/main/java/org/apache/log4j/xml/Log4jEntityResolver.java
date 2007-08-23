@@ -22,6 +22,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
 /**
  * An {@link EntityResolver} specifically designed to return
@@ -37,12 +38,11 @@ public class Log4jEntityResolver implements EntityResolver {
       Class clazz = getClass();
       InputStream in = clazz.getResourceAsStream("/org/apache/log4j/xml/log4j.dtd");
       if (in == null) {
-	LogLog.error("Could not find [log4j.dtd]. Used [" + clazz.getClassLoader() 
+	    LogLog.error("Could not find [log4j.dtd]. Used [" + clazz.getClassLoader()
 		     + "] class loader in the search.");
-	return null;
-      } else {
-	return new InputSource(in);
+        in = new ByteArrayInputStream(new byte[0]);
       }
+	  return new InputSource(in);
     } else {
       return null;
     }
