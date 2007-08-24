@@ -443,7 +443,7 @@
       <plugin>
           <artifactId>maven-release-plugin</artifactId>
           <configuration>
-              <goals>site-deploy</goals>
+              <goals>deploy site-deploy assembly:attached</goals>
           </configuration>
       </plugin>
       <plugin>
