@@ -347,78 +347,16 @@
     </javac>
   </target>
 
-    <!--
-        Regenerates resource files from EventLogCategories.mc.  Avoids
-        need for Microsoft Platform SDK unless you are modifying EventLogCategories.mc
-    -->
-    <target name="update.nt.msg" description="Update EventLogCategories.rc from .mc">
-        <property name="msg.out.dir" location="${java.source.dir}org/apache/log4j/nt"/>
-        <exec executable="mc">
-            <arg value="-h"/>
-            <arg file="${msg.out.dir}"/>
-            <arg value="-r"/>
-            <arg file="${msg.out.dir}"/>
-            <arg file="${java.source.dir}org/apache/log4j/nt/EventLogCategories.mc"/>
-        </exec>
-    </target>
-
-
-    <target name="compile.ntdll">
-		<javah class="org.apache.log4j.nt.NTEventLogAppender,org.apache.log4j.Priority"
-           destdir="${target.dir}"
-           classpath="${compile.classpath}"/>
-    
-		<exec executable="windres"   dir="${java.source.dir}/org/apache/log4j/nt/">
-      <arg value="-o"/>
-      <arg file="${javac.dest}/NTEventLogAppender.o"/>
-      <arg file="${java.source.dir}org/apache/log4j/nt/NTEventLogAppender.rc"/>
-    </exec>
-    
-    <property name="jni.include.dir" location="${java.home}\..\include"/>
-    <exec executable="gcc">
-      <arg value="-Wall"/>
-      <arg value="-D_JNI_IMPLEMENTATION_"/>
-      <arg value="-Wl,--kill-at"/>
-      <arg value="-I${jni.include.dir}"/>
-      <arg value="-I${jni.include.dir}\win32"/>
-      <arg value="-I${javac.dest}"/>
-      <arg value="-shared"/>
-      <arg file="${java.source.dir}org/apache/log4j/nt/nteventlog.cpp"/>
-      <arg file="${javac.dest}/NTEventLogAppender.o"/>
-      <arg value="-o"/>
-      <arg file="${jar.dest}/NTEventLogAppender.dll"/>
-    </exec>
-    
-  </target>
-
-
     <target name="build.nt" depends="log4j.jar" description="Build NTEventLogAppender.dll">
-    <javah class="org.apache.log4j.nt.NTEventLogAppender,org.apache.log4j.Priority"
-           destdir="${javac.dest}"
-           classpath="${jar.dest}/${jar.filename}"/>
-    
-    <exec executable="windres"   dir="src/ntdll">
-      <arg value="-o"/>
-      <arg file="${javac.dest}/NTEventLogAppender.o"/>
-      <arg file="src/ntdll/NTEventLogAppender.rc"/>
-    </exec>
-    
-    <property name="jni.include.dir" location="${java.home}\..\include"/>
-    <exec executable="gcc">
-      <arg value="-Wall"/>
-      <arg value="-D_JNI_IMPLEMENTATION_"/>
-      <arg value="-Wl,--kill-at"/>
-      <arg value="-I${jni.include.dir}"/>
-      <arg value="-I${jni.include.dir}\win32"/>
-      <arg value="-I${javac.dest}"/>
-      <arg value="-shared"/>
-      <arg file="src/ntdll/nteventlog.cpp"/>
-      <arg file="${javac.dest}/NTEventLogAppender.o"/>
-      <arg value="-o"/>
-      <arg file="${jar.dest}/NTEventLogAppender.dll"/>
-    </exec>
-    
-  </target>
+         <mkdir dir="${dist.dir}/object"/>
+         <ant antfile="src/ntdll/build.xml">
+				<property name="target.dir" location="${dist.dir}/lib"/>
+				<property name="object.dir" location="${dist.dir}/object"/>
+				<property name="classes.dir" location="${javac.dest}" />
+				<property name="src.dir" location="src/ntdll" />
+                <property name="jni.include.dir" location="${java.home}/../include" />
+		  </ant>
+    </target>
 
   <!-- ================================================================= -->
   <!-- Remove all generated (compiled) class files.                      -->
