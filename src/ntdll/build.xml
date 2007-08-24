@@ -35,6 +35,22 @@
         <delete dir="${target.dir}"/>
    </target>
 
+    <!--
+        Regenerates resource files from EventLogCategories.mc.  Avoids
+        need for Microsoft Platform SDK unless you are modifying EventLogCategories.mc
+    -->
+    <target name="mc" description="Update EventLogCategories.rc from .mc">
+        <exec executable="mc">
+            <arg value="-h"/>
+            <arg file="${basedir}"/>
+            <arg value="-r"/>
+            <arg file="${basedir}"/>
+            <arg file="EventLogCategories.mc"/>
+        </exec>
+    </target>
+
+
+
    <target name="windres" description="Compiles resources">
        <condition property="mingw-prefix" value="">
           <os family="windows"/>
