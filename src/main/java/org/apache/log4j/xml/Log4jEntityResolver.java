@@ -38,8 +38,8 @@ public class Log4jEntityResolver implements EntityResolver {
       Class clazz = getClass();
       InputStream in = clazz.getResourceAsStream("/org/apache/log4j/xml/log4j.dtd");
       if (in == null) {
-	    LogLog.error("Could not find [log4j.dtd]. Used [" + clazz.getClassLoader()
-		     + "] class loader in the search.");
+	    LogLog.warn("Could not find [log4j.dtd] using [" + clazz.getClassLoader()
+		     + "] class loader, parsed without DTD.");
         in = new ByteArrayInputStream(new byte[0]);
       }
 	  return new InputSource(in);

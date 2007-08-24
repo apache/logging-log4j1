@@ -30,9 +30,12 @@ Download Ubuntu-6.06-1 desktop from http://www.vmware.com/vmtn/appliances/direct
 
 Launch Ubuntu 6.06-1 in VMWare Player (user name and password are ubuntu)
 
-Launch Synaptics Package Manager (System > Administration > Synaptic Package Manager), select all available repositories (Settings > Repositories), press Reload button to update list of available packages.  Select the following packages for installation: Subversion, mingw32, sun-java6-jdk.  Press Apply to install.  Exit Synaptics.
+Launch Synaptics Package Manager (System > Administration > Synaptic Package Manager), 
+select all available repositories (Settings > Repositories), press Reload button 
+to update list of available packages.  Select the following packages for installation: 
+Subversion, mingw32, sun-java6-jdk.  Press Apply to install.  Exit Synaptics.
 
-Download Maven-2.0.6 from http://maven.apache.org
+Download Maven-2.0.7 from http://maven.apache.org
 Download JMX 1.2.1 Reference Implementation from 
    http://java.sun.com/products/JavaManagement/download.html
 Download JMS 1.1 from http://java.sun.com/products/jms/docs.html
@@ -43,7 +46,7 @@ Copy include/win32/jni_md.h from a Windows JDK to ~
 From a command prompt:
 
 $ export JAVA_HOME=/usr/lib/jvm/java-6-sun
-$ export PATH=$JAVA_HOME/bin:/home/ubuntu/maven-2.0.6/bin:$PATH
+$ export PATH=$JAVA_HOME/bin:/home/ubuntu/maven-2.0.7/bin:$PATH
 $ export JNI_WIN32_INCLUDE_DIR=/home/ubuntu
 $ svn co https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15 log4j
 $ mvn install:install-file -DgroupId=com.sun.jdmk -DartifactId=jmxtools \
@@ -58,7 +61,7 @@ $ mvn site assembly:assembly
 
 If you intended to deploy jars to the repo or update the site,
 you need to copy your private keys for people.apache.org 
-over to ~/.ssh and update ~/maven-2.0.6/conf/settings.xml
+over to ~/.ssh and update ~/maven-2.0.7/conf/settings.xml
 to specify user name and key location.
 
     <server>
@@ -67,14 +70,9 @@ to specify user name and key location.
       <privateKey>/home/ubuntu/.ssh/id_rsa</privateKey>
       <passphrase></passphrase>
     </server>
-    <server>
-      <id>logging.site</id>
-      <username>USERNAME for people.apache.org</username>
-      <privateKey>/home/ubuntu/.ssh/id_rsa</privateKey>
-      <passphrase></passphrase>
-    </server>
 
-You should test your ssh connection to people.apache.org before
-attempting a deployment like:
+You should test your ssh connection to people.apache.org 
+and localhost before attempting a deployment like:
 
 $ ssh -l USERNAME people.apache.org
+$ ssh localhost
