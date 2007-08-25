@@ -21,7 +21,7 @@
   <artifactId>log4j</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j</name>
-  <version>1.2.15</version>
+  <version>1.2.15-SNAPSHOT</version>
   <properties>
     <currentVersion>1.2.15</currentVersion>
   </properties>  
