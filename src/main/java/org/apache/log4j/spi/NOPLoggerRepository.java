@@ -62,7 +62,7 @@ public final class NOPLoggerRepository implements LoggerRepository {
     }
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     public Level getThreshold() {
         return Level.OFF;

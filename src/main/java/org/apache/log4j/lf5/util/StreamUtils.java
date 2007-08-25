@@ -97,7 +97,7 @@ public abstract class StreamUtils {
   }
 
   /**
-   * @returns a byte[] containing the information contained in the
+   * @return a byte[] containing the information contained in the
    * specified InputStream.
    * @throws java.io.IOException
    */
