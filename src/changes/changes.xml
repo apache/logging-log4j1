@@ -21,7 +21,8 @@
   </properties>
   <body>
   
-    <release version="1.2.15" date="2007-06-27" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
+    <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
+	    <action issue="40951">log4j 1.2.15 release preparation.</action>
         <action action="add" issue="40212">Switch to NOPLoggerRepository if application reloading nulls repositorySelector.</action>
 	    <action action="add" issue="43202">Add 'application' property support to SocketAppender (from 1.3)</action>
         <action action="fix" issue="43200">Log4JEntityResolver will return null if log4j.dtd can not be found on classpath.</action>

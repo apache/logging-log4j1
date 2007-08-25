@@ -33,7 +33,7 @@ Launch Ubuntu 6.06-1 in VMWare Player (user name and password are ubuntu)
 Launch Synaptics Package Manager (System > Administration > Synaptic Package Manager), 
 select all available repositories (Settings > Repositories), press Reload button 
 to update list of available packages.  Select the following packages for installation: 
-Subversion, mingw32, sun-java6-jdk.  Press Apply to install.  Exit Synaptics.
+Subversion, mingw32, sun-java6-jdk, xemacs21.  Press Apply to install.  Exit Synaptics.
 
 Download Maven-2.0.7 from http://maven.apache.org
 Download JMX 1.2.1 Reference Implementation from 
@@ -45,6 +45,7 @@ Copy include/win32/jni_md.h from a Windows JDK to ~
 
 From a command prompt:
 
+$ export SVN_EDITOR=xemacs 
 $ export JAVA_HOME=/usr/lib/jvm/java-6-sun
 $ export PATH=$JAVA_HOME/bin:/home/ubuntu/maven-2.0.7/bin:$PATH
 $ export JNI_WIN32_INCLUDE_DIR=/home/ubuntu
@@ -76,3 +77,13 @@ and localhost before attempting a deployment like:
 
 $ ssh -l USERNAME people.apache.org
 $ ssh localhost
+
+release:perform has been running into http://jira.codehaus.org/browse/MRELEASE-273.
+Release was attempted to be prepared with:
+
+$ mvn release:perform -DconnectionUrl=scm:svn:https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15_rc6
+
+but it may have been necessary to specify a -Dgoals=".." to avoid the bug.  If so, 
+any final build notes will be added to bug 40951.
+
+
