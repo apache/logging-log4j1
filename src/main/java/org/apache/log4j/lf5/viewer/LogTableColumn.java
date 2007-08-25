@@ -89,7 +89,7 @@ public class LogTableColumn implements java.io.Serializable {
   /**
    * Convert a column label into a LogTableColumn object.
    *
-   * @param level The label of a level to be converted into a LogTableColumn.
+   * @param column The label of a level to be converted into a LogTableColumn.
    * @return LogTableColumn The LogTableColumn with a label equal to column.
    * @throws LogTableColumnFormatException Is thrown when the column can not be
    *         converted into a LogTableColumn.

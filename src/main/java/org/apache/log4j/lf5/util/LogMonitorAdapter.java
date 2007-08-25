@@ -107,7 +107,7 @@ public class LogMonitorAdapter {
    * The first LogLevel in the List is used as the default LogLevel unless
    * changed using the setDefaultLevel method.<p>
    *
-   * @param userDefined A list of user defined LogLevel objects.
+   * @param userDefinedLevels A list of user defined LogLevel objects.
    * @return LogMonitorAdapter
    */
   public static LogMonitorAdapter newInstance(List userDefinedLevels) {

@@ -185,8 +185,8 @@ public class CategoryExplorerModel extends DefaultTreeModel {
    * <p>Method altered by Richard Hurst such that it returns the CategoryNode
    * corresponding to the CategoryPath</p>
    *
-   * @param CategoryPath
-   * @returns CategoryNode
+   * @param path category path.
+   * @return CategoryNode
    */
   public CategoryNode addCategory(CategoryPath path) {
     CategoryNode root = (CategoryNode) getRoot();
@@ -299,8 +299,8 @@ public class CategoryExplorerModel extends DefaultTreeModel {
   /**
    * <p>Returns the CategoryPath to the specified CategoryNode</p>
    *
-   * @param CategoryNode The target CategoryNode
-   * @returns CategoryPath
+   * @param node The target CategoryNode
+   * @return CategoryPath
    */
   public TreePath getTreePathToRoot(CategoryNode node) {
     if (node == null) {
