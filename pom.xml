@@ -442,8 +442,12 @@
       </plugin>
       <plugin>
           <artifactId>maven-release-plugin</artifactId>
+		  <!--  
+		     Bug MRELEASE273 has been throwing NPE during release:perform, 
+		           typically after deploy so this places it last.
+		  -->
           <configuration>
-              <goals>deploy site-deploy assembly:attached</goals>
+              <goals>test site-deploy assembly:attached deploy</goals>
           </configuration>
       </plugin>
       <plugin>
