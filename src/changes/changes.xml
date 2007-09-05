@@ -20,6 +20,10 @@
     <title>Apache log4j 1.2</title>
   </properties>
   <body>
+
+    <release version="1.2.16" date="TBD" description="">
+       <action action="fix" issue="43312">Mangled source-repository.html</action>
+    </release>
   
     <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
 	    <action issue="40951">log4j 1.2.15 release preparation.</action>
