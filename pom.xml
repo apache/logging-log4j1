@@ -22,9 +22,6 @@
   <packaging>jar</packaging>
   <name>Apache Log4j</name>
   <version>1.2.16-SNAPSHOT</version>
-  <properties>
-    <currentVersion>1.2.15</currentVersion>
-  </properties>  
   <description>Apache Log4j 1.2</description>
   <url>http://logging.apache.org:80/log4j/1.2/</url>
   <issueManagement>
@@ -68,9 +65,9 @@
     </license>
   </licenses>
   <scm>
-       <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15_rc6</connection>
-       <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15_rc6</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/logging/log4j/tags/v1_2_15_rc6</url>
+       <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/trunk</connection>
+       <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/trunk</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/logging/log4j/trunk</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
