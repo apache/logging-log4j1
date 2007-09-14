@@ -51,8 +51,8 @@
 	inheritance in loggers. Using a logger
 	hierarchy it is possible to control which log
 	statements are output at arbitrarily fine granularity but also
-	great ease. This helps reduce the volume of logged output and
-	minimize the cost of logging.
+	great ease. This helps to reduce the volume of logged output and
+	the cost of logging.
 
     The target of the log output can be a file, an
 	OutputStream, a java.io.Writer, a
