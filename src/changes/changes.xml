@@ -22,7 +22,8 @@
   <body>
 
     <release version="1.2.16" date="TBD" description="">
-       <action action="fix" issue="43312">Mangled source-repository.html</action>
+       <action action="fix" issue="43312">Fix mangled source-repository.html.</action>
+       <action action="fix" issue="43387">Minor documentation changes.</action>
     </release>
   
     <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
