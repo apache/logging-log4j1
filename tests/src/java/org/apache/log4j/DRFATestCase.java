@@ -20,11 +20,13 @@ package org.apache.log4j;
 import junit.framework.TestCase;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+import org.apache.log4j.util.Compare;
 
 /**
    Exhaustive test of the DailyRollingFileAppender compute algorithm.
@@ -421,5 +423,48 @@ public class DRFATestCase extends TestCase {
         assertTrue(firstFile.length() > 0);
 
     }
+
+    /**
+     * Tests rollOver when log file is unabled to be renamed.
+     * See bug 43374.
+     *
+     * @throws IOException if io error.
+     * @throws InterruptedException if test interrupted while waiting for the start of the next minute.
+     */
+    public void testBlockedRollover() throws IOException, InterruptedException {
+        Layout layout = new SimpleLayout();
+        String filename = "output/drfa_blockedRollover.log";
+        String pattern = "'.'yyyy-MM-dd-HH-mm";
+
+
+        Date start = new Date();
+        DailyRollingFileAppender appender =
+                new DailyRollingFileAppender(layout,
+                        filename,
+                        pattern);
+        appender.setAppend(false);
+        Logger root = Logger.getRootLogger();
+        root.addAppender(appender);
+        //
+        //   open next two anticipated rollover file names
+        //
+        FileOutputStream os1 = new FileOutputStream(filename + new SimpleDateFormat(pattern).format(start));
+        FileOutputStream os2 = new FileOutputStream(filename + new SimpleDateFormat(pattern).format(
+                new Date(start.getTime() + 60000)));
+        root.info("Prior to rollover");
+        //
+        //   sleep until three seconds into next minute
+        //
+        Thread.sleep(63000 - (start.getTime() % 60000));
+        //
+        //  should trigger failed rollover
+        //
+        root.info("Rollover attempt while blocked");
+        os1.close();
+        os2.close();
+        root.info("Message after block removed");
+        assertTrue(Compare.compare(filename, "witness/drfa_blockedRollover.log"));
+    }
+
 
 }
