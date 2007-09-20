@@ -22,6 +22,9 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -425,6 +428,23 @@ public class DRFATestCase extends TestCase {
     }
 
     /**
+     * Naive append method to combine rollover fragments.
+     * @param combined stream to which source is appended.
+     * @param source stream containing bytes to append.
+     * @param buf byte array to use in transfer.
+     * @throws IOException if io error during operation.
+     */
+    private static void append(final FileOutputStream combined,
+                               final FileInputStream source,
+                               final byte[] buf) throws IOException {
+        int count1 = source.read(buf);
+        if (count1 > 0) {
+            combined.write(buf, 0, count1);
+        }
+        source.close();
+    }
+
+    /**
      * Tests rollOver when log file is unabled to be renamed.
      * See bug 43374.
      *
@@ -448,9 +468,11 @@ public class DRFATestCase extends TestCase {
         //
         //   open next two anticipated rollover file names
         //
-        FileOutputStream os1 = new FileOutputStream(filename + new SimpleDateFormat(pattern).format(start));
-        FileOutputStream os2 = new FileOutputStream(filename + new SimpleDateFormat(pattern).format(
+        File block1 = new File(filename + new SimpleDateFormat(pattern).format(start));
+        File block2 = new File(filename + new SimpleDateFormat(pattern).format(
                 new Date(start.getTime() + 60000)));
+        FileOutputStream os1 = new FileOutputStream(block1);
+        FileOutputStream os2 = new FileOutputStream(block2);
         root.info("Prior to rollover");
         //
         //   sleep until three seconds into next minute
@@ -463,7 +485,21 @@ public class DRFATestCase extends TestCase {
         os1.close();
         os2.close();
         root.info("Message after block removed");
-        assertTrue(Compare.compare(filename, "witness/drfa_blockedRollover.log"));
+        appender.close();
+        //
+        //   combine base file and potential rollovers
+        //      since rollover may or may not have been blocked
+        //      depending on platform.
+        //
+        String combinedFilename = "output/drfa_blockedRollover.combined";
+        FileOutputStream combined = new FileOutputStream(combinedFilename);
+        byte[] buf = new byte[500];
+        append(combined, new FileInputStream(block1), buf);
+        append(combined, new FileInputStream(block2), buf);
+        append(combined, new FileInputStream(filename), buf);
+        combined.close();
+        assertTrue(Compare.compare(combinedFilename,
+                "witness/drfa_blockedRollover.log"));
     }
 
 
