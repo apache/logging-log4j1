@@ -30,21 +30,21 @@
     <asfext:pmc rdf:resource="http://logging.apache.org" />
     <shortdesc>Apache log4j provides logging services for Java.</shortdesc>
     <bug-database rdf:resource="http://issues.apache.org/bugzilla" />
-    <mailing-list rdf:resource="http://logging.apache.org/site/mailing-lists.html" />
-    <download-page rdf:resource="http://logging.apache.org/site/binindex.cgi" />
+    <mailing-list rdf:resource="http://logging.apache.org/log4j/1.2/mail-lists.html" />
+    <download-page rdf:resource="http://logging.apache.org/log4j/1.2/download.html" />
     <programming-language>Java</programming-language>
     <category rdf:resource="http://projects.apache.org/category/library" />
     <release>
       <Version>
-        <name>Apache log4j 1.2.14</name>
-        <created>2006-09-18</created>
-        <revision>1.2.14</revision>
+        <name>Apache log4j 1.2.15</name>
+        <created>2007-08-24</created>
+        <revision>1.2.15</revision>
       </Version>
     </release>
     <repository>
       <SVNRepository>
-        <location rdf:resource="http://svn.apache.org/repos/asf/logging/log4j/branches/v1_2-branch/"/>
-        <browse rdf:resource="http://svn.apache.org/viewvc/logging/log4j/branches/v1_2-branch/"/>
+        <location rdf:resource="http://svn.apache.org/repos/asf/logging/log4j/trunk/"/>
+        <browse rdf:resource="http://svn.apache.org/viewvc/logging/log4j/trunk/"/>
       </SVNRepository>
     </repository>
   </Project>
