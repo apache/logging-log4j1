@@ -34,7 +34,6 @@ import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.RendererSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -615,7 +614,10 @@ public class DOMConfigurator implements Configurator {
 
   protected
   void setParameter(Element elem, PropertySetter propSetter) {
-      setParameter(elem, propSetter, props);
+      String name = subst(elem.getAttribute(NAME_ATTR));
+      String value = (elem.getAttribute(VALUE_ATTR));
+      value = subst(OptionConverter.convertSpecialChars(value));
+      propSetter.setProperty(name, value);
   }
 
 

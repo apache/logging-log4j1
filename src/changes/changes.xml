@@ -22,6 +22,7 @@
   <body>
 
     <release version="1.2.16" date="TBD" description="">
+       <action action="fix" issue="43325">Subst-mechanism in DOMConfigurator broken.</action>
        <action action="fix" issue="43374">DailyRollingFileAppender may lose messages during failed rollover attempts.</action>
        <action action="fix" issue="43312">Fix mangled source-repository.html.</action>
        <action action="fix" issue="43387">Minor documentation changes.</action>
