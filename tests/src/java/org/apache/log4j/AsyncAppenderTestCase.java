@@ -326,4 +326,35 @@ public class AsyncAppenderTestCase extends TestCase {
     }
 
 
+    /**
+     * Test that a mutable message object is evaluated before
+     * being placed in the async queue.
+     * See bug 43559.
+     */
+    public void testMutableMessage() {
+        BlockableVectorAppender blockableAppender = new BlockableVectorAppender();
+        AsyncAppender async = new AsyncAppender();
+        async.addAppender(blockableAppender);
+        async.setBufferSize(5);
+        async.setLocationInfo(false);
+        async.activateOptions();
+        Logger rootLogger = Logger.getRootLogger();
+        rootLogger.addAppender(async);
+        StringBuffer buf = new StringBuffer("Hello");
+        synchronized(blockableAppender.getMonitor()) {
+            rootLogger.info(buf);
+            buf.append(", World.");
+        }
+        async.close();
+        Vector events = blockableAppender.getVector();
+        LoggingEvent event = (LoggingEvent) events.get(0);
+        PatternLayout layout = new PatternLayout();
+        layout.setConversionPattern("%m");
+        layout.activateOptions();
+        String msg = layout.format(event);
+        assertEquals("Hello", msg);
+    }
+
+
+
 }

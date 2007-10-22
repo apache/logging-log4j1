@@ -159,6 +159,7 @@ public class AsyncAppender extends AppenderSkeleton
     if (locationInfo) {
       event.getLocationInformation();
     }
+    event.getRenderedMessage();
 
     synchronized (buffer) {
       while (true) {
