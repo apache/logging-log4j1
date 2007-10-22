@@ -19,7 +19,9 @@ package org.apache.log4j.xml;
 
 import junit.framework.TestCase;
 import org.apache.log4j.Appender;
+import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.VectorAppender;
 import org.apache.log4j.spi.ErrorHandler;
@@ -307,6 +309,27 @@ public class DOMTestCase extends TestCase {
   public void testConfigureAndWatch() throws Exception {
     DOMConfigurator.configureAndWatch("input/xml/DOMTestCase1.xml");
     assertNotNull(Logger.getRootLogger().getAppender("A1"));
+  }
+
+
+    /**
+     * This test checks that the subst method of an extending class
+     * is checked when evaluating parameters.  See bug 43325.
+     *
+     */
+  public void testOverrideSubst() {
+      DOMConfigurator configurator = new DOMConfigurator() {
+          protected String subst(final String value) {
+              if ("output/temp.A1".equals(value)) {
+                  return "output/subst-test.A1";
+              }
+              return value;
+          }
+      };
+      configurator.doConfigure("input/xml/DOMTestCase1.xml", LogManager.getLoggerRepository());
+      FileAppender a1 = (FileAppender) Logger.getRootLogger().getAppender("A1");
+      String file = a1.getFile();
+      assertEquals("output/subst-test.A1", file);
   }
 
 }
