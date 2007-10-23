@@ -79,7 +79,7 @@ jar will be placed in the target subdirectory.
 
 Three dependencies need to be manually installed since their licenses do
 not allow them to be placed in the online maven repositories.
-If the dependencies are not already installed, a build attempt with
+If the dependencies are not already installed, a build attempt will
 describe where to download and how to install the dependencies.  To
 install these dependencies:
 
