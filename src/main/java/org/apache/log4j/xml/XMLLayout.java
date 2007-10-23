@@ -99,6 +99,7 @@ public class XMLLayout extends Layout {
     /**
      * Sets whether MDC key-value pairs should be output, default false.
      * @param flag new value.
+     * @since 1.2.15
      */
   public void setProperties(final boolean flag) {
       properties = flag;
@@ -107,6 +108,7 @@ public class XMLLayout extends Layout {
     /**
      * Gets whether MDC key-value pairs should be output.
      * @return true if MDC key-value pairs are output.
+     * @since 1.2.15
      */
   public boolean getProperties() {
       return properties;

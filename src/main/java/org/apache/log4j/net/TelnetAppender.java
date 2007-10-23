@@ -132,7 +132,10 @@ public class TelnetAppender extends AppenderSkeleton {
         close();
     }
       
-    /** make sure we close all network connections when this handler is destroyed. */
+    /** 
+    * make sure we close all network connections when this handler is destroyed.
+    * @since 1.2.15 
+    */
     public void close() {
       for(Enumeration e = connections.elements();e.hasMoreElements();) {
         try {

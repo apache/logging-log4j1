@@ -22,6 +22,7 @@
   <body>
 
     <release version="1.2.16" date="TBD" description="">
+       <action action="fix" issue="43314">SMTPAppender.setSMTPUserName and others missing @since tags.</action>
        <action action="fix" issue="43618">Request for compile-on-Windows help file in src package.</action>
        <action action="fix" issue="43599">AsyncAppender failing on changing message objects.</action>
        <action action="fix" issue="43325">Subst-mechanism in DOMConfigurator broken.</action>

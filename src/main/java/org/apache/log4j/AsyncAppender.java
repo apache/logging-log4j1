@@ -399,6 +399,7 @@ public class AsyncAppender extends AppenderSkeleton
    * Sets whether appender should wait if there is no
    * space available in the event buffer or immediately return.
    *
+   * @since 1.2.14
    * @param value true if appender should wait until available space in buffer.
    */
   public void setBlocking(final boolean value) {
@@ -413,6 +414,7 @@ public class AsyncAppender extends AppenderSkeleton
    * If false, messages will be counted by logger and a summary
    * message appended after the contents of the buffer have been appended.
    *
+   * @since 1.2.14
    * @return true if calling thread will be blocked when buffer is full.
    */
   public boolean getBlocking() {

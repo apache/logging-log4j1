@@ -64,6 +64,8 @@ import javax.mail.internet.AddressException;
    property with an instance of TriggeringEventEvaluator or
    nesting a triggeringPolicy element where the specified
    class implements TriggeringEventEvaluator.
+   
+   This class has implemented UnrecognizedElementHandler since 1.2.15.
 
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
@@ -139,6 +141,7 @@ public class SMTPAppender extends AppenderSkeleton
    *   Address message.
    *   @param msg message, may not be null.
    *   @throws MessagingException thrown if error addressing message. 
+   *   @since 1.2.14
    */
   protected void addressMessage(final Message msg) throws MessagingException {
        if (from != null) {
@@ -165,6 +168,7 @@ public class SMTPAppender extends AppenderSkeleton
   /**
    *  Create mail session.
    *  @return mail session, may not be null.
+   *  @since 1.2.14
    */
   protected Session createSession() {
     Properties props = null;
@@ -470,6 +474,7 @@ public class SMTPAppender extends AppenderSkeleton
    /**
       Set the cc recipient addresses.
       @param addresses recipient addresses as comma separated string, may be null.
+      @since 1.2.14
     */
    public void setCc(final String addresses) {
      this.cc = addresses;
@@ -478,6 +483,7 @@ public class SMTPAppender extends AppenderSkeleton
    /**
       Get the cc recipient addresses.
       @return recipient addresses as comma separated string, may be null.
+      @since 1.2.14
     */
     public String getCc() {
      return cc;
@@ -486,6 +492,7 @@ public class SMTPAppender extends AppenderSkeleton
    /**
       Set the bcc recipient addresses.
       @param addresses recipient addresses as comma separated string, may be null.
+      @since 1.2.14
     */
    public void setBcc(final String addresses) {
      this.bcc = addresses;
@@ -494,6 +501,7 @@ public class SMTPAppender extends AppenderSkeleton
    /**
       Get the bcc recipient addresses.
       @return recipient addresses as comma separated string, may be null.
+      @since 1.2.14
     */
     public String getBcc() {
      return bcc;
@@ -503,6 +511,7 @@ public class SMTPAppender extends AppenderSkeleton
    * The <b>SmtpPassword</b> option takes a string value which should be the password required to authenticate against
    * the mail server.
    * @param password password, may be null.
+   * @since 1.2.14
    */
   public void setSMTPPassword(final String password) {
     this.smtpPassword = password;
@@ -512,6 +521,7 @@ public class SMTPAppender extends AppenderSkeleton
    * The <b>SmtpUsername</b> option takes a string value which should be the username required to authenticate against
    * the mail server.
    * @param username user name, may be null.
+   * @since 1.2.14
    */
   public void setSMTPUsername(final String username) {
     this.smtpUsername = username;
@@ -522,6 +532,7 @@ public class SMTPAppender extends AppenderSkeleton
    * This can be useful when debuging the appender but should not be used during production because username and
    * password information is included in the output.
    * @param debug debug flag.
+   * @since 1.2.14
    */
   public void setSMTPDebug(final boolean debug) {
     this.smtpDebug = debug;
@@ -530,6 +541,7 @@ public class SMTPAppender extends AppenderSkeleton
   /**
    * Get SMTP password.
    * @return SMTP password, may be null.
+   * @since 1.2.14
    */
   public String getSMTPPassword() {
     return smtpPassword;
@@ -538,6 +550,7 @@ public class SMTPAppender extends AppenderSkeleton
   /**
    * Get SMTP user name.
    * @return SMTP user name, may be null.
+   * @since 1.2.14
    */
   public String getSMTPUsername() {
     return smtpUsername;
@@ -546,6 +559,7 @@ public class SMTPAppender extends AppenderSkeleton
   /**
    * Get SMTP debug.
    * @return SMTP debug flag.
+   * @since 1.2.14
    */
   public boolean getSMTPDebug() {
     return smtpDebug;
@@ -572,7 +586,9 @@ public class SMTPAppender extends AppenderSkeleton
       return evaluator;
   }
 
-  /** {@inheritDoc} */
+  /** {@inheritDoc}
+   * @since 1.2.15 
+  */
   public boolean parseUnrecognizedElement(final Element element,
                                           final Properties props) throws Exception {
       if ("triggeringPolicy".equals(element.getNodeName())) {
