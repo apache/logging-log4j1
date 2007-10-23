@@ -125,8 +125,9 @@ element. -->
 
 <!-- If no level element is specified, then the configurator MUST not -->
 <!-- touch the level of the named logger. -->
-<!ELEMENT logger (level?,appender-ref*)>
+<!ELEMENT logger (param*,level?,appender-ref*)>
 <!ATTLIST logger
+  class         CDATA   #IMPLIED
   name		CDATA	#REQUIRED
   additivity	(true|false) "true"  
 >
