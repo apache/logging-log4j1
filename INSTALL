@@ -73,9 +73,38 @@ except test cases and classes from the "examples" and
 Building log4j
 ==============
 
-log4j (as of 1.2.15) is built with Maven 2.  To rebuild log4j-VERSION.jar,
-place Maven 2 on the PATH and execute "mvn package".    
+log4j (as of 1.2.15) is built with Maven 2.  To rebuild log4j,
+place Maven 2 on the PATH and execute "mvn package".  The resulting
+jar will be placed in the target subdirectory.
 
+Three dependencies need to be manually installed since their licenses do
+not allow them to be placed in the online maven repositories.
+If the dependencies are not already installed, a build attempt with
+describe where to download and how to install the dependencies.  To
+install these dependencies:
+
+Download JMX 1.2.1 from http://java.sun.com/products/JavaManagement/download.html.
+
+$ jar xf jmx-1_2_1-ri.zip
+$ mvn install:install-file -DgroupId=com.sun.jdmk -DartifactId=jmxtools \
+          -Dversion=1.2.1 -Dpackaging=jar -Dfile=jmx-1_2_1-bin/lib/jmxtools.jar
+$ mvn install:install-file -DgroupId=com.sun.jmx -DartifactId=jmxri \
+          -Dversion=1.2.1 -Dpackaging=jar -Dfile=jmx-1_2_1-bin/lib/jmxri.jar
+
+
+Download JMS 1.1 from http://java.sun.com/products/jms/docs.html.
+
+$ jar xf jmx-1_1-fr-apidocs.zip
+$ mvn install:install-file -DgroupId=javax.jms -DartifactId=jms \
+          -Dversion=1.1 -Dpackaging=jar -Dfile=jms1.1/lib/jms.jar
+
+
+The build script will attempt to build NTEventLogAppender.dll if
+MinGW is available on the path.  If the unit tests are run on Windows
+without NTEventLogAppender.dll, many warnings of the missing DLL
+will be generated.  An installer for MinGW on Windows is
+available for download at http://sourceforge.net/project/showfiles.php?group_id=2435.
+MinGW is also available through the package managers of many Linux distributions.
 
 In case of problems send an e-mail note to
 log4j-user@logging.apache.org.  Please do not directly e-mail any
