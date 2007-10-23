@@ -341,6 +341,7 @@ public class SocketAppender extends AppenderSkeleton {
    * The <b>App</b> option takes a string value which should be the name of the 
    * application getting logged.
    * If property was already set (via system property), don't set here.
+   * @since 1.2.15
    */
   public void setApplication(String lapp) {
     this.application = lapp;
@@ -348,6 +349,7 @@ public class SocketAppender extends AppenderSkeleton {
 
   /**
    *  Returns value of the <b>Application</b> option.
+   * @since 1.2.15
    */
   public String getApplication() {
     return application;

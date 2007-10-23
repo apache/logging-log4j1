@@ -90,6 +90,9 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
     }
   }
   
+  /**
+   * @since 1.2.15
+   */
   protected
   void printOptions(PrintWriter out, Category cat) {
     Enumeration appenders = cat.getAllAppenders();
