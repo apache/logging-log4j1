@@ -271,6 +271,16 @@ public class SocketHubAppender extends AppenderSkeleton {
   }
   
   /**
+   * Creates a server socket to accept connections.
+   * @param socketPort port on which the socket should listen, may be zero.
+   * @return new socket.
+   * @throws IOException IO error when opening the socket. 
+   */
+  protected ServerSocket createServerSocket(final int socketPort) throws IOException {
+      return new ServerSocket(socketPort);
+  }
+
+  /**
     This class is used internally to monitor a ServerSocket
     and register new connections in a vector passed in the
     constructor. */
@@ -322,7 +332,7 @@ public class SocketHubAppender extends AppenderSkeleton {
     void run() {
       ServerSocket serverSocket = null;
       try {
-        serverSocket = new ServerSocket(port);
+        serverSocket = createServerSocket(port);
         serverSocket.setSoTimeout(1000);
       }
       catch (Exception e) {
