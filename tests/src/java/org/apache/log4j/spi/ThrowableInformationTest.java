@@ -283,4 +283,20 @@ public class ThrowableInformationTest extends TestCase {
         ThrowableInformation ti = new ThrowableInformation(t);
         assertSame(t, ti.getThrowable());
     }
+
+    /**
+     *  Tests isolation of returned string representation
+     *     from internal state of ThrowableInformation.
+     *      log4j 1.2.15 and earlier did not isolate initial call.
+     *      See bug 44032.
+     */
+    public void testIsolation() {
+        ThrowableInformation ti = new ThrowableInformation(
+                new StringThrowable("Hello, World"));
+        String[] rep = ti.getThrowableStrRep();
+        assertEquals("Hello, World", rep[0]);
+        rep[0] = "Bonjour, Monde";
+        String[] rep2 = ti.getThrowableStrRep();
+        assertEquals("Hello, World", rep2[0]);
+    }
 }

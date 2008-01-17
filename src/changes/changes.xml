@@ -23,6 +23,7 @@
 
     <release version="1.2.16" date="TBD" description="">
        <action issue="43313">log4j 1.2.16 release preparation.</action>
+       <action action="fix" issue="44032">ThrowableInformation.getThrowableStringRep can return null strings.</action>
        <action action="fix" issue="43298">log4j.dtd defines class attribute for category element, but not for logger.</action>
        <action action="fix" issue="43314">SMTPAppender.setSMTPUserName and others missing @since tags.</action>
        <action action="fix" issue="43618">Request for compile-on-Windows help file in src package.</action>

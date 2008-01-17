@@ -68,9 +68,7 @@ public class ThrowableInformation implements java.io.Serializable {
 
   public
   String[] getThrowableStrRep() {
-    if(rep != null) {
-      return (String[]) rep.clone();
-    } else {
+    if(rep == null) {
       StringWriter sw = new StringWriter();
       PrintWriter pw = new PrintWriter(sw);
       throwable.printStackTrace(pw);
@@ -87,10 +85,11 @@ public class ThrowableInformation implements java.io.Serializable {
       } catch(IOException ex) {
           lines.add(ex.toString());
       }
-      rep = new String[lines.size()];
-      lines.toArray(rep);
+      String[] tempRep = new String[lines.size()];
+      lines.toArray(tempRep);
+      rep = tempRep;
     }
-    return rep;
+    return (String[]) rep.clone();
   }
 }
 
