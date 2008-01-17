@@ -103,17 +103,19 @@ public class TelnetAppender extends AppenderSkeleton {
   /** Handles a log event.  For this appender, that means writing the
     message to each connected client.  */
   protected void append(LoggingEvent event) {
-    sh.send(this.layout.format(event));
-    if(layout.ignoresThrowable()) {
-      String[] s = event.getThrowableStrRep();
-      if (s != null) {
-	int len = s.length;
-	for(int i = 0; i < len; i++) {
-	  sh.send(s[i]);
-	  sh.send(Layout.LINE_SEP);
-	}
+      if(sh != null) {
+        sh.send(this.layout.format(event));
+        if(layout.ignoresThrowable()) {
+            String[] s = event.getThrowableStrRep();
+            if (s != null) {
+	            int len = s.length;
+	            for(int i = 0; i < len; i++) {
+	                sh.send(s[i]);
+	                sh.send(Layout.LINE_SEP);
+	            }
+            }
+        }
       }
-    }
   }
 
   //---------------------------------------------------------- SocketHandler:
