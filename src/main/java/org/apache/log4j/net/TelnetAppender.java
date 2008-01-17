@@ -17,13 +17,17 @@
 
 package org.apache.log4j.net;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import org.apache.log4j.Layout;
-import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.LoggingEvent;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
   <p>The TelnetAppender is a log4j appender that specializes in
@@ -104,15 +108,16 @@ public class TelnetAppender extends AppenderSkeleton {
     message to each connected client.  */
   protected void append(LoggingEvent event) {
       if(sh != null) {
-        sh.send(this.layout.format(event));
+        sh.send(layout.format(event));
         if(layout.ignoresThrowable()) {
             String[] s = event.getThrowableStrRep();
             if (s != null) {
-	            int len = s.length;
-	            for(int i = 0; i < len; i++) {
-	                sh.send(s[i]);
-	                sh.send(Layout.LINE_SEP);
-	            }
+                StringBuffer buf = new StringBuffer();
+                for(int i = 0; i < s.length; i++) {
+                    buf.append(s[i]);
+                    buf.append("\r\n");
+                }
+                sh.send(buf.toString());
             }
         }
       }
@@ -139,10 +144,12 @@ public class TelnetAppender extends AppenderSkeleton {
     * @since 1.2.15 
     */
     public void close() {
-      for(Enumeration e = connections.elements();e.hasMoreElements();) {
-        try {
-          ((Socket)e.nextElement()).close();
-        } catch(Exception ex) {
+      synchronized(this) {
+        for(Enumeration e = connections.elements();e.hasMoreElements();) {
+            try {
+                ((Socket)e.nextElement()).close();
+            } catch(Exception ex) {
+            }
         }
       }
 
@@ -153,16 +160,15 @@ public class TelnetAppender extends AppenderSkeleton {
     }
 
     /** sends a message to each of the clients in telnet-friendly output. */
-    public void send(String message) {
-      Enumeration ce = connections.elements();
-      for(Enumeration e = writers.elements();e.hasMoreElements();) {
-        Socket sock = (Socket)ce.nextElement();
-        PrintWriter writer = (PrintWriter)e.nextElement();
+    public synchronized void send(final String message) {
+      Iterator ce = connections.iterator();
+      for(Iterator e = writers.iterator();e.hasNext();) {
+        ce.next();
+        PrintWriter writer = (PrintWriter)e.next();
         writer.print(message);
         if(writer.checkError()) {
-          // The client has closed the connection, remove it from our list:
-          connections.remove(sock);
-          writers.remove(writer);
+          ce.remove();
+          e.remove();
         }
       }
     }
@@ -177,11 +183,13 @@ public class TelnetAppender extends AppenderSkeleton {
           Socket newClient = serverSocket.accept();
           PrintWriter pw = new PrintWriter(newClient.getOutputStream());
           if(connections.size() < MAX_CONNECTIONS) {
-            connections.addElement(newClient);
-            writers.addElement(pw);
-            pw.print("TelnetAppender v1.0 (" + connections.size() 
-		     + " active connections)\r\n\r\n");
-            pw.flush();
+            synchronized(this) {
+                connections.addElement(newClient);
+                writers.addElement(pw);
+                pw.print("TelnetAppender v1.0 (" + connections.size()
+		            + " active connections)\r\n\r\n");
+                pw.flush();
+            }
           } else {
             pw.print("Too many connections.\r\n");
             pw.flush();
