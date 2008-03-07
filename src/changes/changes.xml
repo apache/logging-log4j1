@@ -36,6 +36,7 @@
        <action action="fix" issue="43387">Minor documentation changes.</action>
        <action action="fix" issue="43304">Make javamail, jmx, jms dependencies optional in pom.xml.</action>
        <action action="add" issue="43874">SocketHubAppender should expose actual port in use to extending classes.</action>
+       <action action="add" issue="44551">SocketHubAppender in the 1.2.16 does not support a scroll back buffer or application property</action>
     </release>
   
     <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">

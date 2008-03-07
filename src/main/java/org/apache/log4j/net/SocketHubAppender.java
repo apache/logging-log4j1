@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetAddress;
 
+import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.AppenderSkeleton;
@@ -114,6 +115,8 @@ public class SocketHubAppender extends AppenderSkeleton {
   private Vector oosList = new Vector();
   private ServerMonitor serverMonitor = null;
   private boolean locationInfo = false;
+  private CyclicBuffer buffer = null;
+  private String application;
   
   public SocketHubAppender() { }
 
@@ -179,14 +182,23 @@ public class SocketHubAppender extends AppenderSkeleton {
     Append an event to all of current connections. */
   public
   void append(LoggingEvent event) {
-	// if no event or no open connections, exit now
-    if(event == null || oosList.size() == 0)
-      return;
+    if (event != null) {
+      // set up location info if requested
+      if (locationInfo) {
+        event.getLocationInformation();
+      }
+      if (application != null) {
+          event.setProperty("application", application);
+        } 
+      if (buffer != null) {
+        buffer.add(event);
+      }
+    }
 
-    // set up location info if requested
-    if (locationInfo) {
-    	event.getLocationInformation();	
-    } 
+    // if no event or no open connections, exit now
+    if ((event == null) || (oosList.size() == 0)) {
+      return;
+    }
 
 	// loop through the current set of open connections, appending the event to each
     for (int streamCount = 0; streamCount < oosList.size(); streamCount++) {    	
@@ -238,6 +250,23 @@ public class SocketHubAppender extends AppenderSkeleton {
   public
   void setPort(int _port) {
     port = _port;
+	}
+
+  /**
+   * The <b>App</b> option takes a string value which should be the name of the application getting logged. If property was already set (via system
+   * property), don't set here.
+   */
+  public 
+  void setApplication(String lapp) {
+    this.application = lapp;
+  }
+
+  /**
+   * Returns value of the <b>Application</b> option.
+   */
+  public 
+  String getApplication() {
+    return application;
   }
   
   /**
@@ -245,6 +274,27 @@ public class SocketHubAppender extends AppenderSkeleton {
   public
   int getPort() {
     return port;
+  }
+
+  /**
+   * The <b>BufferSize</b> option takes a positive integer representing the number of events this appender will buffer and send to newly connected
+   * clients.
+   */
+  public 
+  void setBufferSize(int _bufferSize) {
+    buffer = new CyclicBuffer(_bufferSize);
+  }
+
+  /**
+   * Returns value of the <b>bufferSize</b> option.
+   */
+  public 
+  int getBufferSize() {
+    if (buffer == null) {
+      return 0;
+    } else {
+      return buffer.getMaxSize();
+    }
   }
   
   /**
@@ -325,6 +375,17 @@ public class SocketHubAppender extends AppenderSkeleton {
       }
     }
     
+    private 
+    void sendCachedEvents(ObjectOutputStream stream) throws IOException {
+      if (buffer != null) {
+        for (int i = 0; i < buffer.length(); i++) {
+          stream.writeObject(buffer.get(i));
+        }
+        stream.flush();
+        stream.reset();
+      }
+    }
+
     /**
       Method that runs, monitoring the ServerSocket and adding connections as
       they connect to the socket. */
@@ -375,11 +436,13 @@ public class SocketHubAppender extends AppenderSkeleton {
 	        	
               // create an ObjectOutputStream
               ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+              if (buffer != null && buffer.length() > 0) {
+                sendCachedEvents(oos);
+              }
 	            
               // add it to the oosList.  OK since Vector is synchronized.
               oosList.addElement(oos);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
               LogLog.error("exception creating output stream on socket.", e);
             }
           }
