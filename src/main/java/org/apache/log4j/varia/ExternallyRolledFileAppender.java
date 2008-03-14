@@ -17,13 +17,13 @@
 
 package org.apache.log4j.varia;
 
-import org.apache.log4j.RollingFileAppender;
-import org.apache.log4j.helpers.LogLog;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import org.apache.log4j.RollingFileAppender;
+import org.apache.log4j.helpers.LogLog;
 
 /**
    This appender listens on a socket on the port specified by the
@@ -122,7 +122,7 @@ class HUP extends Thread {
 	while(true) {
 	  Socket socket = serverSocket.accept();
 	  LogLog.debug("Connected to client at " + socket.getInetAddress());
-	  new Thread(new HUPNode(socket, er)).start();
+	  new Thread(new HUPNode(socket, er), "ExternallyRolledFileAppender-HUP").start();
 	}
       }
       catch(Exception e) {

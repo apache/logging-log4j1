@@ -17,11 +17,11 @@
 
 package org.apache.log4j.net;
 
-import java.net.Socket;
 import java.net.ServerSocket;
+import java.net.Socket;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -65,7 +65,7 @@ public class SimpleSocketServer  {
 	cat.info("Connected to client at " + socket.getInetAddress());
 	cat.info("Starting new socket node.");
 	new Thread(new SocketNode(socket,
-				  LogManager.getLoggerRepository())).start();
+				  LogManager.getLoggerRepository()),"SimpleSocketServer-" + port).start();
       }
     } catch(Exception e) {
       e.printStackTrace();

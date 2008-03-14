@@ -19,18 +19,17 @@
 //               Thomas Tuft Muller <ttm@online.no>
 package org.apache.log4j;
 
-import org.apache.log4j.helpers.AppenderAttachableImpl;
-import org.apache.log4j.spi.AppenderAttachable;
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.text.MessageFormat;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.log4j.helpers.AppenderAttachableImpl;
+import org.apache.log4j.spi.AppenderAttachable;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
@@ -119,7 +118,7 @@ public class AsyncAppender extends AppenderSkeleton
 
     // set the dispatcher priority to lowest possible value
     //        dispatcher.setPriority(Thread.MIN_PRIORITY);
-    dispatcher.setName("Dispatcher-" + dispatcher.getName());
+    dispatcher.setName("AsyncAppender-Dispatcher-" + dispatcher.getName());
     dispatcher.start();
   }
 
