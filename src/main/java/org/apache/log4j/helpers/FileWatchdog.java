@@ -20,7 +20,6 @@
 package org.apache.log4j.helpers;
 
 import java.io.File;
-import org.apache.log4j.helpers.LogLog;
 
 /**
    Check every now and then that a certain file has not changed. If it
@@ -52,6 +51,7 @@ public abstract class FileWatchdog extends Thread {
 
   protected
   FileWatchdog(String filename) {
+    super("FileWatchdog");
     this.filename = filename;
     file = new File(filename);
     setDaemon(true);

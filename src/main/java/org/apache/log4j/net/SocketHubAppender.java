@@ -17,19 +17,19 @@
 
 package org.apache.log4j.net;
 
-import java.util.Vector;
-import java.net.Socket;
-import java.net.ServerSocket;
-import java.net.SocketException;
-import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.Vector;
 
+import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.helpers.CyclicBuffer;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.AppenderSkeleton;
 
 /**
   Sends {@link LoggingEvent} objects to a set of remote log servers,
@@ -350,6 +350,7 @@ public class SocketHubAppender extends AppenderSkeleton {
       keepRunning = true;
       monitorThread = new Thread(this);
       monitorThread.setDaemon(true);
+      monitorThread.setName("SocketHubAppender-Monitor-" + port);
       monitorThread.start();
     }
     
