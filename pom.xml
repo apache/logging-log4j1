@@ -23,39 +23,39 @@
   <name>Apache Log4j</name>
   <version>1.2.16-SNAPSHOT</version>
   <description>Apache Log4j 1.2</description>
-  <url>http://logging.apache.org:80/log4j/1.2/</url>
+  <url>http://logging.apache.org/log4j/1.2/</url>
   <issueManagement>
-     <system>Bugzilla</system>
-     <url>http://issues.apache.org/bugzilla/</url>
+    <system>Bugzilla</system>
+    <url>http://issues.apache.org/bugzilla/</url>
   </issueManagement>
   <ciManagement>
-  		<system>Gump</system>
-  		 <url>http://vmgump.apache.org/gump/public/logging-log4j-12/logging-log4j-12/index.html</url>
-  </ciManagement>  
+    <system>Gump</system>
+    <url>http://vmgump.apache.org/gump/public/logging-log4j-12/logging-log4j-12/index.html</url>
+  </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <mailingLists>
-       <mailingList>
-               <name>log4j-user</name>
-               <subscribe>log4j-user-subscribe@logging.apache.org</subscribe>
-               <unsubscribe>log4j-user-unsubscribe@logging.apache.org</unsubscribe>
-               <post>log4j-user@logging.apache.org</post>
-               <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
-               <otherArchives>
-                       <otherArchive>http://marc.info/?l=log4j-user</otherArchive>
-                   <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</otherArchive>
-               </otherArchives>
-       </mailingList>
-       <mailingList>
-               <name>log4j-dev</name>
-               <subscribe>log4j-dev-subscribe@logging.apache.org</subscribe>
-               <unsubscribe>log4j-dev-unsubscribe@logging.apache.org</unsubscribe>
-               <post>log4j-dev@logging.apache.org</post>
-               <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
-               <otherArchives>
-                   <otherArchive>http://marc.info/?l=log4j-dev</otherArchive>
-                   <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
-               </otherArchives>
-       </mailingList>
+    <mailingList>
+      <name>log4j-user</name>
+      <subscribe>log4j-user-subscribe@logging.apache.org</subscribe>
+      <unsubscribe>log4j-user-unsubscribe@logging.apache.org</unsubscribe>
+      <post>log4j-user@logging.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
+      <otherArchives>
+        <otherArchive>http://marc.info/?l=log4j-user</otherArchive>
+        <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>log4j-dev</name>
+      <subscribe>log4j-dev-subscribe@logging.apache.org</subscribe>
+      <unsubscribe>log4j-dev-unsubscribe@logging.apache.org</unsubscribe>
+      <post>log4j-dev@logging.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
+      <otherArchives>
+        <otherArchive>http://marc.info/?l=log4j-dev</otherArchive>
+        <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
+      </otherArchives>
+    </mailingList>
   </mailingLists>
   <licenses>
     <license>
@@ -65,9 +65,9 @@
     </license>
   </licenses>
   <scm>
-       <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/trunk</connection>
-       <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/trunk</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/logging/log4j/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/logging/log4j/trunk</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
@@ -77,111 +77,114 @@
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.3</version>
         <configuration>
           <workingDirectory>tests</workingDirectory>
           <reportFormat>plain</reportFormat>
-		  <forkMode>pertest</forkMode>
+          <forkMode>pertest</forkMode>
           <skip>true</skip>
-		  <includes>
-			  <include>org/apache/log4j/LevelTest.java</include>
-		<include>org/apache/log4j/PriorityTest.java</include>
-        <include>org/apache/log4j/CategoryTest.java</include>
-        <include>org/apache/log4j/FileAppenderTest.java</include>
-        <include>org/apache/log4j/LogManagerTest.java</include>
-        <include>org/apache/log4j/helpers.LogLogTest.java</include>
-        <include>org/apache/log4j/LayoutTest.java</include>
-        <include>org/apache/log4j/helpers.DateLayoutTest.java</include>
-        <include>org/apache/log4j/TTCCLayoutTest.java</include>
-        <include>org/apache/log4j/xml.XMLLayoutTest.java</include>
-        <include>org/apache/log4j/HTMLLayoutTest.java</include>
-        <include>org/apache/log4j/PatternLayoutTest.java</include>
-        <include>org/apache/log4j/spi.LoggingEventTest.java</include>
-        <include>org/apache/log4j/spi.ThrowableInformationTest.java</include>
-        <include>org/apache/log4j/spi.LocationInfoTest.java</include>
-        <include>org/apache/log4j/PropertyConfiguratorTest.java</include>
-        <include>org/apache/log4j/MinimumTestCase.java</include>
-        <include>org/apache/log4j/LoggerTestCase.java</include>
-        <include>org/apache/log4j/PatternLayoutTestCase.java</include>
-        <include>org/apache/log4j/HierarchyThresholdTestCase.java</include>
-        <include>org/apache/log4j/xml/DOMTestCase.java</include>
-        <include>org/apache/log4j/xml/CustomLevelTestCase.java</include>
-        <include>org/apache/log4j/customLogger/XLoggerTestCase.java</include>
-		<!-- DefaultInit  -->
-		<!-- SocketServer -->
-        <include>org/apache/log4j/xml/XMLLayoutTestCase.java</include>
-        <include>org/apache/log4j/xml/AsyncAppenderTestCase.java</include>
-        <include>org/apache/log4j/varia/LevelMatchFilterTestCase.java</include>
-
-       <!--   ErrorHandlerTestCase is not run in Ant build either
-			<include>org/apache/log4j/varia/ErrorHandlerTestCase.java</include>
-		-->
-       <!-- include>org/apache/log4j/helpers/OptionConverterTestCase.java</include -->
-      <include>org/apache/log4j/helpers/BoundedFIFOTestCase.java</include>
-      <include>org/apache/log4j/helpers/CyclicBufferTestCase.java</include>
-      <include>org/apache/log4j/helpers/PatternParserTestCase.java</include>
-      <include>org/apache/log4j/or/ORTestCase.java</include>
-      <include>org/apache/log4j/DRFATestCase.java</include>
-      <include>org/apache/log4j/RFATestCase.java</include>
-      <include>org/apache/log4j/varia/ERFATestCase.java</include>
-	  <include>org/apache/log4j/net/SyslogAppenderTest</include>
-      <include>org/apache/log4j/nt/NTEventLogAppenderTest</include>
-      <include>org/apache/log4j/net/SocketAppenderTest</include>
-	</includes>
+          <includes>
+            <include>org/apache/log4j/LevelTest.java</include>
+            <include>org/apache/log4j/PriorityTest.java</include>
+            <include>org/apache/log4j/CategoryTest.java</include>
+            <include>org/apache/log4j/FileAppenderTest.java</include>
+            <include>org/apache/log4j/LogManagerTest.java</include>
+            <include>org/apache/log4j/helpers.LogLogTest.java</include>
+            <include>org/apache/log4j/LayoutTest.java</include>
+            <include>org/apache/log4j/helpers.DateLayoutTest.java</include>
+            <include>org/apache/log4j/TTCCLayoutTest.java</include>
+            <include>org/apache/log4j/xml.XMLLayoutTest.java</include>
+            <include>org/apache/log4j/HTMLLayoutTest.java</include>
+            <include>org/apache/log4j/PatternLayoutTest.java</include>
+            <include>org/apache/log4j/spi.LoggingEventTest.java</include>
+            <include>org/apache/log4j/spi.ThrowableInformationTest.java</include>
+            <include>org/apache/log4j/spi.LocationInfoTest.java</include>
+            <include>org/apache/log4j/PropertyConfiguratorTest.java</include>
+            <include>org/apache/log4j/MinimumTestCase.java</include>
+            <include>org/apache/log4j/LoggerTestCase.java</include>
+            <include>org/apache/log4j/PatternLayoutTestCase.java</include>
+            <include>org/apache/log4j/HierarchyThresholdTestCase.java</include>
+            <include>org/apache/log4j/xml/DOMTestCase.java</include>
+            <include>org/apache/log4j/xml/CustomLevelTestCase.java</include>
+            <include>org/apache/log4j/customLogger/XLoggerTestCase.java</include>
+            <!-- DefaultInit  -->
+            <!-- SocketServer -->
+            <include>org/apache/log4j/xml/XMLLayoutTestCase.java</include>
+            <include>org/apache/log4j/xml/AsyncAppenderTestCase.java</include>
+            <include>org/apache/log4j/varia/LevelMatchFilterTestCase.java</include>
+            <!--   ErrorHandlerTestCase is not run in Ant build either
+            <include>org/apache/log4j/varia/ErrorHandlerTestCase.java</include>
+            -->
+            <!-- include>org/apache/log4j/helpers/OptionConverterTestCase.java</include -->
+            <include>org/apache/log4j/helpers/BoundedFIFOTestCase.java</include>
+            <include>org/apache/log4j/helpers/CyclicBufferTestCase.java</include>
+            <include>org/apache/log4j/helpers/PatternParserTestCase.java</include>
+            <include>org/apache/log4j/or/ORTestCase.java</include>
+            <include>org/apache/log4j/DRFATestCase.java</include>
+            <include>org/apache/log4j/RFATestCase.java</include>
+            <include>org/apache/log4j/varia/ERFATestCase.java</include>
+            <include>org/apache/log4j/net/SyslogAppenderTest</include>
+            <include>org/apache/log4j/nt/NTEventLogAppenderTest</include>
+            <include>org/apache/log4j/net/SocketAppenderTest</include>
+          </includes>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.0.2</version>
         <configuration>
-            <source>1.2</source>
-            <target>1.1</target>
+          <source>1.2</source>
+          <target>1.1</target>
         </configuration>
       </plugin>
-	  <plugin>
+      <plugin>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
         <configuration>
           <archive>
-                <manifestSections>
-                <manifestSection>
-                    <name>org.apache.log4j</name>
-                    <manifestEntries>
-                        <Implementation-Title>log4j</Implementation-Title>
-                        <Implementation-Version>${project.version}</Implementation-Version>
-                        <Implementation-Vendor>"Apache Software Foundation"</Implementation-Vendor>
-                    </manifestEntries>
-                </manifestSection>
-                </manifestSections>
+            <manifestSections>
+              <manifestSection>
+                <name>org.apache.log4j</name>
+                <manifestEntries>
+                  <Implementation-Title>log4j</Implementation-Title>
+                  <Implementation-Version>${project.version}</Implementation-Version>
+                  <Implementation-Vendor>"Apache Software Foundation"</Implementation-Vendor>
+                </manifestEntries>
+              </manifestSection>
+            </manifestSections>
           </archive>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.1</version>
         <executions>
-		  <!--   generate NTEventLogAppender.dll    -->
+          <!--   generate NTEventLogAppender.dll    -->
           <execution>
             <phase>process-classes</phase>
-			<id>ntdll</id>
+            <id>ntdll</id>
             <configuration>
               <tasks>
-				  <ant antfile="src/ntdll/build.xml">
-					  <property name="target.dir" location="target" />
-					  <property name="classes.dir" location="target/classes" />
-					  <property name="src.dir" location="src/ntdll" />
-                      <property name="jni.include.dir" location="${java.home}/../include" />
-				  </ant>
-			  </tasks>
+                <ant antfile="src/ntdll/build.xml">
+                  <property name="target.dir" location="target"/>
+                  <property name="classes.dir" location="target/classes"/>
+                  <property name="src.dir" location="src/ntdll"/>
+                  <property name="jni.include.dir" location="${java.home}/../include"/>
+                </ant>
+              </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
           </execution>
-		  <!--   create tests/output prior to test run    -->
+          <!--   create tests/output prior to test run    -->
           <execution>
             <phase>test-compile</phase>
-			<id>mkdir_tests_output</id>
+            <id>mkdir_tests_output</id>
             <configuration>
               <tasks>
-				  <mkdir dir="tests/output" />
-			  </tasks>
+                <mkdir dir="tests/output"/>
+              </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -189,11 +192,11 @@
           </execution>
           <execution>
             <phase>clean</phase>
-			<id>rmdir_tests_output</id>
+            <id>rmdir_tests_output</id>
             <configuration>
               <tasks>
-				  <delete dir="tests/output" />
-			  </tasks>
+                <delete dir="tests/output"/>
+              </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -201,35 +204,35 @@
           </execution>
           <execution>
             <phase>test</phase>
-		<id>runAll</id>
+            <id>runAll</id>
             <configuration>
-                <tasks>
-			  <ant dir="tests" target="runAll">
-				<property name="junit.jar" location="${user.home}/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar" />
-				<property name="jakarta.oro.jar" location="${user.home}/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar" />
-                <property name="javamail.jar" location="${user.home}/.m2/repository/javax/mail/mail/1.4/mail-1.4.jar" />
-                <property name="activation.jar" location="${user.home}/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar" />
-                <property name="log4j.jar" location="target/classes" />
-				<property name="project.lib.home" location="target" />
-                    </ant> 
-                </tasks>
+              <tasks>
+                <ant dir="tests" target="runAll">
+                  <property name="junit.jar" location="${user.home}/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar"/>
+                  <property name="jakarta.oro.jar" location="${user.home}/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar"/>
+                  <property name="javamail.jar" location="${user.home}/.m2/repository/javax/mail/mail/1.4/mail-1.4.jar" />
+                  <property name="activation.jar" location="${user.home}/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar" />
+                  <property name="log4j.jar" location="target/classes"/>
+                  <property name="project.lib.home" location="target"/>
+                </ant>
+              </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
           </execution>
-          <!--   release builds will put SVN tags into the SCM page, this changes it back to a branch  -->
+          <!--   release builds will put SVN tags into the SCM page, this changes it back to trunk  -->
           <execution>
             <phase>site</phase>
             <id>untag-site</id>
             <configuration>
-                <tasks>
-                    <taskdef name="replaceregexp" classname="org.apache.tools.ant.taskdefs.optional.ReplaceRegExp" />                
-                   <replaceregexp file="target/site/source-repository.html" match="/tags/[^ &quot;&apos;&lt;]*" replace="/trunk" flags="g"/>
+              <tasks>
+                <taskdef name="replaceregexp" classname="org.apache.tools.ant.taskdefs.optional.ReplaceRegExp"/>
+                <replaceregexp file="target/site/source-repository.html" match="/tags/[^ &quot;&apos;&lt;]*" replace="/trunk" flags="g"/>
                 <replaceregexp match="-- Generated by (.*) on .*--" replace="-- Generated by \1 --" flags="g">
-					<fileset dir="target/site/apidocs" includes="**/*.html" />
-				</replaceregexp>
-                </tasks>
+                  <fileset dir="target/site/apidocs" includes="**/*.html"/>
+                </replaceregexp>
+              </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -239,9 +242,9 @@
             <phase>post-site</phase>
             <id>post-site</id>
             <configuration>
-                <tasks>
-                   <ant target="post-site" />
-                </tasks>
+              <tasks>
+                <ant target="post-site"/>
+              </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -251,16 +254,16 @@
             <phase>site-deploy</phase>
             <id>site-deploy</id>
             <configuration>
-                <tasks>
-                   <ant target="site-deploy" />
-                </tasks>
+              <tasks>
+                <ant target="site-deploy"/>
+              </tasks>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
           </execution>
         </executions>
-       <dependencies>
+        <dependencies>
           <dependency>
             <groupId>ant</groupId>
             <artifactId>ant-nodeps</artifactId>
@@ -276,92 +279,110 @@
             <artifactId>ant-junit</artifactId>
             <version>1.6.5</version>
           </dependency>
-  	    <dependency>
-             <groupId>junit</groupId>
-             <artifactId>junit</artifactId>
-             <version>3.8.1</version>
-             <scope>test</scope>
+          <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
           </dependency>
-        <dependency>
-          <groupId>sun.jdk</groupId>
-          <artifactId>tools</artifactId>
-          <version>1.4.2</version>
-          <scope>system</scope>
-          <systemPath>${tools.jar}</systemPath>
-        </dependency>
+          <dependency>
+            <groupId>sun.jdk</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.4.2</version>
+            <scope>system</scope>
+            <systemPath>${tools.jar}</systemPath>
+          </dependency>
         </dependencies>
-      </plugin>	 
-	  <plugin>
-         <artifactId>maven-assembly-plugin</artifactId>
-         <configuration>
-           <descriptors>
-              <descriptor>src/assembly/bin.xml</descriptor>
-           </descriptors>
-           <appendAssemblyId>false</appendAssemblyId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assembly/bin.xml</descriptor>
+          </descriptors>
+          <appendAssemblyId>false</appendAssemblyId>
         </configuration>
         <executions>
-            <execution>
-                <goals>
-                    <goal>assembly</goal>
-                </goals>
-            </execution>
-        </executions>
-	 </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-            <execution>
-                <goals>
-                    <goal>jar</goal>
-                    <goal>javadoc</goal>
-                </goals>
-            </execution>
+          <execution>
+            <goals>
+              <goal>assembly</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-source-plugin</artifactId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.3</version>
         <executions>
-            <execution>
-                <goals>
-                    <goal>jar</goal>
-                </goals>
-            </execution>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+              <goal>javadoc</goal>
+            </goals>
+          </execution>
         </executions>
-      </plugin>     
-      <!--   
-           clirr:check will fail with NullPointerException
-                due to missing javax.jms.MessageListener,
-                however it will trigger download of supporting components
-                which can allow "ant clirr" to succeed.
-                Could possibly run on a JavaEE platform.
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.0-beta-7</version>
+        <!--
+          Bug MRELEASE-273 has been throwing NPE during release:perform,
+          typically after deploy so this places it last.
+        -->
+        <configuration>
+          <goals>test site-deploy assembly:attached deploy</goals>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.0.4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+        clirr:check will fail with NullPointerException
+        due to missing javax.jms.MessageListener,
+        however it will trigger download of supporting components
+        which can allow "ant clirr" to succeed.
+        Could possibly run on a JavaEE platform.
        -->
       <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>clirr-maven-plugin</artifactId>
-          <configuration>
-          	  <comparisonVersion>1.2.14</comparisonVersion>
-          </configuration>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>clirr-maven-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <comparisonVersion>1.2.14</comparisonVersion>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rat-maven-plugin</artifactId>
-      </plugin>    
-    </plugins>      
+        <version>1.0-alpha-3</version>
+      </plugin>
+    </plugins>
     <testSourceDirectory>tests/src/java</testSourceDirectory>
-	<testResources>
-		<testResource>
-			<directory>tests/resources</directory>
-		</testResource>
-	</testResources>
-</build>
-<profiles>
+    <testResources>
+      <testResource>
+        <directory>tests/resources</directory>
+      </testResource>
+    </testResources>
+  </build>
+  <profiles>
     <profile>
       <id>mac</id>
       <activation>
-        <os><family>mac</family></os>
+        <os>
+          <family>mac</family>
+        </os>
       </activation>
       <properties>
-         <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
+        <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
       </properties>
     </profile>
     <profile>
@@ -370,60 +391,61 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
       </properties>
-   </profile>
+    </profile>
   </profiles>
-<repositories>
-	<repository>
-  		<id>java.net</id>
-  		<url>https://maven-repository.dev.java.net/nonav/repository</url>
-  		<layout>legacy</layout>
-	</repository>
-</repositories>
-<dependencies>
-  <dependency>
-    <groupId>javax.mail</groupId>
-    <artifactId>mail</artifactId>
-    <version>1.4</version>
-	<optional>true</optional>
-  </dependency>
-  <dependency>
-    <groupId>javax.jms</groupId>
-    <artifactId>jms</artifactId>
-    <version>1.1</version>
-	<optional>true</optional>
-  </dependency>
- <dependency>
-    <groupId>com.sun.jdmk</groupId>
-    <artifactId>jmxtools</artifactId>
-    <version>1.2.1</version>
-	<optional>true</optional>
-  </dependency>
- <dependency>
-    <groupId>com.sun.jmx</groupId>
-    <artifactId>jmxri</artifactId>
-    <version>1.2.1</version>
-	<optional>true</optional>
-  </dependency>
- <dependency>
-    <groupId>oro</groupId>
-    <artifactId>oro</artifactId>
-    <version>2.0.8</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>junit</groupId>
-    <artifactId>junit</artifactId>
-    <version>3.8.1</version>
-    <scope>test</scope>
-  </dependency>
-</dependencies>
+  <repositories>
+    <repository>
+      <id>java.net</id>
+      <url>https://maven-repository.dev.java.net/nonav/repository</url>
+      <layout>legacy</layout>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>jms</artifactId>
+      <version>1.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jdmk</groupId>
+      <artifactId>jmxtools</artifactId>
+      <version>1.2.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jmx</groupId>
+      <artifactId>jmxri</artifactId>
+      <version>1.2.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>oro</groupId>
+      <artifactId>oro</artifactId>
+      <version>2.0.8</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
   <reporting>
-    <excludeDefaults>true</excludeDefaults>  
+    <excludeDefaults>true</excludeDefaults>
     <plugins>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.0.1</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -438,22 +460,13 @@
         </reportSets>
       </plugin>
       <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>jxr-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-		  <!--  
-		     Bug MRELEASE273 has been throwing NPE during release:perform, 
-		           typically after deploy so this places it last.
-		  -->
-          <configuration>
-              <goals>test site-deploy assembly:attached deploy</goals>
-          </configuration>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.1</version>
       </plugin>
       <plugin>
         <artifactId>maven-changes-plugin</artifactId>
-      	<reportSets>
+        <version>2.0-beta-3</version>
+        <reportSets>
           <reportSet>
             <reports>
               <report>changes-report</report>
@@ -461,12 +474,12 @@
           </reportSet>
         </reportSets>
         <configuration>
-        	<issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
         </configuration>
-      </plugin>      
+      </plugin>
     </plugins>
   </reporting>
- <distributionManagement>
+  <distributionManagement>
     <repository>
       <id>logging.repo</id>
       <url>scp://people.apache.org/www/people.apache.org/builds/logging/repo/</url>
@@ -475,5 +488,5 @@
       <id>logging.site</id>
       <url>scp://localhost/${user.dir}/target/site-deploy</url>
     </site>
-  </distributionManagement> 
+  </distributionManagement>
 </project>
