@@ -42,4 +42,44 @@ public class LocationInfoTest extends TestCase {
                 li.fullInfo);
     }
 
+
+    /**
+     * Class with name that is a substring of its caller.
+     */
+    private static class NameSubstring {
+        /**
+         * Construct a LocationInfo.  Location should be immediate caller of this method.
+         * @return location info.
+         */
+        public static LocationInfo getInfo() {
+            return new LocationInfo(new Throwable(), NameSubstring.class.getName());
+
+        }
+    }
+
+    /**
+     * Class whose name is contains the name of the class that obtains the LocationInfo.
+     */
+    private static class NameSubstringCaller {
+        /**
+         * Construct a locationInfo.  Location should be this location.
+         * @return location info.
+         */
+        public static LocationInfo getInfo() {
+            return NameSubstring.getInfo();
+        }
+
+    }
+
+    /**
+     * Tests creation of location info when the logger class name
+     * is a substring of one of the other classes in the stack trace.
+     * See bug 44888.
+     */
+     public void testLocationInfo() {
+         LocationInfo li = NameSubstringCaller.getInfo();
+         assertEquals(NameSubstringCaller.class.getName(), li.getClassName());
+         assertEquals("getInfo", li.getMethodName());
+     }
+
 }

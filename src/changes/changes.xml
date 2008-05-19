@@ -38,6 +38,7 @@
        <action action="add" issue="43874">SocketHubAppender should expose actual port in use to extending classes.</action>
        <action action="add" issue="44551">SocketHubAppender in the 1.2.16 does not support a scroll back buffer or application property</action>
        <action action="add" issue="41156">Give log4j threads reasonable names/<action>
+       <action action="fix" issue="44888">LocationInfo can report wrong caller when other class names contain logger class name as substring.</action>
     </release>
   
     <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">

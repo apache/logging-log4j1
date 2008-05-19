@@ -128,6 +128,21 @@ public class LocationInfo implements java.io.Serializable {
       if(ibegin == -1)
 	return;
 
+      //
+      //   if the next character after the class name exists
+      //       but is not a period, see if the classname is
+      //       followed by a period earlier in the trace.
+      //       Minimizes mistakeningly matching on a class whose
+      //       name is a substring of the desired class.
+      //       See bug 44888.
+      if (ibegin + fqnOfCallingClass.length() < s.length() &&
+              s.charAt(ibegin + fqnOfCallingClass.length()) != '.') {
+          int i = s.lastIndexOf(fqnOfCallingClass + ".");
+          if (i != -1) {
+              ibegin = i;
+          }
+      }
+
 
       ibegin = s.indexOf(Layout.LINE_SEP, ibegin);
       if(ibegin == -1)
