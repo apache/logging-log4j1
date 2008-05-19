@@ -157,7 +157,7 @@ public class MinimumTestCase extends TestCase {
     DEB.info ( "Message " + i); i++; 
     DEB.debug( "Message " + i); i++;             
 
-    TRC.log(Level.FATAL, "Message " + i); i++;  //14
+    TRC.log(Level.FATAL, "Message " + i); i++;  //19
     TRC.error( "Message " + i); i++;         
     TRC.warn ( "Message " + i); i++; 
     TRC.info ( "Message " + i); i++; 
@@ -165,7 +165,7 @@ public class MinimumTestCase extends TestCase {
     TRC.trace( "Message " + i); i++; 
     
     // defaultLevel=DEBUG
-    UNDEF.log(Level.FATAL, "Message " + i); i++;  // 19
+    UNDEF.log(Level.FATAL, "Message " + i); i++;  // 25
     UNDEF.error("Message " + i); i++;         
     UNDEF.warn ("Message " + i); i++; 
     UNDEF.info ("Message " + i); i++; 
