@@ -381,7 +381,7 @@ public class SocketAppender extends AppenderSkeleton {
      <code>reconnectionDelay</code> milliseconds.
 
      <p>It stops trying whenever a connection is established. It will
-     restart to try reconnect to the server when previpously open
+     restart to try reconnect to the server when previously open
      connection is droppped.
 
      @author  Ceki G&uuml;lc&uuml;
