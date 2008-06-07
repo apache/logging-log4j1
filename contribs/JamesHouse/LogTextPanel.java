@@ -16,16 +16,6 @@
  */
 package org.apache.log4j.gui;
 
-
-/**
- * Title:
- * Description:
- * Copyright:    Copyright (c) 2001
- * Company:
- * @author
- * @version 1.0
- */
-
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
