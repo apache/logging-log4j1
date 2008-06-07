@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 
-/*
- * Copyright (C) The Apache Software Foundation. All rights reserved.
-*/
-
 package com.klopotek.utils.log;
 
 
