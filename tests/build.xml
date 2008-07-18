@@ -171,7 +171,8 @@
                                      CyclicBuffer, OR, 
                                      LevelMatchFilter, PatternParser, 
                                      PatternLayout, RFA, ERFA, DRFA, 
-									 NTEventLogAppender, Syslog, Socket"/>
+									 NTEventLogAppender, Syslog, Socket,
+									 ErrorHandler"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
