@@ -292,6 +292,8 @@
             <scope>system</scope>
             <systemPath>${tools.jar}</systemPath>
           </dependency>
+ 
+
         </dependencies>
       </plugin>
       <plugin>
@@ -396,23 +398,12 @@
     </profile>
   </profiles>
   <repositories>
-    <repository>
-      <id>java.net</id>
-      <url>https://maven-repository.dev.java.net/nonav/repository</url>
-      <layout>legacy</layout>
-    </repository>
   </repositories>
   <dependencies>
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <version>1.4</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>javax.jms</groupId>
-      <artifactId>jms</artifactId>
-      <version>1.1</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -439,7 +430,13 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-  </dependencies>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jms_1.1_spec</artifactId>
+      <version>1.0</version>
+      <optional>true</optional>
+    </dependency>
+ </dependencies>
   <reporting>
     <excludeDefaults>true</excludeDefaults>
     <plugins>
