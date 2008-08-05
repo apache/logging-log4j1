@@ -45,6 +45,7 @@ public class Agent {
 
     /**
      * Create new instance.
+     * @deprecated
      */
   public Agent() {
   }
@@ -61,12 +62,8 @@ public class Agent {
       try {
         newInstance = Class.forName(
                 "com.sun.jdmk.comm.HtmlAdapterServer").newInstance();
-      } catch (ClassNotFoundException ex) {
-          throw new NoClassDefFoundError(ex.toString());
-      } catch (IllegalAccessException ex) {
-          throw new IllegalAccessError(ex.toString());
-      } catch (InstantiationException ex) {
-          throw new InstantiationError(ex.toString());
+      } catch (Exception ex) {
+          throw new RuntimeException(ex);
       }
       return newInstance;
   }
@@ -81,18 +78,22 @@ public class Agent {
       try {
           server.getClass().getMethod("start", new Class[0]).
                   invoke(server, new Object[0]);
-      } catch(NoSuchMethodException ex) {
-          throw new NoSuchMethodError(ex.toString());
-      } catch(IllegalAccessException ex) {
-          throw new IllegalAccessError(ex.toString());
       } catch(InvocationTargetException ex) {
-          throw (RuntimeException) ex.getTargetException();
+          Throwable cause = ex.getTargetException();
+          if (cause instanceof RuntimeException) {
+              throw (RuntimeException) cause;
+          } else {
+              throw new RuntimeException(cause);
+          }
+      } catch(Exception ex) {
+          throw new RuntimeException(ex);
       }
   }
 
 
     /**
      * Starts instance of HtmlAdapterServer.
+     * @deprecated
       */
   public void start() {
 
