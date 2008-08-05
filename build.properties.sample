@@ -49,7 +49,6 @@ jms.jar=${lib.home.dir}/jms1.1/lib/jms.jar
 # Required to build the org.apache.log4j.jmx package.
 jmx.home.dir=${lib.home.dir}/jmx-1_2_1-bin
 jmx.jar=${jmx.home.dir}/lib/jmxri.jar
-jmx-extra.jar=${jmx.home.dir}/lib/jmxtools.jar
 jndi.jar=${lib.home.dir}/jndi-1_2_1/lib/jndi.jar
 
 # Required to run Checkstyle. Available from http://checkstyle.sf.net
