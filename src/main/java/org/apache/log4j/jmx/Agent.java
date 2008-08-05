@@ -20,24 +20,84 @@ package org.apache.log4j.jmx;
 import javax.management.ObjectName;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
-import com.sun.jdmk.comm.HtmlAdaptorServer;
 
 import org.apache.log4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
 
+
+/**
+ * Manages an instance of com.sun.jdmk.comm.HtmlAdapterServer which
+ * was provided for demonstration purposes in the
+ * Java Management Extensions Reference Implementation 1.2.1.
+ * This class is provided to maintain compatibility with earlier
+ * versions of log4j and use in new code is discouraged.
+ *
+ * @deprecated
+ */
 public class Agent {
 
+    /**
+     * Diagnostic logger.
+     * @deprecated
+     */
   static Logger log = Logger.getLogger(Agent.class);
 
+    /**
+     * Create new instance.
+     */
   public Agent() {
   }
 
+    /**
+     * Creates a new instance of com.sun.jdmk.comm.HtmlAdapterServer
+     * using reflection.
+     *
+     * @since 1.2.16
+     * @return new instance.
+     */
+  private static Object createServer() {
+      Object newInstance = null;
+      try {
+        newInstance = Class.forName(
+                "com.sun.jdmk.comm.HtmlAdapterServer").newInstance();
+      } catch (ClassNotFoundException ex) {
+          throw new NoClassDefFoundError(ex.toString());
+      } catch (IllegalAccessException ex) {
+          throw new IllegalAccessError(ex.toString());
+      } catch (InstantiationException ex) {
+          throw new InstantiationError(ex.toString());
+      }
+      return newInstance;
+  }
 
-  public
-  void start() {
+    /**
+     * Invokes HtmlAdapterServer.start() using reflection.
+     *
+     * @since 1.2.16
+     * @param server instance of com.sun.jdmk.comm.HtmlAdapterServer.
+     */
+  private static void startServer(final Object server) {
+      try {
+          server.getClass().getMethod("start", new Class[0]).
+                  invoke(server, new Object[0]);
+      } catch(NoSuchMethodException ex) {
+          throw new NoSuchMethodError(ex.toString());
+      } catch(IllegalAccessException ex) {
+          throw new IllegalAccessError(ex.toString());
+      } catch(InvocationTargetException ex) {
+          throw (RuntimeException) ex.getTargetException();
+      }
+  }
+
+
+    /**
+     * Starts instance of HtmlAdapterServer.
+      */
+  public void start() {
 
     MBeanServer server = MBeanServerFactory.createMBeanServer();
-    HtmlAdaptorServer html = new HtmlAdaptorServer();
+    Object html = createServer();
 
     try {
       log.info("Registering HtmlAdaptorServer instance.");
@@ -47,9 +107,9 @@ public class Agent {
       server.registerMBean(hdm, new ObjectName("log4j:hiearchy=default"));
 
     } catch(Exception e) {
-      log.error("Problem while regitering MBeans instances.", e);
+      log.error("Problem while registering MBeans instances.", e);
       return;
     }
-    html.start();
+    startServer(html);
   }
 }

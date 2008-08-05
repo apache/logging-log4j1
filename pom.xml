@@ -407,12 +407,6 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>com.sun.jdmk</groupId>
-      <artifactId>jmxtools</artifactId>
-      <version>1.2.1</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>com.sun.jmx</groupId>
       <artifactId>jmxri</artifactId>
       <version>1.2.1</version>

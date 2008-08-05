@@ -32,7 +32,6 @@
   <property name="javamail.jar" location="${m2_repo}/javax/mail/mail/1.4/mail-1.4.jar"/>
   <property name="jms.jar" location="${m2_repo}/javax/jms/jms/1.1/jms-1.1.jar"/>
   <property name="jmx.jar" location="${m2_repo}/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar"/>
-  <property name="jmx-extra.jar" location="${m2_repo}/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1.jar"/>
 
 
   <!-- Read the system environment variables and stores them in properties, -->
@@ -120,7 +119,6 @@
     <pathelement location="${jaxp.jaxp.jar}"/>
     <pathelement location="${jms.jar}"/>
     <pathelement location="${jmx.jar}"/>
-    <pathelement location="${jmx-extra.jar}"/>
     <pathelement location="${jndi.jar}"/>
     <pathelement location="${javaee-api.jar}"/>
   </path>
@@ -169,7 +167,6 @@
             <available classname="com.sun.jdmk.comm.HtmlAdaptorServer">
                 <classpath>
                     <pathelement location="${jmx.jar}"/>
-                    <pathelement location="${jmx-extra.jar}"/>
 					<pathelement location="${javaee-api.jar}"/>
                 </classpath>
             </available>
