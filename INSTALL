@@ -77,11 +77,11 @@ log4j (as of 1.2.15) is built with Maven 2.  To rebuild log4j,
 place Maven 2 on the PATH and execute "mvn package".  The resulting
 jar will be placed in the target subdirectory.
 
-One dependency need to be manually installed since their licenses do
-not allow them to be placed in the online maven repositories.
-If the dependencies are not already installed, a build attempt will
-describe where to download and how to install the dependencies.  To
-install these dependencies:
+If building with JDK 1.4, one dependency will need to be manually
+installed since its license does not allow it to be placed in the
+online maven repositories.  If not already installed, a build attempt will
+describe where to download and how to install the dependency.  To
+install the dependency:
 
 Download JMX 1.2.1 from http://java.sun.com/products/JavaManagement/download.html.
 
