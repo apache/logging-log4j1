@@ -63,7 +63,7 @@ public class Agent {
         newInstance = Class.forName(
                 "com.sun.jdmk.comm.HtmlAdapterServer").newInstance();
       } catch (Exception ex) {
-          throw new RuntimeException(ex);
+          throw new RuntimeException(ex.toString());
       }
       return newInstance;
   }
@@ -82,11 +82,13 @@ public class Agent {
           Throwable cause = ex.getTargetException();
           if (cause instanceof RuntimeException) {
               throw (RuntimeException) cause;
+          } else if (cause != null) {
+              throw new RuntimeException(cause.toString());
           } else {
-              throw new RuntimeException(cause);
+              throw new RuntimeException();
           }
       } catch(Exception ex) {
-          throw new RuntimeException(ex);
+          throw new RuntimeException(ex.toString());
       }
   }
 
