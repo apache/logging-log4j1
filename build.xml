@@ -30,6 +30,9 @@
               the Maven repository can provide all the dependencies.  -->
   <property name="m2_repo" location="${user.home}/.m2/repository"/>
   <property name="javamail.jar" location="${m2_repo}/javax/mail/mail/1.4/mail-1.4.jar"/>
+  <property name="geronimo-jms.jar"
+         value="${m2_repo}/org/apache/geronimo/specs/geronimo-jms_1.1_spec/1.0/geronimo-jms_1.1_spec-1.0.jar"/>
+  <available property="jms.jar" value="${geronimo-jms.jar}" file="${geronimo-jms.jar}"/>
   <property name="jms.jar" location="${m2_repo}/javax/jms/jms/1.1/jms-1.1.jar"/>
   <property name="jmx.jar" location="${m2_repo}/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar"/>
 
