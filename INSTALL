@@ -77,7 +77,7 @@ log4j (as of 1.2.15) is built with Maven 2.  To rebuild log4j,
 place Maven 2 on the PATH and execute "mvn package".  The resulting
 jar will be placed in the target subdirectory.
 
-Two dependencies need to be manually installed since their licenses do
+One dependency need to be manually installed since their licenses do
 not allow them to be placed in the online maven repositories.
 If the dependencies are not already installed, a build attempt will
 describe where to download and how to install the dependencies.  To
@@ -88,13 +88,6 @@ Download JMX 1.2.1 from http://java.sun.com/products/JavaManagement/download.htm
 $ jar xf jmx-1_2_1-ri.zip
 $ mvn install:install-file -DgroupId=com.sun.jmx -DartifactId=jmxri \
           -Dversion=1.2.1 -Dpackaging=jar -Dfile=jmx-1_2_1-bin/lib/jmxri.jar
-
-
-Download JMS 1.1 from http://java.sun.com/products/jms/docs.html.
-
-$ jar xf jmx-1_1-fr-apidocs.zip
-$ mvn install:install-file -DgroupId=javax.jms -DartifactId=jms \
-          -Dversion=1.1 -Dpackaging=jar -Dfile=jms1.1/lib/jms.jar
 
 
 The build script will attempt to build NTEventLogAppender.dll if
