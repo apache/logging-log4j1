@@ -238,5 +238,35 @@ public class LoggingEventTest extends TestCase {
 	  }
   }
 
+    /**
+     * Message object that throws a RuntimeException on toString().
+     * See bug 37182.
+     */
+    private static class BadMessage {
+        public BadMessage() {
+        }
+
+        public String toString() {
+            throw new RuntimeException();
+        }
+    }
+
+    /**
+     * Tests that an runtime exception or error during toString
+     * on the message parameter does not propagate to caller.
+     * See bug 37182.
+     */
+    public void testBadMessage() {
+        Category root = Logger.getRootLogger();
+        Priority info = Level.INFO;
+        String catName = Logger.class.toString();
+        BadMessage msg = new BadMessage();
+        LoggingEvent event =
+          new LoggingEvent(
+            catName, root, 0L,  info, msg, null);
+        //  would result in exception in earlier versions
+        event.getRenderedMessage();
+    }
+
 
 }

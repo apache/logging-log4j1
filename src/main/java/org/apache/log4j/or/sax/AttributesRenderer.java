@@ -55,7 +55,11 @@ public class AttributesRenderer implements ObjectRenderer {
       }
       return sbuf.toString();
     } else {
-      return o.toString();
+      try {
+        return o.toString();
+      } catch(Exception ex) {
+          return ex.toString();
+      }
     }
   }
 }

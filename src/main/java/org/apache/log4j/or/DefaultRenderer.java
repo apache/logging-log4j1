@@ -32,7 +32,11 @@ class DefaultRenderer implements ObjectRenderer {
      Render the object passed as parameter by calling its
      <code>toString</code> method.  */
   public
-  String doRender(Object o) {
-    return o.toString();
+  String doRender(final Object o) {
+          try {
+            return o.toString();
+          } catch(Exception ex) {
+            return ex.toString();
+          }
   }
 }  
