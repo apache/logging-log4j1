@@ -43,6 +43,7 @@
        <action action="fix" issue="45485">Agent.java is sole dependency on jmxtools.jar with Java 5+.</action>
        <action action="fix" issue="44517">Eliminate compile dependency on non-redistributable JMS reference implementation.</action> 
        <action action="fix" issue="37182">Exception in call to toString of message propagates to caller.</action>
+       <action action="fix" issue="45299">Javadoc class index corrupted by JDBCAppender deprecation warning.</action> 
     </release>
   
     <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
