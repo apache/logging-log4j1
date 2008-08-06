@@ -70,8 +70,12 @@ public class ThreadGroupRenderer implements ObjectRenderer {
       }
       return sbuf.toString();
     } else {
-      // this is the best we can do
-      return o.toString();
+      try {
+        // this is the best we can do
+        return o.toString();
+      } catch(Exception ex) {
+          return ex.toString();
+      }
     }    
   }
 }  
