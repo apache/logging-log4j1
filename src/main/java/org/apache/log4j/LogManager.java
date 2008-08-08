@@ -32,6 +32,8 @@ import java.net.MalformedURLException;
 
 
 import java.util.Enumeration;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 
 /**
  * Use the <code>LogManager</code> class to retreive {@link Logger}
@@ -168,13 +170,37 @@ public class LogManager {
     LogManager.repositorySelector = selector;
   }
 
+
+    /**
+     * This method tests if called from a method that
+     * is known to result in class members being abnormally
+     * set to null but is assumed to be harmless since the
+     * all classes are in the process of being unloaded.
+     *
+     * @param ex exception used to determine calling stack.
+     * @return true if calling stack is recognized as likely safe.
+     */
+  private static boolean isLikelySafeScenario(final Exception ex) {
+      StringWriter stringWriter = new StringWriter();
+      ex.printStackTrace(new PrintWriter(stringWriter));
+      String msg = stringWriter.toString();
+      return msg.indexOf("org.apache.catalina.loader.WebappClassLoader.stop") != -1;
+  }
+
   static
   public
   LoggerRepository getLoggerRepository() {
     if (repositorySelector == null) {
         repositorySelector = new DefaultRepositorySelector(new NOPLoggerRepository());
         guard = null;
-        LogLog.error("LogMananger.repositorySelector was null likely due to error in class reloading, using NOPLoggerRepository.");
+        Exception ex = new IllegalStateException("Class invariant violation");
+        String msg =
+                "log4j called after unloading, see http://logging.apache.org/log4j/1.2/faq.html#unload.";
+        if (isLikelySafeScenario(ex)) {
+            LogLog.debug(msg, ex);
+        } else {
+            LogLog.error(msg, ex);
+        }
     }
     return repositorySelector.getLoggerRepository();
   }
