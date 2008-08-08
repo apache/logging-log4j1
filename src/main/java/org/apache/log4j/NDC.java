@@ -374,10 +374,12 @@ public class NDC {
   static
   public
   void remove() {
-    ht.remove(Thread.currentThread());
+    if (ht != null) {
+        ht.remove(Thread.currentThread());
     
-    // Lazily remove dead-thread references in ht.
-    lazyRemove();    
+        // Lazily remove dead-thread references in ht.
+        lazyRemove();
+    }
   }
 
   /**
