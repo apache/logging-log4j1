@@ -46,6 +46,7 @@
        <action action="fix" issue="45299">Javadoc class index corrupted by JDBCAppender deprecation warning.</action> 
        <action action="fix" issue="43867">Improve warning message when log4j is accessed after unload by Tomcat.</action>
        <action action="fix" issue="45335">NullPointerException in NDC.remove after unload by Tomcat.</action>
+       <action action="fix" issue="36384">Configuring triggering/rolling policys should be supported through properties.</action>
     </release>
   
     <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">

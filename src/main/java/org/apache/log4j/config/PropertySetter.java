@@ -126,7 +126,29 @@ public class PropertySetter {
         key = key.substring(len);
         if ("layout".equals(key) && obj instanceof Appender) {
           continue;
-        }        
+        }
+        //
+        //   if the property type is an OptionHandler
+        //     (for example, triggeringPolicy of org.apache.log4j.rolling.RollingFileAppender)
+        PropertyDescriptor prop = getPropertyDescriptor(Introspector.decapitalize(key));
+        if (prop != null
+                && OptionHandler.class.isAssignableFrom(prop.getPropertyType())
+                && prop.getWriteMethod() != null) {
+            OptionHandler opt = (OptionHandler)
+                    OptionConverter.instantiateByKey(properties, prefix + key,
+                                  prop.getPropertyType(),
+                                  null);
+            PropertySetter setter = new PropertySetter(opt);
+            setter.setProperties(properties, prefix + key + ".");
+            try {
+                prop.getWriteMethod().invoke(this.obj, new Object[] { opt });
+            } catch(Exception ex) {
+                LogLog.warn("Failed to set property [" + key +
+                            "] to value \"" + value + "\". ", ex);
+            }
+            continue;
+        }
+
         setProperty(key, value);
       }
     }
