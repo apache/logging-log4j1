@@ -24,6 +24,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
+import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.Filter;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.varia.LevelRangeFilter;
+
 /**
  * Test property configurator.
  *
@@ -95,6 +100,170 @@ public class PropertyConfiguratorTest extends TestCase {
         props.put("log4j.reset", "true");
         PropertyConfigurator.configure(props);
         assertNull(Logger.getRootLogger().getAppender("A1"));
+        LogManager.resetConfiguration();
+    }
+
+
+    /**
+     * Mock definition of org.apache.log4j.rolling.RollingPolicy
+     * from extras companion.
+     */
+    public static class RollingPolicy implements OptionHandler {
+        private boolean activated = false;
+
+        public RollingPolicy() {
+
+        }
+        public void activateOptions() {
+            activated = true;
+        }
+
+        public final boolean isActivated() {
+            return activated;
+        }
+
+    }
+
+    /**
+     * Mock definition of FixedWindowRollingPolicy from extras companion.
+     */
+    public static final class FixedWindowRollingPolicy extends RollingPolicy {
+        private String activeFileName;
+        private String fileNamePattern;
+        private int minIndex;
+
+        public FixedWindowRollingPolicy() {
+            minIndex = -1;
+        }
+
+        public String getActiveFileName() {
+            return activeFileName;
+        }
+        public void setActiveFileName(final String val) {
+            activeFileName = val;
+        }
+
+        public String getFileNamePattern() {
+            return fileNamePattern;
+        }
+        public void setFileNamePattern(final String val) {
+            fileNamePattern = val;
+        }
+
+        public int getMinIndex() {
+            return minIndex;
+        }
+
+        public void setMinIndex(final int val) {
+            minIndex = val;
+        }
+    }
+
+    /**
+     * Mock definition of TriggeringPolicy from extras companion.
+     */
+    public static class TriggeringPolicy implements OptionHandler {
+        private boolean activated = false;
+
+        public TriggeringPolicy() {
+
+        }
+        public void activateOptions() {
+            activated = true;
+        }
+
+        public final boolean isActivated() {
+            return activated;
+        }
+
+    }
+
+    /**
+     * Mock definition of FilterBasedTriggeringPolicy from extras companion.
+     */
+    public static final class FilterBasedTriggeringPolicy extends TriggeringPolicy {
+        private Filter filter;
+        public FilterBasedTriggeringPolicy() {
+        }
+
+        public void setFilter(final Filter val) {
+             filter = val;
+        }
+
+        public Filter getFilter() {
+            return filter;
+
+        }
+    }
+
+    /**
+     * Mock definition of org.apache.log4j.rolling.RollingFileAppender
+     * from extras companion.
+     */
+    public static final class RollingFileAppender extends AppenderSkeleton {
+        private RollingPolicy rollingPolicy;
+        private TriggeringPolicy triggeringPolicy;
+        private boolean append;
+
+        public RollingFileAppender() {
+
+        }
+
+        public RollingPolicy getRollingPolicy() {
+            return rollingPolicy;
+        }
+
+        public void setRollingPolicy(final RollingPolicy policy) {
+            rollingPolicy = policy;
+        }
+
+        public TriggeringPolicy getTriggeringPolicy() {
+            return triggeringPolicy;
+        }
+
+        public void setTriggeringPolicy(final TriggeringPolicy policy) {
+            triggeringPolicy = policy;
+        }
+
+        public boolean getAppend() {
+            return append;
+        }
+
+        public void setAppend(boolean val) {
+            append = val;
+        }
+
+        public void close() {
+
+        }
+
+        public boolean requiresLayout() {
+            return true;
+        }
+
+        public void append(final LoggingEvent event) {
+
+        }
+    }
+
+    /**
+     * Test processing of nested objects, see bug 36384.
+     *
+     */
+    public void testNested() {
+        PropertyConfigurator.configure("input/filter1.properties");
+        RollingFileAppender rfa = (RollingFileAppender)
+                Logger.getLogger("org.apache.log4j.PropertyConfiguratorTest")
+                   .getAppender("ROLLING");
+        FixedWindowRollingPolicy rollingPolicy = (FixedWindowRollingPolicy) rfa.getRollingPolicy();
+        assertEquals("filterBase-test1.log", rollingPolicy.getActiveFileName());
+        assertEquals("filterBased-test1.%i", rollingPolicy.getFileNamePattern());
+        assertEquals(0, rollingPolicy.getMinIndex());
+        assertTrue(rollingPolicy.isActivated());
+        FilterBasedTriggeringPolicy triggeringPolicy =
+                (FilterBasedTriggeringPolicy) rfa.getTriggeringPolicy();
+        LevelRangeFilter filter = (LevelRangeFilter) triggeringPolicy.getFilter();
+        assertTrue(Level.INFO.equals(filter.getLevelMin()));
         LogManager.resetConfiguration();
     }
 
