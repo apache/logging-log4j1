@@ -74,8 +74,8 @@ public interface Appender {
 
 
   /**
-     Get the name of this appender. The name uniquely identifies the
-     appender.  */
+     Get the name of this appender.
+     @return name, may be null.*/
   public
   String getName();
 
