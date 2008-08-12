@@ -51,6 +51,7 @@
        <action action="fix" issue="45039">Use Throwable.getStackTrace to obtain location when running on JDK 1.4 or later.</action>
        <action action="fix" issue="44745">AsyncAppender fails on changing Throwable.</action>
        <action action="fix" issue="44899">Extra NPE error message when using missing appender class with DOMConfigurator.</action>
+       <action action="fix" issue="44555">org.apache.log4j.varia.NullAppender lacks static accessor to static instance.</action>
     </release>
   
     <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
