@@ -49,6 +49,7 @@
        <action action="fix" issue="36384">Configuring triggering/rolling policys should be supported through properties.</action>
        <action action="fix" issue="25747">More explanations when hitting WARN No appenders could be found for logger.</action>
        <action action="fix" issue="45039">Use Throwable.getStackTrace to obtain location when running on JDK 1.4 or later.</action>
+       <action action="fix" issue="44745">AsyncAppender fails on changing Throwable.</action>
     </release>
   
     <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
