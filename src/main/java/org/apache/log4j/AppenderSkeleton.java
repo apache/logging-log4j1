@@ -189,7 +189,8 @@ public abstract class AppenderSkeleton implements Appender, OptionHandler {
 
 
   /**
-     Returns the name of this FileAppender.
+     Returns the name of this appender.
+     @return name, may be null.
    */
   public
   final
