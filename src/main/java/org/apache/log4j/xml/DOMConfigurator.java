@@ -167,9 +167,11 @@ public class DOMConfigurator implements Configurator {
 	LogLog.error("No appender named ["+appenderName+"] could be found."); 
 	return null;
       } else {
-	appender = parseAppender(element);
-	appenderBag.put(appenderName, appender);
-	return appender;
+	      appender = parseAppender(element);
+          if (appender != null) {
+            appenderBag.put(appenderName, appender);
+          }
+    return appender;
       }
     } 
   }
