@@ -300,7 +300,7 @@
 	</pre>
     <p>or using LogMF from the extras companion write</p>
     <pre class="source">
-    LogMF.debug("Entry number: {0} is {1}", i, entry[i]);
+    LogMF.debug(logger, "Entry number: {0} is {1}", i, entry[i]);
     </pre>
 
     <p>This way you will not incur the cost of parameter
