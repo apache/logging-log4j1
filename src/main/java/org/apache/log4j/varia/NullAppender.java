@@ -41,9 +41,18 @@ public class NullAppender extends AppenderSkeleton {
   /**
    * Whenever you can, use this method to retreive an instance instead
    * of instantiating a new one with <code>new</code>.
+   * @deprecated Use getNullAppender instead.  getInstance should have been static.
    * */
   public NullAppender getInstance() {
     return instance;
+  }
+
+    /**
+     * Whenever you can, use this method to retreive an instance instead
+     * of instantiating a new one with <code>new</code>.
+     * */
+  public static NullAppender getNullAppender() {
+      return instance;
   }
 
   public void close() {
