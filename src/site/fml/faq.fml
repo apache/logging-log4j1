@@ -839,5 +839,22 @@ public class Foo {
           the same file path and java.io provides no mechanism to coordinate writing
           between JVM's.</answer>
       </faq>
+      <faq id="noconfig">
+          <question>
+              Why do I see a warning about "No appenders found for logger" and
+              "Please configure log4j properly"?
+          </question>
+          <answer>
+            This occurs when the default configuration files log4j.properties and
+            log4j.xml can not be found and the application performs no explicit configuration.
+            log4j uses Thread.getContextClassLoader().getResource() to locate the default
+            configuration files and does not directly check the file system.
+            Knowing the appropriate location to place log4j.properties or log4j.xml
+            requires understanding the search strategy of the class loader in use.
+            log4j does not provide a default configuration since output to the console
+            or to the file system may be prohibited in some environments.  Also see
+            <a href="#a3.5">FAQ: Why can't log4j find my properties in a J2EE or WAR application?</a>.
+          </answer>
+      </faq>
   </part>
 </faqs>
