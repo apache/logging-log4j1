@@ -502,5 +502,16 @@ public class DRFATestCase extends TestCase {
                 "witness/drfa_blockedRollover.log"));
     }
 
+    /** Check that the computed rollover period for a pattern containing a week as the finest unit is set to be
+     * a week.  Due to a locale mismatch this was incorrect in non-English locales.  See bug 40888.
+     *
+     */
+    public void testWeeklyRollover() {
+        DailyRollingFileAppender drfa = new DailyRollingFileAppender();
+    	drfa.setDatePattern("'.'yyyy-ww");
+		int checkPeriod = drfa.computeCheckPeriod();
+		assertEquals(DailyRollingFileAppender.TOP_OF_WEEK, checkPeriod);
+    }
+
 
 }
