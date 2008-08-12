@@ -19,10 +19,12 @@
 
 package org.apache.log4j.spi;
 
-import java.io.StringWriter;
-import java.io.PrintWriter;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.Layout;
+import org.apache.log4j.helpers.LogLog;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Method;
 
 /**
    The internal representation of caller location information.
@@ -56,6 +58,13 @@ public class LocationInfo implements java.io.Serializable {
   private static StringWriter sw = new StringWriter();
   private static PrintWriter pw = new PrintWriter(sw);
 
+  private static Method getStackTraceMethod;
+  private static Method getClassNameMethod;
+  private static Method getMethodNameMethod;
+  private static Method getFileNameMethod;
+  private static Method getLineNumberMethod;
+
+
   /**
      When location information is not available the constant
      <code>NA</code> is returned. Current value of this string
@@ -82,6 +91,17 @@ public class LocationInfo implements java.io.Serializable {
     } catch(Throwable e) {
       // nothing to do
     }
+      try {
+          Class[] noArgs = null;
+          getStackTraceMethod = Throwable.class.getMethod("getStackTrace", noArgs);
+          Class stackTraceElementClass = Class.forName("java.lang.StackTraceElement");
+          getClassNameMethod = stackTraceElementClass.getMethod("getClassName", noArgs);
+          getMethodNameMethod = stackTraceElementClass.getMethod("getMethodName", noArgs);
+          getFileNameMethod = stackTraceElementClass.getMethod("getFileName", noArgs);
+          getLineNumberMethod = stackTraceElementClass.getMethod("getLineNumber", noArgs);
+      } catch(Exception ex) {
+          LogLog.debug("LocationInfo will use pre-JDK 1.4 methods to determine location.");
+      }
   }
 
   /**
@@ -101,11 +121,48 @@ public class LocationInfo implements java.io.Serializable {
 
        <p>However, we can also deal with JIT compilers that "lose" the
        location information, especially between the parentheses.
+        @param t throwable used to determine location, may be null.
+        @param fqnOfCallingClass class name of first class considered part of
+           the logging framework.  Location will be site that calls a method on this class.
 
     */
     public LocationInfo(Throwable t, String fqnOfCallingClass) {
       if(t == null || fqnOfCallingClass == null)
 	return;
+      if (getLineNumberMethod != null) {
+          try {
+              boolean hitCaller = false;
+              Object[] noArgs = null;
+              Object[] elements =  (Object[]) getStackTraceMethod.invoke(t, noArgs);
+              for(int i = 0; i < elements.length; i++) {
+                  String thisClass = String.valueOf(getClassNameMethod.invoke(elements[i], noArgs));
+                  boolean isCaller = thisClass.equals(fqnOfCallingClass);
+                  if (hitCaller) {
+                      if(!isCaller) {
+                          className = thisClass;
+                          methodName = (String) getMethodNameMethod.invoke(elements[i], noArgs);
+                          fileName = (String) getFileNameMethod.invoke(elements[i], noArgs);
+                          if (fileName == null) {
+                              fileName = NA;
+                          }
+                          int line = ((Integer) getLineNumberMethod.invoke(elements[i], noArgs)).intValue();
+                          if (line < 0) {
+                              lineNumber = NA;
+                          } else {
+                              lineNumber = String.valueOf(line);
+                          }
+                          fullInfo = elements[i].toString();
+                          return;
+                      }
+                  } else {
+                      hitCaller = isCaller;
+                  }
+              }
+
+          } catch(Exception ex) {
+              LogLog.debug("LocationInfo failed using JDK 1.4 methods", ex);
+          }
+      }
 
       String s;
       // Protect against multiple access to sw.
