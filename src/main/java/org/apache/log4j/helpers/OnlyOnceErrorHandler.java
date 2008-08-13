@@ -22,6 +22,8 @@ import  org.apache.log4j.spi.LoggingEvent;
 import  org.apache.log4j.Logger;
 import  org.apache.log4j.Appender;
 
+import java.io.InterruptedIOException;
+
 /**
 
    The <code>OnlyOnceErrorHandler</code> implements log4j's default
@@ -74,6 +76,9 @@ public class OnlyOnceErrorHandler implements ErrorHandler {
    */
   public
   void error(String message, Exception e, int errorCode, LoggingEvent event) {
+    if (e instanceof InterruptedIOException || e instanceof InterruptedException) {
+        Thread.currentThread().interrupt();
+    }
     if(firstTime) {
       LogLog.error(message, e);
       firstTime = false;

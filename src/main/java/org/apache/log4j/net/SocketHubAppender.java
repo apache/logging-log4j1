@@ -444,6 +444,9 @@ public class SocketHubAppender extends AppenderSkeleton {
               // add it to the oosList.  OK since Vector is synchronized.
               oosList.addElement(oos);
             } catch (IOException e) {
+              if (e instanceof InterruptedIOException) {
+                    Thread.currentThread().interrupt();
+              }
               LogLog.error("exception creating output stream on socket.", e);
             }
           }
@@ -453,8 +456,9 @@ public class SocketHubAppender extends AppenderSkeleton {
     	// close the socket
     	try {
     		serverSocket.close();
-    	}
-    	catch (IOException e) {
+    	} catch(InterruptedIOException e) {
+            Thread.currentThread().interrupt();  
+        } catch (IOException e) {
     		// do nothing with it?
     	}
       }

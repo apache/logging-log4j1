@@ -22,6 +22,8 @@ package org.apache.log4j;
 import java.io.IOException;
 import java.io.Writer;
 import java.io.File;
+import java.io.InterruptedIOException;
+
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.CountingQuietWriter;
@@ -165,7 +167,10 @@ public class RollingFileAppender extends FileAppender {
             this.setFile(fileName, true, bufferedIO, bufferSize);
           }
           catch(IOException e) {
-            LogLog.error("setFile("+fileName+", true) call failed.", e);
+              if (e instanceof InterruptedIOException) {
+                  Thread.currentThread().interrupt();
+              }
+              LogLog.error("setFile("+fileName+", true) call failed.", e);
           }
       }
     }
@@ -182,7 +187,10 @@ public class RollingFileAppender extends FileAppender {
       nextRollover = 0;
     }
     catch(IOException e) {
-      LogLog.error("setFile("+fileName+", false) call failed.", e);
+        if (e instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
+        LogLog.error("setFile("+fileName+", false) call failed.", e);
     }
     }
   }

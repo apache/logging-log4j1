@@ -17,10 +17,7 @@
 
 package org.apache.log4j;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
@@ -213,6 +210,9 @@ public class WriterAppender extends AppenderSkeleton {
       try {
 	qw.close();
       } catch(IOException e) {
+          if (e instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
 	// There is do need to invoke an error handler at this late
 	// stage.
 	LogLog.error("Could not close " + qw, e);
@@ -235,8 +235,11 @@ public class WriterAppender extends AppenderSkeleton {
       try {
 	retval = new OutputStreamWriter(os, enc);
       } catch(IOException e) {
-	LogLog.warn("Error initializing output writer.");
-	LogLog.warn("Unsupported encoding?");
+          if (e instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
+	      LogLog.warn("Error initializing output writer.");
+	      LogLog.warn("Unsupported encoding?");
       }
     }
     if(retval == null) {

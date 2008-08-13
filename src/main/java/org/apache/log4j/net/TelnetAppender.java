@@ -23,6 +23,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Enumeration;
@@ -205,6 +206,8 @@ public class TelnetAppender extends AppenderSkeleton {
 
       try {
           serverSocket.close();
+      } catch(InterruptedIOException ex) {
+          Thread.currentThread().interrupt();
       } catch(IOException ex) {
       }
     }
