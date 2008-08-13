@@ -131,34 +131,42 @@ public class LocationInfo implements java.io.Serializable {
 	return;
       if (getLineNumberMethod != null) {
           try {
-              boolean hitCaller = false;
               Object[] noArgs = null;
               Object[] elements =  (Object[]) getStackTraceMethod.invoke(t, noArgs);
-              for(int i = 0; i < elements.length; i++) {
-                  String thisClass = String.valueOf(getClassNameMethod.invoke(elements[i], noArgs));
-                  boolean isCaller = thisClass.equals(fqnOfCallingClass);
-                  if (hitCaller) {
-                      if(!isCaller) {
-                          className = thisClass;
-                          methodName = (String) getMethodNameMethod.invoke(elements[i], noArgs);
-                          fileName = (String) getFileNameMethod.invoke(elements[i], noArgs);
+              String prevClass = NA;
+              for(int i = elements.length - 1; i >= 0; i--) {
+                  String thisClass = (String) getClassNameMethod.invoke(elements[i], noArgs);
+                  if(fqnOfCallingClass.equals(thisClass)) {
+                      int caller = i + 1;
+                      if (caller < elements.length) {
+                          className = prevClass;
+                          methodName = (String) getMethodNameMethod.invoke(elements[caller], noArgs);
+                          fileName = (String) getFileNameMethod.invoke(elements[caller], noArgs);
                           if (fileName == null) {
                               fileName = NA;
                           }
-                          int line = ((Integer) getLineNumberMethod.invoke(elements[i], noArgs)).intValue();
+                          int line = ((Integer) getLineNumberMethod.invoke(elements[caller], noArgs)).intValue();
                           if (line < 0) {
                               lineNumber = NA;
                           } else {
                               lineNumber = String.valueOf(line);
                           }
-                          fullInfo = elements[i].toString();
-                          return;
+                          StringBuffer buf = new StringBuffer();
+                          buf.append(className);
+                          buf.append(".");
+                          buf.append(methodName);
+                          buf.append("(");
+                          buf.append(fileName);
+                          buf.append(":");
+                          buf.append(lineNumber);
+                          buf.append(")");
+                          this.fullInfo = buf.toString();
                       }
-                  } else {
-                      hitCaller = isCaller;
+                      return;
                   }
+                  prevClass = thisClass;
               }
-
+              return;
           } catch(Exception ex) {
               LogLog.debug("LocationInfo failed using JDK 1.4 methods", ex);
           }
