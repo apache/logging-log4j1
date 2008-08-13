@@ -19,7 +19,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>log4j</groupId>
   <artifactId>log4j</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging>
   <name>Apache Log4j</name>
   <version>1.2.16-SNAPSHOT</version>
   <description>Apache Log4j 1.2</description>
@@ -366,6 +366,20 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rat-maven-plugin</artifactId>
         <version>1.0-alpha-3</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>1.4.3</version>
+        <extensions>true</extensions>
+        <configuration>
+            <instructions>
+                <!-- omit chainsaw and LF5   -->
+                <Export-Package>!org.apache.log4j.lf5.*,!org.apache.log4j.chainsaw.*,org.apache.log4j.*</Export-Package>
+                <!--  IBM Visual Age and HTMLAdapterServer are sniffed by reflection -->
+                <Import-Package>!com.ibm.uvm.tools,!com.sun.jdmk.comm,*</Import-Package>
+            </instructions>
+        </configuration>
       </plugin>
     </plugins>
     <testSourceDirectory>tests/src/java</testSourceDirectory>
