@@ -21,6 +21,7 @@ package org.apache.log4j.net;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.InterruptedIOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -185,7 +186,10 @@ public class SocketAppender extends AppenderSkeleton {
       try {
 	oos.close();
       } catch(IOException e) {
-	LogLog.error("Could not close oos.", e);
+          if (e instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
+	      LogLog.error("Could not close oos.", e);
       }
       oos = null;
     }
@@ -204,7 +208,6 @@ public class SocketAppender extends AppenderSkeleton {
       cleanUp();
       oos = new ObjectOutputStream(new Socket(address, port).getOutputStream());
     } catch(IOException e) {
-
       String msg = "Could not connect to remote log4j server at ["
 	+address.getHostName()+"].";
       if(reconnectionDelay > 0) {
@@ -412,7 +415,10 @@ public class SocketAppender extends AppenderSkeleton {
 	  LogLog.debug("Remote host "+address.getHostName()
 		       +" refused connection.");
 	} catch(IOException e) {
-	  LogLog.debug("Could not connect to " + address.getHostName()+
+        if (e instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
+	    LogLog.debug("Could not connect to " + address.getHostName()+
 		       ". Exception is " + e);
 	}
       }

@@ -23,7 +23,8 @@ import  org.apache.log4j.Appender;
 import  org.apache.log4j.Logger;
 import  org.apache.log4j.helpers.LogLog;
 import java.util.Vector;
- 
+import java.io.InterruptedIOException;
+
 /**
   *
   * The <code>FallbackErrorHandler</code> implements the ErrorHandler
@@ -83,6 +84,9 @@ public class FallbackErrorHandler implements ErrorHandler {
    */
   public
   void error(String message, Exception e, int errorCode, LoggingEvent event) {
+    if (e instanceof InterruptedIOException) {
+        Thread.currentThread().interrupt();
+    }
     LogLog.debug("FB: The following error reported: " + message, e);
     LogLog.debug("FB: INITIATING FALLBACK PROCEDURE.");
     if (loggers != null) {

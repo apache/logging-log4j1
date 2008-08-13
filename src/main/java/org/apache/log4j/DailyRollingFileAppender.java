@@ -21,6 +21,7 @@ package org.apache.log4j;
 
 import java.io.IOException;
 import java.io.File;
+import java.io.InterruptedIOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -353,7 +354,10 @@ public class DailyRollingFileAppender extends FileAppender {
 	rollOver();
       }
       catch(IOException ioe) {
-	LogLog.error("rollOver() failed.", ioe);
+          if (ioe instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
+	      LogLog.error("rollOver() failed.", ioe);
       }
     }
     super.subAppend(event);

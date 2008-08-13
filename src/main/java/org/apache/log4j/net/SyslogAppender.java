@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.io.IOException;
 
 // Contributors: Yves Bossel <ybossel@opengets.cl>
 //               Christopher Taylor <cstaylor@pacbell.net>
@@ -157,7 +158,10 @@ public class SyslogAppender extends AppenderSkeleton {
             }
             sqw.close();
             sqw = null;
-        } catch(java.io.IOException ex) {
+        } catch(java.io.InterruptedIOException e) {
+            Thread.currentThread().interrupt();
+            sqw = null;
+        } catch(IOException e) {
             sqw = null;
         }
     }

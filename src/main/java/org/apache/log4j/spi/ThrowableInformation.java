@@ -17,11 +17,7 @@
 
 package org.apache.log4j.spi;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -83,6 +79,9 @@ public class ThrowableInformation implements java.io.Serializable {
           line = reader.readLine();
         }
       } catch(IOException ex) {
+          if (ex instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
           lines.add(ex.toString());
       }
       String[] tempRep = new String[lines.size()];

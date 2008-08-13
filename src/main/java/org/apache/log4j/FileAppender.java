@@ -17,12 +17,7 @@
 
 package org.apache.log4j;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.io.FileOutputStream;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.File;
+import java.io.*;
 
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.helpers.QuietWriter;
@@ -184,6 +179,9 @@ public class FileAppender extends WriterAppender {
 	this.qw.close();
       }
       catch(java.io.IOException e) {
+          if (e instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
 	// Exceptionally, it does not make sense to delegate to an
 	// ErrorHandler. Since a closed appender is basically dead.
 	LogLog.error("Could not close " + qw, e);

@@ -21,6 +21,7 @@ import java.net.Socket;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.BufferedInputStream;
+import java.io.InterruptedIOException;
 
 
 import org.apache.log4j.*;
@@ -89,6 +90,10 @@ public class SocketNode implements Runnable {
       logger.info("Caught java.io.EOFException closing conneciton.");
     } catch(java.net.SocketException e) {
       logger.info("Caught java.net.SocketException closing conneciton.");
+    } catch(InterruptedIOException e) {
+      Thread.currentThread().interrupt();
+      logger.info("Caught java.io.InterruptedIOException: "+e);
+      logger.info("Closing connection.");
     } catch(IOException e) {
       logger.info("Caught java.io.IOException: "+e);
       logger.info("Closing connection.");
@@ -105,6 +110,8 @@ public class SocketNode implements Runnable {
       if (socket != null) {
         try {
           socket.close();
+        } catch(InterruptedIOException e) {
+            Thread.currentThread().interrupt();
         } catch(IOException ex) {
         }
       }
