@@ -17,18 +17,23 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.*;
-
-import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.Category;
+import org.apache.log4j.Level;
+import org.apache.log4j.MDC;
+import org.apache.log4j.NDC;
+import org.apache.log4j.Priority;
 import org.apache.log4j.helpers.Loader;
-import java.lang.reflect.Method;
-import java.io.ObjectOutputStream;
+import org.apache.log4j.helpers.LogLog;
+
 import java.io.ObjectInputStream;
-import java.util.Hashtable;
-import java.util.Set;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
 //                 Wolf Siberski
@@ -433,7 +438,16 @@ public class LoggingEvent implements java.io.Serializable {
 	PARAM_ARRAY[0] = new Integer(p);
 	level = (Level) m.invoke(null,  PARAM_ARRAY);
       }
-    } catch(Exception e) {
+    } catch(InvocationTargetException e) {
+	LogLog.warn("Level deserialization failed, reverting to default.", e);
+	level = Level.toLevel(p);
+    } catch(NoSuchMethodException e) {
+	LogLog.warn("Level deserialization failed, reverting to default.", e);
+	level = Level.toLevel(p);
+    } catch(IllegalAccessException e) {
+	LogLog.warn("Level deserialization failed, reverting to default.", e);
+	level = Level.toLevel(p);
+    } catch(RuntimeException e) {
 	LogLog.warn("Level deserialization failed, reverting to default.", e);
 	level = Level.toLevel(p);
     }

@@ -18,22 +18,23 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.ErrorCode;
+import org.apache.log4j.spi.LoggingEvent;
 
-import java.util.Properties;
+import javax.jms.JMSException;
+import javax.jms.ObjectMessage;
+import javax.jms.Session;
+import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
-import javax.jms.Topic;
 import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
-import javax.jms.Session;
-import javax.jms.ObjectMessage;
-import javax.naming.InitialContext;
 import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import java.util.Properties;
 
 /**
  * A simple appender that publishes events to a JMS Topic. The events
@@ -227,7 +228,13 @@ public class JMSAppender extends AppenderSkeleton {
       topicConnection.start();
 
       jndi.close();
-    } catch(Exception e) {
+    } catch(JMSException e) {
+      errorHandler.error("Error while activating options for appender named ["+name+
+			 "].", e, ErrorCode.GENERIC_FAILURE);
+    } catch(NamingException e) {
+      errorHandler.error("Error while activating options for appender named ["+name+
+			 "].", e, ErrorCode.GENERIC_FAILURE);
+    } catch(RuntimeException e) {
       errorHandler.error("Error while activating options for appender named ["+name+
 			 "].", e, ErrorCode.GENERIC_FAILURE);
     }
@@ -278,7 +285,9 @@ public class JMSAppender extends AppenderSkeleton {
 	topicSession.close();
       if(topicConnection != null)
 	topicConnection.close();
-    } catch(Exception e) {
+    } catch(JMSException e) {
+      LogLog.error("Error while closing JMSAppender ["+name+"].", e);
+    } catch(RuntimeException e) {
       LogLog.error("Error while closing JMSAppender ["+name+"].", e);
     }
     // Help garbage collection
@@ -302,7 +311,10 @@ public class JMSAppender extends AppenderSkeleton {
       }
       msg.setObject(event);
       topicPublisher.publish(msg);
-    } catch(Exception e) {
+    } catch(JMSException e) {
+      errorHandler.error("Could not publish message in JMSAppender ["+name+"].", e,
+			 ErrorCode.GENERIC_FAILURE);
+    } catch(RuntimeException e) {
       errorHandler.error("Could not publish message in JMSAppender ["+name+"].", e,
 			 ErrorCode.GENERIC_FAILURE);
     }

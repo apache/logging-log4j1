@@ -19,6 +19,8 @@ package org.apache.log4j.varia;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -124,9 +126,13 @@ class HUP extends Thread {
 	  LogLog.debug("Connected to client at " + socket.getInetAddress());
 	  new Thread(new HUPNode(socket, er), "ExternallyRolledFileAppender-HUP").start();
 	}
-      }
-      catch(Exception e) {
-	e.printStackTrace();
+      } catch(InterruptedIOException e) {
+        Thread.currentThread().interrupt();
+	    e.printStackTrace();
+      } catch(IOException e) {
+	    e.printStackTrace();
+      } catch(RuntimeException e) {
+	    e.printStackTrace();
       }
     }
   }
@@ -146,8 +152,12 @@ class HUPNode implements Runnable {
     try {
       dis = new DataInputStream(socket.getInputStream());
       dos = new DataOutputStream(socket.getOutputStream());
-    }
-    catch(Exception e) {
+    } catch(InterruptedIOException e) {
+      Thread.currentThread().interrupt();
+      e.printStackTrace();
+    } catch(IOException e) {
+      e.printStackTrace();
+    } catch(RuntimeException e) {
       e.printStackTrace();
     }
   }
@@ -166,8 +176,12 @@ class HUPNode implements Runnable {
 	dos.writeUTF("Expecting [RollOver] string.");
       }
       dos.close();
-    }
-    catch(Exception e) {
+    } catch(InterruptedIOException e) {
+      Thread.currentThread().interrupt();
+      LogLog.error("Unexpected exception. Exiting HUPNode.", e);
+    } catch(IOException e) {
+      LogLog.error("Unexpected exception. Exiting HUPNode.", e);
+    } catch(RuntimeException e) {
       LogLog.error("Unexpected exception. Exiting HUPNode.", e);
     }
   }

@@ -168,9 +168,11 @@ public class SocketHubAppender extends AppenderSkeleton {
       if(oos != null) {
         try {
         	oos.close();
-        }
-        catch(IOException e) {
-        	LogLog.error("could not close oos.", e);
+        } catch(InterruptedIOException e) {
+            Thread.currentThread().interrupt();
+            LogLog.error("could not close oos.", e);
+        } catch(IOException e) {
+            LogLog.error("could not close oos.", e);
         }
         
         oosList.removeElementAt(0);     
@@ -226,7 +228,10 @@ public class SocketHubAppender extends AppenderSkeleton {
     	oos.reset();
       }
       catch(IOException e) {
-      	// there was an io exception so just drop the connection
+        if (e instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
+          // there was an io exception so just drop the connection
       	oosList.removeElementAt(streamCount);
       	LogLog.debug("dropped connection");
       	
@@ -398,6 +403,9 @@ public class SocketHubAppender extends AppenderSkeleton {
         serverSocket.setSoTimeout(1000);
       }
       catch (Exception e) {
+        if (e instanceof InterruptedIOException || e instanceof InterruptedException) {
+            Thread.currentThread().interrupt();
+        }
         LogLog.error("exception setting timeout, shutting down server socket.", e);
         keepRunning = false;
         return;

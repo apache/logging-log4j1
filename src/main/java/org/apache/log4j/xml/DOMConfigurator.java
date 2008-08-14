@@ -49,6 +49,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -223,6 +224,9 @@ public class DOMConfigurator implements Configurator {
       try {
           parseUnrecognizedElement(instance, element, props);
       } catch (Exception ex) {
+          if (ex instanceof InterruptedException || ex instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
           LogLog.error("Error in extension content: ", ex);
       }
   }
@@ -289,6 +293,9 @@ public class DOMConfigurator implements Configurator {
     /* Yes, it's ugly.  But all of these exceptions point to the same
        problem: we can't create an Appender */
     catch (Exception oops) {
+        if (oops instanceof InterruptedException || oops instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
       LogLog.error("Could not create an Appender. Reported error follows.",
 		   oops);
       return null;
@@ -556,6 +563,9 @@ public class DOMConfigurator implements Configurator {
       return layout;
     }
     catch (Exception oops) {
+        if (oops instanceof InterruptedException || oops instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
       LogLog.error("Could not create the Layout. Reported error follows.",
 		   oops);
       return null;
@@ -605,6 +615,9 @@ public class DOMConfigurator implements Configurator {
 						    new Object[] {priStr});
 	  logger.setLevel(pri);
 	} catch (Exception oops) {
+        if (oops instanceof InterruptedException || oops instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
 	  LogLog.error("Could not create level ["+priStr+
 		       "]. Reported error follows.", oops);
 	  return;
@@ -793,6 +806,9 @@ public class DOMConfigurator implements Configurator {
       Document doc = action.parse(docBuilder);     
       parse(doc.getDocumentElement());
     } catch (Exception e) {
+        if (e instanceof InterruptedException || e instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
       // I know this is miserable...
       LogLog.error("Could not parse "+ action.toString() + ".", e);
     }

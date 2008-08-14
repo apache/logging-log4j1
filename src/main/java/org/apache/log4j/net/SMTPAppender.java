@@ -332,7 +332,9 @@ public class SMTPAppender extends AppenderSkeleton
 
       msg.setSentDate(new Date());
       Transport.send(msg);
-    } catch(Exception e) {
+    } catch(MessagingException e) {
+      LogLog.error("Error occured while sending e-mail notification.", e);
+    } catch(RuntimeException e) {
       LogLog.error("Error occured while sending e-mail notification.", e);
     }
   }
