@@ -27,6 +27,7 @@ import org.apache.log4j.spi.OptionHandler;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanConstructorInfo;
 import javax.management.MBeanNotificationInfo;
@@ -188,8 +189,12 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
     if(mu != null && mu.readMethod != null) {
       try {
 	return mu.readMethod.invoke(layout, null);
-      } catch(Exception e) {
-	return null;
+      } catch(InvocationTargetException e) {
+	    return null;
+      } catch(IllegalAccessException e) {
+	    return null;
+      } catch(RuntimeException e) {
+	    return null;
       }
     }
 
@@ -242,8 +247,12 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
       try {
 	mu.writeMethod.invoke(layout,  o);
 
-      } catch(Exception e) {
-	cat.error("FIXME", e);
+      } catch(InvocationTargetException e) {
+	    cat.error("FIXME", e);
+      } catch(IllegalAccessException e) {
+	    cat.error("FIXME", e);
+      } catch(RuntimeException e) {
+	    cat.error("FIXME", e);
       }
     } else {
       throw(new AttributeNotFoundException("Attribute " + name +

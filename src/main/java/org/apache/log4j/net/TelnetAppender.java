@@ -77,7 +77,12 @@ public class TelnetAppender extends AppenderSkeleton {
       sh = new SocketHandler(port);
       sh.start();
     }
-    catch(Exception e) {
+    catch(InterruptedIOException e) {
+      Thread.currentThread().interrupt();
+      e.printStackTrace();
+    } catch(IOException e) {
+      e.printStackTrace();
+    } catch(RuntimeException e) {
       e.printStackTrace();
     }
     super.activateOptions();
@@ -149,14 +154,20 @@ public class TelnetAppender extends AppenderSkeleton {
         for(Enumeration e = connections.elements();e.hasMoreElements();) {
             try {
                 ((Socket)e.nextElement()).close();
-            } catch(Exception ex) {
+            } catch(InterruptedIOException ex) {
+                Thread.currentThread().interrupt();
+            } catch(IOException ex) {
+            } catch(RuntimeException ex) {
             }
         }
       }
 
       try {
         serverSocket.close();
-      } catch(Exception ex) {
+      } catch(InterruptedIOException ex) {
+          Thread.currentThread().interrupt();
+      } catch(IOException ex) {
+      } catch(RuntimeException ex) {
       }
     }
 
@@ -197,6 +208,9 @@ public class TelnetAppender extends AppenderSkeleton {
             newClient.close();
           }
         } catch(Exception e) {
+          if (e instanceof InterruptedIOException || e instanceof InterruptedException) {
+              Thread.currentThread().interrupt();
+          }
           if (!serverSocket.isClosed()) {
             LogLog.error("Encountered error while in SocketHandler loop.", e);
           }

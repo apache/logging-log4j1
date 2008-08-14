@@ -105,7 +105,11 @@ public class JMSSink implements javax.jms.MessageListener {
     
       topicSubscriber.setMessageListener(this);
 
-    } catch(Exception e) {
+    } catch(JMSException e) {
+      logger.error("Could not read JMS message.", e);
+    } catch(NamingException e) {
+      logger.error("Could not read JMS message.", e);
+    } catch(RuntimeException e) {
       logger.error("Could not read JMS message.", e);
     }
   }

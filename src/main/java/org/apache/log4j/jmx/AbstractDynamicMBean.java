@@ -18,16 +18,18 @@
 package org.apache.log4j.jmx;
 
 //import java.lang.reflect.Constructor;
-import java.util.Iterator;
-import javax.management.DynamicMBean;
-import javax.management.AttributeList;
+
+import org.apache.log4j.Logger;
+
 import javax.management.Attribute;
-import javax.management.RuntimeOperationsException;
+import javax.management.AttributeList;
+import javax.management.DynamicMBean;
+import javax.management.JMException;
 import javax.management.MBeanRegistration;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-
-import org.apache.log4j.Logger;
+import javax.management.RuntimeOperationsException;
+import java.util.Iterator;
 
 public abstract class AbstractDynamicMBean implements DynamicMBean,
                                                       MBeanRegistration {
@@ -59,8 +61,10 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
       try {
 	Object value = getAttribute((String) attributeNames[i]);
 	resultList.add(new Attribute(attributeNames[i],value));
-      } catch (Exception e) {
-	e.printStackTrace();
+      } catch (JMException e) {
+	     e.printStackTrace();
+      } catch (RuntimeException e) {
+	     e.printStackTrace();
       }
     }
     return(resultList);
@@ -92,8 +96,10 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
 	String name = attr.getName();
 	Object value = getAttribute(name);
 	resultList.add(new Attribute(name,value));
-      } catch(Exception e) {
-	e.printStackTrace();
+      } catch(JMException e) {
+	    e.printStackTrace();
+      } catch(RuntimeException e) {
+	    e.printStackTrace();
       }
     }
     return(resultList);

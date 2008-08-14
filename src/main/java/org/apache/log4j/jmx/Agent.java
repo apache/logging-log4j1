@@ -17,12 +17,12 @@
 
 package org.apache.log4j.jmx;
 
-import javax.management.ObjectName;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-
 import org.apache.log4j.Logger;
 
+import javax.management.JMException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.ObjectName;
 import java.lang.reflect.InvocationTargetException;
 
 
@@ -62,7 +62,11 @@ public class Agent {
       try {
         newInstance = Class.forName(
                 "com.sun.jdmk.comm.HtmlAdapterServer").newInstance();
-      } catch (Exception ex) {
+      } catch (ClassNotFoundException ex) {
+          throw new RuntimeException(ex.toString());
+      } catch (InstantiationException ex) {
+          throw new RuntimeException(ex.toString());
+      } catch (IllegalAccessException ex) {
           throw new RuntimeException(ex.toString());
       }
       return newInstance;
@@ -87,9 +91,11 @@ public class Agent {
           } else {
               throw new RuntimeException();
           }
-      } catch(Exception ex) {
+      } catch(NoSuchMethodException ex) {
           throw new RuntimeException(ex.toString());
-      }
+      } catch(IllegalAccessException ex) {
+        throw new RuntimeException(ex.toString());
+    }
   }
 
 
@@ -108,8 +114,10 @@ public class Agent {
       log.info("Registering HierarchyDynamicMBean instance.");
       HierarchyDynamicMBean hdm = new HierarchyDynamicMBean();
       server.registerMBean(hdm, new ObjectName("log4j:hiearchy=default"));
-
-    } catch(Exception e) {
+    } catch(JMException e) {
+      log.error("Problem while registering MBeans instances.", e);
+      return;
+    } catch(RuntimeException e) {
       log.error("Problem while registering MBeans instances.", e);
       return;
     }

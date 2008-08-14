@@ -18,36 +18,38 @@
 package org.apache.log4j.jmx;
 
 
-import java.lang.reflect.Constructor;
-import org.apache.log4j.*;
-
+import org.apache.log4j.Appender;
+import org.apache.log4j.Category;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.helpers.OptionConverter;
 
-import java.util.Vector;
+import javax.management.Attribute;
+import javax.management.AttributeNotFoundException;
+import javax.management.InvalidAttributeValueException;
+import javax.management.JMException;
+import javax.management.ListenerNotFoundException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanConstructorInfo;
+import javax.management.MBeanException;
+import javax.management.MBeanInfo;
 import javax.management.MBeanNotificationInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanParameterInfo;
-
-import javax.management.ObjectName;
-import javax.management.MBeanInfo;
-import javax.management.Attribute;
-
-import javax.management.MBeanException;
-import javax.management.AttributeNotFoundException;
-import javax.management.RuntimeOperationsException;
-import javax.management.ReflectionException;
-import javax.management.InvalidAttributeValueException;
-import javax.management.NotificationBroadcasterSupport;
-import javax.management.NotificationBroadcaster;
 import javax.management.Notification;
-import javax.management.NotificationListener;
+import javax.management.NotificationBroadcaster;
+import javax.management.NotificationBroadcasterSupport;
 import javax.management.NotificationFilter;
 import javax.management.NotificationFilterSupport;
-import javax.management.ListenerNotFoundException;
+import javax.management.NotificationListener;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
+import javax.management.RuntimeOperationsException;
+import java.lang.reflect.Constructor;
+import java.util.Vector;
 
 public class HierarchyDynamicMBean extends AbstractDynamicMBean
                                    implements HierarchyEventListener,
@@ -132,7 +134,9 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
         
       }
 
-    } catch(Exception e) {
+    } catch(JMException e) {
+      log.error("Could not add loggerMBean for ["+name+"].", e);
+    } catch(RuntimeException e) {
       log.error("Could not add loggerMBean for ["+name+"].", e);
     }
     return objectName;
@@ -219,8 +223,10 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
       }
       try {
 	return new ObjectName("log4j:"+val);
-      } catch(Exception e) {
-	log.error("Could not create ObjectName" + val);
+      } catch(JMException e) {
+	    log.error("Could not create ObjectName" + val);
+      } catch(RuntimeException e) {
+	    log.error("Could not create ObjectName" + val);
       }
     }
 

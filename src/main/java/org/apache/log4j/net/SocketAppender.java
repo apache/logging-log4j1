@@ -208,6 +208,9 @@ public class SocketAppender extends AppenderSkeleton {
       cleanUp();
       oos = new ObjectOutputStream(new Socket(address, port).getOutputStream());
     } catch(IOException e) {
+      if (e instanceof InterruptedIOException) {
+          Thread.currentThread().interrupt();
+      }
       String msg = "Could not connect to remote log4j server at ["
 	+address.getHostName()+"].";
       if(reconnectionDelay > 0) {
@@ -252,14 +255,17 @@ public class SocketAppender extends AppenderSkeleton {
 	  oos.reset();
 	}
       } catch(IOException e) {
-	oos = null;
-	LogLog.warn("Detected problem with connection: "+e);
-	if(reconnectionDelay > 0) {
-	  fireConnector();
-	} else {
-	    errorHandler.error("Detected problem with connection, not reconnecting.", e,
+          if (e instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
+	      oos = null;
+	      LogLog.warn("Detected problem with connection: "+e);
+	      if(reconnectionDelay > 0) {
+	         fireConnector();
+	      } else {
+	         errorHandler.error("Detected problem with connection, not reconnecting.", e,
 	               ErrorCode.GENERIC_FAILURE);
-	}
+	      }
       }
     }
   }
@@ -279,6 +285,9 @@ public class SocketAppender extends AppenderSkeleton {
     try {
       return InetAddress.getByName(host);
     } catch(Exception e) {
+      if (e instanceof InterruptedIOException || e instanceof InterruptedException) {
+          Thread.currentThread().interrupt();
+      }
       LogLog.error("Could not find address of ["+host+"].", e);
       return null;
     }

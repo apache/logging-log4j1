@@ -17,34 +17,39 @@
 
 package org.apache.log4j.jmx;
 
-import java.lang.reflect.Constructor;
-import org.apache.log4j.*;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.OptionHandler;
 
-import java.util.Vector;
-import java.util.Hashtable;
-import java.lang.reflect.Method;
+import javax.management.Attribute;
+import javax.management.AttributeNotFoundException;
+import javax.management.InvalidAttributeValueException;
+import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanConstructorInfo;
-import javax.management.MBeanNotificationInfo;
-import javax.management.ObjectName;
-import javax.management.MBeanInfo;
-import javax.management.Attribute;
-import javax.management.MBeanServer;
-
 import javax.management.MBeanException;
-import javax.management.AttributeNotFoundException;
-import javax.management.RuntimeOperationsException;
-import javax.management.ReflectionException;
-import javax.management.InvalidAttributeValueException;
+import javax.management.MBeanInfo;
+import javax.management.MBeanNotificationInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanParameterInfo;
-
-import java.beans.Introspector;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
+import javax.management.RuntimeOperationsException;
 import java.beans.BeanInfo;
-import java.beans.PropertyDescriptor;
 import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Hashtable;
+import java.util.Vector;
 
 public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
@@ -199,7 +204,11 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
                 "The " + name + " layout.", true, true, false));
       }
 
-    } catch(Exception e) {
+    } catch(JMException e) {
+      cat.error("Could not add DynamicLayoutMBean for ["+name+"].", e);
+    } catch(java.beans.IntrospectionException e) {
+      cat.error("Could not add DynamicLayoutMBean for ["+name+"].", e);
+    } catch(RuntimeException e) {
       cat.error("Could not add DynamicLayoutMBean for ["+name+"].", e);
     }
   }
@@ -225,9 +234,11 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
     cat.debug("getAttribute called with ["+attributeName+"].");
     if(attributeName.startsWith("appender="+appender.getName()+",layout")) {
       try {
-	return new ObjectName("log4j:"+attributeName );
-      } catch(Exception e) {
-	cat.error("attributeName", e);
+	    return new ObjectName("log4j:"+attributeName );
+      } catch(MalformedObjectNameException e) {
+	    cat.error("attributeName", e);
+      } catch(RuntimeException e) {
+	    cat.error("attributeName", e);
       }
     }
 
@@ -238,8 +249,12 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
     if(mu != null && mu.readMethod != null) {
       try {
 	return mu.readMethod.invoke(appender, null);
-      } catch(Exception e) {
-	return null;
+      } catch(IllegalAccessException e) {
+	    return null;
+      } catch(InvocationTargetException e) {
+	    return null;
+      } catch(RuntimeException e) {
+	    return null;
       }
     }
 
@@ -292,8 +307,12 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
       try {
 	mu.writeMethod.invoke(appender,  o);
 
-      } catch(Exception e) {
-	cat.error("FIXME", e);
+      } catch(InvocationTargetException e) {
+	    cat.error("FIXME", e);
+      } catch(IllegalAccessException e) {
+	    cat.error("FIXME", e);
+      } catch(RuntimeException e) {
+	    cat.error("FIXME", e);
       }
     } else if(name.endsWith(".layout")) {
 

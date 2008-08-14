@@ -17,31 +17,32 @@
 
 package org.apache.log4j.jmx;
 
-import java.lang.reflect.Constructor;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
 import org.apache.log4j.Appender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.helpers.OptionConverter;
 
-import java.util.Vector;
-import java.util.Enumeration;
-
+import javax.management.Attribute;
+import javax.management.AttributeNotFoundException;
+import javax.management.InvalidAttributeValueException;
+import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanConstructorInfo;
+import javax.management.MBeanException;
+import javax.management.MBeanInfo;
 import javax.management.MBeanNotificationInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanParameterInfo;
-import javax.management.ObjectName;
-import javax.management.MBeanInfo;
-import javax.management.Attribute;
-
-import javax.management.MBeanException;
-import javax.management.AttributeNotFoundException;
-import javax.management.RuntimeOperationsException;
-import javax.management.ReflectionException;
-import javax.management.InvalidAttributeValueException;
-import javax.management.NotificationListener;
+import javax.management.MalformedObjectNameException;
 import javax.management.Notification;
+import javax.management.NotificationListener;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
+import javax.management.RuntimeOperationsException;
+import javax.management.IntrospectionException;
+import java.lang.reflect.Constructor;
+import java.util.Enumeration;
+import java.util.Vector;
 
 public class LoggerDynamicMBean extends AbstractDynamicMBean
                                   implements NotificationListener {
@@ -174,8 +175,10 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
     } else if(attributeName.startsWith("appender=")) {
       try {
 	return new ObjectName("log4j:"+attributeName );
-      } catch(Exception e) {
-	cat.error("Could not create ObjectName" + attributeName);
+      } catch(MalformedObjectNameException e) {
+	    cat.error("Could not create ObjectName" + attributeName);
+      } catch(RuntimeException e) {
+	    cat.error("Could not create ObjectName" + attributeName);
       }
     }
 
@@ -264,7 +267,11 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
                 "The " + name + " appender.", true, true, false));
       }
 
-    } catch(Exception e) {
+    } catch(JMException e) {
+      cat.error("Could not add appenderMBean for ["+name+"].", e);
+    } catch(java.beans.IntrospectionException e) {
+      cat.error("Could not add appenderMBean for ["+name+"].", e);
+    } catch(RuntimeException e) {
       cat.error("Could not add appenderMBean for ["+name+"].", e);
     }
   }

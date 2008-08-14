@@ -35,6 +35,8 @@ import org.apache.log4j.spi.RendererSupport;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -318,6 +320,9 @@ public class PropertyConfigurator implements Configurator {
       istream.close();
     }
     catch (Exception e) {
+      if (e instanceof InterruptedIOException || e instanceof InterruptedException) {
+          Thread.currentThread().interrupt();
+      }
       LogLog.error("Could not read configuration file ["+configFileName+"].", e);
       LogLog.error("Ignoring configuration file [" + configFileName+"].");
       return;
@@ -325,6 +330,8 @@ public class PropertyConfigurator implements Configurator {
         if(istream != null) {
             try {
                 istream.close();
+            } catch(InterruptedIOException ignore) {
+                Thread.currentThread().interrupt();
             } catch(Throwable ignore) {
             }
 
@@ -460,6 +467,9 @@ public class PropertyConfigurator implements Configurator {
       props.load(istream);
     }
     catch (Exception e) {
+      if (e instanceof InterruptedIOException || e instanceof InterruptedException) {
+          Thread.currentThread().interrupt();
+      }
       LogLog.error("Could not read configuration file from URL [" + configURL
 		   + "].", e);
       LogLog.error("Ignoring configuration file [" + configURL +"].");
@@ -469,7 +479,10 @@ public class PropertyConfigurator implements Configurator {
         if (istream != null) {
             try {
                 istream.close();
-            } catch(Exception ignore) {
+            } catch(InterruptedIOException ignore) {
+                Thread.currentThread().interrupt();
+            } catch(IOException ignore) {
+            } catch(RuntimeException ignore) {
             }
         }
     }
