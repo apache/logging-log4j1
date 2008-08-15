@@ -122,7 +122,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean
       objectName = new ObjectName("log4j", "logger", name);
       
       if (!server.isRegistered(objectName)) {
-        server.registerMBean(loggerMBean, objectName);
+        registerMBean(loggerMBean, objectName);
         NotificationFilterSupport nfs = new NotificationFilterSupport();
         nfs.enableType(ADD_APPENDER + logger.getName());
         log.debug("---Adding logger [" + name + "] as listener.");
