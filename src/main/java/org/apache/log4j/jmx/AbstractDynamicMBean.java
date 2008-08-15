@@ -17,25 +17,31 @@
 
 package org.apache.log4j.jmx;
 
-//import java.lang.reflect.Constructor;
-
-import org.apache.log4j.Logger;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Vector;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.DynamicMBean;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.JMException;
 import javax.management.MBeanRegistration;
+import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
+import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.management.RuntimeOperationsException;
-import java.util.Iterator;
+
+import org.apache.log4j.Logger;
 
 public abstract class AbstractDynamicMBean implements DynamicMBean,
                                                       MBeanRegistration {
 
   String dClassName;
   MBeanServer server;
+  private final Vector mbeanList = new Vector();
 
   /**
    * Enables the to get the values of several attributes of the Dynamic MBean.
@@ -121,17 +127,44 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
 
 
   public
-  void preDeregister() {
-    getLogger().debug("preDeregister called.");
-  }
-
-  public
   ObjectName preRegister(MBeanServer server, ObjectName name) {
     getLogger().debug("preRegister called. Server="+server+ ", name="+name);
     this.server = server;
     return name;
   }
+  /**
+   * Registers MBean instance in the attached server. Must <em>NOT</em>
+   * be called before registration of this instance.
+   */
+  protected
+  void registerMBean(Object mbean, ObjectName objectName)
+  throws InstanceAlreadyExistsException, MBeanRegistrationException,
+                   NotCompliantMBeanException {
+    server.registerMBean(mbean, objectName);
+    mbeanList.add(objectName);
+  }
 
+  /**
+   * Performs cleanup for deregistering this MBean. Default implementation
+   * unregisters MBean instances which are registered using 
+   * {@link #registerMBean(Object mbean, ObjectName objectName)}.
+   */
+   public
+   void preDeregister() {
+     getLogger().debug("preDeregister called.");
+     
+    Enumeration iterator = mbeanList.elements();
+    while (iterator.hasMoreElements()) {
+      ObjectName name = (ObjectName) iterator.nextElement();
+      try {
+        server.unregisterMBean(name);
+      } catch (InstanceNotFoundException e) {
+   getLogger().warn("Missing MBean " + name.getCanonicalName());
+      } catch (MBeanRegistrationException e) {
+   getLogger().warn("Failed unregistering " + name.getCanonicalName());
+      }
+    }
+   }
 
 
 }
