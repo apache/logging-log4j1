@@ -106,6 +106,7 @@ public class TelnetAppender extends AppenderSkeleton {
         try {
             sh.join();
         } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
     }
   }

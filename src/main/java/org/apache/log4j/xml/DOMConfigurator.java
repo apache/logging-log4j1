@@ -52,6 +52,7 @@ import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.Reader;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -403,10 +404,18 @@ public class DOMConfigurator implements Configurator {
 	 Method getInstanceMethod = clazz.getMethod("getLogger", 
 						    ONE_STRING_PARAM);
 	 cat = (Logger) getInstanceMethod.invoke(null, new Object[] {catName});
-       } catch (Exception oops) {
-	 LogLog.error("Could not retrieve category ["+catName+
+       } catch (InvocationTargetException oops) {
+          if (oops.getTargetException() instanceof InterruptedException
+                  || oops.getTargetException() instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
+          LogLog.error("Could not retrieve category ["+catName+
 		      "]. Reported error follows.", oops);
-	 return;
+	      return;
+       } catch (Exception oops) {
+	      LogLog.error("Could not retrieve category ["+catName+
+		      "]. Reported error follows.", oops);
+	      return;
        }
     }
 

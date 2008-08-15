@@ -46,6 +46,7 @@ import java.beans.Introspector;
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.beans.IntrospectionException;
+import java.io.InterruptedIOException;
 
 public class LayoutDynamicMBean extends AbstractDynamicMBean {
 
@@ -190,6 +191,10 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
       try {
 	return mu.readMethod.invoke(layout, null);
       } catch(InvocationTargetException e) {
+          if (e.getTargetException() instanceof InterruptedException
+                  || e.getTargetException() instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
 	    return null;
       } catch(IllegalAccessException e) {
 	    return null;
@@ -248,6 +253,10 @@ public class LayoutDynamicMBean extends AbstractDynamicMBean {
 	mu.writeMethod.invoke(layout,  o);
 
       } catch(InvocationTargetException e) {
+          if (e.getTargetException() instanceof InterruptedException
+                  || e.getTargetException() instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
 	    cat.error("FIXME", e);
       } catch(IllegalAccessException e) {
 	    cat.error("FIXME", e);

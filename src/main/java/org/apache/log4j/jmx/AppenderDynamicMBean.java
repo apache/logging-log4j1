@@ -50,6 +50,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.io.InterruptedIOException;
 
 public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
@@ -252,6 +253,10 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
       } catch(IllegalAccessException e) {
 	    return null;
       } catch(InvocationTargetException e) {
+          if (e.getTargetException() instanceof InterruptedException
+                  || e.getTargetException() instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
 	    return null;
       } catch(RuntimeException e) {
 	    return null;
@@ -308,7 +313,11 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
 	mu.writeMethod.invoke(appender,  o);
 
       } catch(InvocationTargetException e) {
-	    cat.error("FIXME", e);
+        if (e.getTargetException() instanceof InterruptedException
+                || e.getTargetException() instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
+        cat.error("FIXME", e);
       } catch(IllegalAccessException e) {
 	    cat.error("FIXME", e);
       } catch(RuntimeException e) {
