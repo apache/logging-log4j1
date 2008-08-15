@@ -207,11 +207,8 @@
             <id>runAll</id>
             <configuration>
               <tasks>
-                <ant dir="tests" target="runAll">
-                  <property name="junit.jar" location="${user.home}/.m2/repository/junit/junit/3.8.1/junit-3.8.1.jar"/>
-                  <property name="jakarta.oro.jar" location="${user.home}/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar"/>
-                  <property name="javamail.jar" location="${user.home}/.m2/repository/javax/mail/mail/1.4/mail-1.4.jar" />
-                  <property name="activation.jar" location="${user.home}/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar" />
+                 <ant dir="tests" target="runAll">
+                  <property name="m2_repo" location="${m2_repo}"/>
                   <property name="log4j.jar" location="target/classes"/>
                   <property name="project.lib.home" location="target"/>
                 </ant>
@@ -399,6 +396,7 @@
       </activation>
       <properties>
         <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
+        <m2_repo>${user.home}/.m2/repository</m2_repo>
       </properties>
     </profile>
     <profile>
@@ -408,6 +406,7 @@
       </activation>
       <properties>
         <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+        <m2_repo>${user.home}/.m2/repository</m2_repo>
       </properties>
     </profile>
   </profiles>
