@@ -58,6 +58,7 @@
        <action action="fix" issue="44157">InterruptedIOException ignored by log4j.</action>
        <action action="fix" issue="40246">HierarchyDynamicMBean missing unregister MBean</action>
        <action action="fix" issue="45635">Support -Dm2_repo option on Maven build for non-default Maven repository location.</action>
+       <action action="fix" issue="45636">2 tests for DateLayout are failing because of ill initialized DateFormat.</action>
     </release>
 
   
