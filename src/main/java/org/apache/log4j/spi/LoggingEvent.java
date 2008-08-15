@@ -27,6 +27,7 @@ import org.apache.log4j.helpers.LogLog;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -439,7 +440,11 @@ public class LoggingEvent implements java.io.Serializable {
 	level = (Level) m.invoke(null,  PARAM_ARRAY);
       }
     } catch(InvocationTargetException e) {
-	LogLog.warn("Level deserialization failed, reverting to default.", e);
+        if (e.getTargetException() instanceof InterruptedException
+                || e.getTargetException() instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
+    LogLog.warn("Level deserialization failed, reverting to default.", e);
 	level = Level.toLevel(p);
     } catch(NoSuchMethodException e) {
 	LogLog.warn("Level deserialization failed, reverting to default.", e);

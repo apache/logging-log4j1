@@ -17,10 +17,16 @@
 
 package org.apache.log4j.config;
 
-import java.beans.*;
-import java.lang.reflect.*;
 import org.apache.log4j.Priority;
 import org.apache.log4j.helpers.LogLog;
+
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.io.InterruptedIOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 
 /**
@@ -77,8 +83,16 @@ public class PropertyGetter {
 	if (result != null) {
 	  callback.foundProperty(obj, prefix, name, result);
 	}
-      } catch (Exception ex) {
-	LogLog.warn("Failed to get value of property " + name);
+      } catch (IllegalAccessException ex) {
+	    LogLog.warn("Failed to get value of property " + name);
+      } catch (InvocationTargetException ex) {
+        if (ex.getTargetException() instanceof InterruptedException
+                || ex.getTargetException() instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
+        LogLog.warn("Failed to get value of property " + name);
+      } catch (RuntimeException ex) {
+	    LogLog.warn("Failed to get value of property " + name);
       }
     }
   }

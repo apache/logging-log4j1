@@ -24,7 +24,9 @@ import org.apache.log4j.helpers.LogLog;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.InterruptedIOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 /**
    The internal representation of caller location information.
@@ -99,7 +101,9 @@ public class LocationInfo implements java.io.Serializable {
           getMethodNameMethod = stackTraceElementClass.getMethod("getMethodName", noArgs);
           getFileNameMethod = stackTraceElementClass.getMethod("getFileName", noArgs);
           getLineNumberMethod = stackTraceElementClass.getMethod("getLineNumber", noArgs);
-      } catch(Exception ex) {
+      } catch(ClassNotFoundException ex) {
+          LogLog.debug("LocationInfo will use pre-JDK 1.4 methods to determine location.");
+      } catch(NoSuchMethodException ex) {
           LogLog.debug("LocationInfo will use pre-JDK 1.4 methods to determine location.");
       }
   }
@@ -167,7 +171,15 @@ public class LocationInfo implements java.io.Serializable {
                   prevClass = thisClass;
               }
               return;
-          } catch(Exception ex) {
+          } catch(IllegalAccessException ex) {
+              LogLog.debug("LocationInfo failed using JDK 1.4 methods", ex);
+          } catch(InvocationTargetException ex) {
+              if (ex.getTargetException() instanceof InterruptedException
+                      || ex.getTargetException() instanceof InterruptedIOException) {
+                  Thread.currentThread().interrupt();
+              }
+              LogLog.debug("LocationInfo failed using JDK 1.4 methods", ex);
+          } catch(RuntimeException ex) {
               LogLog.debug("LocationInfo failed using JDK 1.4 methods", ex);
           }
       }

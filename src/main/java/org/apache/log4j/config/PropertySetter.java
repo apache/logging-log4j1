@@ -19,16 +19,22 @@
 
 package org.apache.log4j.config;
 
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.lang.reflect.*;
-import java.util.*;
-import org.apache.log4j.*;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Priority;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.OptionHandler;
+
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.io.InterruptedIOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
+import java.util.Properties;
 
 /**
    General purpose Object property setter. Clients repeatedly invokes
@@ -142,7 +148,17 @@ public class PropertySetter {
             setter.setProperties(properties, prefix + key + ".");
             try {
                 prop.getWriteMethod().invoke(this.obj, new Object[] { opt });
-            } catch(Exception ex) {
+            } catch(IllegalAccessException ex) {
+                LogLog.warn("Failed to set property [" + key +
+                            "] to value \"" + value + "\". ", ex);
+            } catch(InvocationTargetException ex) {
+                if (ex.getTargetException() instanceof InterruptedException
+                        || ex.getTargetException() instanceof InterruptedIOException) {
+                    Thread.currentThread().interrupt();
+                }
+                LogLog.warn("Failed to set property [" + key +
+                            "] to value \"" + value + "\". ", ex);
+            } catch(RuntimeException ex) {
                 LogLog.warn("Failed to set property [" + key +
                             "] to value \"" + value + "\". ", ex);
             }
@@ -226,7 +242,15 @@ public class PropertySetter {
     LogLog.debug("Setting property [" + name + "] to [" +arg+"].");
     try {
       setter.invoke(obj, new Object[]  { arg });
-    } catch (Exception ex) {
+    } catch (IllegalAccessException ex) {
+      throw new PropertySetterException(ex);
+    } catch (InvocationTargetException ex) {
+        if (ex.getTargetException() instanceof InterruptedException
+                || ex.getTargetException() instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }        
+        throw new PropertySetterException(ex);
+    } catch (RuntimeException ex) {
       throw new PropertySetterException(ex);
     }
   }

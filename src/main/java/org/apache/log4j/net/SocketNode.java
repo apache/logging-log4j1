@@ -55,8 +55,12 @@ public class SocketNode implements Runnable {
     try {
       ois = new ObjectInputStream(
                          new BufferedInputStream(socket.getInputStream()));
-    }
-    catch(Exception e) {
+    } catch(InterruptedIOException e) {
+      Thread.currentThread().interrupt();
+      logger.error("Could not open ObjectInputStream to "+socket, e);
+    } catch(IOException e) {
+      logger.error("Could not open ObjectInputStream to "+socket, e);
+    } catch(RuntimeException e) {
       logger.error("Could not open ObjectInputStream to "+socket, e);
     }
   }

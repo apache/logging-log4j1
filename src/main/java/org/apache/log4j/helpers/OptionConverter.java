@@ -19,6 +19,9 @@ package org.apache.log4j.helpers;
 
 import java.util.Properties;
 import java.net.URL;
+import java.io.InterruptedIOException;
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
@@ -231,6 +234,10 @@ public class OptionConverter {
       LogLog.warn("custom level class [" + clazz + "]"
         + " does not have a class function toLevel(String, Level)", e);
     } catch(java.lang.reflect.InvocationTargetException e) {
+        if (e.getTargetException() instanceof InterruptedException
+                || e.getTargetException() instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
       LogLog.warn("custom level class [" + clazz + "]"
 		   + " could not be instantiated", e);
     } catch(ClassCastException e) {
@@ -239,7 +246,7 @@ public class OptionConverter {
     } catch(IllegalAccessException e) {
       LogLog.warn("class ["+clazz+
 		   "] cannot be instantiated due to access restrictions", e);
-    } catch(Exception e) {
+    } catch(RuntimeException e) {
       LogLog.warn("class ["+clazz+"], level ["+levelName+
 		   "] conversion failed.", e);
     }
@@ -328,8 +335,14 @@ public class OptionConverter {
 	  return defaultValue;
 	}
 	return classObj.newInstance();
-      } catch (Exception e) {
-	LogLog.error("Could not instantiate class [" + className + "].", e);
+      } catch (ClassNotFoundException e) {
+	    LogLog.error("Could not instantiate class [" + className + "].", e);
+      } catch (IllegalAccessException e) {
+	    LogLog.error("Could not instantiate class [" + className + "].", e);
+      } catch (InstantiationException e) {
+        LogLog.error("Could not instantiate class [" + className + "].", e);
+      } catch (RuntimeException e) {
+	    LogLog.error("Could not instantiate class [" + className + "].", e);
       }
     }
     return defaultValue;

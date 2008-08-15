@@ -21,6 +21,7 @@ import java.net.URL;
 import java.lang.IllegalAccessException;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.io.InterruptedIOException;
 
 
 /**
@@ -112,8 +113,19 @@ public class Loader  {
   	    return url;
   	  }
   	}
+    } catch(IllegalAccessException t) {
+        LogLog.warn(TSTR, t);
+    } catch(InvocationTargetException t) {
+        if (t.getTargetException() instanceof InterruptedException
+                || t.getTargetException() instanceof InterruptedIOException) {
+            Thread.currentThread().interrupt();
+        }
+        LogLog.warn(TSTR, t);
     } catch(Throwable t) {
-  	LogLog.warn(TSTR, t);
+      //
+      //  can't be InterruptedException or InterruptedIOException
+      //    since not declared, must be error or RuntimeError.
+      LogLog.warn(TSTR, t);
     }
     
     // Last ditch attempt: get the resource from the class path. It
@@ -171,13 +183,19 @@ public class Loader  {
       return Class.forName(clazz);
     } else {
       try {
-	return getTCL().loadClass(clazz);
-      } catch(Throwable e) {
-	// we reached here because tcl was null or because of a
-	// security exception, or because clazz could not be loaded...
-	// In any case we now try one more time
-	return Class.forName(clazz);
+	    return getTCL().loadClass(clazz);
+      }
+      // we reached here because tcl was null or because of a
+      // security exception, or because clazz could not be loaded...
+      // In any case we now try one more time
+      catch(InvocationTargetException e) {
+          if (e.getTargetException() instanceof InterruptedException
+                  || e.getTargetException() instanceof InterruptedIOException) {
+              Thread.currentThread().interrupt();
+          }
+      } catch(Throwable t) {
       }
     }
-  } 
+    return Class.forName(clazz);
+  }
 }

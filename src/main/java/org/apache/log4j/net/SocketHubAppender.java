@@ -372,6 +372,7 @@ public class SocketHubAppender extends AppenderSkeleton {
           monitorThread.join();
         }
         catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
           // do nothing?
         }
         

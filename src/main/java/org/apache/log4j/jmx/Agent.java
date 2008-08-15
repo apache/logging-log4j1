@@ -24,6 +24,7 @@ import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
 import java.lang.reflect.InvocationTargetException;
+import java.io.InterruptedIOException;
 
 
 /**
@@ -87,6 +88,10 @@ public class Agent {
           if (cause instanceof RuntimeException) {
               throw (RuntimeException) cause;
           } else if (cause != null) {
+              if (cause instanceof InterruptedException
+                      || cause instanceof InterruptedIOException) {
+                  Thread.currentThread().interrupt();
+              }
               throw new RuntimeException(cause.toString());
           } else {
               throw new RuntimeException();
