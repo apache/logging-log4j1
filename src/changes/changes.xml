@@ -57,7 +57,9 @@
        <action action="fix" issue="43282">Add OSGi packaging info.</action>
        <action action="fix" issue="44157">InterruptedIOException ignored by log4j.</action>
        <action action="fix" issue="40246">HierarchyDynamicMBean missing unregister MBean</action>
+       <action action="fix" issue="45635">Support -Dm2_repo option on Maven build for non-default Maven repository location.</action>
     </release>
+
   
     <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
 	    <action issue="40951">log4j 1.2.15 release preparation.</action>
