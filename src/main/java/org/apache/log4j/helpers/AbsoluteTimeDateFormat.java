@@ -85,7 +85,7 @@ public class AbsoluteTimeDateFormat extends DateFormat {
     long now = date.getTime();
     int millis = (int)(now % 1000);
 
-    if ((now - millis) != previousTime) {
+    if ((now - millis) != previousTime || previousTimeWithoutMillis[0] == 0) {
       // We reach this point at most once per second
       // across all threads instead of each time format()
       // is called. This saves considerable CPU time.

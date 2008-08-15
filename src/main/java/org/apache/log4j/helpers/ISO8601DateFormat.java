@@ -67,7 +67,7 @@ public class ISO8601DateFormat extends AbsoluteTimeDateFormat {
     long now = date.getTime();
     int millis = (int)(now % 1000);
 
-    if ((now - millis) != lastTime) {
+    if ((now - millis) != lastTime || lastTimeString[0] == 0) {
       // We reach this point at most once per second
       // across all threads instead of each time format()
       // is called. This saves considerable CPU time.
