@@ -373,8 +373,13 @@
             <instructions>
                 <!-- omit chainsaw and LF5   -->
                 <Export-Package>!org.apache.log4j.lf5.*,!org.apache.log4j.chainsaw.*,org.apache.log4j.*</Export-Package>
-                <!--  IBM Visual Age and HTMLAdapterServer are sniffed by reflection -->
-                <Import-Package>!com.ibm.uvm.tools,!com.sun.jdmk.comm,*</Import-Package>
+                <Import-Package>com.sun.jdmk.comm;resolution:=optional,
+                                javax.jms;resolution:=optional,
+                                javax.mail.*;resolution:=optional,
+                                javax.management;resolution:=optional,
+                                javax.naming;resolution:=optional,
+                                *</Import-Package>
+                <Bundle-DocURL>http://logging.apache.org/log4j/1.2</Bundle-DocURL>
             </instructions>
         </configuration>
       </plugin>
