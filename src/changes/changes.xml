@@ -59,6 +59,7 @@
        <action action="fix" issue="40246">HierarchyDynamicMBean missing unregister MBean</action>
        <action action="fix" issue="45635">Support -Dm2_repo option on Maven build for non-default Maven repository location.</action>
        <action action="fix" issue="45636">2 tests for DateLayout are failing because of ill initialized DateFormat.</action>
+       <action action="fix" issue="45659">Incorrect user mailing list URL.</action>
     </release>
 
   
