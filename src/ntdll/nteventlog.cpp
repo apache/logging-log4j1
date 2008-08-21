@@ -28,6 +28,8 @@ typedef long long __int64;
 #include <jni.h>
 
 
+HINSTANCE gModule = 0;
+
 /*
  * Convert log4j Priority to an EventLog category. Each category is
  * backed by a message resource so that proper category names will
@@ -126,6 +128,17 @@ void addRegistryInfo(wchar_t *source) {
  */
 JNIEXPORT jint JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_registerEventSource(
    JNIEnv *env, jobject java_this, jstring server, jstring source) {
+       return Java_org_apache_log4j_nt_NTEventLogAppender_registerEventSource64(
+           env, java_this, server, source);
+}
+
+/*
+ * Class:     org_apache_log4j_nt_NTEventLogAppender
+ * Method:    registerEventSource64
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_registerEventSource64(
+   JNIEnv *env, jobject java_this, jstring server, jstring source) {
   
   jchar *nserver = 0;
   jchar *nsource = 0;
@@ -143,7 +156,7 @@ JNIEXPORT jint JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_registerEvent
     nsource[sourceLen] = 0;
   }
   addRegistryInfo((wchar_t*) nsource);
-  jint handle = (jint)RegisterEventSourceW((const wchar_t*) nserver, (const wchar_t*) nsource);
+  jlong handle = (jlong)RegisterEventSourceW((const wchar_t*) nserver, (const wchar_t*) nsource);
   free(nserver);
   free(nsource);
   return handle;
@@ -156,11 +169,22 @@ JNIEXPORT jint JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_registerEvent
  */
 JNIEXPORT void JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_reportEvent(
    JNIEnv *env, jobject java_this, jint handle, jstring jstr, jint priority) {
-  
+  Java_org_apache_log4j_nt_NTEventLogAppender_reportEvent64(
+      env, java_this, handle, jstr, priority);
+}
+
+/*
+ * Class:     org_apache_log4j_nt_NTEventLogAppender
+ * Method:    reportEvent64
+ * Signature: (JLjava/lang/String;I)V
+ */
+JNIEXPORT void JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_reportEvent64(
+   JNIEnv *env, jobject java_this, jlong jhandle, jstring jstr, jint priority) {
   jboolean localHandle = JNI_FALSE;
+  HANDLE handle = (HANDLE) jhandle;
   if (handle == 0) {
     // Client didn't give us a handle so make a local one.
-    handle = (jint)RegisterEventSourceW(NULL, L"Log4j");
+    handle = RegisterEventSourceW(NULL, L"Log4j");
     localHandle = JNI_TRUE;
   }
   
@@ -174,14 +198,14 @@ JNIEXPORT void JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_reportEvent(
   // a message resource which consists of just '%1' which is replaced
   // by the string we just created.
   const DWORD messageID = 0x1000;
-  ReportEventW((HANDLE)handle, getType(priority), 
+  ReportEventW(handle, getType(priority), 
 	      getCategory(priority), 
 	      messageID, NULL, 1, 0, (const wchar_t**) &msg, NULL);
   
   free((void *)msg);
   if (localHandle == JNI_TRUE) {
     // Created the handle here so free it here too.
-    DeregisterEventSource((HANDLE)handle);
+    DeregisterEventSource(handle);
   }
   return;
 }
@@ -199,15 +223,31 @@ jint handle)
   DeregisterEventSource((HANDLE)handle);
 }
 
+/*
+ * Class:     org_apache_log4j_nt_NTEventLogAppender
+ * Method:    deregisterEventSource64
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_apache_log4j_nt_NTEventLogAppender_deregisterEventSource64(
+JNIEnv *env, 
+jobject java_this, 
+jlong handle)
+{
+  DeregisterEventSource((HANDLE)handle);
+}
 
 //
 //  Entry point which registers default event source (Log4j)
 //     when invoked using regsvr32 tool.
 //
 //
-STDAPI __declspec(dllexport) DllRegisterServer(void) {
+extern "C" {
+__declspec(dllexport) HRESULT __stdcall DllRegisterServer(void) {
 	HRESULT hr = E_FAIL;
-    HMODULE hmodule = GetModuleHandleW(L"NTEventLogAppender.dll");
+    HMODULE hmodule = gModule;
+    if (hmodule == NULL) {
+        hmodule = GetModuleHandleW(L"NTEventLogAppender.dll");
+    }
     if (hmodule != NULL) {
         wchar_t modpath[_MAX_PATH];
         DWORD modlen = GetModuleFileNameW(hmodule, modpath, _MAX_PATH - 1);
@@ -229,11 +269,11 @@ STDAPI __declspec(dllexport) DllRegisterServer(void) {
 				}
 				if(stat == ERROR_SUCCESS) {
 					DWORD value = 7;
-					stat == RegSetValueExW(hkey, L"TypesSupported", 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
+					stat = RegSetValueExW(hkey, L"TypesSupported", 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
 				}
 				if(stat == ERROR_SUCCESS) {
 					DWORD value = 6;
-					stat == RegSetValueExW(hkey, L"CategoryCount", 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
+					stat = RegSetValueExW(hkey, L"CategoryCount", 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
 				}
 				LONG closeStat = RegCloseKey(hkey);
 				if (stat == ERROR_SUCCESS && closeStat == ERROR_SUCCESS) {
@@ -251,9 +291,32 @@ STDAPI __declspec(dllexport) DllRegisterServer(void) {
 //     when invoked using regsvr32 tool with /u option.
 //
 //
-STDAPI __declspec(dllexport) DllUnregisterServer(void) {
+__declspec(dllexport) HRESULT __stdcall DllUnregisterServer(void) {
 	LONG stat = RegDeleteKeyW(HKEY_LOCAL_MACHINE, 
 		L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\Application\\Log4j");
 	return (stat == ERROR_SUCCESS || stat == ERROR_FILE_NOT_FOUND) ? S_OK : E_FAIL;
+}
+
+BOOL APIENTRY DllMain( HMODULE hModule,
+                       DWORD  ul_reason_for_call,
+                       LPVOID lpReserved
+					 )
+{
+	switch (ul_reason_for_call)
+	{
+	case DLL_PROCESS_ATTACH:
+	    gModule = hModule;
+	    break;
+	case DLL_PROCESS_DETACH:
+	    gModule = 0;
+	    break;
+	    
+	case DLL_THREAD_ATTACH:
+	case DLL_THREAD_DETACH:
+		break;
+	}
+	return TRUE;
+}
+
 }
 #endif
