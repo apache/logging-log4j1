@@ -38,7 +38,7 @@
 				<include>src/assembly/**</include>
 				<include>src/changes/**</include>
 				<include>src/main/**</include>
-				<include>src/ntdll/**</include>
+				<include>src/ntdll/*</include>
 				<include>src/performance/**</include>
 				<include>src/site/**</include>
 				<include>tests/README</include>
@@ -58,6 +58,10 @@
                 </file>
                 <file>
                    <source>target/NTEventLogAppender.dll</source>
+                   <fileMode>0755</fileMode>
+                </file>
+                <file>
+                   <source>src/ntdll/resources/NTEventLogAppender.amd64.dll</source>
                    <fileMode>0755</fileMode>
                 </file>
         </files>

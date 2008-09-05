@@ -30,7 +30,9 @@ import org.apache.log4j.spi.LoggingEvent;
    <p><b>WARNING</b> This appender can only be installed and used on a
    Windows system.
 
-   <p>Do not forget to place the file NTEventLogAppender.dll in a
+   <p>Do not forget to place NTEventLogAppender.dll,
+   NTEventLogAppender.amd64.dll, NTEventLogAppender.ia64.dll
+   or NTEventLogAppender.x86.dll as appropriate in a
    directory that is on the PATH of the Windows system. Otherwise, you
    will get a java.lang.UnsatisfiedLinkError.
 
@@ -157,6 +159,31 @@ public class NTEventLogAppender extends AppenderSkeleton {
   native private void deregisterEventSource(int handle);
 
   static {
-    System.loadLibrary("NTEventLogAppender");
-  }
+    String[] archs;
+    try {
+        archs = new String[] { "." + System.getProperty("os.arch"), ""};
+    } catch(SecurityException e) {
+        archs = new String[] { ".amd64", ".ia64", ".x86", ""};
+    }
+    Throwable t = null;
+    for(int i = 0; i < archs.length; i++) {
+        try {
+            System.loadLibrary("NTEventLogAppender" + archs[i]);
+            t = null;
+            break;
+        } catch(java.lang.UnsatisfiedLinkError e) {
+            t = e;
+        }
+    }
+    if (t != null) {
+        StringBuffer buf = new StringBuffer("Unable to load");
+        for (int i = 0; i < archs.length - 1; i++) {
+            buf.append(" NTEventLogAppender");
+            buf.append(archs[i]);
+            buf.append(".dll");
+        }
+        buf.append(" or NTEventLogAppender.dll.");
+        LogLog.error(buf.toString(), t);
+    }
+}
 }
