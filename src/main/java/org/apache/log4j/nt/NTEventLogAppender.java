@@ -30,16 +30,14 @@ import org.apache.log4j.spi.LoggingEvent;
    <p><b>WARNING</b> This appender can only be installed and used on a
    Windows system.
 
-   <p>Do not forget to place an NTEventLogAppender.dll
-   or "NTEventLogAppender" + System.getProperty("os.arch") + ".dll"
-   on the path to provide the native functions used by this appender
-   or the appender will not function.
+   <p>Do not forget to place the file NTEventLogAppender.dll in a
+   directory that is on the PATH of the Windows system. Otherwise, you
+   will get a java.lang.UnsatisfiedLinkError.
 
    @author <a href="mailto:cstaylor@pacbell.net">Chris Taylor</a>
    @author <a href="mailto:jim_cakalic@na.biomerieux.com">Jim Cakalic</a> */
 public class NTEventLogAppender extends AppenderSkeleton {
   private int _handle = 0;
-  private long handle64 = 0;
 
   private String source = null;
   private String server = null;
@@ -76,15 +74,10 @@ public class NTEventLogAppender extends AppenderSkeleton {
     }
 
     try {
-      handle64 = registerEventSource64(server, source);
-    } catch(UnsatisfiedLinkError le) {
-        try {
-			_handle = registerEventSource(server, source);
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-    } catch (Throwable e) {
+      _handle = registerEventSource(server, source);
+    } catch (Exception e) {
       e.printStackTrace();
+      _handle = 0;
     }
   }
 
@@ -97,24 +90,10 @@ public class NTEventLogAppender extends AppenderSkeleton {
   void activateOptions() {
     if (source != null) {
       try {
-          if (handle64 != 0) {
-             deregisterEventSource64(handle64);
-          } else if (_handle != 0) {
-             deregisterEventSource(_handle);
-        }
-      } catch(Throwable t) {          
-      }
-      try {
-         handle64 = registerEventSource64(server, source);
-      } catch(UnsatisfiedLinkError le) {
-          le.printStackTrace();
-          try {
-             _handle = registerEventSource(server, source);
-          } catch (Throwable e) {
-            LogLog.error("Could not register event source.", e);
-          }
-      } catch(Throwable e) {
-          LogLog.error("Could not register event source.", e);
+   _handle = registerEventSource(server, source);
+      } catch (Exception e) {
+   LogLog.error("Could not register event source.", e);
+   _handle = 0;
       }
     }
   }
@@ -122,51 +101,33 @@ public class NTEventLogAppender extends AppenderSkeleton {
 
   public void append(LoggingEvent event) {
 
-    if (handle64 != 0 || _handle != 0) {
-        StringBuffer sbuf = new StringBuffer();
+    StringBuffer sbuf = new StringBuffer();
 
-        sbuf.append(layout.format(event));
-        if(layout.ignoresThrowable()) {
-            String[] s = event.getThrowableStrRep();
-            if (s != null) {
-                int len = s.length;
-                for(int i = 0; i < len; i++) {
-                    sbuf.append(s[i]);
-                }
-            }
-        }
-        // Normalize the log message level into the supported categories
-        int nt_category = event.getLevel().toInt();
-
-        // Anything above FATAL or below DEBUG is labeled as INFO.
-        //if (nt_category > FATAL || nt_category < DEBUG) {
-        //  nt_category = INFO;
-        //}
-        try {
-            if (handle64 != 0) {
-                reportEvent64(handle64, sbuf.toString(), nt_category);
-            } else {
-                reportEvent(_handle, sbuf.toString(), nt_category);
-            }
-        } catch(Throwable ex) {
-        }
+    sbuf.append(layout.format(event));
+    if(layout.ignoresThrowable()) {
+      String[] s = event.getThrowableStrRep();
+      if (s != null) {
+   int len = s.length;
+   for(int i = 0; i < len; i++) {
+     sbuf.append(s[i]);
+   }
+      }
     }
+    // Normalize the log message level into the supported categories
+    int nt_category = event.getLevel().toInt();
+
+    // Anything above FATAL or below DEBUG is labeled as INFO.
+    //if (nt_category > FATAL || nt_category < DEBUG) {
+    //  nt_category = INFO;
+    //}
+    reportEvent(_handle, sbuf.toString(), nt_category);
   }
 
 
   public
   void finalize() {
-    try {
-        if (handle64 != 0) {
-            deregisterEventSource64(handle64);
-            handle64 = 0;
-        }
-        if (_handle != 0) {
-            deregisterEventSource(_handle);
-            _handle = 0;
-        }
-    } catch(Throwable t) {
-    }
+    deregisterEventSource(_handle);
+    _handle = 0;
   }
 
   /**
@@ -194,25 +155,8 @@ public class NTEventLogAppender extends AppenderSkeleton {
   native private int registerEventSource(String server, String source);
   native private void reportEvent(int handle, String message, int level);
   native private void deregisterEventSource(int handle);
-  native private long registerEventSource64(String server, String source);
-  native private void reportEvent64(long handle, String message, int level);
-  native private void deregisterEventSource64(long handle);
 
   static {
-    try {
-        System.loadLibrary("NTEventLogAppender");
-    } catch(UnsatisfiedLinkError e) {
-        try {
-            String archLib = "NTEventLogAppender" + System.getProperty("os.arch");
-            try {
-                System.loadLibrary(archLib);
-            } catch(Throwable t) {
-                LogLog.error("Unable to load NTEventLogAppender.dll or " + archLib + ".dll.", t);
-            }
-        } catch(Throwable t) {
-            LogLog.error("Unable to load NTEventLogAppender.dll", e);
-        }
-    }
-
+    System.loadLibrary("NTEventLogAppender");
   }
 }
