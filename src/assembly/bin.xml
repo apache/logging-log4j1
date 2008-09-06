@@ -61,7 +61,7 @@
                    <fileMode>0755</fileMode>
                 </file>
                 <file>
-                   <source>src/ntdll/resources/NTEventLogAppender.amd64.dll</source>
+                   <source>NTEventLogAppender.amd64.dll</source>
                    <fileMode>0755</fileMode>
                 </file>
         </files>

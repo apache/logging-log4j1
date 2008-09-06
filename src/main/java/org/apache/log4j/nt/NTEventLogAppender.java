@@ -161,29 +161,22 @@ public class NTEventLogAppender extends AppenderSkeleton {
   static {
     String[] archs;
     try {
-        archs = new String[] { "." + System.getProperty("os.arch"), ""};
+        archs = new String[] { System.getProperty("os.arch")};
     } catch(SecurityException e) {
-        archs = new String[] { ".amd64", ".ia64", ".x86", ""};
+        archs = new String[] { "amd64", "ia64", "x86"};
     }
-    Throwable t = null;
+    boolean loaded = false;
     for(int i = 0; i < archs.length; i++) {
         try {
-            System.loadLibrary("NTEventLogAppender" + archs[i]);
-            t = null;
+            System.loadLibrary("NTEventLogAppender." + archs[i]);
+            loaded = true;
             break;
         } catch(java.lang.UnsatisfiedLinkError e) {
-            t = e;
+            loaded = false;
         }
     }
-    if (t != null) {
-        StringBuffer buf = new StringBuffer("Unable to load");
-        for (int i = 0; i < archs.length - 1; i++) {
-            buf.append(" NTEventLogAppender");
-            buf.append(archs[i]);
-            buf.append(".dll");
-        }
-        buf.append(" or NTEventLogAppender.dll.");
-        LogLog.error(buf.toString(), t);
+    if (!loaded) {
+        System.loadLibrary("NTEventLogAppender");
     }
 }
 }
