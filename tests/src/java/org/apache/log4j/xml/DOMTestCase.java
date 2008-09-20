@@ -24,9 +24,13 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.VectorAppender;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableRenderer;
+import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.apache.log4j.util.Compare;
 import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.util.Filter;
@@ -35,6 +39,8 @@ import org.apache.log4j.util.JunitTestRunnerFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
+
+import java.util.Properties;
 
 public class DOMTestCase extends TestCase {
 
@@ -331,5 +337,49 @@ public class DOMTestCase extends TestCase {
       String file = a1.getFile();
       assertEquals("output/subst-test.A1", file);
   }
+
+    /**
+     * Mock ThrowableRenderer for testThrowableRenderer.  See bug 45721.
+     */
+    public static class MockThrowableRenderer implements ThrowableRenderer, OptionHandler {
+        private boolean activated = false;
+        private boolean showVersion = true;
+
+        public MockThrowableRenderer() {
+        }
+
+        public void activateOptions() {
+            activated = true;
+        }
+
+        public boolean isActivated() {
+            return activated;
+        }
+
+        public String[] doRender(final Throwable t) {
+            return new String[0];
+        }
+
+        public void setShowVersion(boolean v) {
+            showVersion = v;
+        }
+
+        public boolean getShowVersion() {
+            return showVersion;
+        }
+    }
+
+    /**
+     * Test of log4j.throwableRenderer support.  See bug 45721.
+     */
+    public void testThrowableRenderer1() {
+        DOMConfigurator.configure("input/xml/throwableRenderer1.xml");
+        ThrowableRendererSupport repo = (ThrowableRendererSupport) LogManager.getLoggerRepository();
+        MockThrowableRenderer renderer = (MockThrowableRenderer) repo.getThrowableRenderer();
+        LogManager.resetConfiguration();
+        assertNotNull(renderer);
+        assertEquals(true, renderer.isActivated());
+        assertEquals(false, renderer.getShowVersion());
+    }
 
 }

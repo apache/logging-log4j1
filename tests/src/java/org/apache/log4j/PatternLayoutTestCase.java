@@ -285,6 +285,7 @@ public class PatternLayoutTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.14"));
   }
 
+
   void common() {
     String oldThreadName = Thread.currentThread().getName();
     Thread.currentThread().setName("main");

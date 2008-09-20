@@ -32,6 +32,8 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.RendererSupport;
+import org.apache.log4j.spi.ThrowableRenderer;
+import org.apache.log4j.spi.ThrowableRendererSupport;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -100,6 +102,7 @@ public class PropertyConfigurator implements Configurator {
   static final String      APPENDER_PREFIX = "log4j.appender.";
   static final String      RENDERER_PREFIX = "log4j.renderer.";
   static final String      THRESHOLD_PREFIX = "log4j.threshold";
+  private static final String      THROWABLE_RENDERER_PREFIX = "log4j.throwableRenderer";
 
   /** Key for specifying the {@link org.apache.log4j.spi.LoggerFactory
       LoggerFactory}.  Currently set to "<code>log4j.loggerFactory</code>".  */
@@ -231,6 +234,24 @@ public class PropertyConfigurator implements Configurator {
     <pre>
     log4j.renderer.my.Fruit=my.FruitRenderer
     </pre>
+
+   <h3>ThrowableRenderer</h3>
+
+   You can customize the way an instance of Throwable is
+   converted to String before being logged. This is done by
+   specifying an {@link org.apache.log4j.spi.ThrowableRenderer ThrowableRenderer}.
+
+   <p>The syntax is:
+
+   <pre>
+   log4j.throwableRenderer=fully.qualified.name.of.rendering.class
+   log4j.throwableRenderer.paramName=paramValue
+   </pre>
+
+   As in,
+   <pre>
+   log4j.throwableRenderer=org.apache.log4j.EnhancedThrowableRenderer
+   </pre>
 
     <h3>Logger Factories</h3>
 
@@ -588,6 +609,23 @@ public class PropertyConfigurator implements Configurator {
 	  RendererMap.addRenderer((RendererSupport) hierarchy, renderedClass,
 				  renderingClass);
 	}
+      } else if (key.equals(THROWABLE_RENDERER_PREFIX)) {
+          if (hierarchy instanceof ThrowableRendererSupport) {
+            ThrowableRenderer tr = (ThrowableRenderer)
+                  OptionConverter.instantiateByKey(props,
+                          THROWABLE_RENDERER_PREFIX,
+                          org.apache.log4j.spi.ThrowableRenderer.class,
+                          null);
+            if(tr == null) {
+                LogLog.error(
+                    "Could not instantiate throwableRenderer.");
+            } else {
+                PropertySetter setter = new PropertySetter(tr);
+                setter.setProperties(props, THROWABLE_RENDERER_PREFIX + ".");
+                ((ThrowableRendererSupport) hierarchy).setThrowableRenderer(tr);
+
+            }
+          }
       }
     }
   }

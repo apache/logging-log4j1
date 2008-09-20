@@ -35,6 +35,8 @@ import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RendererSupport;
+import org.apache.log4j.spi.ThrowableRenderer;
+import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -89,6 +91,7 @@ public class DOMConfigurator implements Configurator {
   static final String CONFIGURATION_TAG = "log4j:configuration";
   static final String OLD_CONFIGURATION_TAG = "configuration";
   static final String RENDERER_TAG      = "renderer";
+  private static final String THROWABLE_RENDERER_TAG = "throwableRenderer";
   static final String APPENDER_TAG 	= "appender";
   static final String APPENDER_REF_TAG 	= "appender-ref";  
   static final String PARAM_TAG    	= "param";
@@ -591,6 +594,49 @@ public class DOMConfigurator implements Configurator {
     }
   }
 
+    /**
+     * Parses throwable renderer.
+     * @param element throwableRenderer element.
+     * @return configured throwable renderer.
+     * @since 1.2.16.
+     */
+    protected ThrowableRenderer parseThrowableRenderer(final Element element) {
+        String className = subst(element.getAttribute(CLASS_ATTR));
+        LogLog.debug("Parsing throwableRenderer of class: \""+className+"\"");
+        try {
+          Object instance 	= Loader.loadClass(className).newInstance();
+          ThrowableRenderer tr   	= (ThrowableRenderer)instance;
+          PropertySetter propSetter = new PropertySetter(tr);
+
+          NodeList params 	= element.getChildNodes();
+          final int length 	= params.getLength();
+
+          for (int loop = 0; loop < length; loop++) {
+                Node currentNode = (Node)params.item(loop);
+                if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element currentElement = (Element) currentNode;
+                    String tagName = currentElement.getTagName();
+                    if(tagName.equals(PARAM_TAG)) {
+                        setParameter(currentElement, propSetter);
+                    } else {
+                        parseUnrecognizedElement(instance, currentElement, props);
+                    }
+                }
+          }
+
+          propSetter.activate();
+          return tr;
+        }
+        catch (Exception oops) {
+            if (oops instanceof InterruptedException || oops instanceof InterruptedIOException) {
+                Thread.currentThread().interrupt();
+            }
+            LogLog.error("Could not create the ThrowableRenderer. Reported error follows.",
+               oops);
+          return null;
+        }
+    }
+
   /**
      Used internally to parse a level  element.
   */
@@ -950,7 +996,14 @@ public class DOMConfigurator implements Configurator {
 	  parseRoot(currentElement);
 	} else if(tagName.equals(RENDERER_TAG)) {
 	  parseRenderer(currentElement);
-	} else if (!(tagName.equals(APPENDER_TAG)
+    } else if(tagName.equals(THROWABLE_RENDERER_TAG)) {
+        if (repository instanceof ThrowableRendererSupport) {
+            ThrowableRenderer tr = parseThrowableRenderer(currentElement);
+            if (tr != null) {
+                ((ThrowableRendererSupport) repository).setThrowableRenderer(tr);
+            }
+        }
+    } else if (!(tagName.equals(APPENDER_TAG)
             || tagName.equals(CATEGORY_FACTORY_TAG)
             || tagName.equals(LOGGER_FACTORY_TAG))) {
         quietParseUnrecognizedElement(repository, currentElement, props);

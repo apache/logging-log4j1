@@ -162,7 +162,7 @@ public class LoggingEvent implements java.io.Serializable {
     this.level = level;
     this.message = message;
     if(throwable != null) {
-      this.throwableInfo = new ThrowableInformation(throwable);
+      this.throwableInfo = new ThrowableInformation(throwable, logger);
     }
     timeStamp = System.currentTimeMillis();
   }
@@ -187,7 +187,7 @@ public class LoggingEvent implements java.io.Serializable {
     this.level = level;
     this.message = message;
     if(throwable != null) {
-      this.throwableInfo = new ThrowableInformation(throwable);
+      this.throwableInfo = new ThrowableInformation(throwable, logger);
     }
 
     this.timeStamp = timeStamp;
