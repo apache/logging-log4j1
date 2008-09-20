@@ -22,6 +22,8 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.CodeSource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Enhanced implementation of ThrowableRenderer.  Uses Throwable.getStackTrace
@@ -64,8 +66,9 @@ public final class EnhancedThrowableRenderer implements ThrowableRenderer {
                 Object[] elements = (Object[]) getStackTraceMethod.invoke(throwable, noArgs);
                 String[] lines = new String[elements.length + 1];
                 lines[0] = throwable.toString();
+                Map classMap = new HashMap();
                 for(int i = 0; i < elements.length; i++) {
-                    lines[i+1] = formatElement(elements[i]);
+                    lines[i+1] = formatElement(elements[i], classMap);
                 }
                 return lines;
             } catch(Exception ex) {
@@ -77,60 +80,68 @@ public final class EnhancedThrowableRenderer implements ThrowableRenderer {
     /**
      * Format one element from stack trace.
      * @param element element, may not be null.
+     * @param classMap map of class name to location.
      * @return string representation of element.
      */
-    private String formatElement(final Object element) {
+    private String formatElement(final Object element, final Map classMap) {
         StringBuffer buf = new StringBuffer("\tat ");
         buf.append(element);
         try {
             String className = getClassNameMethod.invoke(element, (Object[]) null).toString();
-            Class cls = findClass(className);
-            buf.append('[');
-            try {
-                CodeSource source = cls.getProtectionDomain().getCodeSource();
-                if (source != null) {
-                   URL locationURL = source.getLocation();
-                   if (locationURL != null) {
-                       //
-                       //   if a file: URL
-                       //
-                       if ("file".equals(locationURL.getProtocol())) {
-                           String path = locationURL.getPath();
-                           if (path != null) {
-                               //
-                               //  find the last file separator character
-                               //
-                               int lastSlash = path.lastIndexOf('/');
-                               int lastBack = path.lastIndexOf(File.separatorChar);
-                               if (lastBack > lastSlash) {
-                                   lastSlash = lastBack;
-                               }
-                               //
-                               //  if no separator or ends with separator (a directory)
-                               //     then output the URL, otherwise just the file name.
-                               //
-                               if (lastSlash <= 0 || lastSlash == path.length() - 1) {
-                                   buf.append(locationURL);
-                               } else {
-                                   buf.append(path.substring(lastSlash + 1));
-                               }
-                           }
-                       } else {
-                           buf.append(locationURL);
-                       }
-                   }
+            Object classDetails = classMap.get(className);
+            if (classDetails != null) {
+                buf.append(classDetails);
+            } else {
+                Class cls = findClass(className);
+                int detailStart = buf.length();
+                buf.append('[');
+                try {
+                    CodeSource source = cls.getProtectionDomain().getCodeSource();
+                    if (source != null) {
+                        URL locationURL = source.getLocation();
+                        if (locationURL != null) {
+                            //
+                            //   if a file: URL
+                            //
+                            if ("file".equals(locationURL.getProtocol())) {
+                                String path = locationURL.getPath();
+                                if (path != null) {
+                                    //
+                                    //  find the last file separator character
+                                    //
+                                    int lastSlash = path.lastIndexOf('/');
+                                    int lastBack = path.lastIndexOf(File.separatorChar);
+                                    if (lastBack > lastSlash) {
+                                        lastSlash = lastBack;
+                                    }
+                                    //
+                                    //  if no separator or ends with separator (a directory)
+                                    //     then output the URL, otherwise just the file name.
+                                    //
+                                    if (lastSlash <= 0 || lastSlash == path.length() - 1) {
+                                        buf.append(locationURL);
+                                    } else {
+                                        buf.append(path.substring(lastSlash + 1));
+                                    }
+                                }
+                            } else {
+                                buf.append(locationURL);
+                            }
+                        }
+                    }
+                } catch(SecurityException ex) {
                 }
-            } catch(SecurityException ex) {
-            }
-            buf.append(':');
-            Package pkg = cls.getPackage();
-            if (pkg != null) {
-                String implVersion = pkg.getImplementationVersion();
-                if (implVersion != null) {
-                    buf.append(implVersion);
+                buf.append(':');
+                Package pkg = cls.getPackage();
+                if (pkg != null) {
+                    String implVersion = pkg.getImplementationVersion();
+                    if (implVersion != null) {
+                        buf.append(implVersion);
+                    }
                 }
+                buf.append(']');
+                classMap.put(className, buf.substring(detailStart));
             }
-            buf.append(']');
         } catch(Exception ex) {
         }
         return buf.toString();
