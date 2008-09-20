@@ -27,7 +27,10 @@ import java.util.Properties;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableRenderer;
+import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.apache.log4j.varia.LevelRangeFilter;
+import org.apache.log4j.helpers.OptionConverter;
 
 /**
  * Test property configurator.
@@ -267,4 +270,51 @@ public class PropertyConfiguratorTest extends TestCase {
         LogManager.resetConfiguration();
     }
 
+
+    /**
+     * Mock ThrowableRenderer for testThrowableRenderer.  See bug 45721.
+     */
+    public static class MockThrowableRenderer implements ThrowableRenderer, OptionHandler {
+        private boolean activated = false;
+        private boolean showVersion = true;
+
+        public MockThrowableRenderer() {
+        }
+
+        public void activateOptions() {
+            activated = true;
+        }
+
+        public boolean isActivated() {
+            return activated;
+        }
+
+        public String[] doRender(final Throwable t) {
+            return new String[0];
+        }
+
+        public void setShowVersion(boolean v) {
+            showVersion = v;
+        }
+
+        public boolean getShowVersion() {
+            return showVersion;
+        }
+    }
+
+    /**
+     * Test of log4j.throwableRenderer support.  See bug 45721.
+     */
+    public void testThrowableRenderer() {
+        Properties props = new Properties();
+        props.put("log4j.throwableRenderer", "org.apache.log4j.PropertyConfiguratorTest$MockThrowableRenderer");
+        props.put("log4j.throwableRenderer.showVersion", "false");
+        PropertyConfigurator.configure(props);
+        ThrowableRendererSupport repo = (ThrowableRendererSupport) LogManager.getLoggerRepository();
+        MockThrowableRenderer renderer = (MockThrowableRenderer) repo.getThrowableRenderer();
+        LogManager.resetConfiguration();
+        assertNotNull(renderer);
+        assertEquals(true, renderer.isActivated());
+        assertEquals(false, renderer.getShowVersion());
+    }
 }

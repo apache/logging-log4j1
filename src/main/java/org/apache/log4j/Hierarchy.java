@@ -36,10 +36,11 @@ import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.HierarchyEventListener;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.RendererSupport;
-import org.apache.log4j.Appender;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.or.ObjectRenderer;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.ThrowableRendererSupport;
+import org.apache.log4j.spi.ThrowableRenderer;
 
 /**
    This class is specialized in retrieving loggers by name and also
@@ -62,7 +63,7 @@ import org.apache.log4j.helpers.LogLog;
    @author Ceki G&uuml;lc&uuml;
 
 */
-public class Hierarchy implements LoggerRepository, RendererSupport {
+public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRendererSupport {
 
   private LoggerFactory defaultFactory;
   private Vector listeners;
@@ -76,6 +77,8 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
 
   boolean emittedNoAppenderWarning = false;
   boolean emittedNoResourceBundleWarning = false;
+
+  private ThrowableRenderer throwableRenderer = null;
 
   /**
      Create a new logger hierarchy.
@@ -396,10 +399,11 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
       }
     }
     rendererMap.clear();
+    throwableRenderer = null;
   }
 
   /**
-     Does mothing.
+     Does nothing.
 
      @deprecated Deprecated with no replacement.
    */
@@ -416,6 +420,20 @@ public class Hierarchy implements LoggerRepository, RendererSupport {
   public
   void setRenderer(Class renderedClass, ObjectRenderer renderer) {
     rendererMap.put(renderedClass, renderer);
+  }
+
+    /**
+     * {@inheritDoc}
+     */
+  public void setThrowableRenderer(final ThrowableRenderer renderer) {
+      throwableRenderer = renderer;
+  }
+
+    /**
+     * {@inheritDoc}
+     */
+  public ThrowableRenderer getThrowableRenderer() {
+      return throwableRenderer;
   }
 
 
