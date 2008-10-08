@@ -214,6 +214,8 @@ public class SMTPAppender extends AppenderSkeleton
     if(locationInfo) {
       event.getLocationInformation();
     }
+    event.getRenderedMessage();
+    event.getThrowableStrRep();
     cb.add(event);
     if(evaluator.isTriggeringEvent(event)) {
       sendBuffer();
