@@ -62,6 +62,7 @@
        <action action="fix" issue="45659">Incorrect user mailing list URL.</action>
        <action action="fix" issue="44386">NTEventLogAppender.dll for 64-bit editions for Microsoft Windows.</action>
        <action action="fix" issue="45721">Add configuration of ThrowableRenderers and add org.apache.log4j.EnhancedThrowableRenderer.</action>
+       <action action="fix" issue="45969">SMTPAppender does not force evaluation of message at request time</action>
     </release>
 
   
