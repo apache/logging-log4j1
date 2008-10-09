@@ -67,6 +67,8 @@ import javax.mail.internet.AddressException;
    
    This class has implemented UnrecognizedElementHandler since 1.2.15.
 
+   Since 1.2.16, SMTP over SSL is supported by setting SMTPProtocol to "smpts".
+
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
 public class SMTPAppender extends AppenderSkeleton
@@ -85,6 +87,8 @@ public class SMTPAppender extends AppenderSkeleton
   private String smtpHost;
   private String smtpUsername;
   private String smtpPassword;
+  private String smtpProtocol;
+  private int smtpPort = -1;
   private boolean smtpDebug = false;
   private int bufferSize = 512;
   private boolean locationInfo = false;
@@ -177,13 +181,22 @@ public class SMTPAppender extends AppenderSkeleton
     } catch(SecurityException ex) {
         props = new Properties();
     }
+
+    String prefix = "mail.smtp";
+    if (smtpProtocol != null) {
+        props.put("mail.transport.protocol", smtpProtocol);
+        prefix = "mail." + smtpProtocol;
+    }
     if (smtpHost != null) {
-      props.put("mail.smtp.host", smtpHost);
+      props.put(prefix + ".host", smtpHost);
+    }
+    if (smtpPort > 0) {
+        props.put(prefix + ".port", String.valueOf(smtpPort));
     }
     
     Authenticator auth = null;
     if(smtpPassword != null && smtpUsername != null) {
-      props.put("mail.smtp.auth", "true");
+      props.put(prefix + ".auth", "true");
       auth = new Authenticator() {
         protected PasswordAuthentication getPasswordAuthentication() {
           return new PasswordAuthentication(smtpUsername, smtpPassword);
@@ -191,6 +204,9 @@ public class SMTPAppender extends AppenderSkeleton
       };
     }
     Session session = Session.getInstance(props, auth);
+    if (smtpProtocol != null) {
+        session.setProtocolForAddress("rfc822", smtpProtocol);
+    }
     if (smtpDebug) {
         session.setDebug(smtpDebug);
     }
@@ -607,6 +623,49 @@ public class SMTPAppender extends AppenderSkeleton
 
       return false;
   }
+
+    /**
+     * Get transport protocol.
+     * Typically null or "smtps".
+     *
+     * @return transport protocol, may be null.
+     * @since 1.2.16
+     */
+  public final String getSMTPProtocol() {
+      return smtpProtocol;
+  }
+
+    /**
+     * Set transport protocol.
+     * Typically null or "smtps".
+     *
+     * @param val transport protocol, may be null.
+     * @since 1.2.16
+     */
+  public final void setSMTPProtocol(final String val) {
+      smtpProtocol = val;
+  }
+
+    /**
+     * Get port.
+     *
+     * @return port, negative values indicate use of default ports for protocol.
+     * @since 1.2.16
+     */
+  public final int getSMTPPort() {
+        return smtpPort;
+  }
+
+    /**
+     * Set port.
+     *
+     * @param val port, negative values indicate use of default ports for protocol.
+     * @since 1.2.16
+     */
+  public final void setSMTPPort(final int val) {
+        smtpPort = val;
+  }
+
 
 }
 
