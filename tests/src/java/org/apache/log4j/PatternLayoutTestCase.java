@@ -18,25 +18,17 @@
 package org.apache.log4j;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.framework.Test;
-
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-import org.apache.log4j.MDC;
-import org.apache.log4j.NDC;
-
-import org.apache.log4j.util.LineNumberFilter;
-import org.apache.log4j.util.Transformer;
-import org.apache.log4j.util.Filter;
-import org.apache.log4j.util.ControlFilter;
-import org.apache.log4j.util.Compare;
-import org.apache.log4j.util.ISO8601Filter;
-import org.apache.log4j.util.AbsoluteTimeFilter;
-import org.apache.log4j.util.RelativeTimeFilter;
 import org.apache.log4j.util.AbsoluteDateAndTimeFilter;
-import org.apache.log4j.util.SunReflectFilter;
+import org.apache.log4j.util.AbsoluteTimeFilter;
+import org.apache.log4j.util.Compare;
+import org.apache.log4j.util.ControlFilter;
+import org.apache.log4j.util.Filter;
+import org.apache.log4j.util.ISO8601Filter;
 import org.apache.log4j.util.JunitTestRunnerFilter;
+import org.apache.log4j.util.LineNumberFilter;
+import org.apache.log4j.util.RelativeTimeFilter;
+import org.apache.log4j.util.SunReflectFilter;
+import org.apache.log4j.util.Transformer;
 
 public class PatternLayoutTestCase extends TestCase {
 
@@ -285,6 +277,18 @@ public class PatternLayoutTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/patternLayout.14"));
   }
 
+    public void testMDC1() throws Exception {
+      PropertyConfigurator.configure("input/patternLayout.mdc.1.properties");
+      MDC.put("key1", "va11");
+      MDC.put("key2", "va12");
+      logger.debug("Hello World");
+      MDC.remove("key1");
+      MDC.remove("key2");
+
+      assertTrue(Compare.compare(TEMP, "witness/patternLayout.mdc.1"));
+    }
+
+
 
   void common() {
     String oldThreadName = Thread.currentThread().getName();
@@ -321,24 +325,5 @@ public class PatternLayoutTestCase extends TestCase {
     Thread.currentThread().setName(oldThreadName);
   }
 
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new PatternLayoutTestCase("test1"));
-    suite.addTest(new PatternLayoutTestCase("test2"));
-    suite.addTest(new PatternLayoutTestCase("test3"));
-    suite.addTest(new PatternLayoutTestCase("test4"));
-    suite.addTest(new PatternLayoutTestCase("test5"));
-    suite.addTest(new PatternLayoutTestCase("test6"));
-    suite.addTest(new PatternLayoutTestCase("test7"));
-    suite.addTest(new PatternLayoutTestCase("test8"));
-    suite.addTest(new PatternLayoutTestCase("test9"));
-    suite.addTest(new PatternLayoutTestCase("test10"));
-    suite.addTest(new PatternLayoutTestCase("test11"));
-    suite.addTest(new PatternLayoutTestCase("test12"));
-    suite.addTest(new PatternLayoutTestCase("test13"));
-    suite.addTest(new PatternLayoutTestCase("test14"));
-    return suite;
-  }
 
 }
