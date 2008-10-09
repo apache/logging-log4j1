@@ -25,6 +25,8 @@ import org.apache.log4j.spi.LocationInfo;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.Arrays;
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
 //                 Igor E. Poteryaev <jah@mail.ru>
@@ -460,11 +462,29 @@ public class PatternParser {
 
     public
     String convert(LoggingEvent event) {
-      Object val = event.getMDC(key);
-      if(val == null) {
-	return null;
+      if (key == null) {
+          StringBuffer buf = new StringBuffer("{");
+          Map properties = event.getProperties();
+          if (properties.size() > 0) {
+            Object[] keys = properties.keySet().toArray();
+            Arrays.sort(keys);
+            for (int i = 0; i < keys.length; i++) {
+                buf.append('{');
+                buf.append(keys[i]);
+                buf.append(',');
+                buf.append(properties.get(keys[i]));
+                buf.append('}');
+            }
+          }
+          buf.append('}');
+          return buf.toString();
       } else {
-	return val.toString();
+        Object val = event.getMDC(key);
+        if(val == null) {
+	        return null;
+        } else {
+	        return val.toString();
+        }
       }
     }
   }
