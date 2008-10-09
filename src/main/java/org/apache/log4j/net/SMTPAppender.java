@@ -92,6 +92,7 @@ public class SMTPAppender extends AppenderSkeleton
   private boolean smtpDebug = false;
   private int bufferSize = 512;
   private boolean locationInfo = false;
+  private boolean sendOnClose = false;
 
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
   protected Message msg;
@@ -270,6 +271,9 @@ public class SMTPAppender extends AppenderSkeleton
   public
   void close() {
     this.closed = true;
+    if (sendOnClose) {
+        sendBuffer();
+    }
   }
 
   InternetAddress getAddress(String addressStr) {
@@ -666,6 +670,25 @@ public class SMTPAppender extends AppenderSkeleton
         smtpPort = val;
   }
 
+    /**
+     * Get sendOnClose.
+     *
+     * @return if true all buffered logging events will be sent when the appender is closed.
+     * @since 1.2.16
+     */
+  public final boolean getSendOnClose() {
+        return sendOnClose;
+  }
+
+    /**
+     * Set sendOnClose.
+     *
+     * @param val if true all buffered logging events will be sent when appender is closed.
+     * @since 1.2.16
+     */
+  public final void setSendOnClose(final boolean val) {
+        sendOnClose = val;
+  }
 
 }
 
