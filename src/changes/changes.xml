@@ -60,12 +60,13 @@
        <action action="fix" issue="45635">Support -Dm2_repo option on Maven build for non-default Maven repository location.</action>
        <action action="fix" issue="45636">2 tests for DateLayout are failing because of ill initialized DateFormat.</action>
        <action action="fix" issue="45659">Incorrect user mailing list URL.</action>
-       <action action="fix" issue="44386">NTEventLogAppender.dll for 64-bit editions for Microsoft Windows.</action>
-       <action action="fix" issue="45721">Add configuration of ThrowableRenderers and add org.apache.log4j.EnhancedThrowableRenderer.</action>
+       <action action="add" issue="44386">NTEventLogAppender.dll for 64-bit editions for Microsoft Windows.</action>
+       <action action="add" issue="45721">Add configuration of ThrowableRenderers and add org.apache.log4j.EnhancedThrowableRenderer.</action>
        <action action="fix" issue="45969">SMTPAppender does not force evaluation of message at request time</action>
-       <action action="fix" issue="25355">Support SSL transport in SMTPAppender</action>
-       <action action="fix" issue="45980">SMTPAppender should have a sendOnClose option</action>
+       <action action="add" issue="25355">Support SSL transport in SMTPAppender</action>
+       <action action="add" issue="45980">SMTPAppender should have a sendOnClose option</action>
        <action action="fix" issue="45982">Support %X layout specification to output all MDC key-value pairs</action>
+       <action action="add" issue="45990">Add replyTo attribute to SMTPAppender</action>
     </release>
 
   

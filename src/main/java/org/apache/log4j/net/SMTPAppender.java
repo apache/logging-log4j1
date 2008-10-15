@@ -83,6 +83,10 @@ public class SMTPAppender extends AppenderSkeleton
    */
   private String bcc;  
   private String from;
+  /**
+   * Comma separated list of replyTo addresses.
+   */
+  private String replyTo;
   private String subject;
   private String smtpHost;
   private String smtpUsername;
@@ -154,6 +158,11 @@ public class SMTPAppender extends AppenderSkeleton
        } else {
 	 		msg.setFrom();
 	   }
+
+      //Add ReplyTo addresses if defined.
+         if (replyTo != null && replyTo.length() > 0) {
+               msg.setReplyTo(parseAddress(replyTo));
+         }
 
        if (to != null && to.length() > 0) {
              msg.setRecipients(Message.RecipientType.TO, parseAddress(to));
@@ -380,6 +389,16 @@ public class SMTPAppender extends AppenderSkeleton
   }
 
   /**
+     Get the reply addresses.
+     @return reply addresses as comma separated string, may be null.
+     @since 1.2.16
+   */
+  public
+  String getReplyTo() {
+    return replyTo;
+  }
+
+  /**
      Returns value of the <b>Subject</b> option.
    */
   public
@@ -395,6 +414,17 @@ public class SMTPAppender extends AppenderSkeleton
   void setFrom(String from) {
     this.from = from;
   }
+
+  /**
+     Set the e-mail addresses to which replies should be directed.
+     @param addresses reply addresses as comma separated string, may be null.
+     @since 1.2.16
+   */
+  public
+  void setReplyTo(final String addresses) {
+    this.replyTo = addresses;
+  }
+
 
   /**
      The <b>Subject</b> option takes a string value which should be a
