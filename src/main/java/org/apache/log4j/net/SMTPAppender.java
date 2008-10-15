@@ -280,7 +280,7 @@ public class SMTPAppender extends AppenderSkeleton
   public
   void close() {
     this.closed = true;
-    if (sendOnClose) {
+    if (sendOnClose && cb.length() > 0) {
         sendBuffer();
     }
   }
@@ -353,8 +353,10 @@ public class SMTPAppender extends AppenderSkeleton
 	}
       }
       t = layout.getFooter();
-      if(t != null)
-	sbuf.append(t);
+      if(t != null) {
+	    sbuf.append(t);
+      }
+      
       part.setContent(sbuf.toString(), layout.getContentType());
 
       Multipart mp = new MimeMultipart();
