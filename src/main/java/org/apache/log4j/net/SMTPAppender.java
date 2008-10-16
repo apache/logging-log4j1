@@ -18,33 +18,38 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
 import org.apache.log4j.Layout;
-import org.apache.log4j.xml.UnrecognizedElementHandler;
+import org.apache.log4j.Level;
 import org.apache.log4j.helpers.CyclicBuffer;
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.ErrorCode;
-import org.apache.log4j.spi.TriggeringEventEvaluator;
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.TriggeringEventEvaluator;
+import org.apache.log4j.xml.UnrecognizedElementHandler;
 import org.w3c.dom.Element;
 
-import java.util.Properties;
-import java.util.Date;
-
-import javax.mail.Session;
 import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Transport;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import javax.mail.Multipart;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.InternetAddress;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.InternetHeaders;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.Date;
+import java.util.Properties;
 
 /**
    Send an e-mail when a specific logging event occurs, typically on
@@ -135,8 +140,12 @@ public class SMTPAppender extends AppenderSkeleton
      try {
         addressMessage(msg);
         if(subject != null) {
-	       msg.setSubject(subject);
-	    }
+           try {
+                msg.setSubject(MimeUtility.encodeText(subject, "UTF-8", null));
+           } catch(UnsupportedEncodingException ex) {
+                LogLog.error("Unable to encode SMTP subject", ex);
+           }
+        }
      } catch(MessagingException e) {
        LogLog.error("Could not activate SMTPAppender options.", e );
      }
@@ -331,8 +340,6 @@ public class SMTPAppender extends AppenderSkeleton
     // Note: this code already owns the monitor for this
     // appender. This frees us from needing to synchronize on 'cb'.
     try {
-      MimeBodyPart part = new MimeBodyPart();
-
       StringBuffer sbuf = new StringBuffer();
       String t = layout.getHeader();
       if(t != null)
@@ -356,8 +363,39 @@ public class SMTPAppender extends AppenderSkeleton
       if(t != null) {
 	    sbuf.append(t);
       }
-      
-      part.setContent(sbuf.toString(), layout.getContentType());
+
+      String s = sbuf.toString();
+      boolean allAscii = true;
+      for(int i = 0; i < s.length() && allAscii; i++) {
+          allAscii = s.charAt(i) <= 0x7F;
+      }
+      MimeBodyPart part;
+      if (allAscii) {
+          part = new MimeBodyPart();
+          part.setContent(s, layout.getContentType());
+      } else {
+          try {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            Writer writer = new OutputStreamWriter(
+                    MimeUtility.encode(os, "quoted-printable"), "UTF-8");
+            writer.write(s);
+            writer.close();
+            InternetHeaders headers = new InternetHeaders();
+            headers.setHeader("Content-Type", layout.getContentType() + "; charset=UTF-8");
+            headers.setHeader("Content-Transfer-Encoding", "quoted-printable");
+            part = new MimeBodyPart(headers, os.toByteArray());
+          } catch(Exception ex) {
+              for (int i = 0; i < sbuf.length(); i++) {
+                  if (sbuf.charAt(i) >= 0x80) {
+                      sbuf.setCharAt(i, '?');
+                  }
+              }
+              part = new MimeBodyPart();
+              part.setContent(sbuf.toString(), layout.getContentType());
+          }
+      }
+
+
 
       Multipart mp = new MimeMultipart();
       mp.addBodyPart(part);

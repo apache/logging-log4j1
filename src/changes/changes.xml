@@ -67,6 +67,7 @@
        <action action="add" issue="45980">SMTPAppender should have a sendOnClose option</action>
        <action action="fix" issue="45982">Support %X layout specification to output all MDC key-value pairs</action>
        <action action="add" issue="45990">Add replyTo attribute to SMTPAppender</action>
+       <action action="fix" issue="44644">SMTPAppender does not properly encode subject or content containing non-ASCII characters.</action>
     </release>
 
   
