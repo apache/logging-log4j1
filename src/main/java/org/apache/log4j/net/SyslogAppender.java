@@ -313,7 +313,12 @@ public class SyslogAppender extends AppenderSkeleton {
     }
 
     String hdr = getPacketHeader(event.timeStamp);
-    String packet = layout.format(event);
+    String packet;
+    if (layout == null) {
+        packet = String.valueOf(event.getMessage());
+    } else {
+        packet = layout.format(event);
+    }
     if(facilityPrinting || hdr.length() > 0) {
         StringBuffer buf = new StringBuffer(hdr);
         if(facilityPrinting) {
@@ -333,7 +338,7 @@ public class SyslogAppender extends AppenderSkeleton {
         sqw.write(packet);
     }
 
-    if (layout.ignoresThrowable()) {
+    if (layout == null || layout.ignoresThrowable()) {
       String[] s = event.getThrowableStrRep();
       if (s != null) {
         for(int i = 0; i < s.length; i++) {
