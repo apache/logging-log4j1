@@ -44,11 +44,13 @@ public class QuietWriter extends FilterWriter {
 
   public
   void write(String string) {
-    try {
-      out.write(string);
-    } catch(IOException e) {
-      errorHandler.error("Failed to write ["+string+"].", e, 
-			 ErrorCode.WRITE_FAILURE);
+    if (string != null) {
+    	try {
+      		out.write(string);
+    	} catch(IOException e) {
+      		errorHandler.error("Failed to write ["+string+"].", e, 
+			 	ErrorCode.WRITE_FAILURE);
+	    }
     }
   }
 
