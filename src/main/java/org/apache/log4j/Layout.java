@@ -74,6 +74,8 @@ public abstract class Layout implements OptionHandler {
      {@link LoggingEvent}, then the layout should return
      <code>false</code>. Otherwise, if the layout ignores throwable
      object, then the layout should return <code>true</code>.
+     If ignoresThrowable is true, the appender is responsible for
+     rendering the throwable.
 
      <p>The {@link SimpleLayout}, {@link TTCCLayout}, {@link
      PatternLayout} all return <code>true</code>. The {@link
