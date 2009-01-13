@@ -61,7 +61,7 @@ public class CategoryPath {
       processedCategory = "Debug";
     }
 
-    processedCategory.replace('/', '.');
+    processedCategory = processedCategory.replace('/', '.');
     processedCategory = processedCategory.replace('\\', '.');
 
     StringTokenizer st = new StringTokenizer(processedCategory, ".");
