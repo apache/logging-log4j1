@@ -35,6 +35,7 @@ import javax.management.ObjectName;
 import javax.management.RuntimeOperationsException;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.Appender;
 
 public abstract class AbstractDynamicMBean implements DynamicMBean,
                                                       MBeanRegistration {
@@ -42,6 +43,22 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
   String dClassName;
   MBeanServer server;
   private final Vector mbeanList = new Vector();
+
+    /**
+     * Get MBean name.
+     * @param appender appender, may not be null.
+     * @return name.
+     * @since 1.2.16
+     */
+  static protected String getAppenderName(final Appender appender){
+      String name = appender.getName();
+      if (name == null || name.trim().length() == 0) {
+          // try to get some form of a name, because null is not allowed (exception), and empty string certainly isn't useful in JMX..
+          name = appender.toString();
+      }
+      return name;
+  }
+      
 
   /**
    * Enables the to get the values of several attributes of the Dynamic MBean.
