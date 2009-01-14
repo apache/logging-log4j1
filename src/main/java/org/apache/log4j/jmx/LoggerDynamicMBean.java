@@ -255,7 +255,7 @@ public class LoggerDynamicMBean extends AbstractDynamicMBean
   }
 
   void registerAppenderMBean(Appender appender) {
-    String name = appender.getName();
+    String name = getAppenderName(appender);
     cat.debug("Adding AppenderMBean for appender named "+name);
     ObjectName objectName = null;
     try {

@@ -72,6 +72,7 @@
        <action action="fix" issue="46271">SyslogAppender.append throws exception if layout is not set.</action>
        <action action="fix" issue="46144">QuietWriter.write should check for null argument.</action>
        <action action="fix" issue="46512">LogFactor5 CategoryPath doesn't replace slashes with dots.</action>
+       <action action="fix" issue="46163">LoggerDynamicMBean needs to handle a null Appender name.</action>
     </release>
 
   
