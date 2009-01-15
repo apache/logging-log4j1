@@ -856,5 +856,24 @@ public class Foo {
             <a href="#a3.5">FAQ: Why can't log4j find my properties in a J2EE or WAR application?</a>.
           </answer>
       </faq>
+      <faq id="sysprops">
+          <question>What system properties are checked by log4j?</question>
+          <answer>
+              <dl>
+                  <dt>log4j.debug</dt>
+                  <dd>If true, log4j will output internal debugging messages to the console.</dd>
+                  <dt>log4j.defaultInitOverride</dt>
+                  <dd>If true, log4j will not perform default initialization,
+                      that is check for log4j.properties or log4j.xml, at the first logging request.</dd>
+                  <dt>log4j.configuration</dt>
+                  <dd>URL for default initialization configuration file.</dd>
+                  <dt>log4j.configurationClass</dt>
+                  <dd>Class name for configurator to process default initialization configuration file.</dd>
+                  <dt>log4j.ignoreTCL</dt>
+                  <dd>If true, the thread class loader will be ignored when loading classes.</dd>
+              </dl>
+              <p>The SMTPAppender may be influenced by mail.smtp and mail.smtps system properties.</p>
+          </answer>
+      </faq>
   </part>
 </faqs>
