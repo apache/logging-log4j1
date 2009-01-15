@@ -789,27 +789,23 @@ public class Foo {
               when shutting down or restarting under Tomcat or during a shutdown
               hook?</question>
           <answer><p>Tomcat will, by default,
-             clear all static members when unloading classes.
-             Unfortunately, under certain circumstances
-             another class may attempt to call log4j after log4j
-             has had its private member variables cleared, resulting in either
-             a NullPointerException (log4j 1.2.14 or earlier) or a console
-             message (log4j 1.2.15 and later).  The same type of issue
-             has been reported during various shutdown hooks (see bug
-             <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40212">40212</a>)
-             but the mechanisms are not as well understood.</p>
+             clear all static members when unloading classes, however
+             this process can trigger initialization of classes which may
+             then call a class that has been cleared resulting in a
+             NullPointerException or some undesirable behavior.
+             Bug <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40212">40212</a>)
+             describes the problem in detail and has a patch which at this writing
+              has not been applied to Tomcat.  Glassfish had a similar problem
+             and accepted the patch.</p>
 
-             <p>The following have been recommended to avoid this problem:
+             <p>The following are recommended to avoid this problem:
                  <ol>
                      <li>Set the org.apache.catalina.loader.WebappClassLoader.ENABLE_CLEAR_REFERENCES
                          system property to false.</li>
+                     <li>Apply the patch from bug <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=40212">40212</a>
+                         or upgrade to a version that has that patch applied.</li>
                      <li>Upgrade to log4j 1.2.16 or later to better defend against class loader attack
                          or provide a better diagnostic message when it does occur.</li>
-                     <li>Use per-application copies of log4j, that is remove log4j.jar from WEB-INF/lib.</li>
-                     <li>Avoid calls to log4j from within class initialization.</li>
-                     <li>Upgrade to the latest version of the framework that causing the problem.</li>
-                     <li>Use EnhancedPatternLayout from the extras companion when the NPE occurs
-                         in a call of PatternLayout.</li>
                  </ol>
              </p>
 
