@@ -56,7 +56,10 @@ public final class DefaultThrowableRenderer implements ThrowableRenderer {
     public static String[] render(final Throwable throwable) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        throwable.printStackTrace(pw);
+        try {
+            throwable.printStackTrace(pw);
+        } catch(RuntimeException ex) {
+        }
         pw.flush();
         LineNumberReader reader = new LineNumberReader(
                 new StringReader(sw.toString()));

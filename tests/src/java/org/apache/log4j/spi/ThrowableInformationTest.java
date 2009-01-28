@@ -299,4 +299,39 @@ public class ThrowableInformationTest extends TestCase {
         String[] rep2 = ti.getThrowableStrRep();
         assertEquals("Hello, World", rep2[0]);
     }
+
+    /**
+     * Custom throwable that throws a runtime exception
+     *    when printStackTrace is called.
+     */
+    private static final class NastyThrowable extends Throwable {
+        /**
+         * Create new instance.
+         */
+        public NastyThrowable() {
+        }
+
+        /**
+         * Print stack trace.
+         *
+         * @param s print writer.
+         */
+        public void printStackTrace(final PrintWriter s) {
+            s.print("NastyException");
+            throw new RuntimeException("Intentional exception");
+        }
+    }
+
+    /**
+     * Tests that a failure in printStackTrace
+     *     does not percolate out of getThrowableStrRep().
+     *
+     */
+    public void testNastyException() {
+        ThrowableInformation ti = new ThrowableInformation(
+                new NastyThrowable());
+        String[] rep = ti.getThrowableStrRep();
+        assertEquals("NastyException", rep[0]);
+    }
+
 }

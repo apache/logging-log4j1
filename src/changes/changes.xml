@@ -75,6 +75,7 @@
        <action action="fix" issue="46163">LoggerDynamicMBean needs to handle a null Appender name.</action>
        <action action="fix" issue="45704">DOMConfigurator.configure(URL) fails on JRE 1.5.0_16.</action>
        <action action="add" issue="44357">Document system properties used by log4j.</action>
+       <action action="fix" issue="44038">log4j is susceptible to exceptions in Exception.printStackTrace.</action>
     </release>
 
   
