@@ -111,7 +111,7 @@ import org.apache.log4j.helpers.PatternConverter;
      pattern <b>%C{1}</b> will output "SomeClass".
 
      <p><b>WARNING</b> Generating the caller class information is
-     slow. Thus, it's use should be avoided unless execution speed is
+     slow. Thus, use should be avoided unless execution speed is
      not an issue.
 
      </td>
@@ -154,7 +154,7 @@ import org.apache.log4j.helpers.PatternConverter;
    issued.
 
    <p><b>WARNING</b> Generating caller location information is
-   extremely slow. It's use should be avoided unless execution speed
+   extremely slow and should be avoided unless execution speed
    is not an issue.
 
    </tr>
@@ -170,8 +170,8 @@ import org.apache.log4j.helpers.PatternConverter;
      method followed by the callers source the file name and line
      number between parentheses.
 
-     <p>The location information can be very useful. However, it's
-     generation is <em>extremely</em> slow. It's use should be avoided
+     <p>The location information can be very useful. However, its
+     generation is <em>extremely</em> slow and should be avoided
      unless execution speed is not an issue.
 
      </td>
@@ -184,7 +184,7 @@ import org.apache.log4j.helpers.PatternConverter;
    was issued.
 
    <p><b>WARNING</b> Generating caller location information is
-   extremely slow. It's use should be avoided unless execution speed
+   extremely slow and should be avoided unless execution speed
    is not an issue.
 
    </tr>
@@ -203,7 +203,7 @@ import org.apache.log4j.helpers.PatternConverter;
    issued.
 
    <p><b>WARNING</b> Generating caller location information is
-   extremely slow. It's use should be avoided unless execution speed
+   extremely slow and should be avoided unless execution speed
    is not an issue.
 
    </tr>
