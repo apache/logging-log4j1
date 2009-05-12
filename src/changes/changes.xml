@@ -77,6 +77,7 @@
        <action action="add" issue="44357">Document system properties used by log4j.</action>
        <action action="fix" issue="44038">log4j is susceptible to exceptions in Exception.printStackTrace.</action>
        <action action="fix" issue="46741">Misuse of "it's" in Javadoc for PatternLayout.</action>
+       <action action="add" issue="47142">Add SMTPAppender.formatBody to simplify extension.</action>
     </release>
 
   

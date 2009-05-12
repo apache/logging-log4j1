@@ -332,14 +332,14 @@ public class SMTPAppender extends AppenderSkeleton
   }
 
   /**
-     Send the contents of the cyclic buffer as an e-mail message.
+   * Layout body of email message.
+   * @since 1.2.16  
    */
-  protected
-  void sendBuffer() {
-
-    // Note: this code already owns the monitor for this
-    // appender. This frees us from needing to synchronize on 'cb'.
-    try {
+  protected String formatBody() {
+	  
+	  // Note: this code already owns the monitor for this
+	  // appender. This frees us from needing to synchronize on 'cb'.
+	  
       StringBuffer sbuf = new StringBuffer();
       String t = layout.getHeader();
       if(t != null)
@@ -363,8 +363,18 @@ public class SMTPAppender extends AppenderSkeleton
       if(t != null) {
 	    sbuf.append(t);
       }
+      
+      return sbuf.toString();
+  }
+  
+  /**
+     Send the contents of the cyclic buffer as an e-mail message.
+   */
+  protected
+  void sendBuffer() {
 
-      String s = sbuf.toString();
+    try {
+      String s = formatBody();
       boolean allAscii = true;
       for(int i = 0; i < s.length() && allAscii; i++) {
           allAscii = s.charAt(i) <= 0x7F;
@@ -385,6 +395,7 @@ public class SMTPAppender extends AppenderSkeleton
             headers.setHeader("Content-Transfer-Encoding", "quoted-printable");
             part = new MimeBodyPart(headers, os.toByteArray());
           } catch(Exception ex) {
+              StringBuffer sbuf = new StringBuffer(s);
               for (int i = 0; i < sbuf.length(); i++) {
                   if (sbuf.charAt(i) >= 0x80) {
                       sbuf.setCharAt(i, '?');
