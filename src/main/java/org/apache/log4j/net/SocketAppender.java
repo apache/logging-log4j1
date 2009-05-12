@@ -244,6 +244,12 @@ public class SocketAppender extends AppenderSkeleton {
     if (application != null) {
         event.setProperty("application", application);
     }
+    event.getNDC();
+    event.getThreadName();
+    event.getMDCCopy();
+    event.getRenderedMessage();
+    event.getThrowableStrRep();
+    
 	oos.writeObject(event);
 	//LogLog.debug("=========Flushing.");
 	oos.flush();

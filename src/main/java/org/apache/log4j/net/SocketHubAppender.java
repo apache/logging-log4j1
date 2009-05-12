@@ -192,6 +192,12 @@ public class SocketHubAppender extends AppenderSkeleton {
       if (application != null) {
           event.setProperty("application", application);
         } 
+        event.getNDC();
+        event.getThreadName();
+        event.getMDCCopy();
+        event.getRenderedMessage();
+        event.getThrowableStrRep();
+        
       if (buffer != null) {
         buffer.add(event);
       }

@@ -128,6 +128,8 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
    * Helper object for clearing out the buffer
    */
   protected ArrayList removes;
+  
+  private boolean locationInfo = false;
 
   public JDBCAppender() {
     super();
@@ -136,9 +138,48 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
   }
 
   /**
+   * Gets whether the location of the logging request call
+   * should be captured.
+   *
+   * @since 1.2.16
+   * @return the current value of the <b>LocationInfo</b> option.
+   */
+  public boolean getLocationInfo() {
+    return locationInfo;
+  }
+  
+  /**
+   * The <b>LocationInfo</b> option takes a boolean value. By default, it is
+   * set to false which means there will be no effort to extract the location
+   * information related to the event. As a result, the event that will be
+   * ultimately logged will likely to contain the wrong location information
+   * (if present in the log format).
+   * <p/>
+   * <p/>
+   * Location information extraction is comparatively very slow and should be
+   * avoided unless performance is not a concern.
+   * </p>
+   * @since 1.2.16
+   * @param flag true if location information should be extracted.
+   */
+  public void setLocationInfo(final boolean flag) {
+    locationInfo = flag;
+  }
+  
+
+  /**
    * Adds the event to the buffer.  When full the buffer is flushed.
    */
   public void append(LoggingEvent event) {
+    event.getNDC();
+    event.getThreadName();
+    // Get a copy of this thread's MDC.
+    event.getMDCCopy();
+    if (locationInfo) {
+      event.getLocationInformation();
+    }
+    event.getRenderedMessage();
+    event.getThrowableStrRep();
     buffer.add(event);
 
     if (buffer.size() >= bufferSize)
