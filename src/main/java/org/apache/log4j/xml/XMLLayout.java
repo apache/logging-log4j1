@@ -41,7 +41,7 @@ import java.util.Arrays;
   <pre>
    &lt;?xml version="1.0" ?&gt;
  
-  &lt;!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
+  &lt;!DOCTYPE log4j:eventSet PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd" [&lt;!ENTITY data SYSTEM "abc"&gt;]&gt;
  
   &lt;log4j:eventSet version="1.2" xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
  	&nbsp;&nbsp;&data;

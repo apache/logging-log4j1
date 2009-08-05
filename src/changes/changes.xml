@@ -23,6 +23,7 @@
 
     <release version="1.2.16" date="TBD" description="">
        <action issue="43313">log4j 1.2.16 release preparation.</action>
+       <action action="add" issue="42842">Create a public identifier for log4j.dtd ("-//APACHE//DTD LOG4J 1.2//EN")</action>
        <action action="fix" issue="44108">TelnetAppender misses messages when one of many clients disconnect.</action>
        <action action="fix" issue="44109">TelnetAppender throws null pointers at log time when socket couldn't be opened.</action>
        <action action="fix" issue="44032">ThrowableInformation.getThrowableStringRep can return null strings.</action>
