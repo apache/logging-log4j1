@@ -165,15 +165,13 @@
   <!-- unit tests. Regression tests compare output with a previously     -->
   <!-- created witness file.                                             -->
   <!-- ================================================================= -->  
-  <target name="regression" depends="Core, Minimum, Logger, DOM, CustomLevel, 
-                                     CustomLogger,  
-                                     HierarchyThreshold, DefaultInit, SocketServer, 
-                                     XMLLayout, AsyncAppender, 
-                                     OptionConverter, BoundedFIFO, 
-                                     CyclicBuffer, OR, 
+  <target name="regression" depends="Core, Minimum, Logger, DOM, CustomLevel,
+                                     CustomLogger,
+                                     HierarchyThreshold, DefaultInit, SocketServer,
+                                     XMLLayout, AsyncAppender,
+                                     OptionConverter, BoundedFIFO,
+                                     CyclicBuffer, OR,
                                      LevelMatchFilter, PatternParser, 
-                                     PatternLayout, RFA, ERFA, DRFA, 
-									 NTEventLogAppender, Syslog, Socket,
 									 ErrorHandler"/>
 
   <!-- ================================================================= -->
