@@ -22,27 +22,29 @@
 
 package org.apache.log4j;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.FileWatchdog;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.or.RendererMap;
 import org.apache.log4j.spi.Configurator;
+import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggerRepository;
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InterruptedIOException;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Properties;
-import java.util.StringTokenizer;
 
 /**
    Allows the configuration of log4j from an external file.  See
@@ -62,9 +64,8 @@ import java.util.StringTokenizer;
    <p>The <code>PropertyConfigurator</code> does not handle the
    advanced configuration features supported by the {@link
    org.apache.log4j.xml.DOMConfigurator DOMConfigurator} such as
-   support for {@link org.apache.log4j.spi.Filter Filters}, custom
-   {@link org.apache.log4j.spi.ErrorHandler ErrorHandlers}, nested
-   appenders such as the {@link org.apache.log4j.AsyncAppender
+   support custom {@link org.apache.log4j.spi.ErrorHandler ErrorHandlers},
+   nested appenders such as the {@link org.apache.log4j.AsyncAppender
    AsyncAppender}, etc.
 
    <p>All option <em>values</em> admit variable substitution. The
@@ -165,6 +166,18 @@ public class PropertyConfigurator implements Configurator {
     ....
     log4j.appender.appenderName.layout.optionN=valueN
     </pre>
+
+    The syntax for adding {@link Filter}s to an appender is:
+    <pre>
+    log4j.appender.appenderName.filter.ID=fully.qualified.name.of.filter.class
+    log4j.appender.appenderName.filter.ID.option1=value1
+    ...
+    log4j.appender.appenderName.filter.ID.optionN=valueN
+    </pre>
+    The first line defines the class name of the filter identified by ID;
+    subsequent lines with the same ID specify filter option - value
+    paris. Multiple filters are added to the appender in the lexicographic
+    order of IDs.
 
     <h3>Configuring loggers</h3>
 
@@ -740,8 +753,67 @@ public class PropertyConfigurator implements Configurator {
       PropertySetter.setProperties(appender, props, prefix + ".");
       LogLog.debug("Parsed \"" + appenderName +"\" options.");
     }
+    parseAppenderFilters(props, appenderName, appender);
     registryPut(appender);
     return appender;
+  }
+
+  void parseAppenderFilters(Properties props, String appenderName, Appender appender) {
+    // extract filters and filter options from props into a hashtable mapping
+    // the property name defining the filter class to a list of pre-parsed
+    // name-value pairs associated to that filter
+    final String filterPrefix = APPENDER_PREFIX + appenderName + ".filter.";
+    int fIdx = filterPrefix.length();
+    Hashtable filters = new Hashtable();
+    Enumeration e = props.keys();
+    String name = "";
+    while (e.hasMoreElements()) {
+      String key = (String) e.nextElement();
+      if (key.startsWith(filterPrefix)) {
+        int dotIdx = key.indexOf('.', fIdx);
+        String filterKey = key;
+        if (dotIdx != -1) {
+          filterKey = key.substring(0, dotIdx);
+          name = key.substring(dotIdx+1);
+        }
+        Vector filterOpts = (Vector) filters.get(filterKey);
+        if (filterOpts == null) {
+          filterOpts = new Vector();
+          filters.put(filterKey, filterOpts);
+        }
+        if (dotIdx != -1) {
+          String value = OptionConverter.findAndSubst(key, props);
+          filterOpts.add(new NameValue(name, value));
+        }
+      }
+    }
+
+    // sort filters by IDs, insantiate filters, set filter options,
+    // add filters to the appender
+    Enumeration g = new SortedKeyEnumeration(filters);
+    while (g.hasMoreElements()) {
+      String key = (String) g.nextElement();
+      String clazz = props.getProperty(key);
+      if (clazz != null) {
+        LogLog.debug("Filter key: ["+key+"] class: ["+props.getProperty(key) +"] props: "+filters.get(key));
+        Filter filter = (Filter) OptionConverter.instantiateByClassName(clazz, Filter.class, null);
+        if (filter != null) {
+          PropertySetter propSetter = new PropertySetter(filter);
+          Vector v = (Vector)filters.get(key);
+          Enumeration filterProps = v.elements();
+          while (filterProps.hasMoreElements()) {
+            NameValue kv = (NameValue)filterProps.nextElement();
+            propSetter.setProperty(kv.key, kv.value);
+          }
+          propSetter.activate();
+          LogLog.debug("Adding filter of type ["+filter.getClass()
+           +"] to appender named ["+appender.getName()+"].");
+          appender.addFilter(filter);
+        }
+      } else {
+        LogLog.warn("Missing class definition for filter: ["+key+"]");
+      }
+    }
   }
 
 
@@ -767,5 +839,43 @@ class PropertyWatchdog extends FileWatchdog {
   void doOnChange() {
     new PropertyConfigurator().doConfigure(filename,
 					   LogManager.getLoggerRepository());
+  }
+}
+
+class NameValue {
+  String key, value;
+  public NameValue(String key, String value) {
+    this.key = key;
+    this.value = value;
+  }
+  public String toString() {
+    return key + "=" + value;
+  }
+}
+
+class SortedKeyEnumeration implements Enumeration {
+
+  private Enumeration e;
+
+  public SortedKeyEnumeration(Hashtable ht) {
+    Enumeration f = ht.keys();
+    Vector keys = new Vector(ht.size());
+    for (int i, last = 0; f.hasMoreElements(); ++last) {
+      String key = (String) f.nextElement();
+      for (i = 0; i < last; ++i) {
+        String s = (String) keys.get(i);
+        if (key.compareTo(s) <= 0) break;
+      }
+      keys.add(i, key);
+    }
+    e = keys.elements();
+  }
+
+  public boolean hasMoreElements() {
+    return e.hasMoreElements();
+  }
+
+  public Object nextElement() {
+    return e.nextElement();
   }
 }
