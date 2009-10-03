@@ -40,7 +40,15 @@ import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class DOMTestCase extends TestCase {
 
@@ -380,6 +388,34 @@ public class DOMTestCase extends TestCase {
         assertNotNull(renderer);
         assertEquals(true, renderer.isActivated());
         assertEquals(false, renderer.getShowVersion());
+    }
+
+    /**
+     * Test for bug 47465.
+     * configure(URL) did not close opened JarURLConnection.
+     * @throws IOException if IOException creating properties jar.
+     */
+    public void testJarURL() throws IOException {
+        File input = new File("input/xml/defaultInit.xml");
+        System.out.println(input.getAbsolutePath());
+        InputStream is = new FileInputStream(input);
+        File dir = new File("output");
+        dir.mkdirs();
+        File file = new File("output/xml.jar");
+        ZipOutputStream zos =
+            new ZipOutputStream(new FileOutputStream(file));
+        zos.putNextEntry(new ZipEntry("log4j.xml"));
+        int len;
+        byte[] buf = new byte[1024];
+        while ((len = is.read(buf)) > 0) {
+            zos.write(buf, 0, len);
+        }
+        zos.closeEntry();
+        zos.close();
+        URL url = new URL("jar:" + file.toURL() + "!/log4j.xml");
+        DOMConfigurator.configure(url);
+        assertTrue(file.delete());
+        assertFalse(file.exists());
     }
 
 }

@@ -56,6 +56,7 @@ import java.io.Reader;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -759,7 +760,9 @@ public class DOMConfigurator implements Configurator {
   void doConfigure(final URL url, LoggerRepository repository) {
       ParseAction action = new ParseAction() {
           public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
-              InputSource src = new InputSource(url.openStream());
+              URLConnection uConn = url.openConnection();
+              uConn.setUseCaches(false);
+              InputSource src = new InputSource(uConn.getInputStream());
               src.setSystemId(url.toString());
               return parser.parse(src);
           }

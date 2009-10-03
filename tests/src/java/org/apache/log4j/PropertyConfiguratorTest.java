@@ -19,10 +19,13 @@ package org.apache.log4j;
 import junit.framework.TestCase;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.Filter;
@@ -86,6 +89,28 @@ public class PropertyConfiguratorTest extends TestCase {
         writer.write("log4j.rootLogger=\\uXX41");
         writer.close();
         URL url = file.toURL();
+        PropertyConfigurator.configure(url);
+        assertTrue(file.delete());
+        assertFalse(file.exists());
+    }
+
+    /**
+     * Test for bug 47465.
+     * configure(URL) did not close opened JarURLConnection.
+     * @throws IOException if IOException creating properties jar.
+     */
+    public void testJarURL() throws IOException {
+        File dir = new File("output");
+        dir.mkdirs();
+        File file = new File("output/properties.jar");
+        ZipOutputStream zos =
+            new ZipOutputStream(new FileOutputStream(file));
+        zos.putNextEntry(new ZipEntry(LogManager.DEFAULT_CONFIGURATION_FILE));
+        zos.write("log4j.rootLogger=debug".getBytes());
+        zos.closeEntry();
+        zos.close();
+        URL url = new URL("jar:" + file.toURL() + "!/" +
+                LogManager.DEFAULT_CONFIGURATION_FILE);
         PropertyConfigurator.configure(url);
         assertTrue(file.delete());
         assertFalse(file.exists());
