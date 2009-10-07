@@ -80,6 +80,7 @@
        <action action="fix" issue="46741">Misuse of "it's" in Javadoc for PatternLayout.</action>
        <action action="add" issue="47142">Add SMTPAppender.formatBody to simplify extension.</action>
        <action action="fix" issue="46404">Failure when toString() of throwable performs logging in SocketAppender, SocketHubAppender and JDBCAppender.</action>
+       <action action="fix" issue="47465">Reading configuration files from a JAR locks the JAR file</action>
     </release>
 
   
