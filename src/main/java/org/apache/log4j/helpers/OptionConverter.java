@@ -20,7 +20,6 @@ package org.apache.log4j.helpers;
 import java.util.Properties;
 import java.net.URL;
 import java.io.InterruptedIOException;
-import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.Configurator;

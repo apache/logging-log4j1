@@ -32,6 +32,9 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.FileWatchdog;
@@ -46,6 +49,7 @@ import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.RendererSupport;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
+import org.apache.log4j.spi.ErrorHandler;
 
 /**
    Allows the configuration of log4j from an external file.  See
@@ -92,7 +96,8 @@ public class PropertyConfigurator implements Configurator {
   /**
      Used internally to keep track of configured appenders.
    */
-  protected Hashtable registry = new Hashtable(11);
+  protected Hashtable registry = new Hashtable(11);  
+  private LoggerRepository repository;
   protected LoggerFactory loggerFactory = new DefaultCategoryFactory();
 
   static final String      CATEGORY_PREFIX = "log4j.category.";
@@ -105,6 +110,10 @@ public class PropertyConfigurator implements Configurator {
   static final String      RENDERER_PREFIX = "log4j.renderer.";
   static final String      THRESHOLD_PREFIX = "log4j.threshold";
   private static final String      THROWABLE_RENDERER_PREFIX = "log4j.throwableRenderer";
+  private static final String LOGGER_REF	= "logger-ref";
+  private static final String ROOT_REF		= "root-ref";
+  private static final String APPENDER_REF_TAG 	= "appender-ref";  
+  
 
   /** Key for specifying the {@link org.apache.log4j.spi.LoggerFactory
       LoggerFactory}.  Currently set to "<code>log4j.loggerFactory</code>".  */
@@ -179,6 +188,17 @@ public class PropertyConfigurator implements Configurator {
     subsequent lines with the same ID specify filter option - value
     paris. Multiple filters are added to the appender in the lexicographic
     order of IDs.
+
+    The syntax for adding an {@link ErrorHandler} to an appender is:
+    <pre>
+    log4j.appender.appenderName.errorhandler=fully.qualified.name.of.filter.class
+    log4j.appender.appenderName.errorhandler.root-ref={true|false}
+    log4j.appender.appenderName.errorhandler.logger-ref=loggerName
+    log4j.appender.appenderName.errorhandler.appender-ref=appenderName
+    log4j.appender.appenderName.errorhandler.option1=value1
+    ...
+    log4j.appender.appenderName.errorhandler.optionN=valueN
+    </pre>
 
     <h3>Configuring loggers</h3>
 
@@ -452,6 +472,7 @@ public class PropertyConfigurator implements Configurator {
   */
   public
   void doConfigure(Properties properties, LoggerRepository hierarchy) {
+	repository = hierarchy;
     String value = properties.getProperty(LogLog.DEBUG_KEY);
     if(value == null) {
       value = properties.getProperty("log4j.configDebug");
@@ -478,7 +499,7 @@ public class PropertyConfigurator implements Configurator {
 						     (Level) Level.ALL));
       LogLog.debug("Hierarchy threshold set to ["+hierarchy.getThreshold()+"].");
     }
-
+    
     configureRootCategory(properties, hierarchy);
     configureLoggerFactory(properties);
     parseCatsAndRenderers(properties, hierarchy);
@@ -753,6 +774,26 @@ public class PropertyConfigurator implements Configurator {
 	  LogLog.debug("End of parsing for \"" + appenderName +"\".");
 	}
       }
+      final String errorHandlerPrefix = prefix + ".errorhandler";
+      String errorHandlerClass = OptionConverter.findAndSubst(errorHandlerPrefix, props);
+      if (errorHandlerClass != null) {
+    		ErrorHandler eh = (ErrorHandler) OptionConverter.instantiateByKey(props,
+					  errorHandlerPrefix,
+					  ErrorHandler.class,
+					  null);
+    		if (eh != null) {
+    			  appender.setErrorHandler(eh);
+    			  LogLog.debug("Parsing errorhandler options for \"" + appenderName +"\".");
+    			  parseErrorHandler(eh, errorHandlerPrefix, props, repository);
+    			  Properties edited = new Properties(props);
+    			  edited.remove(errorHandlerPrefix + "." + ROOT_REF);
+    			  edited.remove(errorHandlerPrefix + "." + LOGGER_REF);
+    			  edited.remove(errorHandlerPrefix + "." + APPENDER_REF_TAG);
+    		      PropertySetter.setProperties(eh, edited, errorHandlerPrefix + ".");
+    			  LogLog.debug("End of errorhandler parsing for \"" + appenderName +"\".");
+    		}
+    	  
+      }
       //configureOptionHandler((OptionHandler) appender, prefix + ".", props);
       PropertySetter.setProperties(appender, props, prefix + ".");
       LogLog.debug("Parsed \"" + appenderName +"\" options.");
@@ -761,7 +802,33 @@ public class PropertyConfigurator implements Configurator {
     registryPut(appender);
     return appender;
   }
-
+  
+  private void parseErrorHandler(
+		  final ErrorHandler eh,
+		  final String errorHandlerPrefix,
+		  final Properties props, 
+		  final LoggerRepository hierarchy) {
+		boolean rootRef = OptionConverter.toBoolean(
+					  OptionConverter.findAndSubst(errorHandlerPrefix + ROOT_REF, props), false);
+		if (rootRef) {
+				  eh.setLogger(hierarchy.getRootLogger());
+	    }
+		String loggerName = OptionConverter.findAndSubst(errorHandlerPrefix + LOGGER_REF , props);
+		if (loggerName != null) {
+			Logger logger = (loggerFactory == null) ? hierarchy.getLogger(loggerName)
+			                : hierarchy.getLogger(loggerName, loggerFactory);
+			eh.setLogger(logger);
+		}
+		String appenderName = OptionConverter.findAndSubst(errorHandlerPrefix + APPENDER_REF_TAG, props);
+		if (appenderName != null) {
+			Appender backup = parseAppender(props, appenderName);
+			if (backup != null) {
+				eh.setBackupAppender(backup);
+			}
+		}
+  }
+				
+  
   void parseAppenderFilters(Properties props, String appenderName, Appender appender) {
     // extract filters and filter options from props into a hashtable mapping
     // the property name defining the filter class to a list of pre-parsed

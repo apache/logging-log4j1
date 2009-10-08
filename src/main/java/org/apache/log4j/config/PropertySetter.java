@@ -25,6 +25,7 @@ import org.apache.log4j.Priority;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.OptionHandler;
+import org.apache.log4j.spi.ErrorHandler;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -130,7 +131,7 @@ public class PropertySetter {
         
 	String value = OptionConverter.findAndSubst(key, properties);
         key = key.substring(len);
-        if ("layout".equals(key) && obj instanceof Appender) {
+        if (("layout".equals(key) || "errorhandler".equals(key)) && obj instanceof Appender) {
           continue;
         }
         //
@@ -280,6 +281,9 @@ public class PropertySetter {
       }
     } else if (Priority.class.isAssignableFrom(type)) {
       return OptionConverter.toLevel(v, (Level) Level.DEBUG);
+    } else if (ErrorHandler.class.isAssignableFrom(type)) {
+      return OptionConverter.instantiateByClassName(v, 
+	  ErrorHandler.class, null);
     }
     return null;
   }

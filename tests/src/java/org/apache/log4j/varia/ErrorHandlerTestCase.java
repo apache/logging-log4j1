@@ -29,6 +29,7 @@ import org.apache.log4j.util.JunitTestRunnerFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.log4j.PropertyConfigurator;
 
 public class ErrorHandlerTestCase extends TestCase {
 
@@ -62,6 +63,25 @@ public class ErrorHandlerTestCase extends TestCase {
 
   public void test1() throws Exception {
     DOMConfigurator.configure("input/xml/fallback1.xml");
+    Appender primary = root.getAppender("PRIMARY");
+    ErrorHandler eh = primary.getErrorHandler();
+    assertNotNull(eh);
+
+    common();
+
+    ControlFilter cf = new ControlFilter(new String[]{TEST1_PAT,
+					       EXCEPTION1, EXCEPTION2, EXCEPTION3});
+
+    Transformer.transform(TEMP, FILTERED, new Filter[] {cf,
+							new LineNumberFilter(),
+                            new JunitTestRunnerFilter()});
+
+
+    assertTrue(Compare.compare(FILTERED, "witness/fallback1"));
+  }
+  
+  public void test2() throws Exception {
+    PropertyConfigurator.configure("input/fallback1.properties");
     Appender primary = root.getAppender("PRIMARY");
     ErrorHandler eh = primary.getErrorHandler();
     assertNotNull(eh);
