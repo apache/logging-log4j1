@@ -32,9 +32,8 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.FileWatchdog;
@@ -785,10 +784,22 @@ public class PropertyConfigurator implements Configurator {
     			  appender.setErrorHandler(eh);
     			  LogLog.debug("Parsing errorhandler options for \"" + appenderName +"\".");
     			  parseErrorHandler(eh, errorHandlerPrefix, props, repository);
-    			  Properties edited = new Properties(props);
-    			  edited.remove(errorHandlerPrefix + "." + ROOT_REF);
-    			  edited.remove(errorHandlerPrefix + "." + LOGGER_REF);
-    			  edited.remove(errorHandlerPrefix + "." + APPENDER_REF_TAG);
+    			  final Properties edited = new Properties();
+    			  final String[] keys = new String[] { 
+    					  errorHandlerPrefix + "." + ROOT_REF,
+    					  errorHandlerPrefix + "." + LOGGER_REF,
+    					  errorHandlerPrefix + "." + APPENDER_REF_TAG
+    			  };
+    			  for(Iterator iter = props.entrySet().iterator();iter.hasNext();) {
+    				  Map.Entry entry = (Map.Entry) iter.next();
+    				  int i = 0;
+    				  for(; i < keys.length; i++) {
+    					  if(keys[i].equals(entry.getKey())) break;
+    				  }
+    				  if (i == keys.length) {
+    					  edited.put(entry.getKey(), entry.getValue());
+    				  }
+    			  }
     		      PropertySetter.setProperties(eh, edited, errorHandlerPrefix + ".");
     			  LogLog.debug("End of errorhandler parsing for \"" + appenderName +"\".");
     		}
