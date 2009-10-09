@@ -19,7 +19,6 @@ package org.apache.log4j.helpers;
 
 import java.io.Writer;
 import java.io.FilterWriter;
-import java.io.IOException;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.ErrorCode;
 
@@ -47,7 +46,7 @@ public class QuietWriter extends FilterWriter {
     if (string != null) {
     	try {
       		out.write(string);
-    	} catch(IOException e) {
+    	} catch(Exception e) {
       		errorHandler.error("Failed to write ["+string+"].", e, 
 			 	ErrorCode.WRITE_FAILURE);
 	    }
@@ -58,7 +57,7 @@ public class QuietWriter extends FilterWriter {
   void flush() {
     try {
       out.flush();
-    } catch(IOException e) {
+    } catch(Exception e) {
       errorHandler.error("Failed to flush writer,", e, 
 			 ErrorCode.FLUSH_FAILURE);
     }	
