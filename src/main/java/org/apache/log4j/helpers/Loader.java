@@ -90,7 +90,7 @@ public class Loader  {
     URL url = null;
     
     try {
-  	if(!java1) {
+  	if(!java1 && !ignoreTCL) {
   	  classLoader = getTCL();
   	  if(classLoader != null) {
   	    LogLog.debug("Trying to find ["+resource+"] using context classloader "

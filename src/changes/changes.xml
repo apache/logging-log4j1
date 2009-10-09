@@ -82,6 +82,7 @@
        <action action="fix" issue="46404">Failure when toString() of throwable performs logging in SocketAppender, SocketHubAppender and JDBCAppender.</action>
        <action action="fix" issue="47465">Reading configuration files from a JAR locks the JAR file</action>
        <action action="add" issue="38061">PropertyConfigurator does not support configuring ErrorHandler.</action>
+       <action action="fix" issue="47967">log4j.ignoreTCL should apply to the getResource method in addition to the loadClass method of org.apache.log4j.helpers.Loader.</action>
     </release>
 
   
