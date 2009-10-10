@@ -288,6 +288,17 @@ public class PatternLayoutTestCase extends TestCase {
       assertTrue(Compare.compare(TEMP, "witness/patternLayout.mdc.1"));
     }
 
+    public void testMDCClear() throws Exception {
+      PropertyConfigurator.configure("input/patternLayout.mdc.1.properties");
+      MDC.put("key1", "va11");
+      MDC.put("key2", "va12");
+      logger.debug("Hello World");
+      MDC.clear();
+      logger.debug("Hello World");
+
+      assertTrue(Compare.compare(TEMP, "witness/patternLayout.mdc.clear"));
+    }
+
 
 
   void common() {

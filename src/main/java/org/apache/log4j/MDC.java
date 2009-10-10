@@ -115,6 +115,16 @@ public class MDC {
     }
   }
 
+  /**
+   *  Remove all values from the MDC.
+   *  @since 1.2.16
+  */
+  public static void clear() {
+    if (mdc != null) {
+        mdc.clear0();
+    }
+  }
+
 
   private
   void put0(String key, Object o) {
@@ -163,4 +173,15 @@ public class MDC {
       return (Hashtable) ((ThreadLocalMap)tlm).get();
     }
   }
+
+  private
+  void clear0() {
+    if(!java1 && tlm != null) {
+      Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
+      if(ht != null) {
+        ht.clear();
+      } 
+    }
+  }
+
 }
