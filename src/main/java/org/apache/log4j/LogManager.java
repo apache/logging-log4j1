@@ -132,6 +132,9 @@ public class LogManager {
       } else {
 	    LogLog.debug("Could not find resource: ["+configurationOptionStr+"].");
       }
+    } else {
+        LogLog.debug("Default initialization of overridden by " + 
+            DEFAULT_INIT_OVERRIDE_KEY + "property."); 
     }  
   } 
 
