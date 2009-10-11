@@ -16,16 +16,16 @@
  */
 package org.apache.log4j.jdbc;
 
-import org.apache.log4j.spi.*;
-import org.apache.log4j.PatternLayout;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.SQLException;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.spi.ErrorCode;
+import org.apache.log4j.spi.LoggingEvent;
 
 
 /**

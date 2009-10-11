@@ -16,8 +16,19 @@
  */
 package org.apache.log4j.lf5.viewer;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Label;
+import java.awt.Toolkit;
+import java.awt.Window;
+
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 /**
  * LogFactor5Dialog

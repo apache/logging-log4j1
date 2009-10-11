@@ -16,10 +16,11 @@
  */
 package org.apache.log4j.lf5.viewer.categoryexplorer;
 
-import javax.swing.*;
+import java.awt.event.MouseEvent;
+
+import javax.swing.JTree;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.TreePath;
-import java.awt.event.MouseEvent;
 
 /**
  * CategoryExplorerTree

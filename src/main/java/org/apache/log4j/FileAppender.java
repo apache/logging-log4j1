@@ -17,11 +17,17 @@
 
 package org.apache.log4j;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.io.Writer;
 
-import org.apache.log4j.spi.ErrorCode;
-import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.QuietWriter;
+import org.apache.log4j.spi.ErrorCode;
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 //              Ben Sandee

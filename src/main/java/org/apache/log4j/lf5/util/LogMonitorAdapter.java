@@ -16,13 +16,13 @@
  */
 package org.apache.log4j.lf5.util;
 
+import java.awt.Toolkit;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.log4j.lf5.LogLevel;
 import org.apache.log4j.lf5.LogRecord;
 import org.apache.log4j.lf5.viewer.LogBrokerMonitor;
-
-import java.awt.*;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * <p>LogMonitorAdapter facilitates the usage of the LogMonitor</p>

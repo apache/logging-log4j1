@@ -16,12 +16,14 @@
  */
 package org.apache.log4j.lf5.viewer;
 
+import java.awt.Color;
+import java.awt.Component;
+
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+
 import org.apache.log4j.lf5.LogLevel;
 import org.apache.log4j.lf5.LogRecord;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
 
 /**
  * LogTableRowRenderer

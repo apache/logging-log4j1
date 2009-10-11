@@ -16,9 +16,12 @@
  */
 package org.apache.log4j.lf5;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The LogLevel class defines a set of standard logging levels.

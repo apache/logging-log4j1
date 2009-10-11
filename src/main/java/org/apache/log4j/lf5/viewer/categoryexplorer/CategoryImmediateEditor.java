@@ -16,12 +16,15 @@
  */
 package org.apache.log4j.lf5.viewer.categoryexplorer;
 
-import javax.swing.*;
-import javax.swing.tree.DefaultTreeCellEditor;
-import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
+
+import javax.swing.Icon;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeCellEditor;
+import javax.swing.tree.TreePath;
 
 /**
  * CategoryImmediateEditor

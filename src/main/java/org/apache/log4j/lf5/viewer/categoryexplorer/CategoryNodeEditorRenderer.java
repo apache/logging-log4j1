@@ -16,8 +16,10 @@
  */
 package org.apache.log4j.lf5.viewer.categoryexplorer;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+
+import javax.swing.JCheckBox;
+import javax.swing.JTree;
 
 /**
  * CategoryNodeEditorRenderer

@@ -16,18 +16,14 @@
  */
 package org.apache.log4j.lf5.viewer;
 
-import org.apache.log4j.lf5.LogLevel;
-import org.apache.log4j.lf5.LogRecord;
-import org.apache.log4j.lf5.LogRecordFilter;
-import org.apache.log4j.lf5.util.DateFormatManager;
-import org.apache.log4j.lf5.util.LogFileParser;
-import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryExplorerTree;
-import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryPath;
-import org.apache.log4j.lf5.viewer.configure.ConfigurationManager;
-import org.apache.log4j.lf5.viewer.configure.MRUFileManager;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -37,8 +33,44 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+
+import org.apache.log4j.lf5.LogLevel;
+import org.apache.log4j.lf5.LogRecord;
+import org.apache.log4j.lf5.LogRecordFilter;
+import org.apache.log4j.lf5.util.DateFormatManager;
+import org.apache.log4j.lf5.util.LogFileParser;
+import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryExplorerTree;
+import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryPath;
+import org.apache.log4j.lf5.viewer.configure.ConfigurationManager;
+import org.apache.log4j.lf5.viewer.configure.MRUFileManager;
 
 /**
  * LogBrokerMonitor

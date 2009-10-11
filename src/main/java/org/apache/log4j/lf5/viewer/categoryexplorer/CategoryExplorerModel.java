@@ -16,16 +16,17 @@
  */
 package org.apache.log4j.lf5.viewer.categoryexplorer;
 
-import org.apache.log4j.lf5.LogRecord;
-
-import javax.swing.*;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.AWTEventMulticaster;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
+
+import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
+import org.apache.log4j.lf5.LogRecord;
 
 /**
  * CategoryExplorerModel

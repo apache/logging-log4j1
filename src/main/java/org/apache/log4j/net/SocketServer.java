@@ -17,14 +17,19 @@
 
 package org.apache.log4j.net;
 
-import java.net.Socket;
-import java.net.ServerSocket;
-import java.net.InetAddress;
 import java.io.File;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Hashtable;
 
-import org.apache.log4j.*;
-import org.apache.log4j.spi.*;
+import org.apache.log4j.Hierarchy;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.LoggerRepository;
+import org.apache.log4j.spi.RootLogger;
 
 
 /**

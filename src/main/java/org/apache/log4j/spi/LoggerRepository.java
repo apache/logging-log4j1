@@ -17,8 +17,12 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.*;
 import java.util.Enumeration;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.Category;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 /**
    A <code>LoggerRepository</code> is used to create and retrieve

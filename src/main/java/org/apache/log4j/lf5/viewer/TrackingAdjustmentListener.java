@@ -16,7 +16,7 @@
  */
 package org.apache.log4j.lf5.viewer;
 
-import java.awt.*;
+import java.awt.Adjustable;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 

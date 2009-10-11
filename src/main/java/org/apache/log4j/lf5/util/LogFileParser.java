@@ -16,6 +16,18 @@
  */
 package org.apache.log4j.lf5.util;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.SwingUtilities;
+
 import org.apache.log4j.lf5.Log4JLogRecord;
 import org.apache.log4j.lf5.LogLevel;
 import org.apache.log4j.lf5.LogLevelFormatException;
@@ -23,12 +35,6 @@ import org.apache.log4j.lf5.LogRecord;
 import org.apache.log4j.lf5.viewer.LogBrokerMonitor;
 import org.apache.log4j.lf5.viewer.LogFactor5ErrorDialog;
 import org.apache.log4j.lf5.viewer.LogFactor5LoadingDialog;
-
-import javax.swing.*;
-import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Provides utility methods for input and output streams.

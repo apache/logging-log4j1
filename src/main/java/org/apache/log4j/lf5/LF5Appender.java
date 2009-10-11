@@ -17,12 +17,12 @@
 
 package org.apache.log4j.lf5;
 
-import org.apache.log4j.lf5.viewer.LogBrokerMonitor;
+import java.awt.Toolkit;
+
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.lf5.viewer.LogBrokerMonitor;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
-
-import java.awt.*;
 
 /**
  * <code>LF5Appender</code> logs events to a swing based logging

@@ -16,9 +16,14 @@
  */
 package org.apache.log4j.lf5.viewer;
 
-import javax.swing.*;
+import java.awt.Adjustable;
+
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableModel;
-import java.awt.*;
 
 /**
  * Provides methods to accomplish common yet non-trivial tasks

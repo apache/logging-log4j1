@@ -16,8 +16,12 @@
  */
 package org.apache.log4j.lf5.viewer;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  * LogFactor5LoadingDialog

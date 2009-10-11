@@ -16,32 +16,36 @@
  */
 package org.apache.log4j.lf5.viewer.configure;
 
-import org.apache.log4j.lf5.LogLevel;
-import org.apache.log4j.lf5.LogLevelFormatException;
-import org.apache.log4j.lf5.viewer.LogBrokerMonitor;
-import org.apache.log4j.lf5.viewer.LogTable;
-import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryExplorerModel;
-import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryExplorerTree;
-import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryNode;
-import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryPath;
-import org.apache.log4j.lf5.viewer.LogTableColumn;
-import org.apache.log4j.lf5.viewer.LogTableColumnFormatException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.swing.*;
-import javax.swing.tree.TreePath;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.tree.TreePath;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.log4j.lf5.LogLevel;
+import org.apache.log4j.lf5.LogLevelFormatException;
+import org.apache.log4j.lf5.viewer.LogBrokerMonitor;
+import org.apache.log4j.lf5.viewer.LogTable;
+import org.apache.log4j.lf5.viewer.LogTableColumn;
+import org.apache.log4j.lf5.viewer.LogTableColumnFormatException;
+import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryExplorerModel;
+import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryExplorerTree;
+import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryNode;
+import org.apache.log4j.lf5.viewer.categoryexplorer.CategoryPath;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * <p>ConfigurationManager handles the storage and retrival of the state of

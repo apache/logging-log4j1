@@ -17,12 +17,16 @@
 
 package org.apache.log4j;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.helpers.QuietWriter;
-import org.apache.log4j.helpers.LogLog;
 
 // Contibutors: Jens Uwe Pipka <jens.pipka@gmx.de>
 //              Ben Sandee
