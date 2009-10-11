@@ -373,7 +373,11 @@
              classpath="${checkstyle.jar}"/>
 
     <!-- by default checkstyle supports the Sun coding standard. -->
-    <checkstyle>
+    <checkstyle lcurlyMethod="nlow"
+                lcurlyOther="nlow"
+                lcurlyType="nlow"
+                maxMethodLen="500"
+                maxConstructorLen="500">
       <fileset dir="src/java/org/apache/log4j/chainsaw" includes="**/*.java"/>
     </checkstyle>
   </target>
