@@ -378,6 +378,6 @@ public class WriterAppender extends AppenderSkeleton {
    * @since 1.2.16
    */
   protected boolean shouldFlush(final LoggingEvent event) {
-     return immediateFlush();
+     return immediateFlush;
   }
 }
