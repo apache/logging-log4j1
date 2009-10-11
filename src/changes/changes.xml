@@ -86,6 +86,7 @@
        <action action="fix" issue="46539">The QuietWriter class does not live up to its published contract.</action>
        <action action="add" issue="46983">More Debug output for log4j auto-configure requested.</action>
        <action action="add" issue="47107">Add MDC.clear().</action>
+       <action action="fix" issue="47547">NullPointerException when calling Category.removeAllAppenders().</action>
     </release>
 
   
