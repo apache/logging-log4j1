@@ -29,6 +29,11 @@ import org.apache.log4j.helpers.PatternConverter;
 /**
 
    A flexible layout configurable with pattern string.
+   
+   This code is known to have synchronization and other issues
+   which are not present in org.apache.log4j.EnhancedPatternLayout.
+   EnhancedPatternLayout should be used in preference to PatternLayout.
+   EnhancedPatternLayout is distributed in the log4j extras companion.
 
    <p>The goal of this class is to {@link #format format} a {@link
    LoggingEvent} and return the results as a String. The results
