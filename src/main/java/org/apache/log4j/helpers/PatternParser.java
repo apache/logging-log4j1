@@ -16,9 +16,6 @@
  */
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LocationInfo;

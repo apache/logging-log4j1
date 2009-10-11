@@ -18,7 +18,6 @@
 package org.apache.log4j.helpers;
 
 import java.net.URL;
-import java.lang.IllegalAccessException;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.io.InterruptedIOException;

@@ -39,7 +39,6 @@ import javax.management.NotificationListener;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.management.RuntimeOperationsException;
-import javax.management.IntrospectionException;
 import java.lang.reflect.Constructor;
 import java.util.Enumeration;
 import java.util.Vector;

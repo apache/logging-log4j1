@@ -18,7 +18,6 @@
 package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggerFactory;
-import org.apache.log4j.Level;
 
 
 /**

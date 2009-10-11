@@ -18,10 +18,6 @@
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.Layout;
-import org.apache.log4j.helpers.RelativeTimeDateFormat;
-import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
-import org.apache.log4j.helpers.DateTimeDateFormat;
-import org.apache.log4j.helpers.ISO8601DateFormat;
 import org.apache.log4j.spi.LoggingEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
