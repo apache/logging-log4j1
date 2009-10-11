@@ -38,7 +38,8 @@ public class WriterAppender extends AppenderSkeleton {
 
   /**
      Immediate flush means that the underlying writer or output stream
-     will be flushed at the end of each append operation. Immediate
+     will be flushed at the end of each append operation unless shouldFlush()
+     is overridden. Immediate
      flush is slower but ensures that each append request is actually
      written. If <code>immediateFlush</code> is set to
      <code>false</code>, then there is a good chance that the last few
@@ -315,7 +316,7 @@ public class WriterAppender extends AppenderSkeleton {
       }
     }
 
-    if(this.immediateFlush) {
+    if(shouldFlush(event)) {
       this.qw.flush();
     }
   }
@@ -368,5 +369,15 @@ public class WriterAppender extends AppenderSkeleton {
       if(h != null && this.qw != null)
 	this.qw.write(h);
     }
+  }
+  
+  /**
+   * Determines whether the writer should be flushed after
+   * this event is written.
+   * 
+   * @since 1.2.16
+   */
+  protected boolean shouldFlush(final LoggingEvent event) {
+     return immediateFlush();
   }
 }

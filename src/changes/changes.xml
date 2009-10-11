@@ -87,6 +87,7 @@
        <action action="add" issue="46983">More Debug output for log4j auto-configure requested.</action>
        <action action="add" issue="47107">Add MDC.clear().</action>
        <action action="fix" issue="47547">NullPointerException when calling Category.removeAllAppenders().</action>
+       <action action="add" issue-"28647">Allow overridding of flush strategy.</action>
     </release>
 
   
