@@ -32,6 +32,11 @@ import org.apache.log4j.spi.LoggingEvent;
 /**
    RollingFileAppender extends FileAppender to backup the log files when
    they reach a certain size.
+   
+   The log4j extras companion includes alternatives which should be considered
+   for new deployments and which are discussed in the documentation
+   for org.apache.log4j.rolling.RollingFileAppender.
+   
 
    @author Heinz Richter
    @author Ceki G&uuml;lc&uuml;

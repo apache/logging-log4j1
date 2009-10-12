@@ -35,6 +35,12 @@ import org.apache.log4j.spi.LoggingEvent;
 /**
    DailyRollingFileAppender extends {@link FileAppender} so that the
    underlying file is rolled over at a user chosen frequency.
+   
+   DailyRollingFileAppender has been observed to exhibit 
+   synchronization issues and data loss.  The log4j extras
+   companion includes alternatives which should be considered
+   for new deployments and which are discussed in the documentation
+   for org.apache.log4j.rolling.RollingFileAppender.
 
    <p>The rolling schedule is specified by the <b>DatePattern</b>
    option. This pattern should follow the {@link SimpleDateFormat}
@@ -132,7 +138,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 
    @author Eirik Lygre
-   @author Ceki G&uuml;lc&uuml; */
+   @author Ceki G&uuml;lc&uuml;*/
 public class DailyRollingFileAppender extends FileAppender {
 
 
