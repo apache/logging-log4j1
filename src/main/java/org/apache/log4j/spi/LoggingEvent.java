@@ -17,17 +17,9 @@
 
 package org.apache.log4j.spi;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Level;
-import org.apache.log4j.MDC;
-import org.apache.log4j.NDC;
-import org.apache.log4j.Priority;
-import org.apache.log4j.helpers.Loader;
-import org.apache.log4j.helpers.LogLog;
-
+import java.io.InterruptedIOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -35,6 +27,14 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.log4j.Category;
+import org.apache.log4j.Level;
+import org.apache.log4j.MDC;
+import org.apache.log4j.NDC;
+import org.apache.log4j.Priority;
+import org.apache.log4j.helpers.Loader;
+import org.apache.log4j.helpers.LogLog;
 
 // Contributors:   Nelson Minar <nelson@monkey.org>
 //                 Wolf Siberski
@@ -619,5 +619,21 @@ public class LoggingEvent implements java.io.Serializable {
     }
 
 
-
+    /**
+     * This removes the specified MDC property from the event.
+     * Access to the MDC is not synchronized, so this
+     * method should only be called when it is known that
+     * no other threads are accessing the MDC.
+     * @param propName the property name to remove
+     * @since 1.2.16
+     */
+    public Object removeProperty(String propName) {
+        if (mdcCopy == null) {
+            getMDCCopy();
+        }
+        if (mdcCopy == null) {
+            mdcCopy = new Hashtable();
+        }
+        return mdcCopy.remove(propName);
+    }
 }
