@@ -90,6 +90,7 @@
        <action action="add" issue-"28647">Allow overriding of flush strategy.</action>
        <action action="fix" issue="47350">Add recommendation to use EnhancedPatternLayout to avoid synchronization issues in PatternLayout</action>
        <action action="fix" issue="45481">Source contains unnecessary imports.</action>
+       <action action="add" issue="48159">Add LoggingEvent.removeProperty</action>
     </release>
 
   
