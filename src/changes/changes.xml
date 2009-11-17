@@ -87,10 +87,11 @@
        <action action="add" issue="46983">More Debug output for log4j auto-configure requested.</action>
        <action action="add" issue="47107">Add MDC.clear().</action>
        <action action="fix" issue="47547">NullPointerException when calling Category.removeAllAppenders().</action>
-       <action action="add" issue-"28647">Allow overriding of flush strategy.</action>
+       <action action="add" issue="28647">Allow overriding of flush strategy.</action>
        <action action="fix" issue="47350">Add recommendation to use EnhancedPatternLayout to avoid synchronization issues in PatternLayout</action>
        <action action="fix" issue="45481">Source contains unnecessary imports.</action>
        <action action="add" issue="48159">Add LoggingEvent.removeProperty</action>
+       <action action="add" issue="48187">Typo ("two three goals") in log4j FAQ</action>
     </release>
 
   

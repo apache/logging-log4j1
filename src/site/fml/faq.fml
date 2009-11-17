@@ -41,7 +41,7 @@
 	arbitrary  granularity.
 	</p>
 
-	<p>log4j is designed with two three goals in mind:
+	<p>log4j is designed with three goals in mind:
 	reliability, speed and flexibility. There is a tight balance
 	between these requirements. We believe that log4j strikes the
 	right balance.
