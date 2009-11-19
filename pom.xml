@@ -379,9 +379,9 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>rat-maven-plugin</artifactId>
-        <version>1.0-alpha-3</version>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.6</version>
       </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
