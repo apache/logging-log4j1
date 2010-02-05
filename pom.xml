@@ -95,7 +95,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>2.5</version>
         <configuration>
           <workingDirectory>tests</workingDirectory>
           <reportFormat>plain</reportFormat>
@@ -149,7 +149,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.0.2</version>
+        <version>2.1</version>
         <configuration>
           <source>1.2</source>
           <target>1.1</target>
@@ -157,7 +157,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.2</version>
+        <version>2.3</version>
         <configuration>
           <archive>
             <manifestSections>
@@ -175,7 +175,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.1</version>
+        <version>1.2</version>
         <executions>
           <!--   generate NTEventLogAppender.dll    -->
           <execution>
@@ -214,6 +214,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
             <configuration>
               <tasks>
                 <delete dir="tests/output"/>
+                <delete dir="tests/classes"/>
               </tasks>
             </configuration>
             <goals>
@@ -314,7 +315,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <!--  Using version 2.1 would fail due to JIRA issue MASSEMBLY-376 -->
-        <version>2.2-beta-4</version>
+        <version>2.2-beta-5</version>
         <configuration>
           <descriptors>
             <descriptor>src/assembly/bin.xml</descriptor>
@@ -331,7 +332,10 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.6.1</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -354,7 +358,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       </plugin>
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.1.1</version>
         <executions>
           <execution>
             <goals>
@@ -442,7 +446,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
-      <version>1.4</version>
+      <version>1.4.1</version>
       <optional>true</optional>
     </dependency>
     <!--  the following dependency is not needed on JDK 1.5 and higher 
@@ -462,7 +466,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>3.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -497,7 +501,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       </plugin>
       <plugin>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.3</version>
         <reportSets>
           <reportSet>
             <reports>
