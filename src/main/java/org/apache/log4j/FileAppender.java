@@ -65,6 +65,12 @@ public class FileAppender extends WriterAppender {
    * Determines the size of IO buffer be. Default is 8K. 
    */
   protected int bufferSize = 8*1024;
+  
+  /**
+   * Determines whether "prudent" mode used.
+   * @since 1.2.16
+   */
+  private boolean prudent = false;
 
 
   /**
@@ -259,6 +265,44 @@ public class FileAppender extends WriterAppender {
   void setBufferSize(int bufferSize) {
     this.bufferSize = bufferSize;
   }
+  
+  /**
+   * Determines if the FileAppender should attempt to use
+   * java.nio.FileChannel.lock to gain exclusive access
+   * to the file during write operations.  The effectiveness
+   * and performance impact is JVM and operating system dependent.
+   * Avoiding concurrent writes to the same file by appenders
+   * and streams either within or outside a single JVM 
+   * is recommended.
+   * 
+   * Prudent mode requires JDK 1.4 or later.
+   * 
+   * @return true if prudent mode is enabled.
+   * @since 1.2.16
+   */
+  public final boolean isPrudent() {
+	  return prudent;
+  }
+  
+  /**
+   * Sets if the FileAppender should attempt to use
+   * java.nio.FileChannel.lock to gain exclusive access
+   * to the file during write operations.  The effectiveness
+   * and performance impact is JVM and operating system dependent.
+   * Avoiding concurrent writes to the same file by appenders
+   * and streams either within or outside a single JVM 
+   * is recommended.
+   * 
+   * Prudent mode requires JDK 1.4 or later.
+   * 
+   * @param valve true to enable prudent mode on next call to
+   * activateOptions or setFile.
+   *
+   * @since 1.2.16
+   */
+  public void setPrudent(final boolean value) {
+	  prudent = value;
+  }
 
   /**
     <p>Sets and <i>opens</i> the file where the log output will
@@ -311,7 +355,9 @@ public class FileAppender extends WriterAppender {
           }
     }
     Writer fw = createWriter(ostream);
-    if(bufferedIO) {
+    if (prudent) {
+      fw = new org.apache.log4j.helpers.PrudentWriter(fw, ostream);
+    } else if(bufferedIO) {
       fw = new BufferedWriter(fw, bufferSize);
     }
     this.setQWForFiles(fw);

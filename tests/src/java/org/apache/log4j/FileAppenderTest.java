@@ -84,4 +84,17 @@ public class FileAppenderTest extends TestCase {
     Priority debug = Level.DEBUG;
     assertTrue(appender.isAsSevereAsThreshold(debug));
   }
+  
+  /**
+   * Tests prudent mutator and accessor.
+   * See bug 48704.
+   */
+  public void testIsPrudent() {
+	  FileAppender appender = new FileAppender();
+	  assertFalse(appender.isPrudent());
+	  appender.setPrudent(true);
+	  assertTrue(appender.isPrudent());
+	  appender.setPrudent(false);
+	  assertFalse(appender.isPrudent());
+  }
 }
