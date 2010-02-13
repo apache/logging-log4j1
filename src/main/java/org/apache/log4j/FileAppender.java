@@ -295,7 +295,7 @@ public class FileAppender extends WriterAppender {
    * 
    * Prudent mode requires JDK 1.4 or later.
    * 
-   * @param valve true to enable prudent mode on next call to
+   * @param value true to enable prudent mode on next call to
    * activateOptions or setFile.
    *
    * @since 1.2.16
