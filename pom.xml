@@ -343,6 +343,13 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
               <goal>javadoc</goal>
             </goals>
           </execution>
+          <execution>
+            <id>site</id>
+	    <phase>pre-site</phase>
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
       <plugin>

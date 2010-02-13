@@ -346,7 +346,6 @@
            </release>
 
      <release version="1.2.5" date="2002-07-05" description="AsyncAppender.close now closes nested appender.">
-              July 5th, 2002
         <action action="fix" issue="10185">Calling an AsyncAppender close method also closes the embedded
    appender instances.</action>
      </release>
@@ -480,7 +479,7 @@
     incarnation, log4j would reject a custom appender claiming that it is
     not assignable to a org.apache.log4j.Appender variable. This would
     occur when log4j.jar was available to both the Ant classloader and the
-    system classloader.<br/>
+    system classloader.
     
     Thanks to Dave Herman for providing detailed scenarios exposing
     the issues involved. See
@@ -882,17 +881,17 @@
 
 <action>Package hierarchy now starts at org.apache.log4j.</action>
 
- <action action="add"><p>Add the fatal() family of methods to the Category
+ <action action="add">Add the fatal() family of methods to the Category
    class.  Moreover, the EMERG priority has been removed from the
    Priority class.  This priority has been replaced by the FATAL
    priority that is more widely accepted.  This change will
    require EMERG log statements to be replaced by FATAL log
    statements.  Assuming EMERG log statements are rare, this should
-   have a small but bearable impact on existing client code.</p>
+   have a small but bearable impact on existing client code.
  
-   <p>Moreover, the Unix Syslog priorities ALERT, CRIT and NOTICE are no
+   Moreover, the Unix Syslog priorities ALERT, CRIT and NOTICE are no
    longer recognized. Support for these priorities was minimal and
-   few users should suffer from these changes.</p></action>
+   few users should suffer from these changes.</action>
 
 <action>Removed the methods setRootPriority, getRootPriority as these
    methods were redundant and had been previously deprecated.</action>
@@ -919,17 +918,17 @@
    will provide a basis for several performance enhancements planned
    for the future.</action>
 
- <action action="add"><p>Add support for object rendering. It is now possible to register
+ <action action="add">Add support for object rendering. It is now possible to register
    an object renderer for a given object type. When the given object
    needs to be logged log4j will invoke the corresponding renderer to
-   transform the object into a String.</p>
+   transform the object into a String.
 
-   <p>As a result of this enhancement, all the String forms of all the
+   As a result of this enhancement, all the String forms of all the
    printing methods such as debug(String), info(String) have been
    removed as they are no longer necessary. This change should be
    backward compatible but requires recompilation of old client
    code. Thanks to Michael Smith for noting the recompilation
-   requirement.</p></action>
+   requirement.</action>
  
  <action action="add">Add support for user defined category factories in the
    PropertyConfigurator. Thus, it is now possible to configure log4j
@@ -1731,19 +1730,19 @@
    quite confident that the new class is now bug free. This assumption
    has been proven to be wrong. See above.</action>
 	
-<action><p>Created a new class called Category to manipulate categories
+<action>Created a new class called Category to manipulate categories
    instead of plain Strings. The new class is just as easy to use.
    However, the evaluation of whether to log or not to log is at least
    10 times faster. The NOP class performance remain unaffected by the
    change. (You can't improve on the performance of an empty function
-   call.)</p>
+   call.)
 
-   <p>Many thanks to Alex Blewitt "Alex.Blewitt@ioshq.com" for his
+   Many thanks to Alex Blewitt "Alex.Blewitt@ioshq.com" for his
    valuable comments. He was the first to observe that finding Strings
-   in a hash table was an expensive operation.</p>
+   in a hash table was an expensive operation.
 		    
-   <p>This change will require some recoding on your part. See the FAQ
-   for more details.</p></action>
+   This change will require some recoding on your part. See the FAQ
+   for more details.</action>
 
 <action>Modified the force in Log and CGULog method to use a byte[] buffer
    instead of a StringBuffer. The old code was clearer but the new one
@@ -1751,17 +1750,17 @@
 
  <action action="add">Add regression testing.</action>
    
-<action><p>We now enforce a policy where the OutputStream set by
+<action>We now enforce a policy where the OutputStream set by
    setOutputStream is a user managed resource whereas the OutputStream
-   opened using setLogFile is the Log class' responsibility.</p>
+   opened using setLogFile is the Log class' responsibility.
 
-   <p>The setLogFile method now closes any previous OutputStream if only
+   The setLogFile method now closes any previous OutputStream if only
    if opened through setLogFile. If the previous OutputStream was
    opened by the user and set through setOutputStream the previous
-   OutputStream is untouched.</p>
+   OutputStream is untouched.
 
-   <p>Similarly, setOutputStream will close any previous OutputStream if
-   and only if it was opened using setLogFile.</p>
+   Similarly, setOutputStream will close any previous OutputStream if
+   and only if it was opened using setLogFile.
 </action>
 
  <action action="add">Add a new method logOutputStreamExists to the Log class allowing
@@ -1769,14 +1768,14 @@
    trying to set a new one.  A stream can be opened as a byproduct of
    reading the configuration file.</action>
 	
-<action><p>Changed the behavior of the (private) Log.Append method in case of
-   failure to write to the OutputStream.</p>
+<action>Changed the behavior of the (private) Log.Append method in case of
+   failure to write to the OutputStream.
 
-   <p>Previously, in case of failure, we reverted to System.err.  Now, we
+   Previously, in case of failure, we reverted to System.err.  Now, we
    emit a warning message and discard all future log messages.  The
    new behavior is consistent with our current unreliable logging
    semantics.  The change prevents an otherwise functional program
-   from failing because the terminal is flooded with logging messages.</p></action>
+   from failing because the terminal is flooded with logging messages.</action>
 
 <action>Renamed the iLog to ILog to remain consistent with our class naming
    scheme. The initial intention was to add ILog and deprecate
