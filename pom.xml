@@ -153,6 +153,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         <configuration>
           <source>1.2</source>
           <target>1.1</target>
+          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
       <plugin>
@@ -314,7 +315,6 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <!--  Using version 2.1 would fail due to JIRA issue MASSEMBLY-376 -->
         <version>2.2-beta-5</version>
         <configuration>
           <descriptors>
