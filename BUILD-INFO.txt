@@ -24,10 +24,7 @@ This is a detailed instruction to reproduce the log4j distribution
 either to verify that the release is reproducable or to prepare
 a hot-fix.
 
-Apache log4j 1.2.16 was prepared using Ubuntu 8.04 LTS in a virtual machine environment.
-
-If ssh'ing into a remote instance for release preparation, 
-use "ssh -Y" to tunnel XWindows to the local machine.
+Apache log4j 1.2.16 was prepared using a Ubuntu 8.04 LTS Live CD.
 
 
 Preparation of environment:
@@ -42,7 +39,7 @@ $> export JAVA_HOME=/usr/lib/jvm/java-6-sun
 
 2. Install Maven 2, Subversion, mingw and xemacs21:
 
-$> sudo apt-get maven2 subversion mingw xemacs21
+$> sudo apt-get install maven2 subversion mingw32 xemacs21
 
 3. Copy Win32 version of jni_md.h for NTEventLogAppender.dll
 
@@ -51,8 +48,8 @@ c:\>scp jni_md.h username@hostname:
 
 $> export JNI_WIN32_INCLUDE_DIR=/home/username
 
-4. Create a local ssh key to enable "deployment" of
-site back to the local machine using scp.
+4. Create a local ssh key with no passphrase to enable 
+"deployment" of site back to the local machine using scp.
 
 $> ssh-keygen
 $> cd ~/.ssh
