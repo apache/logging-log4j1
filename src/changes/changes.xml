@@ -21,7 +21,7 @@
   </properties>
   <body>
 
-    <release version="1.2.16" date="2010-02-14" description="Maintenance release">
+    <release version="1.2.16" date="2010-02-21" description="Maintenance release">
        <action issue="43313">log4j 1.2.16 release preparation.</action>
        <action action="add" issue="42842">Create a public identifier for log4j.dtd ("-//APACHE//DTD LOG4J 1.2//EN")</action>
        <action action="fix" issue="44108">TelnetAppender misses messages when one of many clients disconnect.</action>

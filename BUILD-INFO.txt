@@ -24,53 +24,68 @@ This is a detailed instruction to reproduce the log4j distribution
 either to verify that the release is reproducable or to prepare
 a hot-fix.
 
-Install VMWare Player or Workstation appropriate for machine.
+Apache log4j 1.2.16 was prepared using Ubuntu 8.04 LTS in a virtual machine environment.
 
-Download Ubuntu-6.06-1 desktop from http://www.vmware.com/vmtn/appliances/directory/ubuntu.html
+If ssh'ing into a remote instance for release preparation, 
+use "ssh -Y" to tunnel XWindows to the local machine.
 
-Launch Ubuntu 6.06-1 in VMWare Player (user name and password are ubuntu)
 
-Launch Synaptics Package Manager (System > Administration > Synaptic Package Manager), 
-select all available repositories (Settings > Repositories), press Reload button 
-to update list of available packages.  Select the following packages for installation: 
-Subversion, mingw32, sun-java6-jdk, xemacs21.  Press Apply to install.  Exit Synaptics.
+Preparation of environment:
 
-Download Maven-2.0.7 from http://maven.apache.org
-Download JMX 1.2.1 Reference Implementation from 
-   http://java.sun.com/products/JavaManagement/download.html
-Download JMS 1.1 from http://java.sun.com/products/jms/docs.html
-Unzip all in ~
+1. Install Sun Java 6:
 
-Copy include/win32/jni_md.h from a Windows JDK to ~
+$> sudo sed  's/universe/universe multiverse/' -i /etc/apt/sources.list
+$> sudo apt-get update && sudo apt-get -y update
+$> sudo apt-get install sun-java6-jdk
+$> sudo update-java-alternatives -s java-6-sun
+$> export JAVA_HOME=/usr/lib/jvm/java-6-sun
+
+2. Install Maven 2, Subversion, mingw and xemacs21:
+
+$> sudo apt-get maven2 subversion mingw xemacs21
+
+3. Copy Win32 version of jni_md.h for NTEventLogAppender.dll
+
+c:\>cd "\Program Files\Java\jdk_1.6.0_16\include\win32
+c:\>scp jni_md.h username@hostname:
+
+$> export JNI_WIN32_INCLUDE_DIR=/home/username
+
+4. Create a local ssh key to enable "deployment" of
+site back to the local machine using scp.
+
+$> ssh-keygen
+$> cd ~/.ssh
+$> cat id_rsa.pub >> authorized_keys
+$> ssh localhost
+$> exit
+
 
 From a command prompt:
 
 $ export SVN_EDITOR=xemacs 
-$ export JAVA_HOME=/usr/lib/jvm/java-6-sun
-$ export PATH=$JAVA_HOME/bin:/home/ubuntu/maven-2.0.7/bin:$PATH
-$ export JNI_WIN32_INCLUDE_DIR=/home/ubuntu
-$ svn co https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15 log4j
-$ mvn install:install-file -DgroupId=com.sun.jdmk -DartifactId=jmxtools \
-          -Dversion=1.2.1 -Dpackaging=jar -Dfile=~/jmx-1_2_1-bin/lib/jmxtools.jar
-$ mvn install:install-file -DgroupId=com.sun.jmx -DartifactId=jmxri \
-          -Dversion=1.2.1 -Dpackaging=jar -Dfile=~/jmx-1_2_1-bin/lib/jmxri.jar
-$ mvn install:install-file -DgroupId=javax.jms -DartifactId=jms \
-          -Dversion=1.1 -Dpackaging=jar -Dfile=~/jms1.1/lib/jms.jar
-$ cd log4j
+$ svn co https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_16
+$ cd v1_2_16
 $ mvn site assembly:assembly
 
 
 If you intended to deploy jars to the repo or update the site,
-you need to copy your private keys for people.apache.org 
-over to ~/.ssh and update ~/maven-2.0.7/conf/settings.xml
-to specify user name and key location.
+you need to set up ssh to use private keys to access people.apache.org
+and create or modify ~/.m2/settings.xml to specify user name and key location.
 
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 
+              http://maven.apache.org/xsd/settings-1.0.0.xsd">
+   <servers>
     <server>
       <id>logging.repo</id>
       <username>USERNAME for people.apache.org</username>
-      <privateKey>/home/ubuntu/.ssh/id_rsa</privateKey>
+      <privateKey>/home/username/.ssh/id_rsa</privateKey>
       <passphrase></passphrase>
     </server>
+   </servers>
+</settings>
 
 You should test your ssh connection to people.apache.org 
 and localhost before attempting a deployment like:
@@ -78,12 +93,29 @@ and localhost before attempting a deployment like:
 $ ssh -l USERNAME people.apache.org
 $ ssh localhost
 
-release:perform has been running into http://jira.codehaus.org/browse/MRELEASE-273.
-Release was attempted to be prepared with:
+The release artifacts were originally built by:
 
-$ mvn release:perform -DconnectionUrl=scm:svn:https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_15_rc6
+$> svn co http://svn.apache.org/repos/asf/logging/log4j/trunk log4j
+$> cd log4j
+$> mvn package release:prepare
+$> mvn release:perform
 
-but it may have been necessary to specify a -Dgoals=".." to avoid the bug.  If so, 
-any final build notes will be added to bug 40951.
+
+The release artifacts can be rebuilt by:
+
+$ mvn release:perform -DconnectionUrl=scm:svn:https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_16
+
+The website content will automatically be staged to the ASF SVN repo by "mvn site-deploy".
+This phase checks out https://svn.apache.org/repos/asf/logging/site/trunk/docs/log4j/1.2 
+into target/site-deploy, copys the generated documentation to that directory using
+scp to localhost and then commits the changed content.  You will be prompted for an
+SVN commit message using the configured SVN_EDITOR.  A commit message must be entered or the
+site commit will be aborted.
+
+The staged content can be tested by opening 
+http://svn.apache.org/repos/asf/logging/site/trunk/docs/1.2/index.html, 
+however some links may be broken due to the staged location.  
+The staged version can be published to the main public site by executing 
+"svn update" in /www/logging.apache.org/log4j/1.2 on people.apache.org.
 
 
