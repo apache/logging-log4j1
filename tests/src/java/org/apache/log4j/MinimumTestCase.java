@@ -79,32 +79,6 @@ public class MinimumTestCase extends TestCase {
     assertTrue(Compare.compare(FILTERED, "witness/simple"));
   }
 
-  public void prudent() throws Exception {
-	    try {
-	    	java.io.FileOutputStream.class.getMethod("getChannel", (Class[]) null);
-	    } catch(NoSuchMethodException ex) {
-	    	//  earlier than JDK 1.4
-	    	return;
-	    }
-	    Layout layout = new SimpleLayout();
-	    FileAppender appender = new FileAppender();
-	    
-	    appender.setPrudent(true);
-	    appender.setFile("output/prudent");
-	    appender.setLayout(layout);
-	    appender.activateOptions();
-	    root.addAppender(appender);    
-	    common();
-
-	    Transformer.transform(
-	      "output/prudent", FILTERED,
-	      new Filter[] { new LineNumberFilter(), 
-	                     new SunReflectFilter(), 
-	                     new JunitTestRunnerFilter() });
-	    assertTrue(Compare.compare(FILTERED, "witness/prudent"));
-	  }
-  
-  
   public void ttcc() throws Exception {
     
     Layout layout = new TTCCLayout(AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT);
@@ -226,7 +200,6 @@ public class MinimumTestCase extends TestCase {
     TestSuite suite = new TestSuite();
     suite.addTest(new MinimumTestCase("simple"));
     suite.addTest(new MinimumTestCase("ttcc"));
-    suite.addTest(new MinimumTestCase("prudent"));
     return suite;
   }
 
