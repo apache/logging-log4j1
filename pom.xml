@@ -360,7 +360,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
           typically after deploy so this places it last.
         -->
         <configuration>
-          <goals>test site-deploy assembly:attached deploy</goals>
+          <goals>package site-deploy assembly:attached deploy</goals>
         </configuration>
       </plugin>
       <plugin>

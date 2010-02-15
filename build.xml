@@ -741,6 +741,7 @@
 </target>
 
 	<target name="checkout-site" unless="svn-available">
+                <delete dir="target/site-deploy"/>
 		<exec executable="svn">
 			<arg value="co"/>
 			<arg value="${svnsite.url}"/>
