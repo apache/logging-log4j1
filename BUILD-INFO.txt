@@ -24,22 +24,22 @@ This is a detailed instruction to reproduce the log4j distribution
 either to verify that the release is reproducable or to prepare
 a hot-fix.
 
-Apache log4j 1.2.16 was prepared using a Ubuntu 8.04 LTS Live CD.
+Apache log4j 1.2.16 was prepared using Ubuntu 9.10.
 
 
 Preparation of environment:
 
 1. Install Sun Java 6:
 
-$> sudo sed  's/universe/universe multiverse/' -i /etc/apt/sources.list
+$> sudo sed  's/restricted/restricted universe multiverse/' -i /etc/apt/sources.list
 $> sudo apt-get update && sudo apt-get -y update
 $> sudo apt-get install sun-java6-jdk
 $> sudo update-java-alternatives -s java-6-sun
 $> export JAVA_HOME=/usr/lib/jvm/java-6-sun
 
-2. Install Maven 2, Subversion, mingw and xemacs21:
+2. Install Maven 2, Subversion, mingw and xemacs21, openssh-server:
 
-$> sudo apt-get install maven2 subversion mingw32 xemacs21
+$> sudo apt-get install maven2 subversion mingw32 xemacs21 openssh-server
 
 3. Copy Win32 version of jni_md.h for NTEventLogAppender.dll
 
