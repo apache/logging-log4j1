@@ -408,6 +408,9 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
                                 javax.mail.*;resolution:=optional,
                                 javax.management;resolution:=optional,
                                 javax.naming;resolution:=optional,
+                                com.sun.jdmk.comm;resolution:=optional,
+                                com.ibm.uvm.tools;resolution:=optional,
+                                javax.swing.*;resolution:=optional,
                                 *</Import-Package>
                 <Bundle-DocURL>http://logging.apache.org/log4j/1.2</Bundle-DocURL>
             </instructions>
