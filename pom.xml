@@ -32,7 +32,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
   <artifactId>log4j</artifactId>
   <packaging>bundle</packaging>
   <name>Apache Log4j</name>
-  <version>1.2.17-SNAPSHOT</version>
+  <version>1.2.16-SNAPSHOT</version>
   <description>Apache Log4j 1.2</description>
   <url>http://logging.apache.org/log4j/1.2/</url>
   <issueManagement>
