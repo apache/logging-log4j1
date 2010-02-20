@@ -13,14 +13,19 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License.
  ------
- log4j 1.2 Roadmap
+ Apache log4j 1.2 Roadmap
  ------
  ------
  ------
 
-log4j 1.2 Roadmap
+Apache log4j 1.2 Roadmap
 
-  log4j 1.2 is mature and future development on the log4j 1.2 branch
-  is expected to be limited to bug fixes and minor enhancements.
-  Any major new features for log4j 1.2 are likely to be developed
-  as companion products for log4j 1.2.
+  Apache log4j 1.2 is mature and widely deployed.  Significant
+  changes are unlikely.  Bug fixes and maintenance releases are anticipated.  
+  New features may still be added 
+  either in log4j proper or more likely incorporated into 
+  {{{http://logging.apache.org/log4j/companions/extras/index.html}extras}} 
+  or one of the other companion products.
+  
+
+  
