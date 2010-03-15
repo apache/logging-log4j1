@@ -24,7 +24,6 @@ import org.apache.log4j.spi.LoggingEventTest;
 /**
  * Suite of log4j class level unit tests.
  *
- * @author Curt Arnold
  */
 public class CoreTestSuite {
     /**
@@ -54,6 +53,9 @@ public class CoreTestSuite {
         s.addTestSuite(org.apache.log4j.net.TelnetAppenderTest.class);
         s.addTestSuite(org.apache.log4j.DefaultThrowableRendererTest.class);
         s.addTestSuite(org.apache.log4j.EnhancedThrowableRendererTest.class);
+        s.addTestSuite(org.apache.log4j.TestLogXF.class);
+        s.addTestSuite(org.apache.log4j.TestLogMF.class);
+        s.addTestSuite(org.apache.log4j.TestLogSF.class);
         return s;
     }
 }

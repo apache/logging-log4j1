@@ -94,6 +94,7 @@
        <action action="add" issue="48187">Typo ("two three goals") in log4j FAQ</action>
        <action action="fix" issue="48531">Unit tests fail for system dates after 2009-12-31</action>
        <action action="fix" issue="48604">Download page does not have link to KEYS file</action>
+       <action action="add" issue="49812">Add parameterized logging utility classes LogMF and LogSF from extras companion.</action>
     </release>
 
   
