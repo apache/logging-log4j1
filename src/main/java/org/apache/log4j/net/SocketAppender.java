@@ -118,6 +118,11 @@ public class SocketAppender extends AppenderSkeleton {
   */
   String remoteHost;
 
+  /**
+   * The MulticastDNS zone advertised by a SocketAppender
+   */
+  public static final String ZONE = "_log4j_obj_tcpconnect_appender.local.";
+
   InetAddress address;
   int port = DEFAULT_PORT;
   ObjectOutputStream oos;
@@ -132,6 +137,8 @@ public class SocketAppender extends AppenderSkeleton {
   // reset the ObjectOutputStream every 70 calls
   //private static final int RESET_FREQUENCY = 70;
   private static final int RESET_FREQUENCY = 1;
+  private boolean advertiseViaMulticastDNS;
+  private ZeroConfSupport zeroConf;
 
   public SocketAppender() {
   }
@@ -160,6 +167,10 @@ public class SocketAppender extends AppenderSkeleton {
      Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
   */
   public void activateOptions() {
+    if (advertiseViaMulticastDNS) {
+      zeroConf = new ZeroConfSupport(ZONE, port, getName());
+      zeroConf.advertise();
+    }
     connect(address, port);
   }
 
@@ -174,6 +185,10 @@ public class SocketAppender extends AppenderSkeleton {
       return;
 
     this.closed = true;
+    if (advertiseViaMulticastDNS) {
+      zeroConf.unadvertise();
+    }
+
     cleanUp();
   }
 
@@ -274,6 +289,14 @@ public class SocketAppender extends AppenderSkeleton {
 	      }
       }
     }
+  }
+
+  public void setAdvertiseViaMulticastDNS(boolean advertiseViaMulticastDNS) {
+    this.advertiseViaMulticastDNS = advertiseViaMulticastDNS;
+  }
+
+  public boolean isAdvertiseViaMulticastDNS() {
+    return advertiseViaMulticastDNS;
   }
 
   void fireConnector() {

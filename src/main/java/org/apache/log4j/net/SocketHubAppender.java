@@ -117,7 +117,15 @@ public class SocketHubAppender extends AppenderSkeleton {
   private boolean locationInfo = false;
   private CyclicBuffer buffer = null;
   private String application;
-  
+  private boolean advertiseViaMulticastDNS;
+  private ZeroConfSupport zeroConf;
+
+  /**
+   * The MulticastDNS zone advertised by a SocketHubAppender
+   */
+  public static final String ZONE = "_log4j_obj_tcpaccept_appender.local.";
+
+
   public SocketHubAppender() { }
 
   /**
@@ -132,6 +140,10 @@ public class SocketHubAppender extends AppenderSkeleton {
      Set up the socket server on the specified port.  */
   public
   void activateOptions() {
+    if (advertiseViaMulticastDNS) {
+      zeroConf = new ZeroConfSupport(ZONE, port, getName());
+      zeroConf.advertise();
+    }
     startServer();
   }
 
@@ -147,7 +159,11 @@ public class SocketHubAppender extends AppenderSkeleton {
 
 	LogLog.debug("closing SocketHubAppender " + getName());
     this.closed = true;
+    if (advertiseViaMulticastDNS) {
+      zeroConf.unadvertise();
+    }
     cleanUp();
+
 	LogLog.debug("SocketHubAppender " + getName() + " closed");
   }
 
@@ -323,7 +339,15 @@ public class SocketHubAppender extends AppenderSkeleton {
   boolean getLocationInfo() {
     return locationInfo;
   }
-  
+
+  public void setAdvertiseViaMulticastDNS(boolean advertiseViaMulticastDNS) {
+    this.advertiseViaMulticastDNS = advertiseViaMulticastDNS;
+  }
+
+  public boolean isAdvertiseViaMulticastDNS() {
+    return advertiseViaMulticastDNS;
+  }
+
   /**
     Start the ServerMonitor thread. */
   private
