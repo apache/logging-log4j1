@@ -22,9 +22,13 @@ import java.util.ResourceBundle;
 
 
 /**
- * This class provides static methods to
- * format log messages using a log4j 1.3 or SLF4J
- * style formatter.
+ * This class provides parameterized logging services
+ * using the SLF4J pattern syntax.
+ * <p>
+ * Message formatting is only performed when the 
+ * request exceeds the threshold level of the logger.
+ *
+ * @since 1.2.16
  *
  */
 public final class LogSF extends LogXF {

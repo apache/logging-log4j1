@@ -27,8 +27,19 @@ import java.util.Locale;
 
 
 /**
- * This class provides static methods to
- * format log messages using java.text.MessageFormat.
+ * This class provides parameterized logging services
+ * using the pattern syntax of java.text.MessageFormat.
+ * Message formatting is only performed when the 
+ * request exceeds the threshold level of the logger.
+ * When the pattern only contains literal text and
+ * default conversion patterns (that is "{0}" and similar)
+ * a simple fast compatible formatter is used.  
+ * If the pattern contains more complex conversion patterns,
+ * formatting will be delegated to java.text.MessageFormatter
+ * which can be substantially slower.
+ *
+ * @see org.apache.log4j.LogSF
+ * @since 1.2.16
  *
  */
 public final class LogMF extends LogXF {

@@ -18,7 +18,15 @@ package org.apache.log4j;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-public class LogXF {
+/**
+ * This is a base class for LogMF and LogSF parameterized logging classes.
+ *
+ *
+ * @see org.apache.log4j.LogMF
+ * @see org.apache.log4j.LogSF
+ * @since 1.2.16
+ */
+public abstract class LogXF {
     /**
      * Trace level.
      */
@@ -188,7 +196,6 @@ public class LogXF {
      * @param logger       logger, may not be null.
      * @param sourceClass  source class, may be null.
      * @param sourceMethod method, may be null.
-     * @since 1.1
      */
     public static void entering(final Logger logger,
                                 final String sourceClass,
@@ -206,7 +213,6 @@ public class LogXF {
      * @param sourceClass  source class, may be null.
      * @param sourceMethod method, may be null.
      * @param param        parameter, may be null.
-     * @since 1.1
      */
     public static void entering(final Logger logger,
                                 final String sourceClass,
@@ -226,7 +232,6 @@ public class LogXF {
      * @param sourceClass  source class, may be null.
      * @param sourceMethod method, may be null.
      * @param param        parameter, may be null.
-     * @since 1.1
      */
     public static void entering(final Logger logger,
                                 final String sourceClass,
@@ -255,7 +260,6 @@ public class LogXF {
      * @param sourceClass  source class, may be null.
      * @param sourceMethod method, may be null.
      * @param params       parameters, may be null.
-     * @since 1.1
      */
     public static void entering(final Logger logger,
                                 final String sourceClass,
@@ -288,7 +292,6 @@ public class LogXF {
      * @param logger       logger, may not be null.
      * @param sourceClass  source class, may be null.
      * @param sourceMethod method, may be null.
-     * @since 1.1
      */
     public static void exiting(final Logger logger,
                                final String sourceClass,
@@ -306,7 +309,6 @@ public class LogXF {
      * @param sourceClass  source class, may be null.
      * @param sourceMethod method, may be null.
      * @param result       result, may be null.
-     * @since 1.1
      */
     public static void exiting(
             final Logger logger,
@@ -326,7 +328,6 @@ public class LogXF {
      * @param sourceClass  source class, may be null.
      * @param sourceMethod method, may be null.
      * @param result       result, may be null.
-     * @since 1.1
      */
     public static void exiting(
             final Logger logger,
@@ -355,9 +356,7 @@ public class LogXF {
      * @param logger       logger, may not be null.
      * @param sourceClass  source class, may be null.
      * @param sourceMethod method, may be null.
-     * @param thrown,      throwable may be null.
-     * @param thrown       the throwable.
-     * @since 1.1
+     * @param thrown      throwable, may be null.
      */
     public static void throwing(
             final Logger logger,
