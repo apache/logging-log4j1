@@ -217,6 +217,12 @@
       <formatter type="plain" usefile="false"/>
       <test name="org.apache.log4j.PatternLayoutTestCase" />
     </junit>
+    <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}"  dir="${basedir}">
+      <classpath refid="tests.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <test name="org.apache.log4j.EnhancedPatternLayoutTestCase" />
+    </junit>
   </target>
 
   <target name="HierarchyThreshold" depends="build">

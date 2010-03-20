@@ -56,6 +56,10 @@ public class CoreTestSuite {
         s.addTestSuite(org.apache.log4j.TestLogXF.class);
         s.addTestSuite(org.apache.log4j.TestLogMF.class);
         s.addTestSuite(org.apache.log4j.TestLogSF.class);
+        s.addTestSuite(org.apache.log4j.pattern.CachedDateFormatTest.class);
+        s.addTestSuite(org.apache.log4j.pattern.FormattingInfoTest.class);
+        s.addTestSuite(org.apache.log4j.pattern.NameAbbreviatorTest.class);
+        s.addTestSuite(org.apache.log4j.pattern.PatternParserTest.class);
         return s;
     }
 }
