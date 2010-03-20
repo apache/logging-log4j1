@@ -96,6 +96,7 @@
        <action action="fix" issue="48604">Download page does not have link to KEYS file</action>
        <action action="add" issue="49812">Add parameterized logging utility classes LogMF and LogSF from extras companion.</action>
        <action action="add" issue="48927">Add EnhancedPatternLayout from extras companion.</action>
+       <action action="fix" issue="48784">Links to example code broken in the JavaDocs</action>
     </release>
 
   
