@@ -334,6 +334,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.6.1</version>
         <configuration>
+          <docfilessubdirs>true</docfilessubdirs>
           <encoding>UTF-8</encoding>
         </configuration>
         <executions>

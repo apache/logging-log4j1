@@ -22,11 +22,11 @@ import org.apache.log4j.Logger;
 
 /**
 
-   This <a href="doc-files/XMLSample.java">example code</a> shows how to
+   This <a href="XMLSample.java">example code</a> shows how to
    read an XML based configuration file using a DOM parser.
 
-   <p>Sample XML files <a href="doc-files/sample1.xml">sample1.xml</a>
-   and <a href="doc-files/sample2.xml">sample2.xml</a> are provided.
+   <p>Sample XML files <a href="sample1.xml">sample1.xml</a>
+   and <a href="sample2.xml">sample2.xml</a> are provided.
 
 
    <p>Note that the log4j.dtd is not in the local directory.
