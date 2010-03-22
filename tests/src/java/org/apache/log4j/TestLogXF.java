@@ -201,15 +201,4 @@ public class TestLogXF extends TestCase {
         assertEquals("SomeClass.someMethod THROW", capture.getMessage());
     }
 
-    public void testJul() {
-        java.util.logging.Logger l = java.util.logging.Logger.getAnonymousLogger();
-        java.util.logging.Handler h = new java.util.logging.ConsoleHandler();
-        h.setLevel(java.util.logging.Level.FINER);
-        l.addHandler(h);
-        l.setLevel(java.util.logging.Level.FINER);
-        l.entering("SomeClass", "someMethod", "foo");
-        l.setLevel(java.util.logging.Level.FINER);
-        l.entering("SomeClass", "someMethod", BadStringifier.INSTANCE);
-    }
-
 }
