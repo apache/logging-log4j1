@@ -36,8 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.io.*;
-import java.util.Properties;
-import java.util.regex.Pattern;
 
 
 public class EnhancedPatternLayoutTestCase extends TestCase {

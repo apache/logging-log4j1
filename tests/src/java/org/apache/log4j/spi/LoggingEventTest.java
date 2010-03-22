@@ -23,7 +23,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.apache.log4j.NDC;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.util.SerializationTestHelper;
 import org.apache.log4j.Priority;
 import org.apache.log4j.Category;
@@ -91,7 +90,7 @@ public class LoggingEventTest extends TestCase {
     LoggingEvent event =
       new LoggingEvent(
         root.getClass().getName(), root, Level.INFO, "Hello, world.", null);
-    LocationInfo info = event.getLocationInformation();
+    event.getLocationInformation();
 //    event.prepareForDeferredProcessing();
 
     int[] skip = new int[] { 352, 353, 354, 355, 356 };

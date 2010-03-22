@@ -39,6 +39,7 @@ public class ThrowableInformationTest extends TestCase {
      * overridden by VectorWriter in log4j 1.2.14 and earlier.
      */
     private static final class OverriddenThrowable extends Throwable {
+        private static final long serialVersionUID = 1L;
         /**
          * Create new instance.
          */
@@ -82,6 +83,7 @@ public class ThrowableInformationTest extends TestCase {
      * not overridden by VectorWriter in log4j 1.2.14 and earlier.
      */
     private static final class NotOverriddenThrowable extends Throwable {
+        private static final long serialVersionUID = 1L;
         /**
          * Create new instance.
          */
@@ -139,6 +141,7 @@ public class ThrowableInformationTest extends TestCase {
      * with null.
      */
     private static final class NullThrowable extends Throwable {
+        private static final long serialVersionUID = 1L;
         /**
          * Create new instance.
          */
@@ -176,6 +179,7 @@ public class ThrowableInformationTest extends TestCase {
      * Custom throwable that does nothing in printStackTrace.
      */
     private static final class EmptyThrowable extends Throwable {
+        private static final long serialVersionUID = 1L;
         /**
          * Create new instance.
          */
@@ -206,6 +210,7 @@ public class ThrowableInformationTest extends TestCase {
      * Custom throwable that emits a specified string in printStackTrace.
      */
     private static final class StringThrowable extends Throwable {
+        private static final long serialVersionUID = 1L;
         /**
          * Stack trace.
          */
@@ -305,6 +310,7 @@ public class ThrowableInformationTest extends TestCase {
      *    when printStackTrace is called.
      */
     private static final class NastyThrowable extends Throwable {
+        private static final long serialVersionUID = 1L;
         /**
          * Create new instance.
          */

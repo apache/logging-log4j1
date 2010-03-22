@@ -86,7 +86,7 @@ public class HTMLLayoutTest extends LayoutTest {
 
     String src =
       "<!DOCTYPE body [ <!ENTITY nbsp ' '>]><body>" + result + "</body>";
-    Document doc = parse(src);
+    parse(src);
   }
 
   /**
@@ -181,6 +181,8 @@ public class HTMLLayoutTest extends LayoutTest {
      * Level with arbitrary toString value.
      */
     private static final class ProblemLevel extends Level {
+        private static final long serialVersionUID = 1L;
+
         /**
          * Construct new instance.
          * @param levelName level name, may not be null.

@@ -24,16 +24,10 @@
 
 package org.apache.log4j.or;
 
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.Category;
-import org.apache.log4j.Priority;
 
-import org.apache.log4j.or.ObjectRenderer;
-import org.apache.log4j.or.RendererMap;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import junit.framework.TestFailure;
 import junit.framework.Test;
 
 import java.io.Serializable;
@@ -152,7 +146,7 @@ public class ORTestCase extends TestCase {
     RendererMap map = new RendererMap();
     Class comparable = null; 
     try {
-        comparable = getClass().forName("java.lang.Comparable");
+        comparable = Class.forName("java.lang.Comparable");
     } catch(Exception ex) {
         //  likely JDK 1.1
         return;

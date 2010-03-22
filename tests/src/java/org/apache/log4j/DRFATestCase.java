@@ -22,8 +22,6 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.FileWriter;
-import java.io.FileReader;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -64,8 +62,7 @@ public class DRFATestCase extends TestCase {
     drfa.setDatePattern("yyyy-MM-dd.'log'");
     drfa.activateOptions();
 
-    int x = drfa.computeCheckPeriod();
-    int y = DailyRollingFileAppender.TOP_OF_DAY;
+    drfa.computeCheckPeriod();
     assertEquals(drfa.computeCheckPeriod(),
          DailyRollingFileAppender.TOP_OF_DAY);
 
@@ -143,7 +140,6 @@ public class DRFATestCase extends TestCase {
     rc.setType(DailyRollingFileAppender.TOP_OF_HOUR);
 
     Calendar c = Calendar.getInstance();
-    TimeZone tz = c.getTimeZone();
 
     // jan, mar, may, july, aug, oct, dec have 31 days
     int [] M31 = {0,2,4,6,7,9,11};

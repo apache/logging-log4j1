@@ -28,11 +28,9 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 
-import org.apache.log4j.helpers.BoundedFIFO;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import junit.framework.TestFailure;
 import junit.framework.Test;
 
 

@@ -33,7 +33,6 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.apache.log4j.varia.LevelRangeFilter;
-import org.apache.log4j.helpers.OptionConverter;
 
 /**
  * Test property configurator.

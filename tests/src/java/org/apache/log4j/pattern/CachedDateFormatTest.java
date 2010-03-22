@@ -51,21 +51,6 @@ public final class CachedDateFormatTest
       return df;
   }
 
-  /**
-   * Asserts that formatting the provided date results
-   * in the expected string.
-   *
-   * @param date Date date
-   * @param timeZone TimeZone timezone for conversion
-   * @param expected String expected string
-   */
-  private final void assertFormattedTime(Date date,
-                                         TimeZone timeZone,
-                                         String expected) {
-    DateFormat formatter = createAbsoluteTimeDateFormat(timeZone);
-    String actual = formatter.format(date);
-    assertEquals(expected, actual);
-  }
 
   /**
    * Timezone representing GMT.
@@ -149,8 +134,8 @@ public final class CachedDateFormatTest
     Date jul1 = new Date(ticks);
     assertEquals(baseFormat.format(jul1), cachedFormat.format(jul1));
     Date plus8ms = new Date(ticks + 8);
-    String base = baseFormat.format(plus8ms);
-    String cached = cachedFormat.format(plus8ms);
+    baseFormat.format(plus8ms);
+    cachedFormat.format(plus8ms);
     assertEquals(baseFormat.format(plus8ms), cachedFormat.format(plus8ms));
     Date plus17ms = new Date(ticks + 17);
     assertEquals(baseFormat.format(plus17ms), cachedFormat.format(plus17ms));

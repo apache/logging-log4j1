@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 
-import org.apache.log4j.*;
 import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.util.*;
 

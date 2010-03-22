@@ -17,8 +17,6 @@
 package org.apache.log4j.net;
 
 import junit.framework.TestCase;
-
-import org.apache.log4j.Appender;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
@@ -39,7 +37,6 @@ public class SocketAppenderTest extends TestCase {
         DOMConfigurator.configure("input/xml/SocketAppenderTestConfig.xml");
 
         logger = Logger.getLogger(SocketAppenderTest.class);
-        primary = logger.getAppender("remote");
         secondary = (LastOnlyAppender) Logger.getLogger(
                 "org.apache.log4j.net.SocketAppenderTestDummy").getAppender("lastOnly");
     }
@@ -60,7 +57,6 @@ public class SocketAppenderTest extends TestCase {
     /* Fields */
 
     private static Logger logger;
-    private static Appender primary;
     private static LastOnlyAppender secondary;
 
     /* Inner classes */

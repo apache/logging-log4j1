@@ -97,6 +97,7 @@
        <action action="add" issue="49812">Add parameterized logging utility classes LogMF and LogSF from extras companion.</action>
        <action action="add" issue="48927">Add EnhancedPatternLayout from extras companion.</action>
        <action action="fix" issue="48784">Links to example code broken in the JavaDocs</action>
+       <action action="fix" issue="48953">Unused imports and variables in test code cause gcj compile warnings.</action>
     </release>
 
   

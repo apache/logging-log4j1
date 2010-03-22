@@ -22,19 +22,12 @@ import junit.framework.TestSuite;
 import junit.framework.Test;
 
 import org.apache.log4j.*;
-import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.util.*;
 
-import org.apache.log4j.xml.DOMConfigurator;
-import org.apache.log4j.PropertyConfigurator;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.NDC;
 import org.apache.log4j.xml.XLevel;
-import org.apache.log4j.Priority;
-import java.io.IOException;
-import java.util.Enumeration;
 
 /**
    @author  Ceki G&uuml;lc&uuml;
@@ -384,7 +377,7 @@ public class SocketServerTestCase extends TestCase {
   }
 
   public void delay(int secs) {
-    try {Thread.currentThread().sleep(secs*1000);} catch(Exception e) {}
+    try {Thread.sleep(secs*1000);} catch(Exception e) {}
   }
 
 

@@ -20,7 +20,6 @@
 
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.Level;
 import org.apache.log4j.xml.XLevel;
 
@@ -91,10 +90,9 @@ public class OptionConverterTestCase extends TestCase {
 
   public
   void varSubstTest4() {
-    String res;
     String val = "Test4 ${incomplete ";
     try {
-      res = OptionConverter.substVars(val, null);
+      OptionConverter.substVars(val, null);
     }
     catch(IllegalArgumentException e) {
       String errorMsg = e.getMessage();

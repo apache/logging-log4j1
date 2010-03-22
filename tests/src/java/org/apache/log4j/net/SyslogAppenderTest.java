@@ -438,6 +438,7 @@ public class SyslogAppenderTest extends TestCase {
      * Exception with printStackTrace that breaks earlier SyslogAppender.
      */
     private static class MishandledException extends Exception {
+        private static final long serialVersionUID = 1L;
         /*
          *   Create new instance.
          */
