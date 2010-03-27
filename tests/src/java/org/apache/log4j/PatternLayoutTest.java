@@ -116,7 +116,7 @@ public class PatternLayoutTest extends LayoutTest {
   /**
    * Class to ensure that protected members are still available.
    */
-  private static final class DerivedPatternLayout extends PatternLayout {
+  public static final class DerivedPatternLayout extends PatternLayout {
     /**
      * Constructs a new instance of DerivedPatternLayout.
      */

@@ -57,7 +57,7 @@ public class DOMTestCase extends TestCase {
 
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
-  static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
+  static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
   static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
   static String EXCEPTION5 = "\\s*at .*\\(.*libgcj.*\\)";

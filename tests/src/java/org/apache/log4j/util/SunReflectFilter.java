@@ -34,7 +34,7 @@ public class SunReflectFilter implements Filter {
     if (util.match("/at sun.reflect/", in)) {
       return null;
     }
-    if (in.indexOf("at java.lang.reflect.Method") >= 0) {
+    if (in.indexOf("at java.lang.reflect.") >= 0) {
       return null;
     }
     if (in.indexOf("Compiled Code") >= 0) {

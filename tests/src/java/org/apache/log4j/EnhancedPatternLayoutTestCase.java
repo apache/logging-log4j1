@@ -42,7 +42,7 @@ public class EnhancedPatternLayoutTestCase extends TestCase {
   static String TEMP = "temp";
   static String FILTERED = "filtered";
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
-  static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
+  static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
   static String EXCEPTION3 = "\\s*at .*\\((Native Method|Unknown Source)\\)";
   static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
 
@@ -55,7 +55,7 @@ public class EnhancedPatternLayoutTestCase extends TestCase {
   static String PAT5 =
     "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}";
   static String PAT6 =
-    "\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) org.apache.log4j.EnhancedPatternLayoutTestCase.common\\(EnhancedPatternLayoutTestCase.java:\\d{1,4}\\): Message \\d{1,2}";
+    "\\[main]\\ (DEBUG|INFO |WARN |ERROR|FATAL) org.apache.log4j.EnhancedPatternLayoutTestCase.common\\(EnhancedPatternLayoutTestCase.java(:\\d{1,4})?\\): Message \\d{1,2}";
   static String PAT11a =
     "^(DEBUG|INFO |WARN |ERROR|FATAL) \\[main]\\ log4j.EnhancedPatternLayoutTest: Message \\d{1,2}";
   static String PAT11b =

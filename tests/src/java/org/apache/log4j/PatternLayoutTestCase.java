@@ -39,7 +39,7 @@ public class PatternLayoutTestCase extends TestCase {
   Logger logger;
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
-  static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
+  static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
   static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
   static String EXCEPTION5 = "\\s*at .*\\(.*libgcj.*\\)";
@@ -51,7 +51,7 @@ public class PatternLayoutTestCase extends TestCase {
   static String PAT4 = Filter.RELATIVE_TIME_PAT+ " " + PAT0;
 
   static String PAT5 = "\\[main]\\ (TRACE|DEBUG|INFO |WARN |ERROR|FATAL) .* : Message \\d{1,2}";
-  static String PAT6 = "\\[main]\\ (TRACE|DEBUG|INFO |WARN |ERROR|FATAL) org.apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java:\\d{1,4}\\): Message \\d{1,2}";
+  static String PAT6 = "\\[main]\\ (TRACE|DEBUG|INFO |WARN |ERROR|FATAL) org.apache.log4j.PatternLayoutTestCase.common\\(PatternLayoutTestCase.java(:\\d{1,4})?\\): Message \\d{1,2}";
 
   static String PAT11a = "^(TRACE|DEBUG|INFO |WARN |ERROR|FATAL) \\[main]\\ log4j.PatternLayoutTestCase: Message \\d{1,2}";
   static String PAT11b = "^(TRACE|DEBUG|INFO |WARN |ERROR|FATAL) \\[main]\\ root: Message \\d{1,2}";

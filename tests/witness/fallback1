@@ -12,10 +12,6 @@ FALLBACK - test - Message 5
 java.lang.Exception: Just testing
 	at org.apache.log4j.varia.ErrorHandlerTestCase.common(ErrorHandlerTestCase.java:XXX)
 	at org.apache.log4j.varia.ErrorHandlerTestCase.test1(ErrorHandlerTestCase.java:XXX)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:XXX)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:XXX)
-	at java.lang.reflect.Method.invoke(Method.java:XXX)
 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
@@ -28,10 +24,6 @@ FALLBACK - root - Message 5
 java.lang.Exception: Just testing
 	at org.apache.log4j.varia.ErrorHandlerTestCase.common(ErrorHandlerTestCase.java:XXX)
 	at org.apache.log4j.varia.ErrorHandlerTestCase.test1(ErrorHandlerTestCase.java:XXX)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:XXX)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:XXX)
-	at java.lang.reflect.Method.invoke(Method.java:XXX)
 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
@@ -44,10 +36,6 @@ FALLBACK - test - Message 6
 java.lang.Exception: Just testing
 	at org.apache.log4j.varia.ErrorHandlerTestCase.common(ErrorHandlerTestCase.java:XXX)
 	at org.apache.log4j.varia.ErrorHandlerTestCase.test1(ErrorHandlerTestCase.java:XXX)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:XXX)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:XXX)
-	at java.lang.reflect.Method.invoke(Method.java:XXX)
 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
@@ -60,10 +48,6 @@ FALLBACK - root - Message 6
 java.lang.Exception: Just testing
 	at org.apache.log4j.varia.ErrorHandlerTestCase.common(ErrorHandlerTestCase.java:XXX)
 	at org.apache.log4j.varia.ErrorHandlerTestCase.test1(ErrorHandlerTestCase.java:XXX)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:XXX)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:XXX)
-	at java.lang.reflect.Method.invoke(Method.java:XXX)
 	at junit.framework.TestCase.runTest(TestCase.java:XXX)
 	at junit.framework.TestCase.runBare(TestCase.java:XXX)
 	at junit.framework.TestResult$1.protect(TestResult.java:XXX)
