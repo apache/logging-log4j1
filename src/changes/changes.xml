@@ -100,6 +100,7 @@
        <action action="fix" issue="48953">Unused imports and variables in test code cause gcj compile warnings.</action>
        <action action="fix" issue="49003">SocketServerTestCase.test8 fails on Apache Harmony.</action>
        <action action="fix" issue="49004">TestLogMF.testDebugDate fails on gcj.</action>
+       <action action="fix" issue="49005">TelnetAppenderTest.testIt fails on gcj.</action>
     </release>
 
   
