@@ -98,6 +98,7 @@
        <action action="add" issue="48927">Add EnhancedPatternLayout from extras companion.</action>
        <action action="fix" issue="48784">Links to example code broken in the JavaDocs</action>
        <action action="fix" issue="48953">Unused imports and variables in test code cause gcj compile warnings.</action>
+       <action action="fix" issue="49004">TestLogMF.testDebugDate fails on gcj.</action>
     </release>
 
   
