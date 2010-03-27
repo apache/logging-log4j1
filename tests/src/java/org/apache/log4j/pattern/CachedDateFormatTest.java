@@ -225,15 +225,17 @@ public final class CachedDateFormatTest
     c.set(Calendar.MILLISECOND, 23);
     c.setTimeZone(cet);
 
+    String expected = baseFormat.format(c.getTime());
     String s = cachedFormat.format(c.getTime());
-    assertEquals("2004-December-12 20:00:37,23 GMT+01:00", s);
+    assertEquals(expected, s);
 
     c.set(2005, Calendar.JANUARY, 1, 0, 0);
     c.set(Calendar.SECOND, 13);
     c.set(Calendar.MILLISECOND, 905);
 
+    expected = baseFormat.format(c.getTime());
     s = cachedFormat.format(c.getTime());
-    assertEquals("2005-January-01 00:00:13,905 GMT+01:00", s);
+    assertEquals(expected, s);
   }
   
 
@@ -252,18 +254,21 @@ public final class CachedDateFormatTest
     c.set(Calendar.MILLISECOND, 23);
     c.setTimeZone(cet);
 
+    String expected = baseFormat.format(c.getTime());
     String s = cachedFormat.format(c.getTime());
-    assertEquals("October 023 Tuesday", s);
+    assertEquals(expected, s);
 
     c.set(2004, Calendar.NOVEMBER, 1, 0, 0);
     c.set(Calendar.MILLISECOND, 23);
+    expected = baseFormat.format(c.getTime());
     s = cachedFormat.format(c.getTime());
-    assertEquals("November 023 Monday", s);
+    assertEquals(expected, s);
 
 
     c.set(Calendar.MILLISECOND, 984);
+    expected = baseFormat.format(c.getTime());
     s = cachedFormat.format(c.getTime());
-    assertEquals("November 984 Monday", s);
+    assertEquals(expected, s);
   }
 
   /**
@@ -276,21 +281,25 @@ public final class CachedDateFormatTest
      //
      String badPattern = "ss,SS0";
      SimpleDateFormat simpleFormat = new SimpleDateFormat(badPattern);
+     SimpleDateFormat baseFormat = new SimpleDateFormat(badPattern);
      DateFormat gmtFormat = new CachedDateFormat(simpleFormat, 1000);
      gmtFormat.setTimeZone(GMT);
+     baseFormat.setTimeZone(GMT);
 
      //
      // The first request has to 100 ms after an ordinal second
      //    to push the literal zero out of the pattern check
      long ticks = 11142L * 86400000L;
      Date jul2 = new Date(ticks + 120);
-     assertEquals("00,1200", gmtFormat.format(jul2));
+     String expected = baseFormat.format(jul2);
+     assertEquals(expected, gmtFormat.format(jul2));
      jul2.setTime(ticks + 87);
      
 
      //
      //   Cache gives 00,087
-     assertEquals("00,870", gmtFormat.format(jul2));
+     expected = baseFormat.format(jul2);
+     assertEquals(expected, gmtFormat.format(jul2));
 
   }
 
