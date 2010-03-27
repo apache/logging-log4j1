@@ -488,7 +488,7 @@ public class TestLogMF extends TestCase {
         //
         //  gcj has been observed to output 12/31/69 6:00:00 PM
         //     instead of the expected 12/31/69 6:00 PM
-        if (System.getProperty("java.vendor").indexOf("Free") != -1) {
+        if (System.getProperty("java.vendor").indexOf("Free") == -1) {
             assertEquals(expected, actual);
         }
         assertEquals(expected2, actual);
