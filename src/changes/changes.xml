@@ -101,6 +101,7 @@
        <action action="fix" issue="49003">SocketServerTestCase.test8 fails on Apache Harmony.</action>
        <action action="fix" issue="49004">TestLogMF.testDebugDate fails on gcj.</action>
        <action action="fix" issue="49005">TelnetAppenderTest.testIt fails on gcj.</action>
+       <action action="fix" issue="49006">Eclipse Java Compiler and gcj do not support -source=1.2.</action>
     </release>
 
   
