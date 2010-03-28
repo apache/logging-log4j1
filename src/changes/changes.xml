@@ -105,6 +105,7 @@
        <action action="fix" issue="49006">Eclipse Java Compiler and gcj do not support -source=1.2.</action>
        <action action="fix" issue="49007">CachedDateFormatTest fails on Apache Harmony.</action>
        <action action="add" issue="49010">Add %p{-2} pattern to EnhancedPatternLayout to drop two leading elements from name.</action>
+       <action action="add" issue="48902">Add %throwable{n} and {-n} pattern to EnhancedPatternLayout to print n or drop last n lines.</action>
     </release>
 
   

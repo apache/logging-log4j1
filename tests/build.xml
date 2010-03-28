@@ -166,7 +166,7 @@
   <!-- created witness file.                                             -->
   <!-- ================================================================= -->  
   <target name="regression" depends="Core, Minimum, Logger, DOM, CustomLevel,
-                                     CustomLogger,
+                                     CustomLogger,PatternLayout,
                                      HierarchyThreshold, DefaultInit, SocketServer,
                                      XMLLayout, AsyncAppender,
                                      OptionConverter, BoundedFIFO,

@@ -71,7 +71,11 @@ public final class DatePatternConverter extends LoggingEventPatternConverter {
      *   default time zone before each format and parse request.
      */
   private static class DefaultZoneDateFormat extends DateFormat {
-        /**
+     /**
+      * Serialization version ID.
+      */
+     private static final long serialVersionUID = 1;
+     /**
          * Wrapped instance of DateFormat.
          */
     private final DateFormat dateFormat;

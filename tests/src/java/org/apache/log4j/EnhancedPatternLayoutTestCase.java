@@ -40,8 +40,8 @@ import java.io.*;
 
 
 public class EnhancedPatternLayoutTestCase extends TestCase {
-  static String TEMP = "temp";
-  static String FILTERED = "filtered";
+  static String TEMP = "output/temp";
+  static String FILTERED = "output/filtered";
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
   static String EXCEPTION3 = "\\s*at .*\\((Native Method|Unknown Source)\\)";
@@ -109,7 +109,6 @@ public class EnhancedPatternLayoutTestCase extends TestCase {
                                  final String expected) throws IOException {
       return Compare.compare(actual, expected);
   }
-
 
   public void test1() throws Exception {
     configure("input/pattern/enhancedPatternLayout1.properties");
@@ -389,7 +388,7 @@ public class EnhancedPatternLayoutTestCase extends TestCase {
       configure("input/pattern/enhancedPatternLayout16.properties");
       common();
       final long end = new Date().getTime();
-      FileReader reader = new FileReader("patternLayout16.log");
+      FileReader reader = new FileReader("output/patternLayout16.log");
       char chars[] = new char[50];
       reader.read(chars, 0, chars.length);
       reader.close();
@@ -435,7 +434,7 @@ public class EnhancedPatternLayoutTestCase extends TestCase {
   /**
     Test case for MDC conversion pattern. */
   public void testMDC2() throws Exception {
-    String OUTPUT_FILE   = "patternLayout.mdc.2";
+    String OUTPUT_FILE   = "output/patternLayout.mdc.2";
     String WITNESS_FILE  = "witness/pattern/enhancedPatternLayout.mdc.2";
     
     String mdcMsgPattern1 = "%m : %X%n";
@@ -520,7 +519,7 @@ public class EnhancedPatternLayoutTestCase extends TestCase {
   /**
     Test case for throwable conversion pattern. */
   public void testThrowable() throws Exception {
-    String OUTPUT_FILE   = "patternLayout.throwable";
+    String OUTPUT_FILE   = "output/patternLayout.throwable";
     String WITNESS_FILE  = "witness/pattern/enhancedPatternLayout.throwable";
     
     

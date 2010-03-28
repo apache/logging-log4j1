@@ -22,18 +22,23 @@ import org.apache.log4j.spi.ThrowableInformation;
 
 
 /**
- * Outputs the ThrowableInformation portion of the LoggingiEvent as a full stacktrace
- * unless this converter's option is 'short', where it just outputs the first line of the trace.
+ * Outputs the ThrowableInformation portion of the LoggingEvent.
+ * By default, outputs the full stack trace.  %throwable{none}
+ * or %throwable{0} suppresses the stack trace. %throwable{short}
+ * or %throwable{1} outputs just the first line.  %throwable{n}
+ * will output n lines for a positive integer or drop the last
+ * -n lines for a negative integer.
  *
  * @author Paul Smith
  *
  */
 public class ThrowableInformationPatternConverter
   extends LoggingEventPatternConverter {
+
   /**
-   * If "short", only first line of throwable report will be formatted.
+   * Maximum lines of stack trace to output.
    */
-  private final String option;
+  private int maxLines = Integer.MAX_VALUE;
 
   /**
    * Private constructor.
@@ -44,9 +49,16 @@ public class ThrowableInformationPatternConverter
     super("Throwable", "throwable");
 
     if ((options != null) && (options.length > 0)) {
-      option = options[0];
-    } else {
-      option = null;
+      if("none".equals(options[0])) {
+          maxLines = 0;
+      } else if("short".equals(options[0])) {
+          maxLines = 1;
+      } else {
+          try {
+              maxLines = Integer.parseInt(options[0]);
+          } catch(NumberFormatException ex) {
+          }
+      }
     }
   }
 
@@ -65,15 +77,17 @@ public class ThrowableInformationPatternConverter
    * {@inheritDoc}
    */
   public void format(final LoggingEvent event, final StringBuffer toAppendTo) {
-    if (!"none".equals(option)) {
+    if (maxLines != 0) {
       ThrowableInformation information = event.getThrowableInformation();
 
       if (information != null) {
         String[] stringRep = information.getThrowableStrRep();
 
         int length = stringRep.length;
-        if ("short".equals(option)) {
-           length = 1;
+        if (maxLines < 0) {
+            length += maxLines;
+        } else if (length > maxLines) {
+            length = maxLines;
         }
 
         for (int i = 0; i < length; i++) {

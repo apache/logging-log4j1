@@ -17,10 +17,11 @@
 
 package org.apache.log4j.util;
 
-import java.util.regex.Pattern;
+import org.apache.oro.text.perl.Perl5Util;
 
 
 public class EnhancedJunitTestRunnerFilter implements Filter {
+  private Perl5Util util = new Perl5Util();
 
   private static final String[] PATTERNS = {
           "at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner",
@@ -33,14 +34,8 @@ public class EnhancedJunitTestRunnerFilter implements Filter {
 		    "at org.junit.internal.runners.",
 		    "at junit.framework.JUnit4TestAdapter"
   };
-  private final Pattern[] patterns;
 
   public EnhancedJunitTestRunnerFilter() {
-      patterns = new Pattern[PATTERNS.length];
-      for (int i = 0; i < PATTERNS.length; i++) {
-          patterns[i] = Pattern.compile(PATTERNS[i]);
-      }
-
   }
 
   /**
@@ -58,10 +53,13 @@ public class EnhancedJunitTestRunnerFilter implements Filter {
         return "\tat java.lang.reflect.Method.invoke(X)\n" + in;
     }
 
-    for (int i = 0; i < patterns.length; i++) {
-        if(patterns[i].matcher(in).find()) {
+    for (int i = 0; i < PATTERNS.length; i++) {
+        if(in.indexOf(PATTERNS[i]) != -1) {
             return null;
         }
+    }
+    if (util.match("/\\sat /", in)) {
+       return "\t" + in.trim();
     }
     return in;
   }

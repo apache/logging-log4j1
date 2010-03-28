@@ -20,7 +20,6 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.pattern.LogEvent;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;

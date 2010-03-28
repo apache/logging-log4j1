@@ -35,6 +35,10 @@ import java.util.TimeZone;
  */
 public final class CachedDateFormat extends DateFormat {
   /**
+   *  Serialization version.
+  */
+  private static final long serialVersionUID = 1;
+  /**
    *  Constant used to represent that there was no change
    *  observed when changing the millisecond count.
    */

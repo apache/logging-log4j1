@@ -19,11 +19,6 @@ package org.apache.log4j.pattern;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.*;
 import java.util.Iterator;
 import java.util.Set;
 import org.apache.log4j.helpers.*;
