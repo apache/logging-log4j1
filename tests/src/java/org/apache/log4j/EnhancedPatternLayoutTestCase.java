@@ -30,6 +30,7 @@ import org.apache.log4j.util.RelativeTimeFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.MDCOrderFilter;
+import org.apache.log4j.spi.ThrowableInformation;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -550,6 +551,30 @@ public class EnhancedPatternLayoutTestCase extends TestCase {
     layout.activateOptions();
     root.debug("%throwable{none}, no exception");
     root.debug("%throwable{none}, with exception", ex);
+
+    layout.setConversionPattern("%m%n%throwable{0}");
+    layout.activateOptions();
+    root.debug("%throwable{0}, no exception");
+    root.debug("%throwable{0}, with exception", ex);
+
+    layout.setConversionPattern("%m%n%throwable{1}");
+    layout.activateOptions();
+    root.debug("%throwable{1}, no exception");
+    root.debug("%throwable{1}, with exception", ex);
+
+    layout.setConversionPattern("%m%n%throwable{100}");
+    layout.activateOptions();
+    root.debug("%throwable{100}, no exception");
+    root.debug("%throwable{100}, with exception", ex);
+
+    //
+    //  manufacture a pattern to get just the first two lines
+    //
+    String[] trace = new ThrowableInformation(ex).getThrowableStrRep();
+    layout.setConversionPattern("%m%n%throwable{" + (2 - trace.length) + "}");
+    layout.activateOptions();
+    root.debug("%throwable{-n}, no exception");
+    root.debug("%throwable{-n}, with exception", ex);
 
 
       Transformer.transform(
