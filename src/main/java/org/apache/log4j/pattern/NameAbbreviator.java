@@ -37,7 +37,7 @@ public abstract class NameAbbreviator {
    *
    * For example, "%logger{2}" will output only 2 elements of the logger name,
    * "%logger{1.}" will output only the first character of the non-final elements in the name,
-   * "%logger(1~.2~} will output the first character of the first element, two characters of
+   * "%logger{1~.2~} will output the first character of the first element, two characters of
    * the second and subsequent elements and will use a tilde to indicate abbreviated characters.
    *
    * @param pattern abbreviation pattern.
