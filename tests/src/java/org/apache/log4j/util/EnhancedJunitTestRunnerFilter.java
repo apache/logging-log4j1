@@ -50,7 +50,7 @@ public class EnhancedJunitTestRunnerFilter implements Filter {
       //  restore the one instance of Method.invoke that we actually want
       //
     if (in.indexOf("at junit.framework.TestCase.runTest") != -1) {
-        return "\tat java.lang.reflect.Method.invoke(X)\n" + in;
+        return "\tat java.lang.reflect.Method.invoke(X)\n\t" + in.trim();
     }
 
     for (int i = 0; i < PATTERNS.length; i++) {
