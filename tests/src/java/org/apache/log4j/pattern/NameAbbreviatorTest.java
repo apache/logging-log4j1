@@ -23,8 +23,6 @@ import junit.framework.TestCase;
 /**
  * Tests for NameAbbrevator.
  *
- * @author Curt Arnold
- *
  */
 public class NameAbbreviatorTest extends TestCase {
   /**
@@ -300,4 +298,39 @@ public class NameAbbreviatorTest extends TestCase {
     abbrev.abbreviate(fieldStart, buf);
     assertEquals("DEBUG - .", buf.toString());
   }
+
+  /**
+   * Check that getAbbreviator("-1").abbreviate() drops first name element.
+   *
+   */
+  public void testMinusOne() {
+    NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("-1");
+    StringBuffer buf = new StringBuffer("DEBUG - ");
+    int fieldStart = buf.length();
+    buf.append("org.example.foo.bar");
+    abbrev.abbreviate(fieldStart, buf);
+    assertEquals("DEBUG - example.foo.bar", buf.toString());
+
+    buf.setLength(0);
+    buf.append("DEBUG - ");
+    fieldStart = buf.length();
+    buf.append("bar");
+    abbrev.abbreviate(fieldStart, buf);
+    assertEquals("DEBUG - bar", buf.toString());
+
+    buf.setLength(0);
+    buf.append("DEBUG - ");
+    fieldStart = buf.length();
+    abbrev.abbreviate(fieldStart, buf);
+    assertEquals("DEBUG - ", buf.toString());
+
+    buf.setLength(0);
+    buf.append("DEBUG - ");
+    fieldStart = buf.length();
+    buf.append(".");
+    abbrev.abbreviate(fieldStart, buf);
+    assertEquals("DEBUG - ", buf.toString());
+
+  }
+
 }

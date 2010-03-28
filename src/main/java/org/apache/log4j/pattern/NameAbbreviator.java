@@ -24,7 +24,6 @@ import java.util.List;
 /**
  * NameAbbreviator generates abbreviated logger and class names.
  *
- * @author Curt Arnold
  */
 public abstract class NameAbbreviator {
   /**
@@ -36,6 +35,7 @@ public abstract class NameAbbreviator {
    * Gets an abbreviator.
    *
    * For example, "%logger{2}" will output only 2 elements of the logger name,
+   * %logger{-2} will drop 2 elements from the logger name,
    * "%logger{1.}" will output only the first character of the non-final elements in the name,
    * "%logger{1~.2~} will output the first character of the first element, two characters of
    * the second and subsequent elements and will use a tilde to indicate abbreviated characters.
@@ -54,18 +54,29 @@ public abstract class NameAbbreviator {
       }
 
       int i = 0;
-
-      while (
-        (i < trimmed.length()) && (trimmed.charAt(i) >= '0')
-          && (trimmed.charAt(i) <= '9')) {
-        i++;
+      if (trimmed.length() > 0) {
+          if (trimmed.charAt(0) == '-') {
+              i++;
+          }
+          for (;
+                (i < trimmed.length()) &&
+                  (trimmed.charAt(i) >= '0') &&
+                  (trimmed.charAt(i) <= '9');
+               i++) {
+          }
       }
+
 
       //
       //  if all blanks and digits
       //
       if (i == trimmed.length()) {
-        return new MaxElementAbbreviator(Integer.parseInt(trimmed));
+        int elements = Integer.parseInt(trimmed);
+        if (elements >= 0) {
+            return new MaxElementAbbreviator(elements);
+        } else {
+            return new DropElementAbbreviator(-elements);
+        }
       }
 
       ArrayList fragments = new ArrayList(5);
@@ -191,6 +202,42 @@ public abstract class NameAbbreviator {
       buf.delete(nameStart, end + 1);
     }
   }
+
+  /**
+   * Abbreviator that drops starting path elements.
+   */
+  private static class DropElementAbbreviator extends NameAbbreviator {
+    /**
+     * Maximum number of path elements to output.
+     */
+    private final int count;
+
+    /**
+     * Create new instance.
+     * @param count maximum number of path elements to output.
+     */
+    public DropElementAbbreviator(final int count) {
+      this.count = count;
+    }
+
+    /**
+     * Abbreviate name.
+     * @param buf buffer to append abbreviation.
+     * @param nameStart start of name to abbreviate.
+     */
+    public void abbreviate(final int nameStart, final StringBuffer buf) {
+      int i = count;
+      for(int pos = buf.indexOf(".", nameStart);
+        pos != -1;
+        pos = buf.indexOf(".", pos + 1)) {
+          if(--i == 0) {
+              buf.delete(nameStart, pos + 1);
+              break;
+          }
+      }
+    }
+  }
+
 
   /**
    * Fragment of an pattern abbreviator.

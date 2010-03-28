@@ -27,6 +27,15 @@ import org.apache.log4j.spi.LoggingEvent;
 //                 Anders Kristensen <akristensen@dynamicsoft.com>
 
 /**
+ * This class is an enhanced version of org.apache.log4j.PatternLayout
+ * which was originally developed as part of the abandoned log4j 1.3
+ * effort and has been available in the extras companion.
+ * This pattern layout should be used in preference to
+ * org.apache.log4j.PatternLayout except when compatibility
+ * where PatternLayout has been extended either through subclassing
+ * or alternative pattern parsers.
+ *
+ *
   * <p>A flexible layout configurable with pattern string. The goal of this class
   * is to {@link #format format} a {@link LoggingEvent} and return the results
   * in a {@link StringBuffer}. The format of the result depends on the
@@ -82,15 +91,12 @@ import org.apache.log4j.spi.LoggingEvent;
 
      <td>Used to output the category of the logging event. The
      category conversion specifier can be optionally followed by
-     <em>precision specifier</em>, that is a decimal constant in
-     brackets.
+     NameAbbreviator pattern.
 
-     <p>If a precision specifier is given, then only the corresponding
-     number of right most components of the category name will be
-     printed. By default the category name is printed in full.
-
-     <p>For example, for the category name "a.b.c" the pattern
-     <b>%c{2}</b> will output "b.c".
+     <p>For example, for the category name "alpha.beta.gamma" the pattern
+     <b>%c{2}</b> will output the last two elements ("beta.gamma"),
+     <b>%c{-2}</b> will remove two elements leaving "gamma",
+     <b>%c{1.}</b> will output "a.b.gamma".
 
      </td>
    </tr>
@@ -103,12 +109,14 @@ import org.apache.log4j.spi.LoggingEvent;
      can be optionally followed by <em>precision specifier</em>, that
      is a decimal constant in brackets.
 
-     <p>If a precision specifier is given, then only the corresponding
-     number of right most components of the class name will be
-     printed. By default the class name is output in fully qualified form.
+     <td>Used to output the category of the logging event. The
+     category conversion specifier can be optionally followed by
+     NameAbbreviator pattern.
 
-     <p>For example, for the class name "org.apache.xyz.SomeClass", the
-     pattern <b>%C{1}</b> will output "SomeClass".
+     <p>For example, for the category name "alpha.beta.gamma" the pattern
+     <b>%c{2}</b> will output the last two elements ("beta.gamma"),
+     <b>%c{-2}</b> will remove two elements leaving "gamma",
+     <b>%c{1.}</b> will output "a.b.gamma".
 
      <p><b>WARNING</b> Generating the caller class information is
      slow. Thus, its use should be avoided unless execution speed is
@@ -405,7 +413,7 @@ import org.apache.log4j.spi.LoggingEvent;
    @author Ceki G&uuml;lc&uuml;
 
 
-   @since 0.8.2 */
+   @since 1.2.16 */
 public class EnhancedPatternLayout extends Layout {
   /** Default pattern string for log output. Currently set to the
       string <b>"%m%n"</b> which just prints the application supplied
