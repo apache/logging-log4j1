@@ -358,6 +358,7 @@ public class XMLLayoutTest extends LayoutTest {
      * Level with arbitrary toString value.
      */
     private static final class ProblemLevel extends Level {
+        private static final long serialVersionUID = 1L;
         /**
          * Construct new instance.
          * @param levelName level name, may not be null.

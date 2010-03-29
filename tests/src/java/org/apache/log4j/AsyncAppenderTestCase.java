@@ -18,14 +18,10 @@
 package org.apache.log4j;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.framework.Test;
 
 import java.util.Vector;
 
-import org.apache.log4j.*;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.varia.NullAppender;
 
 /**
    A superficial but general test of log4j.
@@ -46,7 +42,6 @@ public class AsyncAppenderTestCase extends TestCase {
   // this test checks whether it is possible to write to a closed AsyncAppender
   public void closeTest() throws Exception {    
     Logger root = Logger.getRootLogger();
-    Layout layout = new SimpleLayout();
     VectorAppender vectorAppender = new VectorAppender();
     AsyncAppender asyncAppender = new AsyncAppender();
     asyncAppender.setName("async-CloseTest");
@@ -65,7 +60,6 @@ public class AsyncAppenderTestCase extends TestCase {
   // closed 
   public void test2() {
     Logger root = Logger.getRootLogger();
-    Layout layout = new SimpleLayout();
     VectorAppender vectorAppender = new VectorAppender();
     AsyncAppender asyncAppender = new AsyncAppender();
     asyncAppender.setName("async-test2");
@@ -86,7 +80,6 @@ public class AsyncAppenderTestCase extends TestCase {
   public void test3() {
     int LEN = 200;
     Logger root = Logger.getRootLogger();
-    Layout layout = new SimpleLayout();
     VectorAppender vectorAppender = new VectorAppender();
     AsyncAppender asyncAppender = new AsyncAppender();
     asyncAppender.setName("async-test3");
@@ -274,10 +267,6 @@ public class AsyncAppenderTestCase extends TestCase {
        */
       private final Object monitor = new Object();
 
-      /**
-       * Thread of last call to append.
-       */
-      private Thread dispatcher;
 
       /**
        * Create new instance.
@@ -291,7 +280,6 @@ public class AsyncAppenderTestCase extends TestCase {
        */
       public void append(final LoggingEvent event) {
         synchronized (monitor) {
-          dispatcher = Thread.currentThread();
           super.append(event);
             //
             //   if fatal, echo messages for testLoggingInDispatcher
@@ -314,15 +302,6 @@ public class AsyncAppenderTestCase extends TestCase {
         return monitor;
       }
 
-      /**
-       * Get thread of previous call to append.
-       * @return thread, may be null.
-       */
-      public Thread getDispatcher() {
-        synchronized (monitor) {
-          return dispatcher;
-        }
-      }
     }
 
 

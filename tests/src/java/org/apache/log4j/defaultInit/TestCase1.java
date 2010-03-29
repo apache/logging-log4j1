@@ -20,10 +20,8 @@ package org.apache.log4j.defaultInit;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
-
-import java.util.Vector;
-
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 
 public class TestCase1 extends TestCase {
 

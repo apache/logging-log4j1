@@ -20,9 +20,7 @@ package org.apache.log4j.customLogger;
 
 import org.apache.log4j.*;
 import org.apache.log4j.spi.OptionHandler;
-import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.LoggerFactory;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.xml.XLevel;
 
 /**

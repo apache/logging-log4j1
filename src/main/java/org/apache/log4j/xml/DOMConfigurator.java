@@ -67,7 +67,7 @@ import java.util.Properties;
    Use this class to initialize the log4j environment using a DOM tree.
 
    <p>The DTD is specified in <a
-   href="log4j.dtd"><b>log4j.dtd</b></a>.
+   href="doc-files/log4j.dtd"><b>log4j.dtd</b></a>.
 
    <p>Sometimes it is useful to see how log4j is reading configuration
    files. You can enable log4j internal logging by defining the

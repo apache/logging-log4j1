@@ -21,8 +21,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 
-import org.apache.log4j.*;
-import org.apache.log4j.util.*;
+import org.apache.log4j.util.Compare;
 import org.apache.log4j.xml.XLevel;
 
 /**

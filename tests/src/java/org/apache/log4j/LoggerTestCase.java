@@ -174,7 +174,6 @@ public class LoggerTestCase extends TestCase {
     Logger a = Logger.getLogger("a");
     Logger ab = Logger.getLogger("a.b");
     Logger abc = Logger.getLogger("a.b.c");
-    Logger x   = Logger.getLogger("x");
 
     CountingAppender caRoot = new CountingAppender();
     CountingAppender caA = new CountingAppender();

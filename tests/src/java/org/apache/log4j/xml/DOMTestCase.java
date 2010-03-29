@@ -24,7 +24,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.VectorAppender;
-import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggerFactory;
 import org.apache.log4j.spi.LoggingEvent;
@@ -46,7 +45,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -59,7 +57,7 @@ public class DOMTestCase extends TestCase {
 
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
-  static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
+  static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
   static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
   static String EXCEPTION5 = "\\s*at .*\\(.*libgcj.*\\)";

@@ -70,7 +70,6 @@ public class FileAppenderTest extends TestCase {
   public void testgetSetThreshold() {
     FileAppender appender = new FileAppender();
     Priority debug = Level.DEBUG;
-    Priority all = Level.ALL;
     assertNull(appender.getThreshold());
     appender.setThreshold(debug);
     assertTrue(appender.getThreshold() == debug);

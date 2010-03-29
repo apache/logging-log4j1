@@ -89,6 +89,7 @@ public class LevelTest extends TestCase {
    * serializable, but not resolved to a plain Level.
    */
   private static class CustomLevel extends Level {
+    private static final long serialVersionUID = 1L;
       /**
        * Create an instance of CustomLevel.
        */

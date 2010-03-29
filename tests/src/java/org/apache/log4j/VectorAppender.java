@@ -18,11 +18,7 @@
 package org.apache.log4j;
 
 import java.util.Vector;
-import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.helpers.OptionConverter;
-import org.apache.log4j.helpers.Transform;
-import org.apache.log4j.helpers.LogLog;
 
 /**
    An appender that appends logging events to a vector.
@@ -52,7 +48,7 @@ public class VectorAppender extends AppenderSkeleton {
     //System.out.println("---Vector appender called with message ["+event.getRenderedMessage()+"].");
     //System.out.flush();
     try {
-      Thread.currentThread().sleep(100);
+      Thread.sleep(100);
     } catch(Exception e) {
     }
     vector.addElement(event);

@@ -21,7 +21,7 @@
   </properties>
   <body>
 
-    <release version="1.2.16" date="2010-02-21" description="Maintenance release">
+    <release version="1.2.16" date="2010-03-29" description="Maintenance release">
        <action issue="43313">log4j 1.2.16 release preparation.</action>
        <action action="add" issue="42842">Create a public identifier for log4j.dtd ("-//APACHE//DTD LOG4J 1.2//EN")</action>
        <action action="fix" issue="44108">TelnetAppender misses messages when one of many clients disconnect.</action>
@@ -94,6 +94,18 @@
        <action action="add" issue="48187">Typo ("two three goals") in log4j FAQ</action>
        <action action="fix" issue="48531">Unit tests fail for system dates after 2009-12-31</action>
        <action action="fix" issue="48604">Download page does not have link to KEYS file</action>
+       <action action="add" issue="49812">Add parameterized logging utility classes LogMF and LogSF from extras companion.</action>
+       <action action="add" issue="48927">Add EnhancedPatternLayout from extras companion.</action>
+       <action action="fix" issue="48784">Links to example code broken in the JavaDocs</action>
+       <action action="fix" issue="48953">Unused imports and variables in test code cause gcj compile warnings.</action>
+       <action action="fix" issue="49002">Unit tests fail on Apache Harmony and gcj due to stack trace expectations.</action>
+       <action action="fix" issue="49003">SocketServerTestCase.test8 fails on Apache Harmony.</action>
+       <action action="fix" issue="49004">TestLogMF.testDebugDate fails on gcj.</action>
+       <action action="fix" issue="49005">TelnetAppenderTest.testIt fails on gcj.</action>
+       <action action="fix" issue="49006">Eclipse Java Compiler and gcj do not support -source=1.2.</action>
+       <action action="fix" issue="49007">CachedDateFormatTest fails on Apache Harmony.</action>
+       <action action="add" issue="49010">Add %p{-2} pattern to EnhancedPatternLayout to drop two leading elements from name.</action>
+       <action action="add" issue="48902">Add %throwable{n} and {-n} pattern to EnhancedPatternLayout to print n or drop last n lines.</action>
     </release>
 
   

@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
 
-import org.apache.log4j.*;
 import org.apache.log4j.helpers.AbsoluteTimeDateFormat;
 import org.apache.log4j.util.*;
 
@@ -33,7 +32,7 @@ public class MinimumTestCase extends TestCase {
   static String FILTERED = "output/filtered";
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
-  static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
+  static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
   static String EXCEPTION4 = "\\s*at .*\\(.*Compiled Code\\)";
   static String EXCEPTION5 = "\\s*at .*\\(.*libgcj.*\\)";

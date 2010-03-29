@@ -26,6 +26,7 @@ import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.Compare;
 import org.apache.log4j.util.JunitTestRunnerFilter;
+import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.ControlFilter;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -38,7 +39,7 @@ public class ErrorHandlerTestCase extends TestCase {
 
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
-  static String EXCEPTION2 = "\\s*at .*\\(.*:\\d{1,4}\\)";
+  static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
   static String EXCEPTION3 = "\\s*at .*\\(Native Method\\)";
 
   static String TEST1_PAT =
@@ -73,8 +74,9 @@ public class ErrorHandlerTestCase extends TestCase {
 					       EXCEPTION1, EXCEPTION2, EXCEPTION3});
 
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf,
-							new LineNumberFilter(),
-                            new JunitTestRunnerFilter()});
+                            new LineNumberFilter(),
+                            new JunitTestRunnerFilter(),
+                            new SunReflectFilter()});
 
 
     assertTrue(Compare.compare(FILTERED, "witness/fallback1"));
@@ -92,8 +94,9 @@ public class ErrorHandlerTestCase extends TestCase {
 					       EXCEPTION1, EXCEPTION2, EXCEPTION3});
 
     Transformer.transform(TEMP, FILTERED, new Filter[] {cf,
-							new LineNumberFilter(),
-                            new JunitTestRunnerFilter()});
+                            new LineNumberFilter(),
+                            new JunitTestRunnerFilter(),
+                            new SunReflectFilter()});
 
 
     assertTrue(Compare.compare(FILTERED, "witness/fallback1"));
