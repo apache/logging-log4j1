@@ -29,7 +29,7 @@
   <!--   if a Maven build has been attempted,
               the Maven repository can provide all the dependencies.  -->
   <property name="m2_repo" location="${user.home}/.m2/repository"/>
-  <property name="javamail.jar" location="${m2_repo}/javax/mail/mail/1.4/mail-1.4.jar"/>
+  <property name="javamail.jar" location="${m2_repo}/javax/mail/mail/1.4.3/mail-1.4.3.jar"/>
   <property name="geronimo-jms.jar"
          value="${m2_repo}/org/apache/geronimo/specs/geronimo-jms_1.1_spec/1.0/geronimo-jms_1.1_spec-1.0.jar"/>
   <available property="jms.jar" value="${geronimo-jms.jar}" file="${geronimo-jms.jar}"/>
@@ -41,7 +41,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2.15"/>
+  <property name="version" value="1.2.16"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>

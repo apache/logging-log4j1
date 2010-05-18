@@ -34,7 +34,7 @@
   <property name="jakarta.oro.jar" location="${m2_repo}/oro/oro/${oro.version}/oro-${oro.version}.jar"/>
   <property name="checkstyle.version" value="4.1"/>
   <property name="checkstyle.jar" location="${m2_repo}/checkstyle/checkstyle/${checkstyle.version}/checkstyle-${checkstyle.version}.jar"/>
-  <property name="javamail.jar" location="${m2_repo}/javax/mail/mail/1.4/mail-1.4.jar"/>
+  <property name="javamail.jar" location="${m2_repo}/javax/mail/mail/1.4.3/mail-1.4.3.jar"/>
   <property name="activation.jar" location="${m2_repo}/javax/activation/activation/1.1/activation-1.1.jar"/>
   <property name="junit.version" value="3.8.1"/>
   <property name="junit.jar" location="${m2_repo}/junit/junit/${junit.version}/junit-${junit.version}.jar"/>
