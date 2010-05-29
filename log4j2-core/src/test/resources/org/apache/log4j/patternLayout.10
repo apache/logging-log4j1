@@ -12,7 +12,6 @@
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(X)
 	at org.apache.log4j.PatternLayoutTestCase.test10(X)
-	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
 	at junit.framework.TestResult$1.protect(X)
@@ -25,7 +24,6 @@ java.lang.Exception: Just testing
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(X)
 	at org.apache.log4j.PatternLayoutTestCase.test10(X)
-	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
 	at junit.framework.TestResult$1.protect(X)
@@ -38,7 +36,6 @@ java.lang.Exception: Just testing
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(X)
 	at org.apache.log4j.PatternLayoutTestCase.test10(X)
-	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
 	at junit.framework.TestResult$1.protect(X)
@@ -51,7 +48,6 @@ java.lang.Exception: Just testing
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(X)
 	at org.apache.log4j.PatternLayoutTestCase.test10(X)
-	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
 	at junit.framework.TestResult$1.protect(X)
@@ -64,7 +60,6 @@ java.lang.Exception: Just testing
 java.lang.Exception: Just testing
 	at org.apache.log4j.PatternLayoutTestCase.common(X)
 	at org.apache.log4j.PatternLayoutTestCase.test10(X)
-	at java.lang.reflect.Method.invoke(X)
 	at junit.framework.TestCase.runTest(X)
 	at junit.framework.TestCase.runBare(X)
 	at junit.framework.TestResult$1.protect(X)
