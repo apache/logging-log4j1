@@ -17,6 +17,11 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>7</version>
+  </parent>
   <groupId>org.apache.logging</groupId>
   <artifactId>log4j2</artifactId>
   <packaging>pom</packaging>
@@ -32,7 +37,7 @@
     <system>Gump</system>
     <url>http://vmgump.apache.org/gump/public/logging-log4j-20/logging-log4j-20/index.html</url>
   </ciManagement>
-  <inceptionYear>1999</inceptionYear>
+  <inceptionYear>2010</inceptionYear>
   <mailingLists>
     <mailingList>
       <name>log4j-user</name>
@@ -57,24 +62,61 @@
       </otherArchives>
     </mailingList>
   </mailingLists>
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/branches/BRANCH_2_0_EXPERIMENTAL</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/branches/BRANCH_2_0_EXPERIMENTAL</developerConnection>
     <url>http://svn.apache.org/viewvc/logging/log4j/branches/BRANCH_2_0_EXPERIMENTAL</url>
   </scm>
-  <organization>
-    <name>Apache Software Foundation</name>
-    <url>http://www.apache.org</url>
-  </organization>
   <modules>
-    <module>log4j2-core</module>
-    <module>log4j2-doc</module>
+    <module>2008</module>
+    <module>rgoers</module>
+    <module>site</module>
   </modules>
+<build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+</build>
+  <reporting>
+     <plugins>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+      </plugin>
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>jxr-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+      	<reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+        	<issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
+        </configuration>
+      </plugin>      
+    </plugins>
+  </reporting>
+
 </project>
