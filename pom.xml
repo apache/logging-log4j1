@@ -69,6 +69,7 @@
   </scm>
   <modules>
     <module>2008</module>
+    <module>carnold</module>
     <module>rgoers</module>
     <module>site</module>
   </modules>
