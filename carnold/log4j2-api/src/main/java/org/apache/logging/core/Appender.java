@@ -29,15 +29,15 @@ package org.apache.logging.core;
  */
 public final class Appender {
     private final Filter filter;
-    private final Destination  destination;
+    private final Connection connection;
 
-    public Appender(final Filter filter, final Destination destination) {
-        if (filter == null || destination == null)
+    public Appender(final Filter filter, final Connection connection) {
+        if (filter == null || connection == null)
         {
             throw new NullPointerException();
         }
         this.filter = filter;
-        this.destination = destination;
+        this.connection = connection;
     }
     /**
      *
@@ -56,17 +56,17 @@ public final class Appender {
 
     /**
      *
-     *  Gets the destination associated with this appender.  The destination
+     *  Gets the connection associated with this appender.  The connection
      * would be what would distinguish an "FileAppender" from a "NetworkAppender".
      *
      *  @doubt not set on the name, had thought of Transport, Channel, EventSink, etc.
      *
      *
-     * @return destination, may not be null but may be an instance of a NullDestination.
+     * @return connection, may not be null but may be an instance of a NullConnection.
      */
-    public Destination getDestination()
+    public Connection getDestination()
     {
-        return destination;
+        return connection;
     }
 
 

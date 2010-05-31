@@ -37,11 +37,38 @@ public interface Filter {
      *  the eventless decide call with a filter that does depend on the event
      *  for a determination.
      */
-    enum Result { DENY, PASS, NEUTRAL, INDETERMINANT};
+    enum Result {
+        DENY,
+        ACCEPT,
+        NEUTRAL,
+        INDETERMINANT
+    }
 
-    Result filter(int level);
+    /**
+     *  Evaluate filter for level.
+     *
+     * @param level  level, may not be null.
+     * @return result, should return INDETERMINANT is unable to determine
+     *  without additional information.
+     */
     Result filter(Level level);
+    /**
+     *  Evaluate filter for level and user-supplied context.
+     *
+     * @param level  level, may not be null.
+     * @param userContext user-supplied context, may be null.
+     * @return result, should return NDETERMINANT is unable to determine
+     *  without additional information.
+     */
     Result filter(Level level, Object userContext);
+    /**
+     *  Evaluate filter for level , user-supplied context and message.
+     *
+     * @param level  level, may not be null.
+     * @param userContext user-supplied context, may be null.
+     * @return result, should return INDETERMINANT is unable to determine
+     *  without additional information.
+     */
     Result filter(Level level, Object userContext, Object message);
 
    /**
@@ -52,17 +79,17 @@ public interface Filter {
     Result filter(LogEvent event);
 
    /**
-     *  Level value below which filter will always return DENY.
+     *  Generic level value below which filter will always return DENY.
     *  Set to Integer.MIN_VALUE if does not consider level.
     *  This method allows for level calculus to determine composite threshold.
      * @return  lowest level that could result in something other than DENY.
      */
-    int GetLowerLimit();
+    int getLowerLimit();
     /**
-      *  Level value above which filter will always return PASS.
+      *  Generic level value above which filter will always return PASS.
      *  Set to Integer.MAX_VALUE if does not consider level.
      *  This method allows for level calculus to determine composite threshold.
       * @return  highest level that could result in something other than PASS.
       */
-    int GetUpperLimit();
+    int getUpperLimit();
 }

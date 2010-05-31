@@ -35,10 +35,11 @@ public interface LogEvent {
     Level getLevel();
 
     /**
-     * Get logger name.
-     * @return logger name, may be null.
+     * Get log name.
+     * @return log name, may be null.
      */
-    String getLoggerName();
+    String getLogName();
+
 
     /**
      * Get source of logging request.
@@ -83,14 +84,30 @@ public interface LogEvent {
 
 
     /**
-     * Get information about the context of the logging request. 
+     * Get information about the user-supplied context of the logging request.
      *
      * @return context, may be null.
      */
-    Object getContext();
+    Object getUserContext();
 
-    
+    /**
+     * Get information about the thread-associated context of the logging request.
+     *
+     * @return context, may be null.
+     */
+    Object getThreadContext();
 
+    /**
+     * Get information about the calling context of the logging request.
+     *
+     * @return context, may be null.
+     */
+    Object getCallingContext();
 
-    
+    /**
+     * Get information about the application context of the logging request.
+     *
+     * @return context, may be null.
+     */
+    Object getApplicationContext();
 }

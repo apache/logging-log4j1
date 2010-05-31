@@ -18,25 +18,52 @@ package org.apache.logging.core;
 */
 
 /**
- *  Implementation of a log destination such as a file, network transport,
- *  database table, etc.
+ *   This class implements  a filter that will deny all requests..
  *
- *   Implementation should be thread-safe, would be mutable.
+ *  Immutable
  */
-public interface Destination {
+public final class DenyAllFilter implements Filter {
+
+    private DenyAllFilter() {
+    }
     /**
-     *  Appends a logging event to the destination either synchronously (in which case
-     *  it returns null) or asynchronous in which case it returns a Runnable to be executed.
-     *
-     * @param record logging record, may not be null.
-     * @return a runnable to complete the append, or null if the action was completed.
+     *  {@inheritDoc}
      */
-    Runnable append(LogEvent record) throws LoggingException;
+    public Result filter(Level level) {
+        return Result.DENY;
+    }
+    /**
+     *  {@inheritDoc}
+     */
+    public Result filter(Level level, Object userContext) {
+        return Result.DENY;
+    }
 
     /**
-     *  Closes the destination.
-     * @return a runnable to complete the close, or null if the close was completed.
+     *  {@inheritDoc}
      */
-    Runnable close() throws LoggingException;
-    
+    public Result filter(Level level, Object userContext, Object message) {
+        return Result.DENY;
+    }
+
+   /**
+    *  {@inheritDoc}
+     */
+    public Result filter(LogEvent event) {
+       return Result.DENY;
+   }
+
+   /**
+    *  {@inheritDoc}
+     */
+   public int getLowerLimit() {
+       return Integer.MAX_VALUE;
+   }
+    /**
+     *  {@inheritDoc}
+      */
+   public int getUpperLimit() {
+        return Integer.MAX_VALUE;
+   }
+
 }
