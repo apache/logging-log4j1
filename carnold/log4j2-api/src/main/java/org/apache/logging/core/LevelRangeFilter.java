@@ -94,14 +94,7 @@ public final class LevelRangeFilter implements Filter {
    /**
     *  {@inheritDoc}
      */
-   public int getLowerLimit() {
+   public int getThreshold() {
        return levelMin;
    }
-    /**
-     *  {@inheritDoc}
-      */
-   public int getUpperLimit() {
-        return Integer.MAX_VALUE;
-   }
-
 }

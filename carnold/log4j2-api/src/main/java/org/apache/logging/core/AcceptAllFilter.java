@@ -63,14 +63,7 @@ public final class AcceptAllFilter implements Filter {
    /**
     *  {@inheritDoc}
      */
-   public int getLowerLimit() {
+   public int getThreshold() {
        return Integer.MIN_VALUE;
    }
-    /**
-     *  {@inheritDoc}
-      */
-   public int getUpperLimit() {
-        return Integer.MIN_VALUE;
-   }
-
 }

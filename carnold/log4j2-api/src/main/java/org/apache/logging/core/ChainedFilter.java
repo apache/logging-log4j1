@@ -25,8 +25,7 @@ package org.apache.logging.core;
 public final class ChainedFilter implements Filter {
     private final Filter head;
     private final Filter tail;
-    private final int lowerLimit;
-    private final int upperLimit;
+    private final int threshold;
 
     public ChainedFilter(Filter head, Filter tail) {
         if(head == null || tail == null) {
@@ -34,64 +33,69 @@ public final class ChainedFilter implements Filter {
         }
         this.head = head;
         this.tail = tail;
-        lowerLimit = Math.min(head.getLowerLimit(), tail.getLowerLimit());
-        upperLimit = Math.max(head.getUpperLimit(), tail.getUpperLimit());
+        threshold = Math.min(head.getThreshold(), tail.getThreshold());
     }
     /**
      *  {@inheritDoc}
      */
     public Result filter(Level level) {
-        Result headResult = head.filter(level);
-        if(headResult != Filter.Result.NEUTRAL) {
-            return headResult;
+        if(level == null || level.getGenericValue() >= threshold) {
+            Result headResult = head.filter(level);
+            if(headResult != Filter.Result.NEUTRAL) {
+                return headResult;
+            }
+            return tail.filter(level);
         }
-        return tail.filter(level);
+        return Result.DENY;
     }
     /**
      *  {@inheritDoc}
      */
     public Result filter(Level level, Object userContext) {
-        Result headResult = head.filter(level, userContext);
-        if(headResult != Filter.Result.NEUTRAL) {
-            return headResult;
+        if(level == null || level.getGenericValue() >= threshold) {
+            Result headResult = head.filter(level, userContext);
+            if(headResult != Filter.Result.NEUTRAL) {
+                return headResult;
+            }
+            return tail.filter(level, userContext);
         }
-        return tail.filter(level, userContext);
+        return Result.DENY;
     }
 
     /**
      *  {@inheritDoc}
      */
     public Result filter(Level level, Object userContext, Object message) {
-        Result headResult = head.filter(level, userContext, message);
-        if(headResult != Filter.Result.NEUTRAL) {
-            return headResult;
+        if(level == null || level.getGenericValue() >= threshold)
+        {
+            Result headResult = head.filter(level, userContext, message);
+            if(headResult != Filter.Result.NEUTRAL) {
+                return headResult;
+            }
+            return tail.filter(level, userContext, message);
         }
-        return tail.filter(level, userContext, message);
+        return Result.DENY;
     }
 
    /**
     *  {@inheritDoc}
      */
     public Result filter(LogEvent event) {
-       Result headResult = head.filter(event);
-       if(headResult != Filter.Result.NEUTRAL) {
-           return headResult;
-       }
-       return tail.filter(event);
-
+       final Level level = event.getLevel();
+       if(level == null || level.getGenericValue() >= threshold) {
+           Result headResult = head.filter(event);
+           if(headResult != Filter.Result.NEUTRAL) {
+               return headResult;
+           }
+           return tail.filter(event);
+        }
+        return Result.DENY;
    }
 
    /**
     *  {@inheritDoc}
      */
-   public int getLowerLimit() {
-       return lowerLimit;
+   public int getThreshold() {
+       return threshold;
    }
-    /**
-     *  {@inheritDoc}
-      */
-   public int getUpperLimit() {
-       return upperLimit;
-   }
-
 }

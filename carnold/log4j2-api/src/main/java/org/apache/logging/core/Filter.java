@@ -84,12 +84,5 @@ public interface Filter {
     *  This method allows for level calculus to determine composite threshold.
      * @return  lowest level that could result in something other than DENY.
      */
-    int getLowerLimit();
-    /**
-      *  Generic level value above which filter will always return PASS.
-     *  Set to Integer.MAX_VALUE if does not consider level.
-     *  This method allows for level calculus to determine composite threshold.
-      * @return  highest level that could result in something other than PASS.
-      */
-    int getUpperLimit();
+    int getThreshold();
 }

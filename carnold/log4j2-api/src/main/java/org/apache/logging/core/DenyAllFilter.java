@@ -56,14 +56,7 @@ public final class DenyAllFilter implements Filter {
    /**
     *  {@inheritDoc}
      */
-   public int getLowerLimit() {
+   public int getThreshold() {
        return Integer.MAX_VALUE;
    }
-    /**
-     *  {@inheritDoc}
-      */
-   public int getUpperLimit() {
-        return Integer.MAX_VALUE;
-   }
-
 }

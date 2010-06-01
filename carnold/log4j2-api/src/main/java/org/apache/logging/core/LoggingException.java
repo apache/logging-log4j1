@@ -16,10 +16,6 @@
  */
 package org.apache.logging.core;
 
-import java.util.logging.*;
-
-import org.apache.log4j.*;
-
 /**
  * 
  *
@@ -27,4 +23,16 @@ import org.apache.log4j.*;
  *
  */
 public class LoggingException extends Exception {
+    public LoggingException() {
+        super();
+    }
+    public LoggingException(String message) {
+        super(message);
+    }
+    public LoggingException(String message,Throwable cause) {
+        super(message,cause);
+    }
+    public LoggingException(Throwable cause) {
+        super(cause);
+    }
 }
