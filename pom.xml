@@ -407,7 +407,9 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         <configuration>
             <instructions>
                 <!-- omit chainsaw and LF5   -->
-                <Export-Package>!org.apache.log4j.lf5.*,!org.apache.log4j.chainsaw.*,org.apache.log4j.*</Export-Package>
+                <Export-Package>!org.apache.log4j.lf5.*,
+                                !org.apache.log4j.chainsaw.*,
+                                org.apache.log4j.*;version=1.2.17;-noimport:=true</Export-Package>
 		<!--  all other potential imports are covered by DynamicImport-Package earlier -->
 		<Import-Package>!javax.swing.*,
 				!com.ibm.uvm.tools.*,
