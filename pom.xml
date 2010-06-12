@@ -165,6 +165,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
               <manifestSection>
                 <name>org.apache.log4j</name>
                 <manifestEntries>
+		  <DynamicImport-Package>*</DynamicImport-Package>
                   <Implementation-Title>log4j</Implementation-Title>
                   <Implementation-Version>${project.version}</Implementation-Version>
                   <Implementation-Vendor>"Apache Software Foundation"</Implementation-Vendor>
@@ -401,20 +402,19 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.0.1</version>
+        <version>2.1.0</version>
         <extensions>true</extensions>
         <configuration>
             <instructions>
                 <!-- omit chainsaw and LF5   -->
                 <Export-Package>!org.apache.log4j.lf5.*,!org.apache.log4j.chainsaw.*,org.apache.log4j.*</Export-Package>
-                <Import-Package>com.sun.jdmk.comm;resolution:=optional,
-                                javax.jms;resolution:=optional,
-                                javax.mail.*;resolution:=optional,
-                                javax.management;resolution:=optional,
-                                javax.naming;resolution:=optional,
-                                com.sun.jdmk.comm;resolution:=optional,
-                                com.ibm.uvm.tools;resolution:=optional,
-                                javax.swing.*;resolution:=optional,
+		<!--  all other potential imports are covered by DynamicImport-Package earlier -->
+		<Import-Package>!javax.swing.*,
+				!com.ibm.uvm.tools.*,
+				!com.sun.jdmk.comm.*,
+				javax.jmdns.*;resolution:=optional,
+				javax.jms.*;resolution:=optional,
+				javax.mail.*;resolution:=optional,
                                 *</Import-Package>
                 <Bundle-DocURL>http://logging.apache.org/log4j/1.2</Bundle-DocURL>
             </instructions>

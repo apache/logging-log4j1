@@ -20,6 +20,9 @@
     <title>Apache log4j 1.2</title>
   </properties>
   <body>
+    <release version="1.2.17" date="2010-06-99" description="Maintenance release">
+       <action issue="43282">Eliminate duplicates in OSGi Import-Package directive.</action>
+    </release>
 
     <release version="1.2.16" date="2010-04-06" description="Maintenance release">
        <action issue="43313">log4j 1.2.16 release preparation.</action>
