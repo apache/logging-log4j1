@@ -26,7 +26,7 @@
       <appender-ref ref="FALLBACK" />
     </errorHandler>
 
-    <param name="File" value="/xyz/:x.log" />
+    <param name="File" value="" />
     <param name="Append" value="false" />	    
     
     <layout class="org.apache.log4j.PatternLayout">
