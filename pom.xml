@@ -280,6 +280,23 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
               <goal>run</goal>
             </goals>
           </execution>
+          <execution>
+            <id>javadoc.resources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <copy todir="${project.build.directory}/apidocs/META-INF">
+                  <fileset dir="${basedir}">
+                    <include name="LICENSE" />
+                    <include name="NOTICE" />
+                  </fileset>
+                </copy>
+              </tasks>
+            </configuration>
+          </execution>
         </executions>
         <dependencies>
           <dependency>
@@ -328,13 +345,16 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
             </goals>
           </execution>
         </executions>
+
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.6.1</version>
+        <version>2.7</version>
         <configuration>
           <docfilessubdirs>true</docfilessubdirs>
+          <excludedocfilessubdir>.svn</excludedocfilessubdir>
           <encoding>UTF-8</encoding>
+          <docEncoding>${commons.docEncoding}</docEncoding>
         </configuration>
         <executions>
           <execution>
