@@ -396,6 +396,8 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         <configuration>
             <excludes>
                 <exclude>tests/witness/**</exclude>
+                <exclude>tests/output/**</exclude>
+                <exclude>tests/classes/**</exclude>
             </excludes>
         </configuration>
       </plugin>
