@@ -49,6 +49,7 @@
 	<menu name="Community">
 		<item name="Mailing Lists" href="/mail-lists.html"/>
 		<item name="Issue Tracking" href="/issue-tracking.html"/>
+		<item name="Blog" href="http://blogs.apache.org/logging/"/>
 	</menu>
 	
 	<menu name="Development">
