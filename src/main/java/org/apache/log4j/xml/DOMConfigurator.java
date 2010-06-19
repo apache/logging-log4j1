@@ -762,9 +762,14 @@ public class DOMConfigurator implements Configurator {
           public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
               URLConnection uConn = url.openConnection();
               uConn.setUseCaches(false);
-              InputSource src = new InputSource(uConn.getInputStream());
-              src.setSystemId(url.toString());
-              return parser.parse(src);
+              InputStream stream = uConn.getInputStream();
+              try {
+                InputSource src = new InputSource(stream);
+                src.setSystemId(url.toString());
+                return parser.parse(src);
+              } finally {
+                stream.close();
+              }
           }
           public String toString() { 
               return "url [" + url.toString() + "]"; 
