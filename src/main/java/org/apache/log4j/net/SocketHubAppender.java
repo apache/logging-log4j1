@@ -124,9 +124,10 @@ public class SocketHubAppender extends AppenderSkeleton {
    * The MulticastDNS zone advertised by a SocketHubAppender
    */
   public static final String ZONE = "_log4j_obj_tcpaccept_appender.local.";
+  private ServerSocket serverSocket;
 
 
-  public SocketHubAppender() { }
+    public SocketHubAppender() { }
 
   /**
      Connects to remote server at <code>address</code> and <code>port</code>. */
@@ -176,7 +177,7 @@ public class SocketHubAppender extends AppenderSkeleton {
 	LogLog.debug("stopping ServerSocket");
     serverMonitor.stopMonitor();
     serverMonitor = null;
-    
+
     // close all of the connections
 	LogLog.debug("closing client connections");
     while (oosList.size() != 0) {
@@ -369,8 +370,7 @@ public class SocketHubAppender extends AppenderSkeleton {
     This class is used internally to monitor a ServerSocket
     and register new connections in a vector passed in the
     constructor. */
-  private
-  class ServerMonitor implements Runnable {
+  private class ServerMonitor implements Runnable {
     private int port;
     private Vector oosList;
     private boolean keepRunning;
@@ -392,12 +392,17 @@ public class SocketHubAppender extends AppenderSkeleton {
     /**
       Stops the monitor. This method will not return until
       the thread has finished executing. */
-    public
-    synchronized
-    void stopMonitor() {
+    public synchronized void stopMonitor() {
       if (keepRunning) {
     	LogLog.debug("server monitor thread shutting down");
         keepRunning = false;
+        try {
+            if (serverSocket != null) {
+                serverSocket.close();
+                serverSocket = null;
+            }
+        } catch (IOException ioe) {}
+
         try {
           monitorThread.join();
         }
@@ -428,7 +433,7 @@ public class SocketHubAppender extends AppenderSkeleton {
       they connect to the socket. */
     public
     void run() {
-      ServerSocket serverSocket = null;
+      serverSocket = null;
       try {
         serverSocket = createServerSocket(port);
         serverSocket.setSoTimeout(1000);
