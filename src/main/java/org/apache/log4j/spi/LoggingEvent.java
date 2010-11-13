@@ -436,8 +436,7 @@ public class LoggingEvent implements java.io.Serializable {
 	  m = clazz.getDeclaredMethod(TO_LEVEL, TO_LEVEL_PARAMS);
 	  methodCache.put(className, m);
 	}
-	PARAM_ARRAY[0] = new Integer(p);
-	level = (Level) m.invoke(null,  PARAM_ARRAY);
+	level = (Level) m.invoke(null,  new Integer[] { new Integer(p) } );
       }
     } catch(InvocationTargetException e) {
         if (e.getTargetException() instanceof InterruptedException
