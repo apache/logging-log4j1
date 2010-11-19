@@ -122,7 +122,7 @@ public class Logger extends Category {
    * Return the root logger for the current logger repository.
    * <p>
    * The {@link #getName Logger.getName()} method for the root logger always returns
-   * stirng value: "root". However, calling
+   * string value: "root". However, calling
    * <code>Logger.getLogger("root")</code> does not retrieve the root
    * logger but a logger just under root named "root".
    * <p>

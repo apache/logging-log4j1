@@ -56,7 +56,7 @@ href="http://www.semper.org">SEMPER</a> project decided to write its
 own tracing API. This was in early 1996. After countless enhancements,
 several incarnations and much work that API has evolved to become
 log4j, a popular logging package for Java. The package is distributed
-under the <a href="../LICENSE">Apache Software License</a>, a
+under the <a href="license.html">Apache Software License</a>, a
 fully-fledged open source license certified by the <a
 href="http://www.opensource.org">open source</a> initiative. The
 latest log4j version, including full-source code, class files and
@@ -161,7 +161,7 @@ is exceptional in two ways:
 href="apidocs/org/apache/log4j/Logger.html#getRootLogger()">Logger.getRootLogger</a>
 method retrieves it. All other loggers are instantiated and
 retrieved with the class static <a
-href="apidocs/org/apache/log4j/Logger.html#getLogger()">Logger.getLogger</a>
+href="apidocs/org/apache/log4j/Logger.html#getLogger(java.lang.String)">Logger.getLogger</a>
 method. This method takes the name of the desired logger as a
 parameter. Some of the basic methods in the Logger class are listed
 below.</p>
@@ -307,14 +307,14 @@ having an assigned level..</p>
 of a logger instance. These printing methods are
 
 <code>
-<a href="apidocs/org/apache/log4j/Logger.html#debug(java.lang.Object)">debug</a>,
+<a href="apidocs/org/apache/log4j/Category.html#debug(java.lang.Object)">debug</a>,
 
-<a href="apidocs/org/apache/log4j/Logger.html#info(java.lang.Object)">info</a>,
+<a href="apidocs/org/apache/log4j/Category.html#info(java.lang.Object)">info</a>,
 
-<a href="apidocs/org/apache/log4j/Logger.html#warn(java.lang.Object)">warn</a>,
-<a href="apidocs/org/apache/log4j//Logger.html#error(java.lang.Object)">error</a>,
-<a href="apidocs/org/apache/log4j/Logger.html#fatal(java.lang.Object)">fatal</a>
- and <a href="apidocs/org/apache/log4j/Logger.html#log(org.apache.log4j.Level, java.lang.Object)">log</a></code>.</p>
+<a href="apidocs/org/apache/log4j/Category.html#warn(java.lang.Object)">warn</a>,
+<a href="apidocs/org/apache/log4j//Category.html#error(java.lang.Object)">error</a>,
+<a href="apidocs/org/apache/log4j/Category.html#fatal(java.lang.Object)">fatal</a>
+ and <a href="apidocs/org/apache/log4j/Category.html#log(org.apache.log4j.Priority, java.lang.Object)">log</a></code>.</p>
 
 
 <p>By definition, the printing method determines the level of a
@@ -443,7 +443,7 @@ daemons. It is also possible to log <a href="apidocs/org/apache/log4j/AsyncAppen
 <p>More than one appender can be attached to a logger.</p>
 
 <p>The <a
-href="apidocs/org/apache/log4j/Logger.html#addAppender(org.apache.log4j.Appender)">addAppender</a>
+href="apidocs/org/apache/log4j/Category.html#addAppender(org.apache.log4j.Appender)">addAppender</a>
 method adds an appender to a given logger.
 
 <b>Each enabled logging
@@ -457,7 +457,7 @@ console. If in addition a file appender is added to a logger, say
 <em>C</em>'s children will print on a file <em>and</em> on the
 console. It is possible to override this default behavior so that
 appender accumulation is no longer additive by <a
-href="apidocs/org/apache/log4j/Logger.html#setAdditivity(boolean)">setting
+href="apidocs/org/apache/log4j/Category.html#setAdditivity(boolean)">setting
 the additivity flag</a> to <code>false</code>.</p>
 
 <p>The rules governing appender additivity are summarized below.</p>
@@ -906,7 +906,7 @@ tells log4j to use the file <code>foobar.txt</code> as the default
 configuration file. This file should be place under the
 <code>WEB-INF/classes</code> directory of your web-application. The
 file will be read using the <a
-href="apidocs/org/apache/log4j/xml/PropertyConfigurator.html">PropertyConfigurator</a>. Each
+href="apidocs/org/apache/log4j/PropertyConfigurator.html">PropertyConfigurator</a>. Each
 web-application will use a different default configuration file because
 each file is relative to a web-application.</p>
 
