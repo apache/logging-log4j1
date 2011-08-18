@@ -318,7 +318,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
-            <scope>test</scope>
+            <scope>runtime</scope>
           </dependency>
           <dependency>
             <groupId>sun.jdk</groupId>
