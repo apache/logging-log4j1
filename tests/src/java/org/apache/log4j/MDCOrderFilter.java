@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.log4j.util;
+package org.apache.log4j;
+
+import org.apache.log4j.util.Filter;
 
 /**
  * This class switches MDC values into the order

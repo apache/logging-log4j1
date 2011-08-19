@@ -29,7 +29,7 @@ import org.apache.log4j.util.EnhancedLineNumberFilter;
 import org.apache.log4j.util.RelativeTimeFilter;
 import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
-import org.apache.log4j.util.MDCOrderFilter;
+import org.apache.log4j.MDCOrderFilter;
 import org.apache.log4j.spi.ThrowableInformation;
 
 import java.text.ParsePosition;
