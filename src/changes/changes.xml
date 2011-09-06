@@ -26,6 +26,7 @@
        <action issue="48588" action="fix">DOMConfigurator does not close input stream when configured based on URL.</action>
        <action issue="49078" action="fix">javadoc.jar was missing NOTICE and LICENSE and contained .svn entries.</action>
        <action issue="50238" action="fix">Wrong log levels logged with serialized LoggingEvent.</action>
+       <action issue="51766" action="add">Add org.apache.log4j.rewrite.RewriteAppender and org.apache.log4j.util.UtilLoggingLevel from discontinued receivers companion.</action>
     </release>
 
     <release version="1.2.16" date="2010-04-06" description="Maintenance release">

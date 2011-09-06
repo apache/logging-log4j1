@@ -60,6 +60,7 @@ public class CoreTestSuite {
         s.addTestSuite(org.apache.log4j.pattern.FormattingInfoTest.class);
         s.addTestSuite(org.apache.log4j.pattern.NameAbbreviatorTest.class);
         s.addTestSuite(org.apache.log4j.pattern.PatternParserTest.class);
+        s.addTestSuite(org.apache.log4j.helpers.UtilLoggingLevelTest.class);
         return s;
     }
 }

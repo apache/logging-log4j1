@@ -172,7 +172,7 @@
                                      OptionConverter, BoundedFIFO,
                                      CyclicBuffer, OR,
                                      LevelMatchFilter, PatternParser, 
-									 ErrorHandler"/>
+                                     ErrorHandler,Rewrite"/>
 
   <!-- ================================================================= -->
   <!-- Longer unit tests                                                 -->
@@ -476,6 +476,14 @@
       </junit>
   </target>
 
+  <target name="Rewrite" depends="build">
+      <junit printsummary="yes" fork="yes" 
+        haltonfailure="${haltonfailure}" dir="${basedir}">
+        <classpath refid="tests.classpath"/>
+        <formatter type="plain" usefile="false"/>
+        <test name="org.apache.log4j.rewrite.RewriteAppenderTest" />
+      </junit>
+  </target>
 
   <!-- ================================================================= -->
   <!-- ========================= Very long Tests ======================= -->
