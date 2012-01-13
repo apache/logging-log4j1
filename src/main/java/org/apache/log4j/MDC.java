@@ -180,7 +180,8 @@ public class MDC {
       Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
       if(ht != null) {
         ht.clear();
-      } 
+      }
+      ((ThreadLocalMap)tlm).remove();
     }
   }
 
