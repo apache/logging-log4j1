@@ -216,13 +216,12 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
 
         stmt = con.createStatement();
         stmt.executeUpdate(sql);
-    } catch (SQLException e) {
-       if (stmt != null)
-	     stmt.close();
-       throw e;
+    } finally {
+        if(stmt != null) {
+            stmt.close();
+        }
+        closeConnection(con);
     }
-    stmt.close();
-    closeConnection(con);
 
     //System.out.println("Execute: " + sql);
   }
@@ -284,15 +283,16 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
     //Do the actual logging
     removes.ensureCapacity(buffer.size());
     for (Iterator i = buffer.iterator(); i.hasNext();) {
+      LoggingEvent logEvent = (LoggingEvent)i.next();
       try {
-        LoggingEvent logEvent = (LoggingEvent)i.next();
 	    String sql = getLogStatement(logEvent);
 	    execute(sql);
-        removes.add(logEvent);
       }
       catch (SQLException e) {
 	    errorHandler.error("Failed to excute sql", e,
 			   ErrorCode.FLUSH_FAILURE);
+      } finally {
+        removes.add(logEvent);
       }
     }
     

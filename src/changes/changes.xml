@@ -22,6 +22,7 @@
   <body>
     <release version="1.2.17" date="2010-06-99" description="Maintenance release">
        <action issue="49470">log4j 1.2.17 release preparation</action>
+       <action issue="51597" action="fix">JDBCAppender not closed due to SQL Exception while executing an SQL (thanks to Anurag Agarwal)</action>
        <action issue="50486" action="fix">Memoryleak - org.apache.log4j.helpers.ThreadLocalMap</action>
        <action issue="43282" action="fix">Eliminate duplicates in OSGi Import-Package directive.</action>
        <action issue="48588" action="fix">DOMConfigurator does not close input stream when configured based on URL.</action>
