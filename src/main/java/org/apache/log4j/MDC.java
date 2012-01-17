@@ -17,6 +17,8 @@
 
 package org.apache.log4j;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Hashtable;
 import org.apache.log4j.helpers.Loader;
 import org.apache.log4j.helpers.ThreadLocalMap;
@@ -49,12 +51,20 @@ public class MDC {
   boolean java1;
   
   Object tlm;
-  
+
+  private Method removeMethod;
+    
   private
   MDC() {
     java1 = Loader.isJava1();
     if(!java1) {
       tlm = new ThreadLocalMap();
+    }
+
+    try {
+      removeMethod = ThreadLocal.class.getMethod("remove", null);
+    } catch (NoSuchMethodException e) {
+      // don't do anything - java prior 1.5
     }
   }
 
@@ -181,7 +191,16 @@ public class MDC {
       if(ht != null) {
         ht.clear();
       }
-      ((ThreadLocalMap)tlm).remove();
+      if(removeMethod != null) {
+          // java 1.3/1.4 does not have remove - will suffer from a memory leak
+          try {
+            removeMethod.invoke(tlm, null);
+          } catch (IllegalAccessException e) {
+            // should not happen
+          } catch (InvocationTargetException e) {
+            // should not happen
+          }
+      }
     }
   }
 
