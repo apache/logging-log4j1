@@ -165,7 +165,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
               <manifestSection>
                 <name>org.apache.log4j</name>
                 <manifestEntries>
-		  <DynamicImport-Package>*</DynamicImport-Package>
+		          <DynamicImport-Package>*</DynamicImport-Package>
                   <Implementation-Title>log4j</Implementation-Title>
                   <Implementation-Version>${project.version}</Implementation-Version>
                   <Implementation-Vendor>"Apache Software Foundation"</Implementation-Vendor>
