@@ -16,9 +16,8 @@
  */
 package org.apache.log4j;
 
-import junit.framework.TestCase;
-
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -27,9 +26,11 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.log4j.spi.OptionHandler;
+import junit.framework.TestCase;
+
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.OptionHandler;
 import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.apache.log4j.varia.LevelRangeFilter;
@@ -93,6 +94,39 @@ public class PropertyConfiguratorTest extends TestCase {
         assertFalse(file.exists());
     }
 
+    /**
+     * Tests configuring Log4J from an InputStream.
+     * 
+     * @since 1.2.17
+     */
+    public void testInputStream() throws IOException {
+        File file = new File("input/filter1.properties");
+        assertTrue(file.exists());
+        FileInputStream inputStream = new FileInputStream(file);
+        try {
+            PropertyConfigurator.configure(inputStream);
+        } finally {
+            inputStream.close();
+        }
+        this.validateNested();
+        LogManager.resetConfiguration();
+    }
+
+    public void validateNested() {
+        RollingFileAppender rfa = (RollingFileAppender)
+                Logger.getLogger("org.apache.log4j.PropertyConfiguratorTest")
+                   .getAppender("ROLLING");
+        FixedWindowRollingPolicy rollingPolicy = (FixedWindowRollingPolicy) rfa.getRollingPolicy();
+        assertEquals("filterBase-test1.log", rollingPolicy.getActiveFileName());
+        assertEquals("filterBased-test1.%i", rollingPolicy.getFileNamePattern());
+        assertEquals(0, rollingPolicy.getMinIndex());
+        assertTrue(rollingPolicy.isActivated());
+        FilterBasedTriggeringPolicy triggeringPolicy =
+                (FilterBasedTriggeringPolicy) rfa.getTriggeringPolicy();
+        LevelRangeFilter filter = (LevelRangeFilter) triggeringPolicy.getFilter();
+        assertTrue(Level.INFO.equals(filter.getLevelMin()));        
+    }
+    
     /**
      * Test for bug 47465.
      * configure(URL) did not close opened JarURLConnection.
@@ -274,24 +308,15 @@ public class PropertyConfiguratorTest extends TestCase {
     }
 
     /**
-     * Test processing of nested objects, see bug 36384.
-     *
+     * Tests processing of nested objects, see bug 36384.
      */
     public void testNested() {
-        PropertyConfigurator.configure("input/filter1.properties");
-        RollingFileAppender rfa = (RollingFileAppender)
-                Logger.getLogger("org.apache.log4j.PropertyConfiguratorTest")
-                   .getAppender("ROLLING");
-        FixedWindowRollingPolicy rollingPolicy = (FixedWindowRollingPolicy) rfa.getRollingPolicy();
-        assertEquals("filterBase-test1.log", rollingPolicy.getActiveFileName());
-        assertEquals("filterBased-test1.%i", rollingPolicy.getFileNamePattern());
-        assertEquals(0, rollingPolicy.getMinIndex());
-        assertTrue(rollingPolicy.isActivated());
-        FilterBasedTriggeringPolicy triggeringPolicy =
-                (FilterBasedTriggeringPolicy) rfa.getTriggeringPolicy();
-        LevelRangeFilter filter = (LevelRangeFilter) triggeringPolicy.getFilter();
-        assertTrue(Level.INFO.equals(filter.getLevelMin()));
-        LogManager.resetConfiguration();
+        try {
+            PropertyConfigurator.configure("input/filter1.properties");
+            this.validateNested();
+        } finally {
+            LogManager.resetConfiguration();
+        }
     }
 
 

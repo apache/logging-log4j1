@@ -17,14 +17,15 @@
 
 package org.apache.log4j.helpers;
 
-import java.util.Properties;
-import java.net.URL;
+import java.io.InputStream;
 import java.io.InterruptedIOException;
+import java.net.URL;
+import java.util.Properties;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.PropertyConfigurator;
 
 // Contributors:   Avy Sharell (sharell@online.fr)
 //                 Matthieu Verbert (mve@zurich.ibm.com)
@@ -434,6 +435,48 @@ public class OptionConverter {
       }
     }
   }
+
+    /**
+     * Configure log4j given an {@link InputStream}.
+     * 
+     * <p>
+     * The InputStream will be interpreted by a new instance of a log4j configurator.
+     * </p>
+     * <p>
+     * All configurations steps are taken on the <code>hierarchy</code> passed as a parameter.
+     * </p>
+     * 
+     * @param inputStream
+     *            The configuration input stream.
+     * @param clazz
+     *            The class name, of the log4j configurator which will parse the <code>inputStream</code>. This must be a
+     *            subclass of {@link Configurator}, or null. If this value is null then a default configurator of
+     *            {@link PropertyConfigurator} is used.
+     * @param hierarchy
+     *            The {@link org.apache.log4j.Hierarchy} to act on.
+     * @since 1.2.17
+     */
+
+static
+public
+void selectAndConfigure(InputStream inputStream, String clazz, LoggerRepository hierarchy) {
+Configurator configurator = null;
+
+if(clazz != null) {
+  LogLog.debug("Preferred configurator class: " + clazz);
+  configurator = (Configurator) instantiateByClassName(clazz,
+                           Configurator.class,
+                           null);
+  if(configurator == null) {
+   LogLog.error("Could not instantiate configurator ["+clazz+"].");
+   return;
+  }
+} else {
+  configurator = new PropertyConfigurator();
+}
+
+configurator.doConfigure(inputStream, hierarchy);
+}
 
 
   /**

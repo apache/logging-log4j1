@@ -405,16 +405,28 @@ public class PropertyConfigurator implements Configurator {
   }
 
   /**
-     Read configuration options from url <code>configURL</code>.
+  Read configuration options from url <code>configURL</code>.
 
-     @since 0.8.2
-   */
-  public
-  static
-  void configure(java.net.URL configURL) {
-    new PropertyConfigurator().doConfigure(configURL,
-					   LogManager.getLoggerRepository());
-  }
+  @since 0.8.2
+*/
+public
+static
+void configure(java.net.URL configURL) {
+ new PropertyConfigurator().doConfigure(configURL,
+                    LogManager.getLoggerRepository());
+}
+
+/**
+Reads configuration options from an InputStream.
+
+@since 1.2.17
+*/
+public
+static
+void configure(InputStream inputStream) {
+new PropertyConfigurator().doConfigure(inputStream,
+                  LogManager.getLoggerRepository());
+}
 
 
   /**
@@ -508,6 +520,27 @@ public class PropertyConfigurator implements Configurator {
     // garbage collection.
     registry.clear();
   }
+
+    /**
+     * Read configuration options from url <code>configURL</code>.
+     * 
+     * @since 1.2.17
+     */
+    public void doConfigure(InputStream inputStream, LoggerRepository hierarchy) {
+        Properties props = new Properties();
+        try {
+            props.load(inputStream);
+        } catch (IOException e) {
+            if (e instanceof InterruptedIOException) {
+                Thread.currentThread().interrupt();
+            }
+            LogLog.error("Could not read configuration file from InputStream [" + inputStream
+                 + "].", e);
+            LogLog.error("Ignoring configuration InputStream [" + inputStream +"].");
+            return;
+          }
+        this.doConfigure(props, hierarchy);
+    }
 
   /**
      Read configuration options from url <code>configURL</code>.

@@ -20,13 +20,19 @@
 
 package org.apache.log4j.helpers;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.xml.XLevel;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import junit.framework.Test;
-import java.util.Properties;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.PropertyConfiguratorTest;
+import org.apache.log4j.xml.XLevel;
 
 /**
    Test variable substitution code.   
@@ -48,6 +54,10 @@ public class OptionConverterTestCase extends TestCase {
     props.put("TOTO", "wonderful");
     props.put("key1", "value1");
     props.put("key2", "value2");
+    // Log4J will NPE without this:
+    props.put("line.separator", System.getProperty("line.separator"));
+    // Log4J will throw an Error without this:
+    props.put("java.home", System.getProperty("java.home"));
     System.setProperties(props);
 
 
@@ -56,6 +66,7 @@ public class OptionConverterTestCase extends TestCase {
   public
   void tearDown() {
     props = null;
+    LogManager.resetConfiguration();
   }
 
   public
@@ -113,6 +124,23 @@ public class OptionConverterTestCase extends TestCase {
     assertEquals(res, "x1");
   }
 
+  /**
+   * Tests configuring Log4J from an InputStream.
+   * 
+   * @since 1.2.17
+   */
+    public void testInputStream() throws IOException {
+        File file = new File("input/filter1.properties");
+        assertTrue(file.exists());
+        FileInputStream inputStream = new FileInputStream(file);
+        try {
+            OptionConverter.selectAndConfigure(inputStream, null, LogManager.getLoggerRepository());
+        } finally {
+            inputStream.close();
+        }
+        new PropertyConfiguratorTest(this.getClass().getName()).validateNested();
+    }
+
   public
   void toLevelTest1() {
     String val = "INFO";
@@ -148,7 +176,6 @@ public class OptionConverterTestCase extends TestCase {
     assertEquals(p, null);
   }
 
-
   public
   static
   Test suite() {
@@ -159,6 +186,7 @@ public class OptionConverterTestCase extends TestCase {
     suite.addTest(new OptionConverterTestCase("varSubstTest3"));
     suite.addTest(new OptionConverterTestCase("varSubstTest4"));
 
+    suite.addTest(new OptionConverterTestCase("testInputStream"));
 
     suite.addTest(new OptionConverterTestCase("toLevelTest1"));
     suite.addTest(new OptionConverterTestCase("toLevelTest2"));

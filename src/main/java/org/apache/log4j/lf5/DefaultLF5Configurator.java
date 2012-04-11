@@ -17,12 +17,13 @@
 
 package org.apache.log4j.lf5;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.spi.Configurator;
 import org.apache.log4j.spi.LoggerRepository;
-
-import java.io.IOException;
-import java.net.URL;
 
 /**
  * The <code>DefaultLF5Configurator</code> provides a default
@@ -92,10 +93,19 @@ public class DefaultLF5Configurator implements Configurator {
   /**
    * This is a dummy method that will throw an
    * <code>IllegalStateException</code> if used.
+   * 
+   * @since 1.2.17
+   */
+  public void doConfigure(InputStream inputStream, LoggerRepository repository) {
+    throw new IllegalStateException("This class should NOT be instantiated!");
+  }
+
+  /**
+   * This is a dummy method that will throw an
+   * <code>IllegalStateException</code> if used.
    */
   public void doConfigure(URL configURL, LoggerRepository repository) {
-    throw new IllegalStateException("This class should NOT be" +
-        " instantiated!");
+    throw new IllegalStateException("This class should NOT be instantiated!");
   }
 
   //--------------------------------------------------------------------------

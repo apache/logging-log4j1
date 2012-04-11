@@ -17,6 +17,7 @@
 
 package org.apache.log4j.spi;
 
+import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -40,6 +41,19 @@ public interface Configurator {
   public static final String NULL = "null";
 
 
+
+  /**
+    Interpret a resource pointed by a InputStream and set up log4j accordingly.
+
+    The configuration is done relative to the <code>hierarchy</code>
+    parameter.
+
+    @param inputStream The InputStream to parse
+    @param repository The hierarchy to operation upon.
+
+    @since 1.2.17
+   */
+  void doConfigure(InputStream inputStream, LoggerRepository repository);
 
   /**
      Interpret a resource pointed by a URL and set up log4j accordingly.
