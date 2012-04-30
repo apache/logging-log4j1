@@ -41,7 +41,8 @@ import org.apache.log4j.helpers.ThreadLocalMap;
    
    @since 1.2
 
-   @author Ceki G&uuml;lc&uuml; */
+   @author Ceki G&uuml;lc&uuml; 
+*/
 public class MDC {
   
   final static MDC mdc = new MDC();
@@ -53,7 +54,7 @@ public class MDC {
   Object tlm;
 
   private Method removeMethod;
-    
+
   private
   MDC() {
     java1 = Loader.isJava1();
@@ -170,6 +171,10 @@ public class MDC {
       Hashtable ht = (Hashtable) ((ThreadLocalMap)tlm).get();
       if(ht != null) {
         ht.remove(key);
+        // clean up if this was the last key
+        if (ht.isEmpty()) {
+          clear0();
+        }
       } 
     }
   }
