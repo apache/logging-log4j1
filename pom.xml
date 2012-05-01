@@ -552,7 +552,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       </plugin>
       <plugin>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>2.3</version>
+        <version>2.7</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -560,9 +560,6 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
             </reports>
           </reportSet>
         </reportSets>
-        <configuration>
-          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
-        </configuration>
       </plugin>
     </plugins>
   </reporting>
