@@ -33,9 +33,7 @@ Preparation of environment:
 
 $> sudo sed  's/restricted/restricted universe multiverse/' -i /etc/apt/sources.list
 $> sudo apt-get update && sudo apt-get -y update
-$> sudo apt-get install sun-java6-jdk
-$> sudo update-java-alternatives -s java-6-sun
-$> export JAVA_HOME=/usr/lib/jvm/java-6-sun
+$> sudo apt-get install openjdk-6-jdk
 
 2. Install Maven 2, Subversion, mingw and xemacs21, openssh-server:
 
