@@ -118,7 +118,7 @@
        <action action="add" issue="48902">Add %throwable{n} and {-n} pattern to EnhancedPatternLayout to print n or drop last n lines.</action>
     </release>
 
-  
+
     <release version="1.2.15" date="2007-08-24" description="SyslogAppender enhancements, NTEventLogAppender and Maven build.">
 	    <action issue="40951">log4j 1.2.15 release preparation.</action>
         <action action="add" issue="40212">Switch to NOPLoggerRepository if application reloading nulls repositorySelector.</action>
@@ -214,7 +214,7 @@
 	   <action action="fix" issue="40501"> TRACE level missing in short introduction to log4j.</action>
 	   <action action="fix" issue="37960"> Update site generation to velocity 1.4 and remove dependency on logging/site project.</action>
     </release>
-
+  
     <release version="1.2.13" date="2005-12-04" description="TRACE level missing info fixed, ConsoleAppender.follow added to make redirection following an optional behavior.">
         <action action="fix" issue="36800">Location info missing for TRACE level messages.</action>
         <action action="fix" issue="37122">Console appender now behaves as before to fix
@@ -317,7 +317,6 @@
     http://www.qos.ch/logging/preparingFor13.jsp
 </action>
        </release>
-
 
       <release version="1.2.8" date="2003-02-19" description="Fixes to XMLAppender, DOMConfiguration, SocketAppender and JDBCAppender.">
  <action action="fix" issue="11570">XMLAppender would throw a
@@ -1864,7 +1863,7 @@
 
 </release>
 
-<release date="1999-10-15">
+<release version="initial" date="1999-10-15">
 <action>Initial availability on alphaWorks.  Refer to the FAQ for the lineage of the package.</action>
 </release>
   </body>
