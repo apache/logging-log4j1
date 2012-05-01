@@ -41,7 +41,7 @@
   <!-- prefixed with "env". -->
   <property environment="env"/>
 
-  <property name="version" value="1.2.16"/>
+  <property name="version" value="1.2.17"/>
 
   <!-- The base directory relative to which most targets are built -->
   <property name="base" value="."/>
@@ -99,8 +99,8 @@
   <!-- Directory for temporary files. -->
   <property name="dist.tmp" value="${dist.dir}/tmp"/>
   
-  <property name="javac.source" value="1.2"/>
-  <property name="javac.target" value="1.1"/>
+  <property name="javac.source" value="1.4"/>
+  <property name="javac.target" value="1.4"/>
   
   <!--  destination for generated documentation on Apache web host  -->
   <property name="apache.javadoc_dest" value="/www/logging.apache.org/log4j/docs"/>
