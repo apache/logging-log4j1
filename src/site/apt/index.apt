@@ -12,11 +12,19 @@
 ~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License.
- ------
- log4j 1.2
- ------
- ------
- ------
+   ---
+Apache log4j\u2122 
+   ---
+   ---
+  ---
+ 
+Apache log4j\u2122  1.2
+
+    Welcome to Apache log4j, a logging library for Java. Apache log4j
+   is an Apache Software Foundation Project and developed by a dedicated
+   team of Committers of the Apache Software Foundation.
+   For more info, please see {{{http://www.apache.org}The Apache Software Foundation}}.
+   Apache log4j is also part of a project which is known as {{{http://logging.apache.org}Apache Logging}}.
 
     Inserting log statements into your code is a low-tech method
 	for debugging it.  It may also be the only way because

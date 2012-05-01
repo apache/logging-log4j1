@@ -22,7 +22,7 @@
     <href>http://logging.apache.org/</href>
   </bannerLeft>
   <bannerRight>
-    <name>Apache log4j</name>
+    <name>Apache log4j™</name>
     <src>images/logo.jpg</src>
     <href>http://logging.apache.org/log4j</href>
   </bannerRight>  
@@ -31,10 +31,10 @@
       <item name="Apache" href="http://www.apache.org/"/>
       <item name="Logging Services" href="http://logging.apache.org/"/>
       <item name="log4j" href="http://logging.apache.org/log4j/"/>
-      <item name="1.2"  href="http://logging.apache.org:80/log4j/1.2/"/>
+      <item name="1.2"  href="http://logging.apache.org/log4j/1.2/"/>
     </breadcrumbs>
   
-	<menu name="Get log4j 1.2">
+	<menu name="Get Apache log4j 1.2">
 	   <item name="Download" href="/download.html"/>
 	   <item name="Changes" href="/changes-report.html"/>
 	   <item name="License" href="/license.html"/>
@@ -68,8 +68,10 @@
 	
 	<menu name="Apache">
 		<item name="Home" href="http://www.apache.org"/>	
+   	<item name="License" href="http://www.apache.org/licenses"/>	
 		<item name="Sponsorship" href="http://www.apache.org/foundation/sponsorship.html"/>
 		<item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
+		<item name="Security" href="http://www.apache.org/security/"/>		
 		<item name="Conferences" href="http://www.apachecon.com"/>
 	</menu>
 	
