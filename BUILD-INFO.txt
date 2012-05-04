@@ -24,7 +24,12 @@ This is a detailed instruction to reproduce the log4j distribution
 either to verify that the release is reproducable or to prepare
 a hot-fix.
 
-Apache log4j 1.2.16 was prepared using Ubuntu 9.10.
+The log4j build is platform dependent. The best is to setup a VM using virtualbox (or similar),
+install Ubuntu and follow the steps here.
+
+History:
+  * Initial: Apache log4j 1.2.16 was prepared using Ubuntu 9.10.
+  * Updated in preparation for 1.2.17.
 
 
 Preparation of environment:
@@ -55,6 +60,10 @@ $> cat id_rsa.pub >> authorized_keys
 $> ssh localhost
 $> exit
 
+It's important to add localhost and people.a.o to the list of permanent allowed hosts.
+Besides the above, this should have been runned at least once:
+
+$> ssh people.apache.org
 
 From a command prompt:
 
@@ -95,6 +104,11 @@ $> cd log4j
 $> mvn package release:prepare
 $> mvn release:perform
 
+Attention: this is an non-interactive build. In some cases it is necessary
+to add: -Dusername=paouser -Dpassword=paopassword 
+to the release plugin commands. This is surely not safe because your password
+can be seen clearly. 
+
 
 The release artifacts can be rebuilt by:
 
@@ -114,3 +128,14 @@ The staged version can be published to the main public site by executing
 "svn update" in /www/logging.apache.org/log4j/1.2 on people.apache.org.
 
 
+  * CREATING ANOTHER RELEASE CANDIDATE
+
+If a RC has not passed the vote, these steps are necessary:
+
+Rename the tag:
+$> svn mv https://svn.apache.org/repos/asf/logging/log4j/tags/log4j-1.2.17 https://svn.apache.org/repos/asf/logging/log4j/tags/log4j-1.2.17-rc1
+
+Delete the RC artifacts from:
+http://people.apache.org/builds/logging/repo/log4j/log4j/
+
+Change the pom.xml version to the prior version number.
