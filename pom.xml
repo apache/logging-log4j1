@@ -32,7 +32,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
   <artifactId>log4j</artifactId>
   <packaging>bundle</packaging>
   <name>Apache Log4j</name>
-  <version>1.2.17-SNAPSHOT</version>
+  <version>1.2.17</version>
   <description>Apache Log4j 1.2</description>
   <url>http://logging.apache.org/log4j/1.2/</url>
   <issueManagement>
@@ -76,9 +76,9 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/logging/log4j/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_17</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_17</developerConnection>
+    <url>http://svn.apache.org/viewvc/logging/log4j/tags/v1_2_17</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
