@@ -34,14 +34,9 @@
       <item name="1.2"  href="http://logging.apache.org/log4j/1.2/"/>
     </breadcrumbs>
   
-	<menu name="Get Apache log4j 1.2">
-	   <item name="Download" href="/download.html"/>
-	   <item name="Changes" href="/changes-report.html"/>
-	   <item name="License" href="/license.html"/>
-	</menu>
-
 	<menu name="About log4j 1.2">
 	   <item name="What is log4j?" href="/index.html"/>
+       <item name="Download" href="/download.html"/>
 	   <item name="FAQ" href="/faq.html"/>
 	   <item name="Roadmap" href="/roadmap.html"/>
 	</menu>
@@ -52,13 +47,6 @@
 		<item name="Blog" href="http://blogs.apache.org/logging/"/>
 	</menu>
 	
-	<menu name="Development">
-		<item name="Repository" href="/source-repository.html"/>
-		<item name="Cross Reference" href="/jxr.html"/>
-		<item name="Dependencies" href="/dependencies.html"/>
-		<item name="Continuous Integration" href="/integration.html"/>
-	</menu>
-	
 	<menu name="Documentation">
 		<item name="Introduction" href="/manual.html"/>
 		<item name="JavaDoc" href="/apidocs/index.html"/>
@@ -66,6 +54,8 @@
 		<item name="Wiki" href="http://wiki.apache.org/logging-log4j"/>
 	</menu>
 	
+    <menu ref="reports"/> 
+    
 	<menu name="Apache">
 		<item name="Home" href="http://www.apache.org"/>	
    	<item name="License" href="http://www.apache.org/licenses"/>	
