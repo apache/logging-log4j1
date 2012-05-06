@@ -23,7 +23,6 @@ import org.apache.log4j.xml.*;
 
 import java.io.InputStream;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Hashtable;
 import javax.xml.parsers.*;
