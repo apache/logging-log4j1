@@ -51,6 +51,7 @@
 		<item name="Introduction" href="/manual.html"/>
 		<item name="JavaDoc" href="/apidocs/index.html"/>
 		<item name="Publications" href="/publications.html"/>
+        <item name="Building" href="/building.html"/>
 		<item name="Wiki" href="http://wiki.apache.org/logging-log4j"/>
 	</menu>
 	
