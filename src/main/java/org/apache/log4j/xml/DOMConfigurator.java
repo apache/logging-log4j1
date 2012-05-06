@@ -560,7 +560,7 @@ public class DOMConfigurator implements Configurator {
       final int length 	= params.getLength();
 
       for (int loop = 0; loop < length; loop++) {
-	Node currentNode = (Node)params.item(loop);
+	Node currentNode = params.item(loop);
 	if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
 	  Element currentElement = (Element) currentNode;
 	  String tagName = currentElement.getTagName();
@@ -613,7 +613,7 @@ public class DOMConfigurator implements Configurator {
           final int length 	= params.getLength();
 
           for (int loop = 0; loop < length; loop++) {
-                Node currentNode = (Node)params.item(loop);
+                Node currentNode = params.item(loop);
                 if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element currentElement = (Element) currentNode;
                     String tagName = currentElement.getTagName();

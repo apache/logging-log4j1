@@ -338,7 +338,7 @@ public class LogEvent implements java.io.Serializable {
       mdcCopyLookupRequired = false;
       // the clone call is required for asynchronous logging.
       // See also bug #5932.
-      Hashtable t = (Hashtable) MDC.getContext();
+      Hashtable t = MDC.getContext();
       if(t != null) {
 	mdcCopy = (Hashtable) t.clone();
       }

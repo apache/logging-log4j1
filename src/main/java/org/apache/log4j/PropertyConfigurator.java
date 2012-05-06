@@ -507,7 +507,7 @@ new PropertyConfigurator().doConfigure(inputStream,
 						       properties);
     if(thresholdStr != null) {
       hierarchy.setThreshold(OptionConverter.toLevel(thresholdStr,
-						     (Level) Level.ALL));
+						     Level.ALL));
       LogLog.debug("Hierarchy threshold set to ["+hierarchy.getThreshold()+"].");
     }
     
@@ -750,7 +750,7 @@ new PropertyConfigurator().doConfigure(inputStream,
 	  logger.setLevel(null);
 	}
       } else {
-	logger.setLevel(OptionConverter.toLevel(levelStr, (Level) Level.DEBUG));
+	logger.setLevel(OptionConverter.toLevel(levelStr, Level.DEBUG));
       }
       LogLog.debug("Category " + loggerName + " set to " + logger.getLevel());
     }

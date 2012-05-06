@@ -82,7 +82,7 @@ public abstract class AbstractDynamicMBean implements DynamicMBean,
     // build the result attribute list
     for (int i=0 ; i<attributeNames.length ; i++){
       try {
-	Object value = getAttribute((String) attributeNames[i]);
+	Object value = getAttribute(attributeNames[i]);
 	resultList.add(new Attribute(attributeNames[i],value));
       } catch (JMException e) {
 	     e.printStackTrace();

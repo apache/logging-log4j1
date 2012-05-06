@@ -216,7 +216,7 @@ public class LoggerTestCase extends TestCase {
 
     LoggerRepository h = LogManager.getLoggerRepository();
     //h.disableDebug();
-    h.setThreshold((Level) Level.INFO);
+    h.setThreshold(Level.INFO);
     assertEquals(caRoot.counter, 0);     
 
     root.debug(MSG); assertEquals(caRoot.counter, 0);  
@@ -225,7 +225,7 @@ public class LoggerTestCase extends TestCase {
     root.warn(MSG); assertEquals(caRoot.counter, 3);  
 
     //h.disableInfo();
-    h.setThreshold((Level) Level.WARN);
+    h.setThreshold(Level.WARN);
     root.debug(MSG); assertEquals(caRoot.counter, 3);  
     root.info(MSG); assertEquals(caRoot.counter, 3);  
     root.log(Level.WARN, MSG); assertEquals(caRoot.counter, 4);  
@@ -319,7 +319,7 @@ public class LoggerTestCase extends TestCase {
 
   public
   void testHierarchy1() {
-    Hierarchy h = new Hierarchy(new RootLogger((Level) Level.ERROR));
+    Hierarchy h = new Hierarchy(new RootLogger(Level.ERROR));
     Logger a0 = h.getLogger("a");
     assertEquals("a", a0.getName());
     assertNull(a0.getLevel());

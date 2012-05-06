@@ -195,7 +195,7 @@ public class OptionConverter {
 	return null;
       } else {
 	// no class name specified : use standard Level class
-	return(Level) Level.toLevel(value, defaultValue);
+	return Level.toLevel(value, defaultValue);
       }
     }
 

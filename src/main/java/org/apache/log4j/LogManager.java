@@ -79,7 +79,7 @@ public class LogManager {
 
   static {
     // By default we use a DefaultRepositorySelector which always returns 'h'.
-    Hierarchy h = new Hierarchy(new RootLogger((Level) Level.DEBUG));
+    Hierarchy h = new Hierarchy(new RootLogger(Level.DEBUG));
     repositorySelector = new DefaultRepositorySelector(h);
 
     /** Search for the properties file log4j.properties in the CLASSPATH.  */

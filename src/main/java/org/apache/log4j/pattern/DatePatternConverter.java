@@ -153,7 +153,7 @@ public final class DatePatternConverter extends LoggingEventPatternConverter {
 
     // if the option list contains a TZ option, then set it.
     if ((options != null) && (options.length > 1)) {
-      TimeZone tz = TimeZone.getTimeZone((String) options[1]);
+      TimeZone tz = TimeZone.getTimeZone(options[1]);
       simpleFormat.setTimeZone(tz);
     } else {
       simpleFormat = new DefaultZoneDateFormat(simpleFormat);

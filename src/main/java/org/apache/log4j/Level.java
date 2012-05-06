@@ -112,7 +112,7 @@ public class Level extends Priority implements Serializable {
   public
   static
   Level toLevel(String sArg) {
-    return (Level) toLevel(sArg, Level.DEBUG);
+    return toLevel(sArg, Level.DEBUG);
   }
 
   /**
@@ -123,7 +123,7 @@ public class Level extends Priority implements Serializable {
   public
   static
   Level toLevel(int val) {
-    return (Level) toLevel(val, Level.DEBUG);
+    return toLevel(val, Level.DEBUG);
   }
 
   /**

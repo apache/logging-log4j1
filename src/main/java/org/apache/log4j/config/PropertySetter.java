@@ -280,7 +280,7 @@ public class PropertySetter {
         return Boolean.FALSE;
       }
     } else if (Priority.class.isAssignableFrom(type)) {
-      return OptionConverter.toLevel(v, (Level) Level.DEBUG);
+      return OptionConverter.toLevel(v, Level.DEBUG);
     } else if (ErrorHandler.class.isAssignableFrom(type)) {
       return OptionConverter.instantiateByClassName(v, 
 	  ErrorHandler.class, null);
