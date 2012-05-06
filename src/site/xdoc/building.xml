@@ -167,8 +167,11 @@ The staged version can be published to the main public site by executing
 </p>
 
 <h2>If a vote has failed</h2>
+<ul>
+    <li>Send a "cancel" note to the mailinglist (usually resend the vote mail with [CANCEL] in subject</li>
+    <li>Delete the RC artifacts from:<pre>http://people.apache.org/builds/logging/repo/log4j/log4j/</pre></li>
+</ul>
 
-<p>Delete the RC artifacts from:<pre>http://people.apache.org/builds/logging/repo/log4j/log4j/</pre></p>
 
 
 <h2>If a vote has passed</h2>
