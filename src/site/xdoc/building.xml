@@ -115,11 +115,13 @@ $ ssh localhost
 $ export SVN_EDITOR=xemacs
 </pre>
 
-<p>
-    Please make sure changes.xml reflect all fixed issues. The release date in changes is to be set
-    to the date the release candidate is created.
-</p>
+<p>Other checks:</p>
 
+<ul>
+    <li>Please make sure changes.xml reflect all fixed issues. The release date in changes is to be set
+    to the date the release candidate is created.</li>
+    <li>Please update doap_log4j.rdf to reflect the correct version. Use the same release date as in changes.</li>
+</ul>
 <p>The release artifacts were originally built by:</p>
 
 <pre>
