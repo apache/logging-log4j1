@@ -60,6 +60,7 @@ import java.util.Vector;
 
 public class TelnetAppender extends AppenderSkeleton {
 
+  private static final String EOL = "\r\n";
   private SocketHandler sh;
   private int port = 23;
 
@@ -122,7 +123,7 @@ public class TelnetAppender extends AppenderSkeleton {
                 StringBuffer buf = new StringBuffer();
                 for(int i = 0; i < s.length; i++) {
                     buf.append(s[i]);
-                    buf.append("\r\n");
+                    buf.append(EOL);
                 }
                 sh.send(buf.toString());
             }
@@ -200,11 +201,11 @@ public class TelnetAppender extends AppenderSkeleton {
                 connections.addElement(newClient);
                 writers.addElement(pw);
                 pw.print("TelnetAppender v1.0 (" + connections.size()
-		            + " active connections)\r\n\r\n");
+		            + " active connections)" + EOL + EOL);
                 pw.flush();
             }
           } else {
-            pw.print("Too many connections.\r\n");
+            pw.print("Too many connections." + EOL);
             pw.flush();
             newClient.close();
           }
