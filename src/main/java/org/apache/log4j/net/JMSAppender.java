@@ -336,7 +336,7 @@ public class JMSAppender extends AppenderSkeleton {
    * no-argument constructor. If you set this option, you should also
    * at least set the <b>ProviderURL</b> option.
    * 
-   * <p>See also {@link #setProviderURL(String)}.
+   * @see #setProviderURL(String)
    * */
   public void setInitialContextFactoryName(String initialContextFactoryName) {
     this.initialContextFactoryName = initialContextFactoryName;
