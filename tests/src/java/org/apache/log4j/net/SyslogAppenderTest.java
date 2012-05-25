@@ -67,6 +67,7 @@ public class SyslogAppenderTest extends TestCase {
     assertEquals(false, appender.getFacilityPrinting());
     assertNull(appender.getLayout());
     assertNull(appender.getSyslogHost());
+    assertNull(appender.getTag());
     assertTrue(appender.requiresLayout());
   }
 
@@ -80,6 +81,7 @@ public class SyslogAppenderTest extends TestCase {
     assertEquals(false, appender.getFacilityPrinting());
     assertEquals(layout, appender.getLayout());
     assertNull(appender.getSyslogHost());
+    assertNull(appender.getTag());
     assertTrue(appender.requiresLayout());
   }
 
@@ -93,6 +95,7 @@ public class SyslogAppenderTest extends TestCase {
     assertEquals(false, appender.getFacilityPrinting());
     assertEquals(layout, appender.getLayout());
     assertNull(appender.getSyslogHost());
+    assertNull(appender.getTag());
     assertTrue(appender.requiresLayout());
   }
 
@@ -107,6 +110,7 @@ public class SyslogAppenderTest extends TestCase {
     assertEquals(false, appender.getFacilityPrinting());
     assertEquals(layout, appender.getLayout());
     assertEquals("syslog.example.org", appender.getSyslogHost());
+    assertNull(appender.getTag());
     assertTrue(appender.requiresLayout());
   }
 
@@ -393,7 +397,48 @@ public class SyslogAppenderTest extends TestCase {
       appender.setSyslogHost("127.0.0.1:1514");
   }
 
+  /**
+    *  Tests SyslogAppender with setTag.
+    */
+  public void testTag() {
+      SyslogAppender appender = new SyslogAppender();
+      appender.setTag("testtag");
+      assertEquals("testtag", appender.getTag());
+  }
+
+  /**
+    *  Tests SyslogAppender with null tag.
+    */
+  public void testNullTag() {
+      SyslogAppender appender = new SyslogAppender();
+      appender.setTag(null);
+      assertNull(appender.getTag());
+  }
+
+  /**
+    *  Tests SyslogAppender with long tag.
+    */
+  public void testLongTag() {
+      SyslogAppender appender = new SyslogAppender();
+      appender.setTag("testtagtesttagtesttagtesttagtesttag");
+      assertEquals(appender.getTag(), "testtagtesttagtesttagtesttagtest");
+  }
+
+  /**
+    *  Tests SyslogAppender with non alnum tag.
+    */
+  public void testNonAlnumTag() {
+      SyslogAppender appender = new SyslogAppender();
+      try{
+          appender.setTag("testtag testtag");
+          fail("SyslogAppender.setTag() should have thrown an exception.");
+      } catch (IllegalArgumentException e) {
+          // Correct behavior, ignore and let the test pass.
+      }
+  }
+
     private static String[] log(final boolean header,
+                                final String tag,
                                 final String msg,
                                 final Exception ex,
                                 final int packets) throws Exception {
@@ -404,6 +449,7 @@ public class SyslogAppenderTest extends TestCase {
       appender.setSyslogHost("localhost:" + ds.getLocalPort());
       appender.setName("name");
       appender.setHeader(header);
+      appender.setTag(tag);
       PatternLayout pl = new PatternLayout("%m");
       appender.setLayout(pl);
       appender.activateOptions();
@@ -428,7 +474,7 @@ public class SyslogAppenderTest extends TestCase {
     }
 
     public void testActualLogging() throws Exception {
-      String s = log(false, "greetings", null, 1)[0];
+      String s = log(false, null, "greetings", null, 1)[0];
       StringTokenizer st = new StringTokenizer(s, "<>() ");
       assertEquals("14", st.nextToken());
       assertEquals("greetings", st.nextToken());
@@ -463,7 +509,7 @@ public class SyslogAppenderTest extends TestCase {
      * @throws Exception on IOException.
      */
     public void testBadTabbing() throws Exception {
-        String[] s = log(false, "greetings", new MishandledException(), 6);
+        String[] s = log(false, null, "greetings", new MishandledException(), 6);
         StringTokenizer st = new StringTokenizer(s[0], "<>() ");
         assertEquals("11", st.nextToken());
         assertEquals("greetings", st.nextToken());
@@ -481,7 +527,7 @@ public class SyslogAppenderTest extends TestCase {
      */
     public void testHeaderLogging() throws Exception {
       Date preDate = new Date();
-      String s = log(true, "greetings", null, 1)[0];
+      String s = log(true, null, "greetings", null, 1)[0];
       Date postDate = new Date();
       assertEquals("<14>", s.substring(0, 4));
 
@@ -513,6 +559,51 @@ public class SyslogAppenderTest extends TestCase {
       assertTrue(syslogDate.compareTo(postDate) <= 0);
     }
 
+
+    /**
+     * Tests presence of tag if set
+     */
+    public void testHeaderTagLogging() throws Exception {
+      String s = log(true, "testtag", "greetings", null, 1)[0];
+      assertEquals("<14>", s.substring(0, 4));
+
+      StringTokenizer st = new StringTokenizer(s.substring(21), " ");
+
+      // Throw away the hostname
+      st.nextToken();
+
+      assertEquals("testtag:", st.nextToken());
+    }
+
+    /**
+     * Tests presence of tag on every line of the exception
+     */
+    public void testHeaderTagExceptionLogging() throws Exception {
+      String[] s = log(true, "testtag", "greetings", new Exception(), 6);
+      for(int i=0; i < s.length; i++) {
+          System.err.println(s[i]);
+          assertEquals("<11>", s[i].substring(0, 4));
+          StringTokenizer st = new StringTokenizer(s[i].substring(21), " ");
+          // Throw away the hostname
+          st.nextToken();
+          assertEquals("testtag:", st.nextToken());
+      }
+    }
+
+    /**
+     * Tests absesence of tag if set to null
+     */
+    public void testHeaderNullTagLogging() throws Exception {
+      String s = log(true, null, "greetings", null, 1)[0];
+      assertEquals("<14>", s.substring(0, 4));
+
+      StringTokenizer st = new StringTokenizer(s.substring(21), " ");
+
+      // Throw away the hostname
+      st.nextToken();
+
+      assertEquals("greetings", st.nextToken());
+    }
 
     /**
      * Tests that any header or footer in layout is sent.

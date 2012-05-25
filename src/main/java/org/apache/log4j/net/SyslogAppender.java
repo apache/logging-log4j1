@@ -17,18 +17,19 @@
 
 package org.apache.log4j.net;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.SyslogQuietWriter;
 import org.apache.log4j.helpers.SyslogWriter;
 import org.apache.log4j.spi.LoggingEvent;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.io.IOException;
 
 // Contributors: Yves Bossel <ybossel@opengets.cl>
 //               Christopher Taylor <cstaylor@pacbell.net>
@@ -44,6 +45,11 @@ public class SyslogAppender extends AppenderSkeleton {
   // copyrighted by the Regents of the University of California
   // I hope nobody at Berkley gets offended.
 
+  /**
+    * Maximum length of a TAG string.
+    */
+  private static final int MAX_TAG_LEN = 32;
+  
   /** Kernel messages */
   final static public int LOG_KERN     = 0;
   /** Random user-level messages */
@@ -93,6 +99,8 @@ public class SyslogAppender extends AppenderSkeleton {
 
   static final String TAB = "    ";
 
+  static final Pattern NOT_ALPHANUM = Pattern.compile("[^\\p{Alnum}]");
+
   // Have LOG_USER as default
   int syslogFacility = LOG_USER;
   String facilityStr;
@@ -108,6 +116,13 @@ public class SyslogAppender extends AppenderSkeleton {
      * @since 1.2.15
      */
   private boolean header = false;
+  
+    /**
+     * The TAG part of the syslog message.
+     * 
+     * @since 1.2.18
+     */
+  private String tag = null;
   
     /**
      * Date format used if header = true.
@@ -479,6 +494,49 @@ public class SyslogAppender extends AppenderSkeleton {
   }
 
     /**
+     * Sets the <b>Tag</b> option.
+     * 
+     * <p>
+     * If non-{@code null}, the printed HEADER will include the specified tag followed by a colon. If {@code null}, then no tag is printed.
+     * </p>
+     * <p>
+     * The default value is {@code null}.
+     * </p>
+     * 
+     * @param tag
+     *            the TAG to be printed out with the header
+     * @see #getTag()
+     * @since 1.2.18
+     */
+    public void setTag(final String tag) {
+        String newTag = tag;
+        if (newTag != null) {
+            if (newTag.length() > MAX_TAG_LEN) {
+                newTag = newTag.substring(0, MAX_TAG_LEN);
+            }
+            if (NOT_ALPHANUM.matcher(newTag).find()) {
+                throw new IllegalArgumentException("tag contains non-alphanumeric characters");
+            }
+        }
+
+        this.tag = newTag;
+    }
+
+    /**
+     * Gets the TAG to be printed with the HEADER portion of the log message. This will return {@code null} if no TAG is to be printed.
+     * <p>
+     * The default value is {@code null}.
+     * </p>
+     * 
+     * @return the TAG, max length 32.
+     * @see #setTag(String)
+     * @since 1.2.18
+     */
+  public String getTag() {
+      return this.tag;
+  }
+
+    /**
      * Get the host name used to identify this appender.
      * @return local host name
      * @since 1.2.15
@@ -510,6 +568,10 @@ public class SyslogAppender extends AppenderSkeleton {
         }
         buf.append(getLocalHostname());
         buf.append(' ');
+        if(this.tag != null) {
+            buf.append(this.tag);
+            buf.append(": ");
+        }
         return buf.toString();
       }
       return "";
