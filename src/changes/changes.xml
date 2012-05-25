@@ -20,6 +20,10 @@
     <title>Apache log4j 1.2</title>
   </properties>
   <body>
+    <release version="1.2.18" date="2012-??-??" description="Maintenance release">
+       <action issue="46626" action="add" dev="ggregory" due-to="Steven Willis">Log4J SyslogAppender does not handle the TAG field.</action>
+    </release>
+
     <release version="1.2.17" date="2012-05-06" description="Maintenance release">
        <action issue="49470">log4j 1.2.17 release preparation</action>
        <action issue="52913" action="add" dev="ggregory">Configure from an InputStream</action>
