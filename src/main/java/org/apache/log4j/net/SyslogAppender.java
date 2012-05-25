@@ -108,11 +108,13 @@ public class SyslogAppender extends AppenderSkeleton {
      * @since 1.2.15
      */
   private boolean header = false;
+  
     /**
      * Date format used if header = true.
      * @since 1.2.15
      */
   private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss ", Locale.ENGLISH);
+  
     /**
      * Host name used to identify messages from this appender.
      * @since 1.2.15
