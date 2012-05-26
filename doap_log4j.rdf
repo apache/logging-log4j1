@@ -36,9 +36,9 @@
     <category rdf:resource="http://projects.apache.org/category/library" />
     <release>
       <Version>
-        <name>Apache log4j 1.2.15</name>
-        <created>2007-08-24</created>
-        <revision>1.2.15</revision>
+        <name>Apache log4j 1.2.17</name>
+        <created>2012-05-06</created>
+        <revision>1.2.17</revision>
       </Version>
     </release>
     <repository>

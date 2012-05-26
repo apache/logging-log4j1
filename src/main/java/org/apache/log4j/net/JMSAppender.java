@@ -43,7 +43,7 @@ import java.util.Properties;
 
  * <p>JMS {@link Topic topics} and {@link TopicConnectionFactory topic
  * connection factories} are administered objects that are retrieved
- * using JNDI messaging which in turn requires the retreival of a JNDI
+ * using JNDI messaging which in turn requires the retrieval of a JNDI
  * {@link Context}.
 
  * <p>There are two common methods for retrieving a JNDI {@link
@@ -63,7 +63,7 @@ import java.util.Properties;
     
  * <p>In the second approach, several predetermined properties are set
  * and these properties are passed to the <code>InitialContext</code>
- * contructor to connect to the naming service provider. For example,
+ * constructor to connect to the naming service provider. For example,
  * to connect to JBoss naming service one would write:
 
 <pre>
@@ -74,7 +74,7 @@ import java.util.Properties;
    InitialContext jndiContext = new InitialContext(env);
 </pre>
 
-   * where <em>hostname</em> is the host where the JBoss applicaiton
+   * where <em>hostname</em> is the host where the JBoss application
    * server is running.
    *
    * <p>To connect to the the naming service of Weblogic application
