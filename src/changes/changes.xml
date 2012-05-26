@@ -21,6 +21,7 @@
   </properties>
   <body>
     <release version="1.2.18" date="2012-??-??" description="Maintenance release">
+       <action issue="50369" action="fix" dev="ggregory" due-to="Gil Cottle">Missing comma in class header Javadoc for Level.</action>
        <action issue="46626" action="add" dev="ggregory" due-to="Steven Willis">Log4J SyslogAppender does not handle the TAG field.</action>
     </release>
 

@@ -26,16 +26,14 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 /**
-   Defines the minimum set of levels recognized by the system, that is
-   <code>OFF</code>, <code>FATAL</code>, <code>ERROR</code>,
-   <code>WARN</code>, <code>INFO</code, <code>DEBUG</code> and
-   <code>ALL</code>.
-
-   <p>The <code>Level</code> class may be subclassed to define a larger
-   level set.
-
-   @author Ceki G&uuml;lc&uuml;
-
+ * Defines the minimum set of levels recognized by the system, that is <code>OFF</code>, <code>FATAL</code>, <code>ERROR</code>,
+ * <code>WARN</code>, <code>INFO</code>, <code>DEBUG</code> and <code>ALL</code>.
+ * 
+ * <p>
+ * The <code>Level</code> class may be subclassed to define a larger level set.
+ * </p>
+ * 
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class Level extends Priority implements Serializable {
 
