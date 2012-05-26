@@ -32,7 +32,7 @@ import org.apache.log4j.xml.DOMConfigurator;
    <pre>
    <b>Usage:</b> java org.apache.log4j.net.SimpleSocketServer port configFile
 
-   where <em>port</em> is a part number where the server listens and
+   where <em>port</em> is a port number where the server listens and
    <em>configFile</em> is a configuration file fed to the {@link
    PropertyConfigurator} or to {@link DOMConfigurator} if an XML file.
    </pre>
