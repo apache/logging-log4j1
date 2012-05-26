@@ -268,7 +268,7 @@ other loggers <code>X</code>, <code>X.Y</code> and
   </table></p>
 
 <p>In example 2, all loggers have an assigned level value. There
-is no need for level inheritence.</p>
+is no need for level inheritance.</p>
 
 <p><table border="1">
     <tr><th>Logger<br/>name</th><th>Assigned<br/>level</th>
