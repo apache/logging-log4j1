@@ -36,14 +36,15 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 
 /**
- * Use the <code>LogManager</code> class to retreive {@link Logger}
- * instances or to operate on the current {@link
- * LoggerRepository}. When the <code>LogManager</code> class is loaded
- * into memory the default initalzation procedure is inititated. The
- * default intialization procedure</a> is described in the <a
- * href="../../../../manual.html#defaultInit">short log4j manual</a>.
- *
- * @author Ceki G&uuml;lc&uuml; */
+ * Gets {@link Logger} instances and operates on the current {@link LoggerRepository}.
+ * 
+ * <p>
+ * When the <code>LogManager</code> class is loaded into memory the default initialization procedure runs. The default initialization
+ * procedure</a> is described in the <a href="../../../../manual.html#defaultInit">short log4j manual</a>.
+ * </p>
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ */
 public class LogManager {
 
   /**
