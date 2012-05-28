@@ -30,9 +30,9 @@ Download Apache log4j 1.2.17
 *-------------------------+---------+----------+-----------+
 |                         | Mirrors | Checksum | Signature |
 *-------------------------+---------+----------+-----------+
-| Apache log4j 1.2.17 (tar.gz)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/1.2.17/apache-log4j-1.2.17.tar.gz} apache-log4j-1.2.17.tar.gz}} | {{{http://www.apache.org/dist/logging/log4j/1.2.17/apache-log4j-1.2.17.tar.gz.md5} apache-log4j-1.2.17.tar.gz.md5}} | {{{http://www.apache.org/dist/logging/log4j/1.2.17/apache-log4j-1.2.17.tar.gz.asc} apache-log4j-1.2.17.tar.gz.asc}} |
+| Apache log4j 1.2.17 (tar.gz)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/1.2.17/log4j-1.2.17.tar.gz} log4j-1.2.17.tar.gz}} | {{{http://www.apache.org/dist/logging/log4j/1.2.17/log4j-1.2.17.tar.gz.md5} log4j-1.2.17.tar.gz.md5}} | {{{http://www.apache.org/dist/logging/log4j/1.2.17/log4j-1.2.17.tar.gz.asc} log4j-1.2.17.tar.gz.asc}} |
 *-------------------------+---------+----------+-----------+
-| Apache log4j 1.2.17 (zip)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/1.2.17/apache-log4j-1.2.17.zip} apache-log4j-1.2.17.zip}} | {{{http://www.apache.org/dist/logging/log4j/1.2.17/apache-log4j-1.2.17.zip.md5} apache-log4j-1.2.17.zip.md5}} | {{{http://www.apache.org/dist/logging/log4j/1.2.17/apache-log4j-1.2.17.zip.asc} apache-log4j-1.2.17.zip.asc}} |
+| Apache log4j 1.2.17 (zip)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4j/1.2.17/log4j-1.2.17.zip} log4j-1.2.17.zip}} | {{{http://www.apache.org/dist/logging/log4j/1.2.17/log4j-1.2.17.zip.md5} log4j-1.2.17.zip.md5}} | {{{http://www.apache.org/dist/logging/log4j/1.2.17/log4j-1.2.17.zip.asc} log4j-1.2.17.zip.asc}} |
 *-------------------------+---------+----------+-----------+
 
     It is essential that you verify the integrity of the downloaded files using the PGP or MD5 signatures. 
@@ -48,7 +48,7 @@ Download Apache log4j 1.2.17
 % gpg --verify log4j-1.2.17.tar.gz.asc
 ---
 
-    Apache log4j 1.2.17 is signed by Curt Arnold 70C9C3DO   
+    Apache log4j 1.2.17 is signed by Christian Grobmeier 42196CA8   
 
     Alternatively, you can verify the MD5 signature on the files. A unix program called md5 or md5sum is included 
     in many unix distributions.
