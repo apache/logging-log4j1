@@ -140,11 +140,37 @@ to the release plugin commands. This is surely not safe because your password
 can be seen clearly. 
 </p>
 
+<p>Sometimes iz might be necessary to disable keystore on Ubuntu machines when the automatic svn commit fails. To do this, add the following line to .subversion/config in your [auth] section:</p>
+
+<pre>password-stores =</pre>
+
 <p>The release artifacts can be rebuilt by:</p>
 
 <pre>
 $ mvn release:perform -DconnectionUrl=scm:svn:https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_16
 </pre>
+
+<p>ATTENTION: if your asc files are not created, you need to create them manually. F. e.</p>
+
+<pre>
+    #!/bin/sh
+
+    if [ -n "$1" ]
+    then
+      root_dir=$1
+    else
+      root_dir=.
+    fi
+
+    for file in $root_dir/*.jar $root_dir/*.pom $root_dir/*.zip $root_dir/*.tar.gz; do
+       echo §file
+        gpg --armor --output $file.asc --detach-sig $file
+        echo "GPG verification output"
+        gpg --verify $file.asc $file
+        echo "~~~~~~~~~~~~~~~~~~~~~~~"
+    done
+</pre>
+
 
 <p>Building site and artifacts from a tag:</p>
 
@@ -190,7 +216,11 @@ The staged version can be published to the main public site by executing
 $> svn mv https://svn.apache.org/repos/asf/logging/log4j/tags/log4j-1.2.17-RC1 https://svn.apache.org/repos/asf/logging/log4j/tags/log4j-1.2.17
 </pre>
 
-<p>Change the pom.xml version to the prior version number.</p>
+<p>mv the tar.gz and the zip files to p.a.o dist</p>
+<p>Create a jar file containing your artifacts: jar cf log4j-bundle-1217.jar *</p>
+<p>Upload the bundle to repository.apache.org and follow the instructions to get the artifacts from staging to proper</p>
+
+<p>Send an announcement to: announce@apache.org, general@logging.apache.org, log4j-dev@logging.apache.org, log4j-user@logging.apache.org<p>
 
 </section>
 </body>
