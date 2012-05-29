@@ -16,7 +16,7 @@
  */
 
 
-// Contibutors: "Luke Blanshard" <Luke@quiq.com>
+// Contributors: "Luke Blanshard" <Luke@quiq.com>
 //              "Mark DONSZELMANN" <Mark.Donszelmann@cern.ch>
 //               Anders Kristensen <akristensen@dynamicsoft.com>
 
@@ -185,7 +185,7 @@ public class PropertyConfigurator implements Configurator {
     </pre>
     The first line defines the class name of the filter identified by ID;
     subsequent lines with the same ID specify filter option - value
-    paris. Multiple filters are added to the appender in the lexicographic
+    pairs. Multiple filters are added to the appender in the lexicographic
     order of IDs.
 
     The syntax for adding an {@link ErrorHandler} to an appender is:
@@ -316,7 +316,7 @@ public class PropertyConfigurator implements Configurator {
     # milliseconds, followed by the level of the log request,
     # followed by the two rightmost components of the logger name,
     # followed by the callers method name, followed by the line number,
-    # the nested disgnostic context and finally the message itself.
+    # the nested diagnostic context and finally the message itself.
     # Refer to the documentation of {@link PatternLayout} for further information
     # on the syntax of the ConversionPattern key.
     log4j.appender.A1.layout=org.apache.log4j.PatternLayout
@@ -522,7 +522,7 @@ new PropertyConfigurator().doConfigure(inputStream,
   }
 
     /**
-     * Read configuration options from url <code>configURL</code>.
+     * Read configuration options from an InputStream.
      * 
      * @since 1.2.17
      */
