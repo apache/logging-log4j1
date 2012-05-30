@@ -440,7 +440,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         <artifactId>maven-site-plugin</artifactId>
         <version>3.1</version>
         <configuration>
-          <templateFile>${basedir}/src/site/maven-site.vm</templateFile>
+          <!--<templateFile>${basedir}/src/site/maven-site.vm</templateFile>-->
           <excludeDefaults>true</excludeDefaults>
         </configuration>
         <executions>
