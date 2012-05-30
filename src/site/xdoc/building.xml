@@ -220,7 +220,7 @@ $> svn mv https://svn.apache.org/repos/asf/logging/log4j/tags/log4j-1.2.17-RC1 h
 <p>Create a jar file containing your artifacts: jar cf log4j-bundle-1217.jar *</p>
 <p>Upload the bundle to repository.apache.org and follow the instructions to get the artifacts from staging to proper</p>
 
-<p>Send an announcement to: announce@apache.org, general@logging.apache.org, log4j-dev@logging.apache.org, log4j-user@logging.apache.org<p>
+<p>Send an announcement to: announce@apache.org, general@logging.apache.org, log4j-dev@logging.apache.org, log4j-user@logging.apache.org</p>
 
 </section>
 </body>
