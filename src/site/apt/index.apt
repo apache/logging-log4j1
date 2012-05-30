@@ -84,3 +84,14 @@ Apache log4j\u2122  1.2
 
     Please note, the team is currently working on log4j 2 which will replace
     log4j 1 in near future.
+
+* Get involved
+
+    We are glad about help! Please make sure you have read the
+    {{{http://www.apache.org/foundation/getinvolved.html}Get Involved}} document.
+    Then join the {{{http://logging.apache.org/log4j/1.2/mail-lists.html}dev mailinglist}}
+    and fix issues from {{{https://issues.apache.org/bugzilla/describecomponents.cgi?product=Log4j}Bugzilla}}.
+
+    You can obtain the code via {{{source-repository.html}SVN}} or our {{{http://git.apache.org/log4j.git/}Git mirror}}.
+
+

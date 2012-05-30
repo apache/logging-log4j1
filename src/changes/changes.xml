@@ -21,6 +21,7 @@
   </properties>
   <body>
     <release version="1.2.18" date="2012-??-??" description="Maintenance release">
+       <action issue="49359" action="update" dev="grobmeier">Log4j site should have some mention of git mirroring </action>
        <action issue="49077" action="remove" dev="grobmeier">Prepare smaller jar omitting LF5 and Chainsaw 1</action>
        <action issue="53315" action="fix" dev="ggregory" due-to="Ville Skyttä">[PATCH] PropertyConfigurator javadoc fixes.</action>
        <action issue="51361" action="fix" dev="ggregory" due-to="Gil Cottle">Inheritance spelled "inheritence" in documentation.</action>
