@@ -38,7 +38,22 @@ import java.util.Hashtable;
  * <p/>
  * <p>The MDC class requires JDK 1.2 or above. Under JDK 1.1 the MDC
  * will always return empty values but otherwise will not affect or
- * harm your application.
+ * harm your application.</p>
+ *
+ * <p>Attention: the application is required to clean up. In web applications
+ * this can happen with creating a Servlet Filter and overriding the
+ * onFilter method like:</p>
+ *
+ * <pre>
+ * try {
+ *    MDC.put(myKey);
+ *    chain.doFilter(request, response);
+ * } finally {
+ *    MDC.remove(myKey);
+ * }
+ * </pre>
+ *
+ * <p>Please also see: {@link http://logging.apache.org/log4j/1.2/faq.html#mdcmemoryleak}</p>
  *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.2
@@ -162,7 +177,7 @@ public class MDC {
                 ht.remove(key);
                 // clean up if this was the last key
                 if (ht.isEmpty()) {
-                    clear0();
+                        clear0();
                 }
             }
         }

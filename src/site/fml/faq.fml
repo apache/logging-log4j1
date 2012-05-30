@@ -871,5 +871,38 @@ public class Foo {
               <p>The SMTPAppender may be influenced by mail.smtp and mail.smtps system properties.</p>
           </answer>
       </faq>
+      
+       <faq id="mdcmemoryleak">
+          <question>How can I prevent memory leaks when using MDC?</question>
+          <answer>
+          
+          The following message sometimes comes up in combination with MDC:
+          
+          <pre>
+[webapp] created a ThreadLocal with key of type [org.apache.log4j.helpers.ThreadLocalMap] (value [org.apache.log4j.helpers.ThreadLocalMap@f6af3b]) and a value of type [java.util.Hashtable] (value [{userId=jo2372}]) but failed to remove it when the web application was stopped. This is very likely to create a memory leak.
+          </pre>
+          
+          In this case MDC is not cleaned up properly. Since log4j 1.2.17 the clear()-Method is called when the last
+          key of the underlying ThreadLocalMap is removed. To prevent the error message above,
+          the application need to take care it self of removing the keys which are not longer necessary.
+          
+          With web applications one can do this with creating a Servlet Filter and overriding the doFilter method:
+          
+          <pre>
+try {
+    MDC.put(myKey);
+    chain.doFilter(request, response);
+} finally {
+    MDC.remove(myKey);
+}          
+          </pre>
+          
+          Please note, cleaning up the MDC in the Servlets destroy method might not lead to the desired results,
+          as destroy is not necessary called from the Thread which is holding the the map.
+            
+          For more information please also see: https://issues.apache.org/bugzilla/show_bug.cgi?id=50486
+      </answer>
+      </faq>
+
   </part>
 </faqs>
