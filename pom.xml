@@ -101,7 +101,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
           <workingDirectory>tests</workingDirectory>
           <reportFormat>plain</reportFormat>
           <forkMode>pertest</forkMode>
-          <skip>true</skip>
+          <skip>false</skip>
           <includes>
             <include>org/apache/log4j/LevelTest.java</include>
             <include>org/apache/log4j/PriorityTest.java</include>
@@ -197,6 +197,14 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
             </goals>
           </execution>
           <!-- create tests/output prior to test run -->
+            <!--
+
+            TODO: several tests are run from tests/build.xml,
+            for example longUnit
+
+            Refactor these tests to run with Surefire
+
+
           <execution>
             <phase>test-compile</phase>
             <id>mkdir_tests_output</id>
@@ -238,6 +246,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
               <goal>run</goal>
             </goals>
           </execution>
+          -->
           <!-- release builds will put SVN tags into the SCM page, this changes it back to trunk -->
           <execution>
             <phase>site</phase>
@@ -256,6 +265,11 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
               <goal>run</goal>
             </goals>
           </execution>
+
+            <!--
+
+            TODO: checks out a site from svn. Is that necessary?
+
           <execution>
             <phase>post-site</phase>
             <id>post-site</id>
@@ -268,6 +282,14 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
               <goal>run</goal>
             </goals>
           </execution>
+
+          -->
+
+
+            <!--
+
+            TODO: this is doable from maven
+
           <execution>
             <phase>site-deploy</phase>
             <id>site-deploy</id>
@@ -280,6 +302,8 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
               <goal>run</goal>
             </goals>
           </execution>
+          -->
+
           <execution>
             <id>javadoc.resources</id>
             <phase>generate-sources</phase>

@@ -21,6 +21,7 @@
   </properties>
   <body>
     <release version="1.2.18" date="2012-??-??" description="Maintenance release">
+       <action issue="53299" action="update" dev="grobmeier">Simplify log4j build</action>
        <action issue="44370" action="fix" dev="grobmeier">MANIFEST.MF broken in log4j-1.2.15.jar</action>
        <action issue="49932" action="fix" dev="grobmeier" due-to="Steve Coy">Additional OSGI/BND configuration elements</action>
        <action action="remove" dev="grobmeier">Ant is not longer supported as build tool</action>
