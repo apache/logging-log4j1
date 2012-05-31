@@ -413,29 +413,27 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
           </excludes>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.1.0</version>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <!-- omit chainsaw and LF5 -->
-            <Export-Package>!org.apache.log4j.lf5.*,
-              !org.apache.log4j.chainsaw.*,
-              org.apache.log4j.*;version=1.2.17;-noimport:=true</Export-Package>
-            <!-- all other potential imports are covered by DynamicImport-Package earlier -->
-            <Import-Package>!javax.swing.*,
-              !com.ibm.uvm.tools.*,
-              !com.sun.jdmk.comm.*,
-              javax.jmdns.*;resolution:=optional,
-              javax.jms.*;resolution:=optional,
-              javax.mail.*;resolution:=optional,
-              *</Import-Package>
-            <Bundle-DocURL>http://logging.apache.org/log4j/1.2</Bundle-DocURL>
-          </instructions>
-        </configuration>
-      </plugin>
+        <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.1.0</version>
+            <extensions>true</extensions>
+            <configuration>
+                <instructions>
+                    <Bundle-SymbolicName>org.apache.log4j</Bundle-SymbolicName>
+                    <Export-Package>org.apache.log4j.*;version=${project.version};-noimport:=true</Export-Package>
+                    <Import-Package>
+                        javax.jmdns.*;resolution:=optional,
+                        javax.jms.*;resolution:=optional,
+                        javax.mail.*;resolution:=optional,
+                        *
+                    </Import-Package>
+                    <Bundle-DocURL>http://logging.apache.org/log4j/1.2</Bundle-DocURL>
+                    <Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
+                    <Bundle-RequiredExecutionEnvironment>J2SE-1.4</Bundle-RequiredExecutionEnvironment>
+                </instructions>
+            </configuration>
+        </plugin>
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.1</version>

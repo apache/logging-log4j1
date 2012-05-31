@@ -21,6 +21,7 @@
   </properties>
   <body>
     <release version="1.2.18" date="2012-??-??" description="Maintenance release">
+       <action issue="49932" action="fix" dev="grobmeier" due-to="Steve Coy">Additional OSGI/BND configuration elements</action>
        <action action="remove" dev="grobmeier">Ant is not longer supported as build tool</action>
        <action action="update" dev="grobmeier">Made use of Mavens Fludio Skin</action>
        <action issue="49359" action="update" dev="grobmeier">Log4j site should have some mention of git mirroring</action>
