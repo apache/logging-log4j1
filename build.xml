@@ -19,7 +19,14 @@
 <!-- This file is an ANT build script. ANT is a Java based build tool. -->
 <!-- It is available from http://ant.apache.org                        -->
 
+<!--
 
+   ATTENTION
+
+   Building via Ant is not longer maintained.
+   This file will be removed as soon as the maven build is cleaned up.
+
+-->
 <project name="log4j" default="usage" basedir="." >
 
   
