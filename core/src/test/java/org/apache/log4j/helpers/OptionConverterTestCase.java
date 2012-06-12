@@ -130,7 +130,7 @@ public class OptionConverterTestCase extends TestCase {
    * @since 1.2.17
    */
     public void testInputStream() throws IOException {
-        File file = new File("input/filter1.properties");
+        File file = new File(this.getClass().getResource("/input/filter1.properties").getFile());
         assertTrue(file.exists());
         FileInputStream inputStream = new FileInputStream(file);
         try {
