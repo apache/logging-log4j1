@@ -23,9 +23,11 @@ import junit.framework.TestSuite;
 import org.apache.log4j.Logger;
 import org.apache.log4j.util.Compare;
 
+import java.io.File;
+
 public class CustomLevelTestCase extends TestCase {
 
-  static final String FILE_PREFIX = "target/test-classes";
+  static final String FILE_PREFIX = new File(CustomLevelTestCase.class.getResource("/").getPath()).getAbsolutePath();
   static final String INPUT_DIR = FILE_PREFIX + "/input";
   static final String WITNESS_DIR = FILE_PREFIX + "/witness";
   
