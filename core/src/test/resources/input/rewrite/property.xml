@@ -17,7 +17,7 @@
 -->
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
     <appender name="F1" class="org.apache.log4j.FileAppender">
-        <param name="file"   value="temp"/>
+        <param name="file"   value="output/RewriteAppenderTest-property-out.log"/>
         <param name="append" value="false"/>
         <layout class="org.apache.log4j.PatternLayout">
            <param name="ConversionPattern" value="%p %c - p1:%X{p1} p2:%X{p2} %m%n"/>

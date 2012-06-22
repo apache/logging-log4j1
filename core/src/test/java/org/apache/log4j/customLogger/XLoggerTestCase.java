@@ -17,6 +17,7 @@
 
 package org.apache.log4j.customLogger;
 
+import org.apache.log4j.ResourceHelper;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.log4j.util.*;
 
@@ -46,7 +47,7 @@ public class XLoggerTestCase extends TestCase {
   public void test2()  throws Exception  { common(2); }
 
   void common(int number) throws Exception {
-    DOMConfigurator.configure("target/test-classes/input/xml/customLogger"+number+".xml");
+    DOMConfigurator.configure(ResourceHelper.inputFullpath("/xml/customLogger"+number+".xml"));
 
     int i = -1;
 
@@ -64,7 +65,7 @@ public class XLoggerTestCase extends TestCase {
         new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED, "target/test-classes/witness/customLogger."+number));
+    assertTrue(Compare.compare(FILTERED,  ResourceHelper.witnessFullpath("/customLogger."+number)));
 
   }
 

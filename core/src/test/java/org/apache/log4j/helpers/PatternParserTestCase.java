@@ -28,6 +28,7 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.MDC;
 
+import org.apache.log4j.ResourceHelper;
 import org.apache.log4j.util.Compare;
 
 /**
@@ -39,7 +40,6 @@ import org.apache.log4j.util.Compare;
 public class PatternParserTestCase extends TestCase {
   
   static String OUTPUT_FILE   = "output/PatternParser";
-  static String WITNESS_FILE  = "target/test-classes/witness/PatternParser";
 
   static String msgPattern = "%m%n";
   
@@ -119,7 +119,7 @@ public class PatternParserTestCase extends TestCase {
     layout.setConversionPattern(msgPattern);
     root.debug("finished mdc pattern test");
 
-    assertTrue(Compare.compare(OUTPUT_FILE+"_mdc", WITNESS_FILE+"_mdc"));
+    assertTrue(Compare.compare(OUTPUT_FILE+"_mdc",  ResourceHelper.witnessFullpath("/PatternParser_mdc")));
   }
 
   public static Test suite() {

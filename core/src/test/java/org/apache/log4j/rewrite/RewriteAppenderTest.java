@@ -21,6 +21,7 @@ import org.apache.log4j.*;
 import org.apache.log4j.util.Compare;
 import org.apache.log4j.xml.*;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.TreeMap;
@@ -46,7 +47,9 @@ public class RewriteAppenderTest extends TestCase {
     }
 
     public void configure(final String resourceName) throws Exception {
-        InputStream is = RewriteAppenderTest.class.getResourceAsStream(resourceName);
+
+        String rn = ResourceHelper.inputFullpath("/rewrite/" + resourceName);
+        InputStream is = new FileInputStream(rn);
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -68,7 +71,7 @@ public class RewriteAppenderTest extends TestCase {
         logger.info(msg);
         msg.put("message", "Message 1");
         logger.info(msg);
-        assertTrue(Compare.compare(RewriteAppenderTest.class, "temp", "map.log"));
+        assertTrue(Compare.compare("output/RewriteAppenderTest-map-out.log", ResourceHelper.inputFullpath("/rewrite/map.log")));
     }
 
     private static class BaseBean {
@@ -117,7 +120,7 @@ public class RewriteAppenderTest extends TestCase {
         MDC.put("p1", "Hola");
         MDC.put("p2", "p2");
         logger.info(new MessageBean("Welcome to The Hub", "Hello", "World" ));
-        assertTrue(Compare.compare(RewriteAppenderTest.class, "temp", "reflection.log"));
+        assertTrue(Compare.compare("output/RewriteAppenderTest-reflection-out.log", ResourceHelper.inputFullpath("/rewrite/reflection.log")));
     }
 
     public void testPropertyPolicy() throws Exception {
@@ -126,6 +129,6 @@ public class RewriteAppenderTest extends TestCase {
         logger.info("Message 0");
         MDC.put("p1", "Hola");
         logger.info("Message 1");
-        assertTrue(Compare.compare(RewriteAppenderTest.class, "temp", "property.log"));
+        assertTrue(Compare.compare("output/RewriteAppenderTest-property-out.log", ResourceHelper.inputFullpath("/rewrite/property.log")));
     }
 }

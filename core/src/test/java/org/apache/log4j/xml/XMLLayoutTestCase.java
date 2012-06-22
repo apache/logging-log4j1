@@ -24,6 +24,7 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.apache.log4j.ResourceHelper;
 import org.apache.log4j.util.Compare;
 import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.JunitTestRunnerFilter;
@@ -36,11 +37,6 @@ import org.apache.log4j.util.XMLTimestampFilter;
 import java.util.Hashtable;
 
 public class XMLLayoutTestCase extends TestCase {
-
-  static final String FILE_PREFIX = "target/test-classes";
-  static final String INPUT_DIR = FILE_PREFIX + "/input";
-  static final String WITNESS_DIR = FILE_PREFIX + "/witness";
-  
   static String TEMP = "output/temp";
   static String FILTERED = "output/filtered";
 
@@ -74,7 +70,7 @@ public class XMLLayoutTestCase extends TestCase {
         new JunitTestRunnerFilter(),
         new SunReflectFilter()
       });
-    assertTrue(Compare.compare(FILTERED, WITNESS_DIR + "/xmlLayout.1"));
+    assertTrue(Compare.compare(FILTERED, ResourceHelper.witnessFullpath("/xmlLayout.1")));
   }
 
   public void locationInfo() throws Exception {
@@ -91,7 +87,7 @@ public class XMLLayoutTestCase extends TestCase {
         new JunitTestRunnerFilter(),
         new SunReflectFilter()
       });
-    assertTrue(Compare.compare(FILTERED, WITNESS_DIR + "/xmlLayout.2"));
+    assertTrue(Compare.compare(FILTERED, ResourceHelper.witnessFullpath("/xmlLayout.2")));
   }
 
   public void testCDATA() throws Exception {
@@ -120,7 +116,7 @@ public class XMLLayoutTestCase extends TestCase {
     Transformer.transform(TEMP, FILTERED, new Filter[] {new LineNumberFilter(),
     						  new XMLTimestampFilter(),
     						  new XMLLineAttributeFilter()});
-    assertTrue(Compare.compare(FILTERED, WITNESS_DIR + "/xmlLayout.3"));
+    assertTrue(Compare.compare(FILTERED, ResourceHelper.witnessFullpath("/xmlLayout.3")));
   }
 
   public void testNull() throws Exception {
@@ -143,7 +139,7 @@ public class XMLLayoutTestCase extends TestCase {
           new XMLTimestampFilter(),  
           new JunitTestRunnerFilter(),
           new SunReflectFilter()});
-    assertTrue(Compare.compare(FILTERED, WITNESS_DIR + "/xmlLayout.null"));
+    assertTrue(Compare.compare(FILTERED, ResourceHelper.witnessFullpath("/xmlLayout.null")));
   }
 
     /**
@@ -169,7 +165,7 @@ public class XMLLayoutTestCase extends TestCase {
         new Filter[] { new LineNumberFilter(),
             new JunitTestRunnerFilter(),
             new XMLTimestampFilter()});
-      assertTrue(Compare.compare(FILTERED, WITNESS_DIR + "/xmlLayout.mdc.1"));
+      assertTrue(Compare.compare(FILTERED, ResourceHelper.witnessFullpath("/xmlLayout.mdc.1")));
     }
 
     public void testMDCEscaped() throws Exception {
@@ -190,7 +186,7 @@ public class XMLLayoutTestCase extends TestCase {
         new Filter[] { new LineNumberFilter(),
             new JunitTestRunnerFilter(),
             new XMLTimestampFilter() });
-      assertTrue(Compare.compare(FILTERED, WITNESS_DIR + "/xmlLayout.mdc.2"));
+      assertTrue(Compare.compare(FILTERED, ResourceHelper.witnessFullpath("/xmlLayout.mdc.2")));
     }
 
   

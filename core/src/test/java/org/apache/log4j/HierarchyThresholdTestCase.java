@@ -31,10 +31,6 @@ import org.apache.log4j.xml.XLevel;
 */
 public class HierarchyThresholdTestCase extends TestCase {
 
-  static final String FILE_PREFIX = "target/test-classes";
-  static final String INPUT_DIR = FILE_PREFIX + "/input";
-  static final String WITNESS_DIR = FILE_PREFIX + "/witness";
-  
   static String TEMP = "output/temp";
   static Logger logger = Logger.getLogger(HierarchyThresholdTestCase.class);
 
@@ -51,51 +47,51 @@ public class HierarchyThresholdTestCase extends TestCase {
   }
   
   public void test1() throws Exception {
-    PropertyConfigurator.configure(INPUT_DIR + "/hierarchyThreshold1.properties");
+    PropertyConfigurator.configure(ResourceHelper.inputFullpath("/hierarchyThreshold1.properties"));
     common();
-    assertTrue(Compare.compare(TEMP, WITNESS_DIR + "/hierarchyThreshold.1"));
+    assertTrue(Compare.compare(TEMP, ResourceHelper.witnessFullpath("/hierarchyThreshold.1")));
   }
 
   public void test2() throws Exception {
-    PropertyConfigurator.configure(INPUT_DIR + "/hierarchyThreshold2.properties");
+    PropertyConfigurator.configure(ResourceHelper.inputFullpath("/hierarchyThreshold2.properties"));
     common();
-    assertTrue(Compare.compare(TEMP, WITNESS_DIR + "/hierarchyThreshold.2"));
+    assertTrue(Compare.compare(TEMP, ResourceHelper.witnessFullpath("/hierarchyThreshold.2")));
   }
 
   public void test3() throws Exception {
-    PropertyConfigurator.configure(INPUT_DIR + "/hierarchyThreshold3.properties");
+    PropertyConfigurator.configure(ResourceHelper.inputFullpath("/hierarchyThreshold3.properties"));
     common();
-    assertTrue(Compare.compare(TEMP, WITNESS_DIR + "/hierarchyThreshold.3"));
+    assertTrue(Compare.compare(TEMP, ResourceHelper.witnessFullpath("/hierarchyThreshold.3")));
   }
 
   public void test4() throws Exception {
-    PropertyConfigurator.configure(INPUT_DIR + "/hierarchyThreshold4.properties");
+    PropertyConfigurator.configure(ResourceHelper.inputFullpath("/hierarchyThreshold4.properties"));
     common();
-    assertTrue(Compare.compare(TEMP, WITNESS_DIR + "/hierarchyThreshold.4"));
+    assertTrue(Compare.compare(TEMP, ResourceHelper.witnessFullpath("/hierarchyThreshold.4")));
   }
 
   public void test5() throws Exception {
-    PropertyConfigurator.configure(INPUT_DIR + "/hierarchyThreshold5.properties");
+    PropertyConfigurator.configure(ResourceHelper.inputFullpath("/hierarchyThreshold5.properties"));
     common();
-    assertTrue(Compare.compare(TEMP, WITNESS_DIR + "/hierarchyThreshold.5"));
+    assertTrue(Compare.compare(TEMP, ResourceHelper.witnessFullpath("/hierarchyThreshold.5")));
   }
 
   public void test6() throws Exception {
-    PropertyConfigurator.configure(INPUT_DIR + "/hierarchyThreshold6.properties");
+    PropertyConfigurator.configure(ResourceHelper.inputFullpath("/hierarchyThreshold6.properties"));
     common();
-    assertTrue(Compare.compare(TEMP, WITNESS_DIR + "/hierarchyThreshold.6"));
+    assertTrue(Compare.compare(TEMP, ResourceHelper.witnessFullpath("/hierarchyThreshold.6")));
   }
 
   public void test7() throws Exception {
-    PropertyConfigurator.configure(INPUT_DIR + "/hierarchyThreshold7.properties");
+    PropertyConfigurator.configure(ResourceHelper.inputFullpath("/hierarchyThreshold7.properties"));
     common();
-    assertTrue(Compare.compare(TEMP, WITNESS_DIR + "/hierarchyThreshold.7"));
+    assertTrue(Compare.compare(TEMP, ResourceHelper.witnessFullpath("/hierarchyThreshold.7")));
   }
 
   public void test8() throws Exception {
-    PropertyConfigurator.configure(INPUT_DIR + "/hierarchyThreshold8.properties");
+    PropertyConfigurator.configure(ResourceHelper.inputFullpath("/hierarchyThreshold8.properties"));
     common();
-    assertTrue(Compare.compare(TEMP, WITNESS_DIR + "/hierarchyThreshold.8"));
+    assertTrue(Compare.compare(TEMP, ResourceHelper.witnessFullpath("/hierarchyThreshold.8")));
   }
 
 

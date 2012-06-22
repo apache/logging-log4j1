@@ -29,10 +29,6 @@ import org.apache.log4j.util.*;
  */
 public class MinimumTestCase extends TestCase {
 
-  static final String FILE_PREFIX = "target/test-classes";
-  static final String INPUT_DIR = FILE_PREFIX + "/input";
-  static final String WITNESS_DIR = FILE_PREFIX + "/witness";
-  
   static String FILTERED = "output/filtered";
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
@@ -79,7 +75,7 @@ public class MinimumTestCase extends TestCase {
       new Filter[] { new LineNumberFilter(), 
                      new SunReflectFilter(), 
                      new JunitTestRunnerFilter() });
-    assertTrue(Compare.compare(FILTERED, WITNESS_DIR + "/simple"));
+    assertTrue(Compare.compare(FILTERED, ResourceHelper.witnessFullpath("/simple")));
   }
 
   public void ttcc() throws Exception {
@@ -105,7 +101,7 @@ public class MinimumTestCase extends TestCase {
         new SunReflectFilter(), new JunitTestRunnerFilter()
       });
 
-    assertTrue(Compare.compare(FILTERED, WITNESS_DIR + "/ttcc"));
+    assertTrue(Compare.compare(FILTERED, ResourceHelper.witnessFullpath("/ttcc")));
   }
 
 

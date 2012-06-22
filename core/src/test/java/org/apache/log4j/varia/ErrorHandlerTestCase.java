@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.ResourceHelper;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.util.Filter;
 import org.apache.log4j.util.Transformer;
@@ -63,7 +64,7 @@ public class ErrorHandlerTestCase extends TestCase {
   }
 
   public void test1() throws Exception {
-    DOMConfigurator.configure(this.getClass().getResource("/input/xml/fallback1.xml").getPath());
+    DOMConfigurator.configure(ResourceHelper.inputFullpath("/xml/fallback1.xml"));
     Appender primary = root.getAppender("PRIMARY");
     ErrorHandler eh = primary.getErrorHandler();
     assertNotNull(eh);
@@ -78,11 +79,11 @@ public class ErrorHandlerTestCase extends TestCase {
                             new JunitTestRunnerFilter(),
                             new SunReflectFilter()});
 
-    assertTrue(Compare.compare(FILTERED, this.getClass().getResource("/witness/fallback1").getPath()));
+    assertTrue(Compare.compare(FILTERED, ResourceHelper.witnessFullpath("/fallback1")));
   }
   
   public void test2() throws Exception {
-    PropertyConfigurator.configure(this.getClass().getResource("/input/fallback1.properties").getPath());
+    PropertyConfigurator.configure(ResourceHelper.inputFullpath("/fallback1.properties"));
     Appender primary = root.getAppender("PRIMARY");
     ErrorHandler eh = primary.getErrorHandler();
     assertNotNull(eh);
@@ -98,7 +99,7 @@ public class ErrorHandlerTestCase extends TestCase {
                             new SunReflectFilter()});
 
 
-    assertTrue(Compare.compare(FILTERED, this.getClass().getResource("/witness/fallback1").getPath()));
+    assertTrue(Compare.compare(FILTERED, ResourceHelper.witnessFullpath("/fallback1")));
   }
 
   void common() {

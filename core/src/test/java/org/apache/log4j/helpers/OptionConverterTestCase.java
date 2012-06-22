@@ -32,6 +32,7 @@ import junit.framework.TestSuite;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfiguratorTest;
+import org.apache.log4j.ResourceHelper;
 import org.apache.log4j.xml.XLevel;
 
 /**
@@ -130,7 +131,7 @@ public class OptionConverterTestCase extends TestCase {
    * @since 1.2.17
    */
     public void testInputStream() throws IOException {
-        File file = new File(this.getClass().getResource("/input/filter1.properties").getFile());
+        File file = new File( ResourceHelper.inputFullpath("/filter1.properties"));
         assertTrue(file.exists());
         FileInputStream inputStream = new FileInputStream(file);
         try {

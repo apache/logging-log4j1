@@ -26,6 +26,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Layout;
+import org.apache.log4j.ResourceHelper;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.varia.LevelMatchFilter;
 import org.apache.log4j.varia.DenyAllFilter;
@@ -41,11 +42,11 @@ public class LevelMatchFilterTestCase extends TestCase {
   
   static String ACCEPT_FILE     = "output/LevelMatchFilter_accept";
   static String ACCEPT_FILTERED = "output/LevelMatchFilter_accept_filtered";
-  static String ACCEPT_WITNESS  = "target/test-classes/witness/LevelMatchFilter_accept";
+  static String ACCEPT_WITNESS  = ResourceHelper.witnessFullpath("/LevelMatchFilter_accept");
 
   static String DENY_FILE       = "output/LevelMatchFilter_deny";
   static String DENY_FILTERED   = "output/LevelMatchFilter_deny_filtered";
-  static String DENY_WITNESS    = "target/test-classes/witness/LevelMatchFilter_deny";
+  static String DENY_WITNESS    = ResourceHelper.witnessFullpath("/LevelMatchFilter_deny");
 
   Logger root; 
   Logger logger;

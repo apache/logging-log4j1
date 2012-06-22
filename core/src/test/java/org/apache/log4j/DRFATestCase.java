@@ -494,7 +494,7 @@ public class DRFATestCase extends TestCase {
         append(combined, new FileInputStream(filename), buf);
         combined.close();
         assertTrue(Compare.compare(combinedFilename,
-                "target/test-classes/witness/drfa_blockedRollover.log"));
+                ResourceHelper.witnessFullpath("/drfa_blockedRollover.log")));
     }
 
     /** Check that the computed rollover period for a pattern containing a week as the finest unit is set to be

@@ -100,7 +100,7 @@ public class PropertyConfiguratorTest extends TestCase {
      * @since 1.2.17
      */
     public void testInputStream() throws IOException {
-        File file = new File(this.getClass().getResource("/input/filter1.properties").getFile());
+        File file = new File(ResourceHelper.inputFullpath("/filter1.properties"));
         assertTrue(file.exists());
         FileInputStream inputStream = new FileInputStream(file);
         try {
@@ -312,7 +312,7 @@ public class PropertyConfiguratorTest extends TestCase {
      */
     public void testNested() {
         try {
-            PropertyConfigurator.configure(this.getClass().getResource("/input/filter1.properties").getPath());
+            PropertyConfigurator.configure(ResourceHelper.inputFullpath("/filter1.properties"));
             this.validateNested();
         } finally {
             LogManager.resetConfiguration();
