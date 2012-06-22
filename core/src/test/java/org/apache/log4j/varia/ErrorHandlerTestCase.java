@@ -35,8 +35,8 @@ import org.apache.log4j.PropertyConfigurator;
 
 public class ErrorHandlerTestCase extends TestCase {
 
-  static String TEMP = "output/temp";
-  static String FILTERED = "output/filtered";
+  static String TEMP = "output/ErrorHandlerTestCase-temp";
+  static String FILTERED = "output/ErrorHandlerTestCase-filtered";
 
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
