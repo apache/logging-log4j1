@@ -25,6 +25,12 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 
+/**
+ * TODO: tests if log4j.properties/xml is avail in /src/test/resources and if default initialization works or not.
+ *
+ * In older log4j versions this test case was only manually executed. We are looking for a way to integrate this
+ * test in the maven build
+ */
 public class TestCase3 extends TestCase {
 
   public TestCase3(String name) {
@@ -47,7 +53,7 @@ public class TestCase3 extends TestCase {
     assertEquals(appender.getName(), "D3");
   }
 
-  public static Test suite() {
+  public static Test xsuite() {
     TestSuite suite = new TestSuite();
     suite.addTest(new TestCase3("propertiesTest"));
     return suite;

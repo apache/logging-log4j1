@@ -27,4 +27,19 @@
   <name>Apache Log4j-Core</name>
   <description>Apache Log4j core library.</description>
   <packaging>bundle</packaging>
+
+  <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/defaultInit/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+  </build>
+
 </project>
