@@ -301,7 +301,7 @@ public class DRFATestCase extends TestCase {
      */
     public void testTopOfYear() throws IOException {
         try {
-            test3Param("'.'yyyy", "output/drfa_topOfYear.log");
+            test3Param("'.'yyyy", ResourceHelper.outputFullpath("/drfa_topOfYear.log"));
             fail("Expected illegal state exception.");
         } catch(IllegalStateException ex) {
             assertNotNull(ex);
@@ -314,7 +314,7 @@ public class DRFATestCase extends TestCase {
      * @throws IOException if IOException during test.
      */
     public void testTopOfMonth() throws IOException {
-        test3Param("'.'yyyy-MM", "output/drfa_topOfMonth.log");
+        test3Param("'.'yyyy-MM", ResourceHelper.outputFullpath("/drfa_topOfMonth.log"));
     }
 
 
@@ -324,7 +324,7 @@ public class DRFATestCase extends TestCase {
      * @throws IOException if IOException during test.
      */
     public void testTopOfWeek() throws IOException {
-        test3Param("'.'yyyy-w", "output/drfa_topOfWeek.log");
+        test3Param("'.'yyyy-w", ResourceHelper.outputFullpath("/drfa_topOfWeek.log"));
     }
 
     /**
@@ -333,7 +333,7 @@ public class DRFATestCase extends TestCase {
      * @throws IOException if IOException during test.
      */
     public void testTopOfDay() throws IOException {
-        test3Param("'.'yyyy-MM-dd", "output/drfa_topOfDay.log");
+        test3Param("'.'yyyy-MM-dd", ResourceHelper.outputFullpath("/drfa_topOfDay.log"));
     }
 
 
@@ -343,7 +343,7 @@ public class DRFATestCase extends TestCase {
      * @throws IOException if IOException during test.
      */
     public void testHalfDay() throws IOException {
-        test3Param("'.'yyyy-MM-dd-a", "output/drfa_halfDay.log");
+        test3Param("'.'yyyy-MM-dd-a", ResourceHelper.outputFullpath("/drfa_halfDay.log"));
     }
 
     /**
@@ -352,7 +352,7 @@ public class DRFATestCase extends TestCase {
      * @throws IOException if IOException during test.
      */
     public void testTopOfHour() throws IOException {
-        test3Param("'.'yyyy-MM-dd-HH", "output/drfa_topOfHour.log");
+        test3Param("'.'yyyy-MM-dd-HH", ResourceHelper.outputFullpath("/drfa_topOfHour.log"));
     }
 
     /**
@@ -361,7 +361,7 @@ public class DRFATestCase extends TestCase {
      * @throws IOException if IOException during test.
      */
     public void testTopOfMinute() throws IOException {
-        test3Param("'.'yyyy-MM-dd-HH-mm", "output/drfa_topOfMinute.log");
+        test3Param("'.'yyyy-MM-dd-HH-mm", ResourceHelper.outputFullpath("/drfa_topOfMinute.log"));
     }
 
     /**
@@ -372,7 +372,7 @@ public class DRFATestCase extends TestCase {
     public void testRolloverNoPattern() throws IOException {
         Layout layout = new SimpleLayout();
         DailyRollingFileAppender appender =
-                new DailyRollingFileAppender(layout, "output/drfa_nopattern.log", null);
+                new DailyRollingFileAppender(layout, ResourceHelper.outputFullpath("/drfa_nopattern.log"), null);
 
         VectorErrorHandler errorHandler = new VectorErrorHandler();
         appender.setErrorHandler(errorHandler);
@@ -390,7 +390,7 @@ public class DRFATestCase extends TestCase {
      */
     public void testMinuteRollover() throws IOException, InterruptedException {
         Layout layout = new SimpleLayout();
-        String filename = "output/drfa_minuteRollover.log";
+        String filename = ResourceHelper.outputFullpath("/drfa_minuteRollover.log");
         String pattern = "'.'yyyy-MM-dd-HH-mm";
 
         DailyRollingFileAppender appender =
@@ -448,7 +448,7 @@ public class DRFATestCase extends TestCase {
      */
     public void testBlockedRollover() throws IOException, InterruptedException {
         Layout layout = new SimpleLayout();
-        String filename = "output/drfa_blockedRollover.log";
+        String filename = ResourceHelper.outputFullpath("/drfa_blockedRollover.log");
         String pattern = "'.'yyyy-MM-dd-HH-mm";
 
 
@@ -486,7 +486,7 @@ public class DRFATestCase extends TestCase {
         //      since rollover may or may not have been blocked
         //      depending on platform.
         //
-        String combinedFilename = "output/drfa_blockedRollover.combined";
+        String combinedFilename = ResourceHelper.outputFullpath("/drfa_blockedRollover.combined");
         FileOutputStream combined = new FileOutputStream(combinedFilename);
         byte[] buf = new byte[500];
         append(combined, new FileInputStream(block1), buf);

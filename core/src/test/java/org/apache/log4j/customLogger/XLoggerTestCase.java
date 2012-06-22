@@ -31,8 +31,6 @@ import junit.framework.Test;
    @author Ceki G&uuml;lc&uuml;
 */
 public class XLoggerTestCase extends TestCase {
-
-  static String FILTERED = "output/filtered";
   static XLogger logger = (XLogger) XLogger.getLogger(XLoggerTestCase.class);
 
   public XLoggerTestCase(String name){
@@ -60,12 +58,12 @@ public class XLoggerTestCase extends TestCase {
     logger.debug("Message " + ++i, e);
 
     Transformer.transform(
-      "output/temp", FILTERED,
+            ResourceHelper.outputTemp(), ResourceHelper.outputFiltered(),
       new Filter[] {
         new LineNumberFilter(), new SunReflectFilter(),
         new JunitTestRunnerFilter()
       });
-    assertTrue(Compare.compare(FILTERED,  ResourceHelper.witnessFullpath("/customLogger."+number)));
+    assertTrue(Compare.compare(ResourceHelper.outputFiltered(),  ResourceHelper.witnessFullpath("/customLogger."+number)));
 
   }
 

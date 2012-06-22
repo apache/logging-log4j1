@@ -54,8 +54,8 @@ public class RFATestCase extends TestCase {
         }
       }
 
-      assertTrue(new File("output/RFA-test1.log").exists());
-      assertTrue(new File("output/RFA-test1.log.1").exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/RFA-test1.log")).exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/RFA-test1.log.1")).exists());
     }
 
     /**
@@ -72,7 +72,7 @@ public class RFATestCase extends TestCase {
       rfa.setAppend(false);
       rfa.setMaxBackupIndex(3);
       rfa.setMaximumFileSize(100);
-      rfa.setFile("output/RFA-test2.log");
+      rfa.setFile(ResourceHelper.outputFullpath("/RFA-test2.log"));
       rfa.activateOptions();
       root.addAppender(rfa);
 
@@ -85,11 +85,11 @@ public class RFATestCase extends TestCase {
         }
       }
 
-      assertTrue(new File("output/RFA-test2.log").exists());
-      assertTrue(new File("output/RFA-test2.log.1").exists());
-      assertTrue(new File("output/RFA-test2.log.2").exists());
-      assertTrue(new File("output/RFA-test2.log.3").exists());
-      assertFalse(new File("output/RFA-test2.log.4").exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/RFA-test2.log")).exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/RFA-test2.log.1")).exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/RFA-test2.log.2")).exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/RFA-test2.log.3")).exists());
+      assertFalse(new File(ResourceHelper.outputFullpath("/RFA-test2.log.4")).exists());
     }
 
     /**
@@ -99,7 +99,7 @@ public class RFATestCase extends TestCase {
     public void test2ParamConstructor() throws IOException {
         SimpleLayout layout = new SimpleLayout();
         RollingFileAppender appender =
-                new RollingFileAppender(layout,"output/rfa_2param.log");
+                new RollingFileAppender(layout,ResourceHelper.outputFullpath("/rfa_2param.log"));
         assertEquals(1, appender.getMaxBackupIndex());
         assertEquals(10*1024*1024, appender.getMaximumFileSize());
     }
@@ -110,7 +110,7 @@ public class RFATestCase extends TestCase {
     public void test3ParamConstructor() throws IOException {
         SimpleLayout layout = new SimpleLayout();
         RollingFileAppender appender =
-                new RollingFileAppender(layout,"output/rfa_3param.log", false);
+                new RollingFileAppender(layout,ResourceHelper.outputFullpath("/rfa_3param.log"), false);
         assertEquals(1, appender.getMaxBackupIndex());
     }
 
@@ -128,15 +128,15 @@ public class RFATestCase extends TestCase {
       rfa.setAppend(false);
       rfa.setMaxBackupIndex(10);
       rfa.setMaximumFileSize(100);
-      rfa.setFile("output/RFA-dot1.log");
+      rfa.setFile(ResourceHelper.outputFullpath("/RFA-dot1.log"));
       rfa.activateOptions();
       root.addAppender(rfa);
 
-      new File("output/RFA-dot1.log.2").delete();
+      new File(ResourceHelper.outputFullpath("/RFA-dot1.log.2")).delete();
 
-      FileWriter dot1 = new FileWriter("output/RFA-dot1.log.1");
+      FileWriter dot1 = new FileWriter(ResourceHelper.outputFullpath("/RFA-dot1.log.1"));
       dot1.write("Locked file");
-      FileWriter dot5 = new FileWriter("output/RFA-dot1.log.5");
+      FileWriter dot5 = new FileWriter(ResourceHelper.outputFullpath("/RFA-dot1.log.5"));
       dot5.write("Unlocked file");
       dot5.close();
 
@@ -156,19 +156,19 @@ public class RFATestCase extends TestCase {
       rfa.close();
 
 
-      assertTrue(new File("output/RFA-dot1.log.7").exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/RFA-dot1.log.7")).exists());
       //
       //     if .2 is the locked file then
       //       renaming wasn't successful until the file was closed
-      if (new File("output/RFA-dot1.log.2").length() < 15) {
-          assertEquals(50, new File("output/RFA-dot1.log").length());
-          assertEquals(200, new File("output/RFA-dot1.log.1").length());
+      if (new File(ResourceHelper.outputFullpath("/RFA-dot1.log.2")).length() < 15) {
+          assertEquals(50, new File(ResourceHelper.outputFullpath("/RFA-dot1.log")).length());
+          assertEquals(200, new File(ResourceHelper.outputFullpath("/RFA-dot1.log.1")).length());
       } else {
-          assertTrue(new File("output/RFA-dot1.log").exists());
-          assertTrue(new File("output/RFA-dot1.log.1").exists());
-          assertTrue(new File("output/RFA-dot1.log.2").exists());
-          assertTrue(new File("output/RFA-dot1.log.3").exists());
-          assertFalse(new File("output/RFA-dot1.log.4").exists());
+          assertTrue(new File(ResourceHelper.outputFullpath("/RFA-dot1.log")).exists());
+          assertTrue(new File(ResourceHelper.outputFullpath("/RFA-dot1.log.1")).exists());
+          assertTrue(new File(ResourceHelper.outputFullpath("/RFA-dot1.log.2")).exists());
+          assertTrue(new File(ResourceHelper.outputFullpath("/RFA-dot1.log.3")).exists());
+          assertFalse(new File(ResourceHelper.outputFullpath("/RFA-dot1.log.4")).exists());
       }
     }
 
@@ -187,17 +187,17 @@ public class RFATestCase extends TestCase {
       rfa.setAppend(false);
       rfa.setMaxBackupIndex(10);
       rfa.setMaximumFileSize(100);
-      rfa.setFile("output/RFA-dot3.log");
+      rfa.setFile(ResourceHelper.outputFullpath("/RFA-dot3.log"));
       rfa.activateOptions();
       root.addAppender(rfa);
 
-      new File("output/RFA-dot3.log.1").delete();
-      new File("output/RFA-dot3.log.2").delete();
-      new File("output/RFA-dot3.log.4").delete();
+      new File(ResourceHelper.outputFullpath("/RFA-dot3.log.1")).delete();
+      new File(ResourceHelper.outputFullpath("/RFA-dot3.log.2")).delete();
+      new File(ResourceHelper.outputFullpath("/RFA-dot3.log.4")).delete();
 
-      FileWriter dot3 = new FileWriter("output/RFA-dot3.log.3");
+      FileWriter dot3 = new FileWriter(ResourceHelper.outputFullpath("/RFA-dot3.log.3"));
       dot3.write("Locked file");
-      FileWriter dot5 = new FileWriter("output/RFA-dot3.log.5");
+      FileWriter dot5 = new FileWriter(ResourceHelper.outputFullpath("/RFA-dot3.log.5"));
       dot5.write("Unlocked file");
       dot5.close();
 
@@ -216,20 +216,20 @@ public class RFATestCase extends TestCase {
       }
       rfa.close();
 
-      assertTrue(new File("output/RFA-dot3.log.8").exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/RFA-dot3.log.8")).exists());
       //
       //     if .3 is the locked file then
       //       renaming wasn't successful until file was closed
-      if (new File("output/RFA-dot3.log.5").exists()) {
-          assertEquals(50, new File("output/RFA-dot3.log").length());
-          assertEquals(100, new File("output/RFA-dot3.log.1").length());
-          assertEquals(200, new File("output/RFA-dot3.log.2").length());
+      if (new File(ResourceHelper.outputFullpath("/RFA-dot3.log.5")).exists()) {
+          assertEquals(50, new File(ResourceHelper.outputFullpath("/RFA-dot3.log")).length());
+          assertEquals(100, new File(ResourceHelper.outputFullpath("/RFA-dot3.log.1")).length());
+          assertEquals(200, new File(ResourceHelper.outputFullpath("/RFA-dot3.log.2")).length());
       } else {
-          assertTrue(new File("output/RFA-dot3.log").exists());
-          assertTrue(new File("output/RFA-dot3.log.1").exists());
-          assertTrue(new File("output/RFA-dot3.log.2").exists());
-          assertTrue(new File("output/RFA-dot3.log.3").exists());
-          assertFalse(new File("output/RFA-dot3.log.4").exists());
+          assertTrue(new File(ResourceHelper.outputFullpath("/RFA-dot3.log")).exists());
+          assertTrue(new File(ResourceHelper.outputFullpath("/RFA-dot3.log.1")).exists());
+          assertTrue(new File(ResourceHelper.outputFullpath("/RFA-dot3.log.2")).exists());
+          assertTrue(new File(ResourceHelper.outputFullpath("/RFA-dot3.log.3")).exists());
+          assertFalse(new File(ResourceHelper.outputFullpath("/RFA-dot3.log.4")).exists());
       }
     }
 

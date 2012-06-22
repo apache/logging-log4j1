@@ -40,8 +40,8 @@ import java.io.*;
 
 
 public class EnhancedPatternLayoutTestCase extends TestCase {
- static String TEMP = "output/temp";
-  static String FILTERED = "output/filtered";
+ static String TEMP = ResourceHelper.outputTemp();
+  static String FILTERED = ResourceHelper.outputFiltered();
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
   static String EXCEPTION3 = "\\s*at .*\\((Native Method|Unknown Source)\\)";
@@ -388,7 +388,7 @@ public class EnhancedPatternLayoutTestCase extends TestCase {
       configure(ResourceHelper.inputFullpath("/pattern/enhancedPatternLayout16.properties"));
       common();
       final long end = new Date().getTime();
-      FileReader reader = new FileReader("output/patternLayout16.log");
+      FileReader reader = new FileReader(ResourceHelper.outputFullpath("/patternLayout16.log"));
       char chars[] = new char[50];
       reader.read(chars, 0, chars.length);
       reader.close();
@@ -519,7 +519,7 @@ public class EnhancedPatternLayoutTestCase extends TestCase {
   /**
     Test case for throwable conversion pattern. */
   public void testThrowable() throws Exception {
-    String OUTPUT_FILE   = "output/patternLayout.throwable";
+    String OUTPUT_FILE   = ResourceHelper.outputFullpath("/patternLayout.throwable");
     String WITNESS_FILE  = ResourceHelper.witnessFullpath("/pattern/enhancedPatternLayout.throwable");
     
     

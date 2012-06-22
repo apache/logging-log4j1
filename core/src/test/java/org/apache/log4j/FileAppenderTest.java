@@ -40,18 +40,18 @@ public class FileAppenderTest extends TestCase {
     //
     //   known to fail on JDK 1.1
     if (!System.getProperty("java.version").startsWith("1.1.")) {
-      File newFile = new File("output/newdir/temp.log");
+      File newFile = new File(ResourceHelper.outputFullpath("/newdir/temp.log"));
       newFile.delete();
 
-      File newDir = new File("output/newdir");
+      File newDir = new File(ResourceHelper.outputFullpath("/newdir"));
       newDir.delete();
 
       org.apache.log4j.FileAppender wa = new org.apache.log4j.FileAppender();
-      wa.setFile("output/newdir/temp.log");
+      wa.setFile(ResourceHelper.outputFullpath("/newdir/temp.log"));
       wa.setLayout(new PatternLayout("%m%n"));
       wa.activateOptions();
 
-      assertTrue(new File("output/newdir/temp.log").exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/newdir/temp.log")).exists());
     }
   }
 

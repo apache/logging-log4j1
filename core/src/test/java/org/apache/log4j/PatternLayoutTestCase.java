@@ -31,8 +31,8 @@ import org.apache.log4j.util.SunReflectFilter;
 import org.apache.log4j.util.Transformer;
 
 public class PatternLayoutTestCase extends TestCase {
-  static String TEMP = "output/temp";
-  static String FILTERED = "output/filtered";
+  static String TEMP = ResourceHelper.outputTemp();
+  static String FILTERED = ResourceHelper.outputFiltered();
 
   Logger root; 
   Logger logger;

@@ -35,7 +35,7 @@
   </appender>
   
   <appender name="FALLBACK" class="org.apache.log4j.FileAppender">
-    <param name="File" value="output/ErrorHandlerTestCase-temp" />
+    <param name="File" value="target/output/ErrorHandlerTestCase-temp" />
     <param name="Append" value="false" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="FALLBACK - %c - %m%n"/>

@@ -28,7 +28,7 @@ import java.io.File;
 
 public class CustomLevelTestCase extends TestCase {
 
-  static String TEMP = "output/temp";
+  static String TEMP = ResourceHelper.outputTemp();
 
   Logger root; 
   Logger logger;

@@ -51,7 +51,7 @@ public class PropertyConfiguratorTest extends TestCase {
      * @throws IOException if IOException creating properties file.
      */
     public void testBadUnicodeEscape() throws IOException {
-        String fileName = "output/badescape.properties";
+        String fileName = ResourceHelper.outputFullpath("/badescape.properties");
         FileWriter writer = new FileWriter(fileName);
         writer.write("log4j.rootLogger=\\uXX41");
         writer.close();
@@ -67,7 +67,7 @@ public class PropertyConfiguratorTest extends TestCase {
      * @throws IOException if IOException creating properties file.
      */
         public void testURL() throws IOException {
-        File file = new File("output/unclosed.properties");
+        File file = new File(ResourceHelper.outputFullpath("/unclosed.properties"));
         FileWriter writer = new FileWriter(file);
         writer.write("log4j.rootLogger=debug");
         writer.close();
@@ -84,7 +84,7 @@ public class PropertyConfiguratorTest extends TestCase {
      * @throws IOException if IOException creating properties file.
      */
         public void testURLBadEscape() throws IOException {
-        File file = new File("output/urlbadescape.properties");
+        File file = new File(ResourceHelper.outputFullpath("/urlbadescape.properties"));
         FileWriter writer = new FileWriter(file);
         writer.write("log4j.rootLogger=\\uXX41");
         writer.close();
@@ -133,9 +133,7 @@ public class PropertyConfiguratorTest extends TestCase {
      * @throws IOException if IOException creating properties jar.
      */
     public void testJarURL() throws IOException {
-        File dir = new File("output");
-        dir.mkdirs();
-        File file = new File("output/properties.jar");
+        File file = new File(ResourceHelper.outputFullpath("/properties.jar"));
         ZipOutputStream zos =
             new ZipOutputStream(new FileOutputStream(file));
         zos.putNextEntry(new ZipEntry(LogManager.DEFAULT_CONFIGURATION_FILE));

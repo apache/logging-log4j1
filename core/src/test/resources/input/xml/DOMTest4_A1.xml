@@ -16,7 +16,7 @@
 -->
   <appender name="A1" class="org.apache.log4j.FileAppender">
 
-    <param name="File"   value="output/temp.A1.4" />
+    <param name="File"   value="target/output/temp.A1.4" />
     <param name="Append" value="false" />
 
     <layout class="org.apache.log4j.PatternLayout">

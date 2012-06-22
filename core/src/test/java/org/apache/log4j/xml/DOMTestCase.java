@@ -50,10 +50,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class DOMTestCase extends TestCase {
-  static String TEMP_A1 = "output/temp.A1";
-  static String TEMP_A2 = "output/temp.A2";
-  static String FILTERED_A1 = "output/filtered.A1";
-  static String FILTERED_A2 = "output/filtered.A2";
+  static String TEMP_A1 = ResourceHelper.outputFullpath("/temp.A1");
+  static String TEMP_A2 = ResourceHelper.outputFullpath("/temp.A2");
+  static String FILTERED_A1 = ResourceHelper.outputFullpath("/filtered.A1");
+  static String FILTERED_A2 = ResourceHelper.outputFullpath("/filtered.A2");
 
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
@@ -332,8 +332,8 @@ public class DOMTestCase extends TestCase {
   public void testOverrideSubst() {
       DOMConfigurator configurator = new DOMConfigurator() {
           protected String subst(final String value) {
-              if ("output/temp.A1".equals(value)) {
-                  return "output/subst-test.A1";
+              if ("target/output/temp.A1".equals(value)) {
+                  return "target/output/subst-test.A1";
               }
               return value;
           }
@@ -341,7 +341,7 @@ public class DOMTestCase extends TestCase {
       configurator.doConfigure(ResourceHelper.inputFullpath("/xml/DOMTestCase1.xml"), LogManager.getLoggerRepository());
       FileAppender a1 = (FileAppender) Logger.getRootLogger().getAppender("A1");
       String file = a1.getFile();
-      assertEquals("output/subst-test.A1", file);
+      assertEquals("target/output/subst-test.A1", file);
   }
 
     /**

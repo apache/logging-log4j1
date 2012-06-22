@@ -39,7 +39,7 @@ import org.apache.log4j.util.Compare;
  */
 public class PatternParserTestCase extends TestCase {
   
-  static String OUTPUT_FILE   = "output/PatternParser";
+  static String OUTPUT_FILE = ResourceHelper.outputFullpath("/PatternParser_mdc");
 
   static String msgPattern = "%m%n";
   
@@ -71,7 +71,7 @@ public class PatternParserTestCase extends TestCase {
     
     // set up appender
     PatternLayout layout = new PatternLayout(msgPattern);
-    Appender appender = new FileAppender(layout, OUTPUT_FILE+"_mdc", false);
+    Appender appender = new FileAppender(layout, OUTPUT_FILE, false);
             
     // set appender on root and set level to debug
     root.addAppender(appender);
@@ -119,7 +119,7 @@ public class PatternParserTestCase extends TestCase {
     layout.setConversionPattern(msgPattern);
     root.debug("finished mdc pattern test");
 
-    assertTrue(Compare.compare(OUTPUT_FILE+"_mdc",  ResourceHelper.witnessFullpath("/PatternParser_mdc")));
+    assertTrue(Compare.compare(OUTPUT_FILE,  ResourceHelper.witnessFullpath("/PatternParser_mdc")));
   }
 
   public static Test suite() {

@@ -71,7 +71,9 @@ public class RewriteAppenderTest extends TestCase {
         logger.info(msg);
         msg.put("message", "Message 1");
         logger.info(msg);
-        assertTrue(Compare.compare("output/RewriteAppenderTest-map-out.log", ResourceHelper.inputFullpath("/rewrite/map.log")));
+        assertTrue(Compare.compare(
+                ResourceHelper.outputFullpath("/RewriteAppenderTest-map-out.log"),
+                ResourceHelper.inputFullpath("/rewrite/map.log")));
     }
 
     private static class BaseBean {
@@ -120,7 +122,9 @@ public class RewriteAppenderTest extends TestCase {
         MDC.put("p1", "Hola");
         MDC.put("p2", "p2");
         logger.info(new MessageBean("Welcome to The Hub", "Hello", "World" ));
-        assertTrue(Compare.compare("output/RewriteAppenderTest-reflection-out.log", ResourceHelper.inputFullpath("/rewrite/reflection.log")));
+        assertTrue(Compare.compare(
+                ResourceHelper.outputFullpath("/RewriteAppenderTest-reflection-out.log"),
+                ResourceHelper.inputFullpath("/rewrite/reflection.log")));
     }
 
     public void testPropertyPolicy() throws Exception {
@@ -129,6 +133,8 @@ public class RewriteAppenderTest extends TestCase {
         logger.info("Message 0");
         MDC.put("p1", "Hola");
         logger.info("Message 1");
-        assertTrue(Compare.compare("output/RewriteAppenderTest-property-out.log", ResourceHelper.inputFullpath("/rewrite/property.log")));
+        assertTrue(Compare.compare(
+                ResourceHelper.outputFullpath("/RewriteAppenderTest-property-out.log"),
+                ResourceHelper.inputFullpath("/rewrite/property.log")));
     }
 }

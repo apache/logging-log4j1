@@ -40,12 +40,12 @@ import org.apache.log4j.util.LineNumberFilter;
  */
 public class LevelMatchFilterTestCase extends TestCase {
   
-  static String ACCEPT_FILE     = "output/LevelMatchFilter_accept";
-  static String ACCEPT_FILTERED = "output/LevelMatchFilter_accept_filtered";
+  static String ACCEPT_FILE     = ResourceHelper.outputFullpath("/LevelMatchFilter_accept");
+  static String ACCEPT_FILTERED = ResourceHelper.outputFullpath("/LevelMatchFilter_accept_filtered");
   static String ACCEPT_WITNESS  = ResourceHelper.witnessFullpath("/LevelMatchFilter_accept");
 
-  static String DENY_FILE       = "output/LevelMatchFilter_deny";
-  static String DENY_FILTERED   = "output/LevelMatchFilter_deny_filtered";
+  static String DENY_FILE       = ResourceHelper.outputFullpath("/LevelMatchFilter_deny");
+  static String DENY_FILTERED   = ResourceHelper.outputFullpath("/LevelMatchFilter_deny_filtered");
   static String DENY_WITNESS    = ResourceHelper.witnessFullpath("/LevelMatchFilter_deny");
 
   Logger root; 

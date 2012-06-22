@@ -21,6 +21,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RFATestCase;
+import org.apache.log4j.ResourceHelper;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -95,7 +96,7 @@ public class ERFATestCase extends TestCase {
       erfa.setAppend(false);
       erfa.setMaxBackupIndex(2);
       erfa.setPort(port);
-      erfa.setFile("output/ERFA-test2.log");
+      erfa.setFile(ResourceHelper.outputFullpath("/ERFA-test2.log"));
       try {
         erfa.activateOptions();
       } catch(SecurityException ex) {
@@ -133,9 +134,9 @@ public class ERFATestCase extends TestCase {
       }
 
 
-      assertTrue(new File("output/ERFA-test2.log").exists());
-      assertTrue(new File("output/ERFA-test2.log.1").exists());
-      assertTrue(new File("output/ERFA-test2.log.2").exists());
-      assertFalse(new File("output/ERFA-test2.log.3").exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/ERFA-test2.log")).exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/ERFA-test2.log.1")).exists());
+      assertTrue(new File(ResourceHelper.outputFullpath("/ERFA-test2.log.2")).exists());
+      assertFalse(new File(ResourceHelper.outputFullpath("/ERFA-test2.log.3")).exists());
   }
 }

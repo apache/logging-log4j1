@@ -37,8 +37,8 @@ import org.apache.log4j.util.XMLTimestampFilter;
 import java.util.Hashtable;
 
 public class XMLLayoutTestCase extends TestCase {
-  static String TEMP = "output/temp";
-  static String FILTERED = "output/filtered";
+  static String TEMP = ResourceHelper.outputTemp();
+  static String FILTERED = ResourceHelper.outputFiltered();
 
   Logger root; 
   Logger logger;

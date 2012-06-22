@@ -29,7 +29,7 @@ import org.apache.log4j.util.*;
  */
 public class MinimumTestCase extends TestCase {
 
-  static String FILTERED = "output/filtered";
+  static String FILTERED = ResourceHelper.outputFiltered();
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
@@ -66,12 +66,12 @@ public class MinimumTestCase extends TestCase {
   public void simple() throws Exception {
     
     Layout layout = new SimpleLayout();
-    Appender appender = new FileAppender(layout, "output/simple", false);
+    Appender appender = new FileAppender(layout, ResourceHelper.outputFullpath("/simple"), false);
     root.addAppender(appender);    
     common();
 
     Transformer.transform(
-      "output/simple", FILTERED,
+      ResourceHelper.outputFullpath("/simple"), FILTERED,
       new Filter[] { new LineNumberFilter(), 
                      new SunReflectFilter(), 
                      new JunitTestRunnerFilter() });
@@ -81,7 +81,7 @@ public class MinimumTestCase extends TestCase {
   public void ttcc() throws Exception {
     
     Layout layout = new TTCCLayout(AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT);
-    Appender appender = new FileAppender(layout, "output/ttcc", false);
+    Appender appender = new FileAppender(layout, ResourceHelper.outputFullpath("/ttcc"), false);
     root.addAppender(appender);    
 
     String oldName = Thread.currentThread().getName();
@@ -94,7 +94,7 @@ public class MinimumTestCase extends TestCase {
        EXCEPTION3, EXCEPTION4, EXCEPTION5 });
 
     Transformer.transform(
-      "output/ttcc", FILTERED,
+      ResourceHelper.outputFullpath("/ttcc"), FILTERED,
       new Filter[] {
         cf1, new LineNumberFilter(), 
         new AbsoluteDateAndTimeFilter(),
