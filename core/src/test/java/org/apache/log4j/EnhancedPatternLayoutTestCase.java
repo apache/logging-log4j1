@@ -434,7 +434,7 @@ public class EnhancedPatternLayoutTestCase extends TestCase {
   /**
     Test case for MDC conversion pattern. */
   public void testMDC2() throws Exception {
-    String OUTPUT_FILE   = "output/patternLayout.mdc.2";
+    String OUTPUT_FILE   = ResourceHelper.outputFullpath("/patternLayout.mdc.2");
     String WITNESS_FILE  = ResourceHelper.witnessFullpath("/pattern/enhancedPatternLayout.mdc.2");
     
     String mdcMsgPattern1 = "%m : %X%n";

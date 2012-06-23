@@ -395,11 +395,9 @@ public class DOMTestCase extends TestCase {
      */
     public void testJarURL() throws IOException {
         File input = new File(ResourceHelper.inputFullpath("/xml/defaultInit.xml"));
-        System.out.println(input.getAbsolutePath());
+
         InputStream is = new FileInputStream(input);
-        File dir = new File("output");
-        dir.mkdirs();
-        File file = new File("output/xml.jar");
+        File file = new File(ResourceHelper.outputFullpath("/xml.jar"));
         ZipOutputStream zos =
             new ZipOutputStream(new FileOutputStream(file));
         zos.putNextEntry(new ZipEntry("log4j.xml"));
