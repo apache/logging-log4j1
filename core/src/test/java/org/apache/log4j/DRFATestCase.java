@@ -144,7 +144,6 @@ public class DRFATestCase extends TestCase {
     int [] M31 = {0,2,4,6,7,9,11};
 
     for(int i = 0; i < M31.length; i ++) {
-      System.out.println("Month = "+(M31[i]+1));
       for(int d = 1; d <= 31; d++) {
     for(int h = 0; h < 23; h++) {
       for(int m = 0; m <= 59; m++) {
@@ -216,7 +215,6 @@ public class DRFATestCase extends TestCase {
     int [] M31 = {2,9,0,4,6,7,11};
 
     for(int i = 0; i < M31.length; i ++) {
-      System.out.println("Month = "+(M31[i]+1));
       for(int d = 1; d <= 31; d++) {
     for(int h = 0; h < 23; h++) {
       for(int m = 0; m < M.length; m++) {

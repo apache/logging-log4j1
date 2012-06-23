@@ -111,10 +111,7 @@ public class CyclicBufferTestCase extends TestCase {
       cb.add(e[i]);
       int limit = i < size-1 ? i : size-1;
 
-      //System.out.println("\nLimit is " + limit + ", i="+i);
-
       for(int j = limit; j >= 0; j--) {
-	//System.out.println("i= "+i+", j="+j);
 	assertEquals(cb.get(j), e[i-(limit-j)]);
       }
       assertNull(cb.get(-1));
@@ -133,8 +130,6 @@ public class CyclicBufferTestCase extends TestCase {
   }
   
   void doTestResize(int initialSize, int numberOfAdds, int newSize) {
-    //System.out.println("initialSize = "+initialSize+", numberOfAdds="
-    //	       +numberOfAdds+", newSize="+newSize);
     CyclicBuffer cb = new CyclicBuffer(initialSize);
     for(int i = 0; i < numberOfAdds; i++) {
       cb.add(e[i]);
@@ -147,7 +142,7 @@ public class CyclicBufferTestCase extends TestCase {
 
     int len = newSize < numberOfAdds ? newSize : numberOfAdds;
     len = len < initialSize ? len : initialSize;
-    //System.out.println("Len = "+len+", offset="+offset);
+
     for(int j = 0; j < len; j++) {
       assertEquals(cb.get(j), e[offset+j]);
     }

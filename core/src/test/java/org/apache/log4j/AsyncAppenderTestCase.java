@@ -89,9 +89,7 @@ public class AsyncAppenderTestCase extends TestCase {
     for(int i = 0; i < LEN; i++) {
       root.debug("message"+i);
     }
-    
-    System.out.println("Done loop.");
-    System.out.flush();
+
     asyncAppender.close();
     root.debug("m2");
     

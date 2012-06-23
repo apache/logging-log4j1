@@ -42,7 +42,6 @@ public class HierarchyThresholdTestCase extends TestCase {
   }
   
   public void tearDown() {
-    System.out.println("Tearing down test case.");
     logger.getLoggerRepository().resetConfiguration();
   }
   

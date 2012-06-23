@@ -21,25 +21,24 @@ import org.apache.oro.text.perl.Perl5Util;
 
 public class ControlFilter implements Filter {
 
-  Perl5Util util = new Perl5Util();
+    Perl5Util util = new Perl5Util();
 
-  String[] allowedPatterns;
+    String[] allowedPatterns;
 
-  public ControlFilter(String[] allowedPatterns) {
-    this.allowedPatterns = allowedPatterns;
-  }
-
-  public 
-  String filter(String in) throws UnexpectedFormatException{
-    int len = allowedPatterns.length;
-    for(int i = 0; i < len; i++) {
-      //System.out.println("["+allowedPatterns[i]+"]");
-      if(util.match("/"+allowedPatterns[i]+"/", in)) {
-	//System.out.println("["+in+"] matched ["+allowedPatterns[i]);
-	return in;
-      }	
+    public ControlFilter(String[] allowedPatterns) {
+        this.allowedPatterns = allowedPatterns;
     }
 
-    throw new UnexpectedFormatException("["+in+"]");
-  }
+    public String filter(String in) throws UnexpectedFormatException {
+        int len = allowedPatterns.length;
+        for (int i = 0; i < len; i++) {
+
+            if (util.match("/" + allowedPatterns[i] + "/", in)) {
+
+                return in;
+            }
+        }
+
+        throw new UnexpectedFormatException("[" + in + "]");
+    }
 }

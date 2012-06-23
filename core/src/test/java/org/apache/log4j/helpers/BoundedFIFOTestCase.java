@@ -82,23 +82,19 @@ public class BoundedFIFOTestCase extends TestCase {
 
       for(i = 1; i < 2*size; i++) {      
 	for(j = 0; j < i; j++) {
-	  //System.out.println("Putting "+e[j]);
 	  bf.put(e[j]); assertEquals(bf.length(), j < size ?  j+1 : size);
 	}
 	int max = size < j ? size : j;
 	j--;
 	for(k = 0; k <= j; k++) {	  
-	  //System.out.println("max="+max+", j="+j+", k="+k);
-	  assertEquals(bf.length(), max - k > 0 ? max - k : 0); 
+	  assertEquals(bf.length(), max - k > 0 ? max - k : 0);
 	  Object r = bf.get();
-	  //System.out.println("Got "+r);
-	  if(k >= size) 
+	  if(k >= size)
 	    assertNull(r);
 	  else 
 	    assertEquals(r, e[k]);
 	}
       }
-      //System.out.println("Passed size="+size);
     }
   }
 

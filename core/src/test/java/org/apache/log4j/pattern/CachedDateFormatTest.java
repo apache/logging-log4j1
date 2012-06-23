@@ -161,21 +161,17 @@ public final class CachedDateFormatTest
     String sx;
     Date jul1 = new Date(ticks);
     sx = cachedFormat.format(jul1);
-    System.out.println(baseFormat.format(jul1));
-    System.out.println(sx);
+
     assertEquals(baseFormat.format(jul1), sx);
     
     sx = cachedFormat.format(jul1);
-    System.out.println(baseFormat.format(jul1));
-    System.out.println(sx);
+
     assertEquals(baseFormat.format(jul1), sx);
     
     
     Date plus8ms = new Date(ticks + 8);
     sx = cachedFormat.format(plus8ms);
-    System.out.println(baseFormat.format(plus8ms));
-    System.out.println(sx);
-    
+
     assertEquals(baseFormat.format(plus8ms), sx);
     
     Date plus17ms = new Date(ticks + 17);
