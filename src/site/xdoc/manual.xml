@@ -815,7 +815,7 @@ forwarding the log event to a second log4j server.</p>
 <p>The log4j library does not make any assumptions about its
 environment. In particular, there are no default log4j
 appenders. Under certain well-defined circumstances however, the
-static inializer of the <code>Logger</code> class will attempt to
+static initializer of the <code>Logger</code> class will attempt to
 automatically configure log4j. The Java language guarantees that the
 static initializer of a class is called once and only once during the
 loading of a class into memory. It is important to remember that
