@@ -21,6 +21,7 @@
   </properties>
   <body>
     <release version="1.2.18" date="2012-??-??" description="Maintenance release">    
+       <action action="update" dev="grobmeier">Merged truncate feature to FormattingInfo from extras</action>
        <action issue="54845" action="fix" dev="ggregory" due-to="Robert Balent">Typo in log4j 1.2 manual</action>
        <action issue="53299" action="update" dev="grobmeier">Simplify log4j build</action>
        <action issue="44370" action="fix" dev="grobmeier">MANIFEST.MF broken in log4j-1.2.15.jar</action>

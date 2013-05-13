@@ -304,10 +304,21 @@ public final class PatternParser {
         case '-':
           formattingInfo =
             new FormattingInfo(
-              true, formattingInfo.getMinLength(),
+              true, 
+              formattingInfo.isRightTruncated(),
+              formattingInfo.getMinLength(),
               formattingInfo.getMaxLength());
-
           break;
+
+        case '!':
+          formattingInfo =
+            new FormattingInfo(
+              formattingInfo.isLeftAligned(), 
+              true,
+              formattingInfo.getMinLength(),
+              formattingInfo.getMaxLength());
+          break;
+
 
         case '.':
           state = DOT_STATE;
@@ -319,7 +330,9 @@ public final class PatternParser {
           if ((c >= '0') && (c <= '9')) {
             formattingInfo =
               new FormattingInfo(
-                formattingInfo.isLeftAligned(), c - '0',
+                formattingInfo.isLeftAligned(), 
+                formattingInfo.isRightTruncated(),
+                c - '0',
                 formattingInfo.getMaxLength());
             state = MIN_STATE;
           } else {
@@ -343,6 +356,7 @@ public final class PatternParser {
           formattingInfo =
             new FormattingInfo(
               formattingInfo.isLeftAligned(),
+              formattingInfo.isRightTruncated(),
               (formattingInfo.getMinLength() * 10) + (c - '0'),
               formattingInfo.getMaxLength());
         } else if (c == '.') {
@@ -364,7 +378,9 @@ public final class PatternParser {
         if ((c >= '0') && (c <= '9')) {
           formattingInfo =
             new FormattingInfo(
-              formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
+              formattingInfo.isLeftAligned(), 
+              formattingInfo.isRightTruncated(),
+              formattingInfo.getMinLength(),
               c - '0');
           state = MAX_STATE;
         } else {
@@ -383,7 +399,9 @@ public final class PatternParser {
         if ((c >= '0') && (c <= '9')) {
           formattingInfo =
             new FormattingInfo(
-              formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
+              formattingInfo.isLeftAligned(), 
+              formattingInfo.isRightTruncated(),
+              formattingInfo.getMinLength(),
               (formattingInfo.getMaxLength() * 10) + (c - '0'));
         } else {
           i = finalizeConverter(
