@@ -487,8 +487,9 @@ new PropertyConfigurator().doConfigure(inputStream,
     String value = properties.getProperty(LogLog.DEBUG_KEY);
     if(value == null) {
       value = properties.getProperty("log4j.configDebug");
-      if(value != null)
-	LogLog.warn("[log4j.configDebug] is deprecated. Use [log4j.debug] instead.");
+      if(value != null) {
+        LogLog.warn("[log4j.configDebug] is deprecated. Use [log4j.debug] instead.");
+    }
     }
 
     if(value != null) {
@@ -640,9 +641,9 @@ new PropertyConfigurator().doConfigure(inputStream,
       effectiveFrefix = ROOT_CATEGORY_PREFIX;
     }
 
-    if(value == null)
-      LogLog.debug("Could not find root logger information. Is this OK?");
-    else {
+    if(value == null) {
+        LogLog.debug("Could not find root logger information. Is this OK?");
+    } else {
       Logger root = hierarchy.getRootLogger();
       synchronized(root) {
 	parseCategory(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
@@ -733,8 +734,9 @@ new PropertyConfigurator().doConfigure(inputStream,
     if(!(value.startsWith(",") || value.equals(""))) {
 
       // just to be on the safe side...
-      if(!st.hasMoreTokens())
-	return;
+      if(!st.hasMoreTokens()) {
+        return;
+    }
 
       String levelStr = st.nextToken();
       LogLog.debug("Level token is [" + levelStr + "].");
@@ -762,8 +764,9 @@ new PropertyConfigurator().doConfigure(inputStream,
     String appenderName;
     while(st.hasMoreTokens()) {
       appenderName = st.nextToken().trim();
-      if(appenderName == null || appenderName.equals(","))
-	continue;
+      if(appenderName == null || appenderName.equals(",")) {
+        continue;
+    }
       LogLog.debug("Parsing appender named \"" + appenderName +"\".");
       appender = parseAppender(props, appenderName);
       if(appender != null) {
@@ -827,7 +830,9 @@ new PropertyConfigurator().doConfigure(inputStream,
     				  Map.Entry entry = (Map.Entry) iter.next();
     				  int i = 0;
     				  for(; i < keys.length; i++) {
-    					  if(keys[i].equals(entry.getKey())) break;
+    					  if(keys[i].equals(entry.getKey())) {
+                            break;
+                        }
     				  }
     				  if (i == keys.length) {
     					  edited.put(entry.getKey(), entry.getValue());
@@ -979,7 +984,9 @@ class SortedKeyEnumeration implements Enumeration {
       String key = (String) f.nextElement();
       for (i = 0; i < last; ++i) {
         String s = (String) keys.get(i);
-        if (key.compareTo(s) <= 0) break;
+        if (key.compareTo(s) <= 0) {
+            break;
+        }
       }
       keys.add(i, key);
     }

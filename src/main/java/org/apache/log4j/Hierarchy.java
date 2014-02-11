@@ -534,8 +534,9 @@ public class Hierarchy implements LoggerRepository, RendererSupport, ThrowableRe
       }
     }
     // If we could not find any existing parents, then link with root.
-    if(!parentFound)
-      cat.parent = root;
+    if(!parentFound) {
+        cat.parent = root;
+    }
   }
 
   /**

@@ -41,12 +41,14 @@ class CategoryKey {
   final
   public
   boolean equals(Object rArg) {
-    if(this == rArg)
-      return true;
+    if(this == rArg) {
+        return true;
+    }
     
-    if(rArg != null && CategoryKey.class == rArg.getClass()) 
-      return  name.equals(((CategoryKey)rArg ).name);
-    else 
-      return false;
+    if(rArg != null && CategoryKey.class == rArg.getClass()) {
+        return  name.equals(((CategoryKey)rArg ).name);
+    } else {
+        return false;
+    }
   }
 }

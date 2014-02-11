@@ -274,17 +274,20 @@ public class JMSAppender extends AppenderSkeleton {
   public synchronized void close() {
     // The synchronized modifier avoids concurrent append and close operations
 
-    if(this.closed)
-      return;
+    if(this.closed) {
+        return;
+    }
 
     LogLog.debug("Closing appender ["+name+"].");
     this.closed = true;
 
     try {
-      if(topicSession != null)
-	topicSession.close();
-      if(topicConnection != null)
-	topicConnection.close();
+      if(topicSession != null) {
+        topicSession.close();
+    }
+      if(topicConnection != null) {
+        topicConnection.close();
+    }
     } catch(JMSException e) {
       LogLog.error("Error while closing JMSAppender ["+name+"].", e);
     } catch(RuntimeException e) {

@@ -522,11 +522,12 @@ public class DOMConfigurator implements Configurator {
 	  Element appenderRef = (Element) currentNode;
 	  Appender appender = findAppenderByReference(appenderRef);
 	  String refName =  subst(appenderRef.getAttribute(REF_ATTR));
-	  if(appender != null)
-	    LogLog.debug("Adding appender named ["+ refName+ 
+	  if(appender != null) {
+        LogLog.debug("Adding appender named ["+ refName+ 
 			 "] to category ["+cat.getName()+"].");
-	  else 
-	    LogLog.debug("Appender named ["+ refName + "] not found.");
+    } else {
+        LogLog.debug("Appender named ["+ refName + "] not found.");
+    }
 	    
 	  cat.addAppender(appender);
 	  

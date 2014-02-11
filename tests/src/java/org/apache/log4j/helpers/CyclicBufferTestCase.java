@@ -93,8 +93,9 @@ public class CyclicBufferTestCase extends TestCase {
    */
   public
   void test1() {
-    for(int bufSize = 1; bufSize <= 128; bufSize *=2) 
-      doTest1(bufSize);
+    for(int bufSize = 1; bufSize <= 128; bufSize *=2) {
+        doTest1(bufSize);
+    }
   }
 
   void doTest1(int size) {
@@ -142,8 +143,9 @@ public class CyclicBufferTestCase extends TestCase {
     cb.resize(newSize);
 
     int offset = numberOfAdds - initialSize;
-    if(offset< 0)
-      offset = 0;
+    if(offset< 0) {
+        offset = 0;
+    }
 
     int len = newSize < numberOfAdds ? newSize : numberOfAdds;
     len = len < initialSize ? len : initialSize;

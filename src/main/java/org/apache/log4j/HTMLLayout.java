@@ -198,8 +198,9 @@ public class HTMLLayout extends Layout {
   void appendThrowableAsHTML(String[] s, StringBuffer sbuf) {
     if(s != null) {
       int len = s.length;
-      if(len == 0)
-	return;
+      if(len == 0) {
+        return;
+    }
       sbuf.append(Transform.escapeTags(s[0]));
       sbuf.append(Layout.LINE_SEP);
       for(int i = 1; i < len; i++) {

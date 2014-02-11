@@ -65,16 +65,17 @@ public abstract class PatternConverter {
     String s = convert(e);
 
     if(s == null) {
-      if(0 < min)
-	spacePad(sbuf, min);
+      if(0 < min) {
+        spacePad(sbuf, min);
+    }
       return;
     }
 
     int len = s.length();
 
-    if(len > max)
-      sbuf.append(s.substring(len-max));
-    else if(len < min) {
+    if(len > max) {
+        sbuf.append(s.substring(len-max));
+    } else if(len < min) {
       if(leftAlign) {	
 	sbuf.append(s);
 	spacePad(sbuf, min-len);
@@ -83,9 +84,9 @@ public abstract class PatternConverter {
 	spacePad(sbuf, min-len);
 	sbuf.append(s);
       }
+    } else {
+        sbuf.append(s);
     }
-    else
-      sbuf.append(s);
   }	
 
   static String[] SPACES = {" ", "  ", "    ", "        ", //1,2,4,8 spaces

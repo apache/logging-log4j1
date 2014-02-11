@@ -358,9 +358,9 @@ public class LoggingEvent implements java.io.Serializable {
   public
   String getRenderedMessage() {
      if(renderedMessage == null && message != null) {
-       if(message instanceof String)
-	 renderedMessage = (String) message;
-       else {
+       if(message instanceof String) {
+        renderedMessage = (String) message;
+    } else {
 	 LoggerRepository repository = logger.getLoggerRepository();
 
 	 if(repository instanceof RendererSupport) {
@@ -383,8 +383,9 @@ public class LoggingEvent implements java.io.Serializable {
 
   public
   String getThreadName() {
-    if(threadName == null)
-      threadName = (Thread.currentThread()).getName();
+    if(threadName == null) {
+        threadName = (Thread.currentThread()).getName();
+    }
     return threadName;
   }
 
@@ -407,10 +408,11 @@ public class LoggingEvent implements java.io.Serializable {
   public
   String[] getThrowableStrRep() {
 
-    if(throwableInfo ==  null)
-      return null;
-    else
-      return throwableInfo.getThrowableStrRep();
+    if(throwableInfo ==  null) {
+        return null;
+    } else {
+        return throwableInfo.getThrowableStrRep();
+    }
   }
 
 
@@ -463,8 +465,9 @@ public class LoggingEvent implements java.io.Serializable {
     readLevel(ois);
 
     // Make sure that no location info is available to Layouts
-    if(locationInfo == null)
-      locationInfo = new LocationInfo(null, null);
+    if(locationInfo == null) {
+        locationInfo = new LocationInfo(null, null);
+    }
   }
 
   private

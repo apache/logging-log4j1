@@ -131,8 +131,9 @@ public class LocationInfo implements java.io.Serializable {
 
     */
     public LocationInfo(Throwable t, String fqnOfCallingClass) {
-      if(t == null || fqnOfCallingClass == null)
-	return;
+      if(t == null || fqnOfCallingClass == null) {
+        return;
+    }
       if (getLineNumberMethod != null) {
           try {
               Object[] noArgs = null;
@@ -202,8 +203,9 @@ public class LocationInfo implements java.io.Serializable {
       // than counting the stack depth which is not guaranteed to be
       // constant across JVM implementations.
       ibegin = s.lastIndexOf(fqnOfCallingClass);
-      if(ibegin == -1)
-	return;
+      if(ibegin == -1) {
+        return;
+    }
 
       //
       //   if the next character after the class name exists
@@ -222,22 +224,25 @@ public class LocationInfo implements java.io.Serializable {
 
 
       ibegin = s.indexOf(Layout.LINE_SEP, ibegin);
-      if(ibegin == -1)
-	return;
+      if(ibegin == -1) {
+        return;
+    }
       ibegin+= Layout.LINE_SEP_LEN;
 
       // determine end of line
       iend = s.indexOf(Layout.LINE_SEP, ibegin);
-      if(iend == -1)
-	return;
+      if(iend == -1) {
+        return;
+    }
 
       // VA has a different stack trace format which doesn't
       // need to skip the inital 'at'
       if(!inVisualAge) {
 	// back up to first blank character
 	ibegin = s.lastIndexOf("at ", iend);
-	if(ibegin == -1)
-	  return;
+	if(ibegin == -1) {
+        return;
+    }
 	// Add 3 to skip "at ";
 	ibegin += 3;
       }
@@ -298,14 +303,16 @@ public class LocationInfo implements java.io.Serializable {
     */
     public
     String getClassName() {
-      if(fullInfo == null) return NA;
+      if(fullInfo == null) {
+        return NA;
+    }
       if(className == null) {
 	// Starting the search from '(' is safer because there is
 	// potentially a dot between the parentheses.
 	int iend = fullInfo.lastIndexOf('(');
-	if(iend == -1)
-	  className = NA;
-	else {
+	if(iend == -1) {
+        className = NA;
+    } else {
 	  iend =fullInfo.lastIndexOf('.', iend);
 
 	  // This is because a stack trace in VisualAge looks like:
@@ -322,10 +329,11 @@ public class LocationInfo implements java.io.Serializable {
 	    ibegin = fullInfo.lastIndexOf(' ', iend)+1;
           }
 
-	  if(iend == -1)
-	    className = NA;
-	  else
-	    className = this.fullInfo.substring(ibegin, iend);
+	  if(iend == -1) {
+        className = NA;
+    } else {
+        className = this.fullInfo.substring(ibegin, iend);
+    }
 	}
       }
       return className;
@@ -338,13 +346,15 @@ public class LocationInfo implements java.io.Serializable {
     */
     public
     String getFileName() {
-      if(fullInfo == null) return NA;
+      if(fullInfo == null) {
+        return NA;
+    }
 
       if(fileName == null) {
 	int iend = fullInfo.lastIndexOf(':');
-	if(iend == -1)
-	  fileName = NA;
-	else {
+	if(iend == -1) {
+        fileName = NA;
+    } else {
 	  int ibegin = fullInfo.lastIndexOf('(', iend - 1);
 	  fileName = this.fullInfo.substring(ibegin + 1, iend);
 	}
@@ -359,15 +369,18 @@ public class LocationInfo implements java.io.Serializable {
     */
     public
     String getLineNumber() {
-      if(fullInfo == null) return NA;
+      if(fullInfo == null) {
+        return NA;
+    }
 
       if(lineNumber == null) {
 	int iend = fullInfo.lastIndexOf(')');
 	int ibegin = fullInfo.lastIndexOf(':', iend -1);
-	if(ibegin == -1)
-	  lineNumber = NA;
-	else
-	  lineNumber = this.fullInfo.substring(ibegin + 1, iend);
+	if(ibegin == -1) {
+        lineNumber = NA;
+    } else {
+        lineNumber = this.fullInfo.substring(ibegin + 1, iend);
+    }
       }
       return lineNumber;
     }
@@ -377,14 +390,17 @@ public class LocationInfo implements java.io.Serializable {
     */
     public
     String getMethodName() {
-      if(fullInfo == null) return NA;
+      if(fullInfo == null) {
+        return NA;
+    }
       if(methodName == null) {
 	int iend = fullInfo.lastIndexOf('(');
 	int ibegin = fullInfo.lastIndexOf('.', iend);
-	if(ibegin == -1)
-	  methodName = NA;
-	else
-	  methodName = this.fullInfo.substring(ibegin + 1, iend);
+	if(ibegin == -1) {
+        methodName = NA;
+    } else {
+        methodName = this.fullInfo.substring(ibegin + 1, iend);
+    }
       }
       return methodName;
     }

@@ -104,8 +104,9 @@ public class StringMatchFilter extends Filter {
   int decide(LoggingEvent event) {
     String msg = event.getRenderedMessage();
 
-    if(msg == null ||  stringToMatch == null)
-      return Filter.NEUTRAL;
+    if(msg == null ||  stringToMatch == null) {
+        return Filter.NEUTRAL;
+    }
     
 
     if( msg.indexOf(stringToMatch) == -1 ) {

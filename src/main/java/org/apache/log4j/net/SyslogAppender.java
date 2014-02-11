@@ -312,8 +312,9 @@ public class SyslogAppender extends AppenderSkeleton {
   public
   void append(LoggingEvent event) {
 
-    if(!isAsSevereAsThreshold(event.getLevel()))
-      return;
+    if(!isAsSevereAsThreshold(event.getLevel())) {
+        return;
+    }
 
     // We must not attempt to append if sqw is null.
     if(sqw == null) {
@@ -430,8 +431,9 @@ public class SyslogAppender extends AppenderSkeleton {
      @since 0.8.1 */
   public
   void setFacility(String facilityName) {
-    if(facilityName == null)
-      return;
+    if(facilityName == null) {
+        return;
+    }
 
     syslogFacility = getFacility(facilityName);
     if (syslogFacility == -1) {

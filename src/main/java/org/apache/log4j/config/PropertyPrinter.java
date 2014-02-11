@@ -66,10 +66,14 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
   */
   protected
   boolean isGenAppName(String name) {
-    if (name.length() < 2 || name.charAt(0) != 'A') return false;
+    if (name.length() < 2 || name.charAt(0) != 'A') {
+        return false;
+    }
     
     for (int i = 0; i < name.length(); i++) {
-      if (name.charAt(i) < '0' || name.charAt(i) > '9') return false;
+      if (name.charAt(i) < '0' || name.charAt(i) > '9') {
+        return false;
+    }
     }
     return true;
   }

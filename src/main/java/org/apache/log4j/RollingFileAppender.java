@@ -142,8 +142,9 @@ public class RollingFileAppender extends FileAppender {
     if(maxBackupIndex > 0) {
       // Delete the oldest file, to keep Windows happy.
       file = new File(fileName + '.' + maxBackupIndex);
-      if (file.exists())
-       renameSucceeded = file.delete();
+      if (file.exists()) {
+        renameSucceeded = file.delete();
+    }
 
       // Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
       for (int i = maxBackupIndex - 1; i >= 1 && renameSucceeded; i--) {

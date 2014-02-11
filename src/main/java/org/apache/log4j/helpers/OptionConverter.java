@@ -72,14 +72,23 @@ public class OptionConverter {
       c = s.charAt(i++);
       if (c == '\\') {
 	c =  s.charAt(i++);
-	if(c == 'n')      c = '\n';
-	else if(c == 'r') c = '\r';
-	else if(c == 't') c = '\t';
-	else if(c == 'f') c = '\f';
-	else if(c == '\b') c = '\b';
-	else if(c == '\"') c = '\"';
-	else if(c == '\'') c = '\'';
-	else if(c == '\\') c = '\\';
+	if(c == 'n') {
+        c = '\n';
+    } else if(c == 'r') {
+        c = '\r';
+    } else if(c == 't') {
+        c = '\t';
+    } else if(c == 'f') {
+        c = '\f';
+    } else if(c == '\b') {
+        c = '\b';
+    } else if(c == '\"') {
+        c = '\"';
+    } else if(c == '\'') {
+        c = '\'';
+    } else if(c == '\\') {
+        c = '\\';
+    }
       }
       sbuf.append(c);
     }
@@ -135,13 +144,16 @@ public class OptionConverter {
   public
   static
   boolean toBoolean(String value, boolean dEfault) {
-    if(value == null)
-      return dEfault;
+    if(value == null) {
+        return dEfault;
+    }
     String trimmedVal = value.trim();
-    if("true".equalsIgnoreCase(trimmedVal))
-      return true;
-    if("false".equalsIgnoreCase(trimmedVal))
-      return false;
+    if("true".equalsIgnoreCase(trimmedVal)) {
+        return true;
+    }
+    if("false".equalsIgnoreCase(trimmedVal)) {
+        return false;
+    }
     return dEfault;
   }
 
@@ -184,8 +196,9 @@ public class OptionConverter {
   public
   static
   Level toLevel(String value, Level defaultValue) {
-    if(value == null)
-      return defaultValue;
+    if(value == null) {
+        return defaultValue;
+    }
       
     value = value.trim();
 
@@ -256,8 +269,9 @@ public class OptionConverter {
   public
   static
   long toFileSize(String value, long dEfault) {
-    if(value == null)
-      return dEfault;
+    if(value == null) {
+        return dEfault;
+    }
 
     String s = value.trim().toUpperCase();
     long multiplier = 1;
@@ -297,8 +311,9 @@ public class OptionConverter {
   static
   String findAndSubst(String key, Properties props) {
     String value = props.getProperty(key);
-    if(value == null)
-      return null;
+    if(value == null) {
+        return null;
+    }
 
     try {
       return substVars(value, props);

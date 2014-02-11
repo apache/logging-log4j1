@@ -189,7 +189,9 @@ public class PropertySetter {
    */
   public
   void setProperty(String name, String value) {
-    if (value == null) return;
+    if (value == null) {
+        return;
+    }
     
     name = Introspector.decapitalize(name);
     PropertyDescriptor prop = getPropertyDescriptor(name);
@@ -263,8 +265,9 @@ public class PropertySetter {
   */
   protected
   Object convertArg(String val, Class type) {
-    if(val == null)
-      return null;
+    if(val == null) {
+        return null;
+    }
 
     String v = val.trim();
     if (String.class.isAssignableFrom(type)) {
@@ -291,7 +294,9 @@ public class PropertySetter {
   
   protected
   PropertyDescriptor getPropertyDescriptor(String name) {
-    if (props == null) introspect();
+    if (props == null) {
+        introspect();
+    }
     
     for (int i = 0; i < props.length; i++) {
       if (name.equals(props[i].getName())) {

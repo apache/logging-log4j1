@@ -54,8 +54,9 @@ public class BoundedFIFO {
      there are no elements in the buffer.  */
   public
   LoggingEvent get() {
-    if(numElements == 0) 
-      return null;
+    if(numElements == 0) {
+        return null;
+    }
     
     LoggingEvent r = buf[first];
     buf[first] = null; // help garbage collection
@@ -123,8 +124,9 @@ public class BoundedFIFO {
   synchronized
   public 
   void resize(int newSize) {
-    if(newSize == maxSize) 
-      return;
+    if(newSize == maxSize) {
+        return;
+    }
 
 
    LoggingEvent[] tmp = new LoggingEvent[newSize];
@@ -155,8 +157,9 @@ public class BoundedFIFO {
    this.first=0;   
    this.numElements = len1+len2;
    this.next = this.numElements;
-   if(this.next == this.maxSize) // this should never happen, but again, it just might.
-     this.next = 0;
+   if(this.next == this.maxSize) {
+    this.next = 0;
+}
   }
 
   

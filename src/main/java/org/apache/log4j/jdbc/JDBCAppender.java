@@ -181,8 +181,9 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton {
     event.getThrowableStrRep();
     buffer.add(event);
 
-    if (buffer.size() >= bufferSize)
-      flushBuffer();
+    if (buffer.size() >= bufferSize) {
+        flushBuffer();
+    }
   }
 
   /**
@@ -243,8 +244,9 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton {
    * until the object is garbage collected.
    */
   protected Connection getConnection() throws SQLException {
-      if (!DriverManager.getDrivers().hasMoreElements())
-	     setDriver("sun.jdbc.odbc.JdbcOdbcDriver");
+      if (!DriverManager.getDrivers().hasMoreElements()) {
+        setDriver("sun.jdbc.odbc.JdbcOdbcDriver");
+    }
 
       if (connection == null) {
         connection = DriverManager.getConnection(databaseURL, databaseUser,
@@ -263,8 +265,9 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton {
     flushBuffer();
 
     try {
-      if (connection != null && !connection.isClosed())
-          connection.close();
+      if (connection != null && !connection.isClosed()) {
+        connection.close();
+    }
     } catch (SQLException e) {
         errorHandler.error("Error closing connection", e, ErrorCode.GENERIC_FAILURE);
     }

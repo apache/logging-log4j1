@@ -61,8 +61,9 @@ public class DateTimeDateFormat extends AbsoluteTimeDateFormat {
     calendar.setTime(date);
 
     int day = calendar.get(Calendar.DAY_OF_MONTH);
-    if(day < 10)
-      sbuf.append('0');
+    if(day < 10) {
+        sbuf.append('0');
+    }
     sbuf.append(day);
     sbuf.append(' ');
     sbuf.append(shortMonths[calendar.get(Calendar.MONTH)]);

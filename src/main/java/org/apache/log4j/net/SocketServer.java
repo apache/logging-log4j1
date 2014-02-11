@@ -102,10 +102,11 @@ public class SocketServer  {
   public
   static
   void main(String argv[]) {
-    if(argv.length == 3)
-      init(argv[0], argv[1], argv[2]);
-    else
-      usage("Wrong number of arguments.");
+    if(argv.length == 3) {
+        init(argv[0], argv[1], argv[2]);
+    } else {
+        usage("Wrong number of arguments.");
+    }
 
     try {
       cat.info("Listening on port " + port);

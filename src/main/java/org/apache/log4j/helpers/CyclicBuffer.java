@@ -65,13 +65,15 @@ public class CyclicBuffer {
   public
   void add(LoggingEvent event) {    
     ea[last] = event;    
-    if(++last == maxSize)
-      last = 0;
+    if(++last == maxSize) {
+        last = 0;
+    }
 
-    if(numElems < maxSize)
-      numElems++;
-    else if(++first == maxSize)
-      first = 0;
+    if(numElems < maxSize) {
+        numElems++;
+    } else if(++first == maxSize) {
+        first = 0;
+    }
   }
 
 
@@ -84,8 +86,9 @@ public class CyclicBuffer {
   */
   public
   LoggingEvent get(int i) {
-    if(i < 0 || i >= numElems)
-      return null;
+    if(i < 0 || i >= numElems) {
+        return null;
+    }
 
     return ea[(first + i) % maxSize];
   }
@@ -106,8 +109,9 @@ public class CyclicBuffer {
       numElems--;
       r = ea[first];
       ea[first] = null;
-      if(++first == maxSize)
-	first = 0;
+      if(++first == maxSize) {
+        first = 0;
+    }
     } 
     return r;
   }
@@ -134,7 +138,9 @@ public class CyclicBuffer {
 					 "] not allowed.");
     }
     if(newSize == numElems)
-      return; // nothing to do
+     {
+        return; // nothing to do
+    }
     
     LoggingEvent[] temp = new  LoggingEvent[newSize];
 
@@ -143,8 +149,9 @@ public class CyclicBuffer {
     for(int i = 0; i < loopLen; i++) {
       temp[i] = ea[first];
       ea[first] = null;
-      if(++first == numElems) 
-	first = 0;
+      if(++first == numElems) {
+        first = 0;
+    }
     }
     ea = temp;
     first = 0;

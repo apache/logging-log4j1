@@ -155,8 +155,9 @@ public class SocketHubAppender extends AppenderSkeleton {
   synchronized
   public
   void close() {
-    if(closed)
-      return;
+    if(closed) {
+        return;
+    }
 
 	LogLog.debug("closing SocketHubAppender " + getName());
     this.closed = true;
@@ -239,8 +240,9 @@ public class SocketHubAppender extends AppenderSkeleton {
       }
       
       // list size changed unexpectedly? Just exit the append.
-      if (oos == null)
+      if (oos == null) {
         break;
+    }
         
       try {
       	oos.writeObject(event);

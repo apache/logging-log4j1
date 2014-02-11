@@ -74,10 +74,11 @@ public class RendererMap {
      as a {@link String}. */
   public
   String findAndRender(Object o) {
-    if(o == null)
-      return null;
-    else
-      return get(o.getClass()).doRender(o);
+    if(o == null) {
+        return null;
+    } else {
+        return get(o.getClass()).doRender(o);
+    }
   }
 
 
@@ -86,10 +87,11 @@ public class RendererMap {
      class of the object parameter. */
   public
   ObjectRenderer get(Object o) {
-    if(o == null)
-      return null;
-    else
-      return get(o.getClass());
+    if(o == null) {
+        return null;
+    } else {
+        return get(o.getClass());
+    }
   }
 
 
@@ -153,8 +155,9 @@ public class RendererMap {
 	return r;
       }
       r = searchInterfaces(c);
-      if(r != null)
-	return r;
+      if(r != null) {
+        return r;
+    }
     }
     return defaultRenderer;
   }
@@ -169,8 +172,9 @@ public class RendererMap {
       Class[] ia = c.getInterfaces();
       for(int i = 0; i < ia.length; i++) {
 	r = searchInterfaces(ia[i]);
-	if(r != null)
-	  return r;
+	if(r != null) {
+        return r;
+    }
       }
     }
     return null;

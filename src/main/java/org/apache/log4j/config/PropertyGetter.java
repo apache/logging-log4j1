@@ -71,7 +71,9 @@ public class PropertyGetter {
   void getProperties(PropertyCallback callback, String prefix) {
     for (int i = 0; i < props.length; i++) {
       Method getter = props[i].getReadMethod();
-      if (getter == null) continue;
+      if (getter == null) {
+        continue;
+    }
       if (!isHandledType(getter.getReturnType())) {
 	//System.err.println("Ignoring " + props[i].getName() +" " + getter.getReturnType());
 	continue;

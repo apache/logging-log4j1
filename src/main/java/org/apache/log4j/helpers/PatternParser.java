@@ -181,18 +181,18 @@ public class PatternParser {
 	  if(c >= '0' && c <= '9') {
 	    formattingInfo.min = c - '0';
 	    state = MIN_STATE;
-	  }
-	  else
-	    finalizeConverter(c);
+	  } else {
+        finalizeConverter(c);
+    }
 	} // switch
 	break;
       case MIN_STATE:
 	currentLiteral.append(c);
-	if(c >= '0' && c <= '9')
-	  formattingInfo.min = formattingInfo.min*10 + (c - '0');
-	else if(c == '.')
-	  state = DOT_STATE;
-	else {
+	if(c >= '0' && c <= '9') {
+        formattingInfo.min = formattingInfo.min*10 + (c - '0');
+    } else if(c == '.') {
+        state = DOT_STATE;
+    } else {
 	  finalizeConverter(c);
 	}
 	break;
@@ -210,9 +210,9 @@ public class PatternParser {
 	break;
       case MAX_STATE:
 	currentLiteral.append(c);
-	if(c >= '0' && c <= '9')
-	  formattingInfo.max = formattingInfo.max*10 + (c - '0');
-	else {
+	if(c >= '0' && c <= '9') {
+        formattingInfo.max = formattingInfo.max*10 + (c - '0');
+    } else {
 	  finalizeConverter(c);
 	  state = LITERAL_STATE;
 	}
@@ -248,19 +248,20 @@ public class PatternParser {
       String dateFormatStr = AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT;
       DateFormat df;
       String dOpt = extractOption();
-      if(dOpt != null)
-	dateFormatStr = dOpt;
+      if(dOpt != null) {
+        dateFormatStr = dOpt;
+    }
 
       if(dateFormatStr.equalsIgnoreCase(
-                                    AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT))
-	df = new  ISO8601DateFormat();
-      else if(dateFormatStr.equalsIgnoreCase(
-                                   AbsoluteTimeDateFormat.ABS_TIME_DATE_FORMAT))
-	df = new AbsoluteTimeDateFormat();
-      else if(dateFormatStr.equalsIgnoreCase(
-                              AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT))
-	df = new DateTimeDateFormat();
-      else {
+                                    AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT)) {
+        df = new  ISO8601DateFormat();
+    } else if(dateFormatStr.equalsIgnoreCase(
+                                   AbsoluteTimeDateFormat.ABS_TIME_DATE_FORMAT)) {
+        df = new AbsoluteTimeDateFormat();
+    } else if(dateFormatStr.equalsIgnoreCase(
+                              AbsoluteTimeDateFormat.DATE_AND_TIME_DATE_FORMAT)) {
+        df = new DateTimeDateFormat();
+    } else {
 	try {
 	  df = new SimpleDateFormat(dateFormatStr);
 	}
@@ -526,9 +527,9 @@ public class PatternParser {
     public
     String convert(LoggingEvent event) {
       String n = getFullyQualifiedName(event);
-      if(precision <= 0)
-	return n;
-      else {
+      if(precision <= 0) {
+        return n;
+    } else {
 	int len = n.length();
 
 	// We substract 1 from 'len' when assigning to 'end' to avoid out of
@@ -537,8 +538,9 @@ public class PatternParser {
 	int end = len -1 ;
 	for(int i = precision; i > 0; i--) {
 	  end = n.lastIndexOf('.', end-1);
-	  if(end == -1)
-	    return n;
+	  if(end == -1) {
+        return n;
+    }
 	}
 	return n.substring(end+1, len);
       }

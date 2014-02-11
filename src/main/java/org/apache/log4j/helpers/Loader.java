@@ -44,8 +44,9 @@ public class Loader  {
     if(prop != null) {
       int i = prop.indexOf('.');
       if(i != -1) {	
-	if(prop.charAt(i+1) != '1')
-	  java1 = false;
+	if(prop.charAt(i+1) != '1') {
+        java1 = false;
+    }
       } 
     }
     String ignoreTCLProp = OptionConverter.getSystemProperty("log4j.ignoreTCL", null);

@@ -342,8 +342,9 @@ public class SMTPAppender extends AppenderSkeleton
 	  
       StringBuffer sbuf = new StringBuffer();
       String t = layout.getHeader();
-      if(t != null)
-	sbuf.append(t);
+      if(t != null) {
+        sbuf.append(t);
+    }
       int len =  cb.length();
       for(int i = 0; i < len; i++) {
 	//sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));

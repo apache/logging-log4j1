@@ -151,8 +151,9 @@ public class NDC {
   static
   void clear() {
     Stack stack = getCurrentStack();    
-    if(stack != null) 
-      stack.setSize(0);    
+    if(stack != null) {
+        stack.setSize(0);
+    }    
   }
 
   
@@ -174,9 +175,9 @@ public class NDC {
   static
   Stack cloneStack() {
     Stack stack = getCurrentStack();
-    if(stack == null)
-      return null;
-    else {
+    if(stack == null) {
+        return null;
+    } else {
       return (Stack) stack.clone();
     }
   }
@@ -205,8 +206,9 @@ public class NDC {
   public
   static
   void inherit(Stack stack) {
-    if(stack != null)
-      ht.put(Thread.currentThread(), stack);
+    if(stack != null) {
+        ht.put(Thread.currentThread(), stack);
+    }
   }
 
 
@@ -218,10 +220,11 @@ public class NDC {
   public
   String get() {
     Stack s = getCurrentStack();
-    if(s != null && !s.isEmpty()) 
-      return ((DiagnosticContext) s.peek()).fullMessage;
-    else
-      return null;
+    if(s != null && !s.isEmpty()) {
+        return ((DiagnosticContext) s.peek()).fullMessage;
+    } else {
+        return null;
+    }
   }
   
   /**
@@ -234,16 +237,19 @@ public class NDC {
   static
   int getDepth() {
     Stack stack = getCurrentStack();          
-    if(stack == null)
-      return 0;
-    else
-      return stack.size();      
+    if(stack == null) {
+        return 0;
+    } else {
+        return stack.size();
+    }      
   }
 
   private
   static
   void lazyRemove() {
-    if (ht == null) return;
+    if (ht == null) {
+        return;
+    }
      
     // The synchronization on ht is necessary to prevent JDK 1.2.x from
     // throwing ConcurrentModificationExceptions at us. This sucks BIG-TIME.
@@ -299,10 +305,11 @@ public class NDC {
   static
   String pop() {
     Stack stack = getCurrentStack();
-    if(stack != null && !stack.isEmpty()) 
-      return ((DiagnosticContext) stack.pop()).message;
-    else
-      return "";
+    if(stack != null && !stack.isEmpty()) {
+        return ((DiagnosticContext) stack.pop()).message;
+    } else {
+        return "";
+    }
   }
 
   /**
@@ -319,10 +326,11 @@ public class NDC {
   static
   String peek() {
     Stack stack = getCurrentStack();
-    if(stack != null && !stack.isEmpty())
-      return ((DiagnosticContext) stack.peek()).message;
-    else
-      return "";
+    if(stack != null && !stack.isEmpty()) {
+        return ((DiagnosticContext) stack.peek()).message;
+    } else {
+        return "";
+    }
   }
   
   /**
@@ -413,8 +421,9 @@ public class NDC {
   public
   void setMaxDepth(int maxDepth) {
     Stack stack = getCurrentStack();    
-    if(stack != null && maxDepth < stack.size()) 
-      stack.setSize(maxDepth);
+    if(stack != null && maxDepth < stack.size()) {
+        stack.setSize(maxDepth);
+    }
   }
   
   // =====================================================================

@@ -190,8 +190,9 @@ public class AppenderDynamicMBean extends AbstractDynamicMBean {
   }
 
   void registerLayoutMBean(Layout layout) {
-    if(layout == null)
-      return;
+    if(layout == null) {
+        return;
+    }
 
     String name = getAppenderName(appender)+",layout="+layout.getClass().getName();
     cat.debug("Adding LayoutMBean:"+name);

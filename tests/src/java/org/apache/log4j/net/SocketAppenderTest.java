@@ -81,10 +81,11 @@ public class SocketAppenderTest extends TestCase {
          * @return last appended LoggingEvent's message
          */
         public String getLastMessage() {
-            if (this.lastEvent != null)
+            if (this.lastEvent != null) {
                 return this.lastEvent.getMessage().toString();
-            else
+            } else {
                 return "";
+            }
         }
 
         private LoggingEvent lastEvent;
