@@ -75,8 +75,7 @@ import org.apache.log4j.spi.LoggingEvent;
     @author Kevin Steppe (<A HREF="mailto:ksteppe@pacbell.net">ksteppe@pacbell.net</A>)
 
 */
-public class JDBCAppender extends org.apache.log4j.AppenderSkeleton
-    implements org.apache.log4j.Appender {
+public class JDBCAppender extends org.apache.log4j.AppenderSkeleton {
 
   /**
    * URL of the DB for default connection handling
