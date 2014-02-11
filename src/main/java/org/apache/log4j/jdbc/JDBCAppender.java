@@ -323,13 +323,13 @@ public class JDBCAppender extends org.apache.log4j.AppenderSkeleton {
   /**
    *
    */
-  public void setSql(String s) {
-    sqlStatement = s;
+  public void setSql(String sql) {
+    sqlStatement = sql;
     if (getLayout() == null) {
-        this.setLayout(new PatternLayout(s));
+        this.setLayout(new PatternLayout(sql));
     }
     else {
-        ((PatternLayout)getLayout()).setConversionPattern(s);
+        ((PatternLayout)getLayout()).setConversionPattern(sql);
     }
   }
 
