@@ -16,7 +16,7 @@
 Apache log4j 1.2 Roadmap
 
   Apache log4j 1.2 is mature and widely deployed.  Significant
-  changes are unlikely.  Bug fixes and maintenance releases are anticipated.  
+  changes are unlikely.  Bug fixes and maintenance releases are not anticipated.  
 
-  The next major version with is {{{http://logging.apache.org/log4j/2.0/index.html}Apache log4j 2}}
+  The current version is {{{http://logging.apache.org/log4j/2.0/index.html}Apache log4j 2}}
   
