@@ -356,10 +356,13 @@ public class PatternLayoutTestCase extends TestCase {
       PropertyConfigurator.configure("input/pattern/patternLayout16.properties");
       common();
       final long end = new Date().getTime();
-      FileReader reader = new FileReader("output/patternLayout16.log");
-      char chars[] = new char[50];
-      reader.read(chars, 0, chars.length);
-      reader.close();
+      try{
+    	  FileReader reader = new FileReader("output/patternLayout16.log");
+          char chars[] = new char[50];
+          reader.read(chars, 0, chars.length);
+      }finally{
+    	  reader.close();
+      }
       SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       format.setTimeZone(TimeZone.getTimeZone("GMT+0"));
       String utcStr = new String(chars, 0, 19);

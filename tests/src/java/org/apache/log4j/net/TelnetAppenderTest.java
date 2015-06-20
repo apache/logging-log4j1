@@ -25,28 +25,32 @@ public class TelnetAppenderTest extends TestCase {
           if (c == -1)
             break;
           bo.write(c);
-        }
-        s.close();        
+        }               
       } catch (IOException e) {
         e.printStackTrace();
+      }finally{
+    	  s.close(); 
       }
     }
   }
   
   public void testIt() throws Exception {
     int oldActive = Thread.activeCount();
-    TelnetAppender ta = new TelnetAppender();
-    ta.setName("ta");
-    ta.setPort(port);
-    ta.setLayout(new PatternLayout("%p - %m"));
-    ta.activateOptions();
-    Logger l = Logger.getLogger("x");
-    l.addAppender(ta);
-    Thread t = new ReadThread();
-    t.start();
-    Thread.sleep(200);
-    l.info("hi");
-    ta.close();
+    try{
+    	TelnetAppender ta = new TelnetAppender();
+        ta.setName("ta");
+        ta.setPort(port);
+        ta.setLayout(new PatternLayout("%p - %m"));
+        ta.activateOptions();
+        Logger l = Logger.getLogger("x");
+        l.addAppender(ta);
+        Thread t = new ReadThread();
+        t.start();
+        Thread.sleep(200);
+        l.info("hi");
+    }finally{
+    	ta.close();
+    }
     Thread.sleep(200);
     t.interrupt();
     t.join();

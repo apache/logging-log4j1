@@ -111,11 +111,14 @@ public class SerializationTestHelper {
     File witnessFile = new File(witness);
 
     if (witnessFile.exists()) {
-      int skipIndex = 0;
-      byte[] expected = new byte[actual.length];
-      FileInputStream is = new FileInputStream(witnessFile);
-      int bytesRead = is.read(expected);
-      is.close();
+    	int skipIndex = 0;
+    	byte[] expected = new byte[actual.length];
+    	try{
+    		FileInputStream is = new FileInputStream(witnessFile);
+    		int bytesRead = is.read(expected);
+    	}finally{
+    		is.close();
+    	}
       TestCase.assertEquals(bytesRead, actual.length);
 
       int endScan = actual.length;
@@ -135,13 +138,16 @@ public class SerializationTestHelper {
         }
       }
     } else {
-      //
-      //  if the file doesn't exist then
-      //      assume that we are setting up and need to write it
-      FileOutputStream os = new FileOutputStream(witnessFile);
-      os.write(actual);
-      os.close();
-      TestCase.fail("Writing witness file " + witness);
+    	//
+    	//  if the file doesn't exist then
+        //      assume that we are setting up and need to write it
+    	try{
+        	FileOutputStream os = new FileOutputStream(witnessFile);
+        	os.write(actual);
+        }finally{
+        	os.close();
+        }
+        TestCase.fail("Writing witness file " + witness);  
     }
   }
 }

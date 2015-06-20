@@ -121,57 +121,61 @@ public class TimeBasedRollingTest extends TestCase {
    */
   public void test2() throws Exception {
     String datePattern = "yyyy-MM-dd_HH_mm_ss";
+    try{
+    	PatternLayout layout1 = new PatternLayout("%c{1} - %m%n");
+        RollingFileAppender rfa1 = new RollingFileAppender();
+        rfa1.setLayout(layout1);
 
-    PatternLayout layout1 = new PatternLayout("%c{1} - %m%n");
-    RollingFileAppender rfa1 = new RollingFileAppender();
-    rfa1.setLayout(layout1);
+        TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
+        tbrp1.setFileNamePattern("output/test2-%d{" + datePattern + "}");
+        tbrp1.activateOptions();
+        rfa1.setRollingPolicy(tbrp1);
+        rfa1.activateOptions();
+        logger.addAppender(rfa1);
 
-    TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
-    tbrp1.setFileNamePattern("output/test2-%d{" + datePattern + "}");
-    tbrp1.activateOptions();
-    rfa1.setRollingPolicy(tbrp1);
-    rfa1.activateOptions();
-    logger.addAppender(rfa1);
+        SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+        String[] filenames = new String[4];
 
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    String[] filenames = new String[4];
+        Calendar cal = Calendar.getInstance();
 
-    Calendar cal = Calendar.getInstance();
+        for (int i = 0; i < 4; i++) {
+          filenames[i] = "output/test2-" + sdf.format(cal.getTime());
+          cal.add(Calendar.SECOND, 1);
+        }
 
-    for (int i = 0; i < 4; i++) {
-      filenames[i] = "output/test2-" + sdf.format(cal.getTime());
-      cal.add(Calendar.SECOND, 1);
+        System.out.println("Waiting until next second and 100 millis.");
+        delayUntilNextSecond(100);
+        System.out.println("Done waiting.");
+
+        for (int i = 0; i <= 2; i++) {
+          logger.debug("Hello---" + i);
+          Thread.sleep(500);
+        }
+
+        logger.removeAppender(rfa1);
+    }finally{
+    	rfa1.close();
     }
+    try{
+    	PatternLayout layout2 = new PatternLayout("%c{1} - %m%n");
+        RollingFileAppender rfa2 = new RollingFileAppender();
+        rfa2.setLayout(layout2);
 
-    System.out.println("Waiting until next second and 100 millis.");
-    delayUntilNextSecond(100);
-    System.out.println("Done waiting.");
+        TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
+        tbrp2.setFileNamePattern("output/test2-%d{" + datePattern + "}");
+        tbrp2.activateOptions();
+        rfa2.setRollingPolicy(tbrp2);
+        rfa2.activateOptions();
+        logger.addAppender(rfa2);
 
-    for (int i = 0; i <= 2; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
+        for (int i = 3; i <= 4; i++) {
+          logger.debug("Hello---" + i);
+          Thread.sleep(500);
+        }
+
+    }finally{
+    	rfa2.close();
     }
-
-    logger.removeAppender(rfa1);
-    rfa1.close();
-
-    PatternLayout layout2 = new PatternLayout("%c{1} - %m%n");
-    RollingFileAppender rfa2 = new RollingFileAppender();
-    rfa2.setLayout(layout2);
-
-    TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
-    tbrp2.setFileNamePattern("output/test2-%d{" + datePattern + "}");
-    tbrp2.activateOptions();
-    rfa2.setRollingPolicy(tbrp2);
-    rfa2.activateOptions();
-    logger.addAppender(rfa2);
-
-    for (int i = 3; i <= 4; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
-    }
-
-    rfa2.close();
 
     for (int i = 0; i < 4; i++) {
       assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test2." + i));

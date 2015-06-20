@@ -28,10 +28,13 @@ import java.io.InputStream;
  */
 public class FileOpener {
   public static void main(String[] args) throws Exception {
-    InputStream is = new FileInputStream("output/test.log");
-    is.read();
-    Thread.sleep(10000);
-    is.close();
+	  try{
+		  InputStream is = new FileInputStream("output/test.log");
+		  is.read();
+		  Thread.sleep(10000);
+	  }finally{
+		  is.close();
+	  }
     System.out.println("Exiting FileOpener");
   }
 }
