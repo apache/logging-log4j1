@@ -19,11 +19,14 @@ public class XServlet extends HttpServlet {
     throws ServletException, IOException {
 
     response.setContentType("text/html");
-    PrintWriter out = response.getWriter();
-    
-    String result = Util.foo(MY_ENTRY);
+    try{
+    	PrintWriter out = response.getWriter();
+        
+        String result = Util.foo(MY_ENTRY);
 
-    out.println(result);
-    out.close();    
+        out.println(result);
+    }finally{
+    	out.close();
+    }     
   }
 }

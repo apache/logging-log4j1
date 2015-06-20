@@ -85,30 +85,34 @@ public class Compare {
    */
   private static void outputFile(String file)
     throws FileNotFoundException, IOException {
-    BufferedReader in1 = new BufferedReader(new FileReader(file));
+	  try{
+		  BufferedReader in1 = new BufferedReader(new FileReader(file));
 
-    String s1;
-    int lineCounter = 0;
-    System.out.println("--------------------------------");
-    System.out.println("Contents of " + file + ":");
+		    String s1;
+		    int lineCounter = 0;
+		    System.out.println("--------------------------------");
+		    System.out.println("Contents of " + file + ":");
 
-    while ((s1 = in1.readLine()) != null) {
-      lineCounter++;
-      System.out.print(lineCounter);
+		    while ((s1 = in1.readLine()) != null) {
+		      lineCounter++;
+		      System.out.print(lineCounter);
 
-      if (lineCounter < 10) {
-        System.out.print("   : ");
-      } else if (lineCounter < 100) {
-        System.out.print("  : ");
-      } else if (lineCounter < 1000) {
-        System.out.print(" : ");
-      } else {
-        System.out.print(": ");
-      }
+		      if (lineCounter < 10) {
+		        System.out.print("   : ");
+		      } else if (lineCounter < 100) {
+		        System.out.print("  : ");
+		      } else if (lineCounter < 1000) {
+		        System.out.print(" : ");
+		      } else {
+		        System.out.print(": ");
+		      }
 
-      System.out.println(s1);
-    }
-    in1.close();
+		      System.out.println(s1);
+		    }
+	  }finally{
+		  in1.close();
+	  }
+	
   }
   
     public static boolean gzCompare(String file1, String file2)

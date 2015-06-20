@@ -36,16 +36,19 @@ public class Loop {
     HTMLLayout htmlLayout = new HTMLLayout("%sn%date%thread%level%logger%m");
     //htmlLayout.setInternalCSS(true);
     //EnhancedHTMLLayout htmlLayout = new EnhancedHTMLLayout("%relative%thread%level%logger%m");
-    FileAppender appender = new FileAppender();
-    appender.setFile("toto.html");
-    appender.setAppend(false);
-    appender.setLayout(htmlLayout);
-    appender.activateOptions();
-    Logger root = Logger.getRootLogger();
-    root.addAppender(appender);
+    try{
+    	FileAppender appender = new FileAppender();
+        appender.setFile("toto.html");
+        appender.setAppend(false);
+        appender.setLayout(htmlLayout);
+        appender.activateOptions();
+        Logger root = Logger.getRootLogger();
+        root.addAppender(appender);
 
-    loop(200);
-    appender.close();
+        loop(200);
+    }finally{
+    	appender.close();
+    }
   }
 
   static void loop(int len) {

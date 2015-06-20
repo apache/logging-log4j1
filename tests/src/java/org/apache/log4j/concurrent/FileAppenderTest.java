@@ -73,9 +73,12 @@ public class FileAppenderTest extends TestCase {
   }
   
   private void readHI() throws Exception {
-    BufferedReader r = new BufferedReader(new FileReader(f1));
-    assertEquals("DEBUG - HI", r.readLine());
-    r.close();    
+	try{
+		BufferedReader r = new BufferedReader(new FileReader(f1));
+	    assertEquals("DEBUG - HI", r.readLine());
+	}finally{
+		r.close();
+	}     
   }
 
   /**

@@ -69,15 +69,18 @@ public class ERFATestCase extends TestCase {
      * @deprecated since class under test is deprecated.
      */
   void sendMessage(int port, final String msg, final String expectedResponse) throws IOException {
-      Socket socket = new Socket((String) null, port);
-      DataInputStream reader = new DataInputStream(socket.getInputStream());
-      DataOutputStream writer = new DataOutputStream(socket.getOutputStream());
-      writer.writeUTF(msg);
-      String response = reader.readUTF();
-      assertEquals(expectedResponse, response);
-      reader.close();
-      writer.close();
-      socket.close();
+	  try{
+		  Socket socket = new Socket((String) null, port);
+	      DataInputStream reader = new DataInputStream(socket.getInputStream());
+	      DataOutputStream writer = new DataOutputStream(socket.getOutputStream());
+	      writer.writeUTF(msg);
+	      String response = reader.readUTF();
+	      assertEquals(expectedResponse, response);
+	  }finally{
+		  reader.close();
+	      writer.close();
+	      socket.close();
+	  }
   }
 
     /**

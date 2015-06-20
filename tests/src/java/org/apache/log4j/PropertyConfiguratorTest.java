@@ -37,9 +37,12 @@ public class PropertyConfiguratorTest extends TestCase {
      */
     public void testBadUnicodeEscape() throws IOException {
         String fileName = "output/badescape.properties";
-        FileWriter writer = new FileWriter(fileName);
-        writer.write("log4j.rootLogger=\\uXX41");
-        writer.close();
+        try{
+        	FileWriter writer = new FileWriter(fileName);
+            writer.write("log4j.rootLogger=\\uXX41");
+        }finally{
+        	writer.close();
+        }
         PropertyConfigurator.configure(fileName);
         File file = new File(fileName);
         assertTrue(file.delete()) ;
@@ -53,9 +56,12 @@ public class PropertyConfiguratorTest extends TestCase {
      */
         public void testURL() throws IOException {
         File file = new File("output/unclosed.properties");
-        FileWriter writer = new FileWriter(file);
-        writer.write("log4j.rootLogger=debug");
-        writer.close();
+        try{
+        	FileWriter writer = new FileWriter(file);
+            writer.write("log4j.rootLogger=debug");
+        }finally{
+        	writer.close();
+        }
         URL url = file.toURL();
         PropertyConfigurator.configure(url);
         assertTrue(file.delete());
@@ -70,9 +76,12 @@ public class PropertyConfiguratorTest extends TestCase {
      */
         public void testURLBadEscape() throws IOException {
         File file = new File("output/urlbadescape.properties");
-        FileWriter writer = new FileWriter(file);
-        writer.write("log4j.rootLogger=\\uXX41");
-        writer.close();
+        try{
+        	FileWriter writer = new FileWriter(file);
+            writer.write("log4j.rootLogger=\\uXX41");
+        }finally{
+        	writer.close();
+        }
         URL url = file.toURL();
         PropertyConfigurator.configure(url);
         assertTrue(file.delete());

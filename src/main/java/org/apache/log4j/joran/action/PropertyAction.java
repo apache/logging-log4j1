@@ -61,8 +61,7 @@ abstract public class PropertyAction extends Action {
 
       try {
         FileInputStream istream = new FileInputStream(fileName);
-        props.load(istream);
-        istream.close();
+        props.load(istream);       
         setProperties(ec, props);
       } catch (IOException e) {
         String errMsg = "Could not read properties file [" + fileName + "].";
@@ -70,7 +69,9 @@ abstract public class PropertyAction extends Action {
         ec.addError(new ErrorItem(INVALID_ATTRIBUTES, e));
         getLogger().error("Ignoring configuration file [" + fileName + "].");
     
-      }
+      }finally{
+    	  istream.close();
+      } 
     } else if (
       !(Option.isEmpty(name) || Option.isEmpty(value))
         && Option.isEmpty(fileName)) {

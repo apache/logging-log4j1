@@ -21,13 +21,16 @@ public class TataServlet extends HttpServlet {
     String name = request.getParameter("name");
     
     response.setContentType("text/html");
-    PrintWriter out = response.getWriter();
-    
-    logger.info("About to say Tata to "+name);
+    try{
+    	PrintWriter out = response.getWriter();
+        
+        logger.info("About to say Tata to "+name);
 
-    out.println("<HTML><BODY>");
-    out.println("<H2>Many tata's to you  " + name + ". How are you today?</H2>");     
-    out.println("</BODY></HTML>");
-    out.close();    
+        out.println("<HTML><BODY>");
+        out.println("<H2>Many tata's to you  " + name + ". How are you today?</H2>");     
+        out.println("</BODY></HTML>");
+    }finally{
+    	out.close();
+    }    
   }
 }

@@ -21,13 +21,16 @@ public class HelloServlet extends HttpServlet {
     String name = request.getParameter("name");
     
     response.setContentType("text/html");
-    PrintWriter out = response.getWriter();
-    
-    logger.info("About to say hello to "+name);
- 
-    out.println("<HTML><BODY>");
-    out.println("<H2> Hello there " + name + ". How are you today?</H2>");     
-    out.println("</BODY></HTML>");
-    out.close();    
+    try{
+    	PrintWriter out = response.getWriter();
+        
+        logger.info("About to say hello to "+name);
+     
+        out.println("<HTML><BODY>");
+        out.println("<H2> Hello there " + name + ". How are you today?</H2>");     
+        out.println("</BODY></HTML>");
+    }finally{
+    	out.close();
+    }   
   }
 }

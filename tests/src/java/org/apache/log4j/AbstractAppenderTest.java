@@ -47,21 +47,26 @@ abstract public class AbstractAppenderTest extends TestCase {
 
   public void testNewAppender() {
     // new appenders whould be inactive
-    AppenderSkeleton appender = getAppender();
-    assertFalse( appender.isActive());
-    assertFalse(appender.isClosed());
-    
-    appender.close();
+	try{
+		AppenderSkeleton appender = getAppender();
+	    assertFalse( appender.isActive());
+	    assertFalse(appender.isClosed());
+	}finally{
+		appender.close();
+	}
     assertTrue(appender.isClosed());
   }
   
   public void testConfiguredAppender() {
-    AppenderSkeleton appender = getConfiguredAppender();
-    appender.activateOptions();
-    assertTrue(appender.isActive());
-    assertFalse(appender.isClosed());
-    
-    appender.close();
+	try{
+		AppenderSkeleton appender = getConfiguredAppender();
+		appender.activateOptions();
+		assertTrue(appender.isActive());
+		assertFalse(appender.isClosed());
+	}finally{
+		appender.close();
+	}
+
     assertTrue(appender.isClosed());
   }
  

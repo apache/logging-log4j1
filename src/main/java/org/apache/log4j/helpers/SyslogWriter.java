@@ -138,8 +138,9 @@ public class SyslogWriter extends Writer {
       flush();
     } catch (IOException e) {
       // should throw it ... can't change method sig. though
+    }finally{
+    	ds.close();
     }
-    ds.close();
   }
   
 }

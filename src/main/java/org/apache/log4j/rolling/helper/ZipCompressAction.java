@@ -109,18 +109,19 @@ public final class ZipCompressAction extends ActionBase {
       ZipOutputStream zos = new ZipOutputStream(fos);
 
       ZipEntry zipEntry = new ZipEntry(source.getName());
-      zos.putNextEntry(zipEntry);
+      try{
+    	  zos.putNextEntry(zipEntry);
 
-      byte[] inbuf = new byte[8102];
-      int n;
+          byte[] inbuf = new byte[8102];
+          int n;
 
-      while ((n = fis.read(inbuf)) != -1) {
-        zos.write(inbuf, 0, n);
+          while ((n = fis.read(inbuf)) != -1) {
+            zos.write(inbuf, 0, n);
+          }
+      }finally{
+    	  zos.close();
+          fis.close();
       }
-
-      zos.close();
-      fis.close();
-
       if (deleteSource) {
         if (!source.delete() && (logger != null)) {
           logger.info("Unable to delete {}.", source.toString());

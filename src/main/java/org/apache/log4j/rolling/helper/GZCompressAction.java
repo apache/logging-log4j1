@@ -108,14 +108,14 @@ public final class GZCompressAction extends ActionBase {
       GZIPOutputStream gzos = new GZIPOutputStream(fos);
       byte[] inbuf = new byte[8102];
       int n;
-
-      while ((n = fis.read(inbuf)) != -1) {
-        gzos.write(inbuf, 0, n);
+      try{
+    	  while ((n = fis.read(inbuf)) != -1) {
+    	        gzos.write(inbuf, 0, n);
+    	  }
+      }finally{
+    	  gzos.close();
+          fis.close();
       }
-
-      gzos.close();
-      fis.close();
-
       if (deleteSource) {
         if (!source.delete() && (logger != null)) {
           logger.info("Unable to delete {}.", source.toString());
