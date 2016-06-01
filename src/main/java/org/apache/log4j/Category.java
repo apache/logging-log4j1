@@ -195,7 +195,7 @@ public class Category implements ULogger, AppenderAttachable {
   }
 
   /**
-   * Call the appenders in the hierrachy starting at <code>this</code>.  If no
+   * Call the appenders in the hierarchy starting at <code>this</code>.  If no
    * appenders could be found, emit a warning.
    *
    * <p>
