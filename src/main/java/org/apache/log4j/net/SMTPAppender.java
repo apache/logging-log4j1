@@ -102,6 +102,10 @@ public class SMTPAppender extends AppenderSkeleton
   private int bufferSize = 512;
   private boolean locationInfo = false;
   private boolean sendOnClose = false;
+  
+  private long lastSendTime = 0;
+  private int sendMailInterval = 60;//默认发送邮件的间隔是60s
+  
 
   protected CyclicBuffer cb = new CyclicBuffer(bufferSize);
   protected Message msg;
@@ -414,7 +418,13 @@ public class SMTPAppender extends AppenderSkeleton
       msg.setContent(mp);
 
       msg.setSentDate(new Date());
-      Transport.send(msg);
+      
+      long sendTime = System.currentTimeMillis();
+      //LogLog.warn("sendTime:"+sendTime+", lastSendTime:"+lastSendTime+", sendMailInterval:"+sendMailInterval);
+      if((sendTime - lastSendTime) / 1000 > sendMailInterval){
+    	  Transport.send(msg);
+    	  lastSendTime = sendTime;
+      }
     } catch(MessagingException e) {
       LogLog.error("Error occured while sending e-mail notification.", e);
     } catch(RuntimeException e) {
@@ -770,6 +780,15 @@ public class SMTPAppender extends AppenderSkeleton
      */
   public final void setSendOnClose(final boolean val) {
         sendOnClose = val;
+  }
+
+  
+  public int getSendMailInterval() {
+	return sendMailInterval;
+  }
+
+  public void setSendMailInterval(int sendMailInterval) {
+	this.sendMailInterval = sendMailInterval;
   }
 
 }
