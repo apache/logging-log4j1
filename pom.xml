@@ -379,6 +379,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
           <excludedocfilessubdir>.svn</excludedocfilessubdir>
           <encoding>UTF-8</encoding>
           <docEncoding>UTF-8</docEncoding>
+          <additionalparam>-Xdoclint:none</additionalparam>
         </configuration>
         <executions>
           <execution>
