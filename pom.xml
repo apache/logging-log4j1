@@ -54,7 +54,7 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
   </mailingLists>
   <licenses>
     <license>
-      <name>The Apache Software License, Version 2.0</name>
+      <name>Apache License, Version 2.0</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
