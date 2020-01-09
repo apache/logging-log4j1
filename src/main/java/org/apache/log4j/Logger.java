@@ -54,7 +54,7 @@ public class Logger extends Category {
   */
   static
   public
-  Logger getLogger(String name) {
+  Logger getLoggerID(String name) {
     return LogManager.getLogger(name);
   }
 
@@ -62,7 +62,7 @@ public class Logger extends Category {
    * Shorthand for <code>getLogger(clazz.getName())</code>.
    *
    * @param clazz The name of <code>clazz</code> will be used as the
-   * name of the logger to retrieve.  See {@link #getLogger(String)}
+   * name of the logger to retrieve.  See {@link #getLoggerID(String)}
    * for more detailed information.
    */
   static
