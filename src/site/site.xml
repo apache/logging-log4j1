@@ -78,10 +78,11 @@
             <item name="Conferences" href="http://www.apachecon.com"/>
         </menu>
         <footer>
-            <p> Apache log4j, Apache Extras Companion for Apache log4j, Apache, the Apache feather logo,
+                Copyright © 1999-2021 Apache Software Foundation. Licensed under the Apache Software License, Version 2.0.
+                Apache log4j, Apache Extras Companion for Apache log4j, Apache, the Apache feather logo,
                 the Apache Logging Services project logo, the log4j logo, and the Built by Maven logo are
                 trademarks of The Apache Software Foundation. Oracle and Java are registered trademarks of Oracle and/or its affiliates.
-                Other names may be trademarks of their respective owners.</p>
+                Other names may be trademarks of their respective owners.
         </footer>
     </body>
 </project>

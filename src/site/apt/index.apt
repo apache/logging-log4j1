@@ -13,6 +13,25 @@
 ~~ See the License for the specific language governing permissions and
 ~~ limitations under the License.
 
+Security Vulnerabilities
+
+	A security vulnerability,
+	{{{https://www.cvedetails.com/cve/CVE-2019-17571/}CVE-2019-17571}} has
+	been identified against Log4j 1. Log4j includes a SocketServer that
+	accepts serialized log events and deserializes them without verifying
+	whether the objects are allowed or not. 
+    
+	This can provide an attack vector that can be expoited. Since Log4j 1 is
+	no longer maintained this issue will not be fixed. Users are urged to
+	upgrade to Log4j 2.
+
+Java Version Incompatibilities
+
+	The version detection algorithm changed in Java 9 which causes the MDC
+	not to work properly. See
+	{{{https://blogs.apache.org/logging/entry/moving_on_to_log4j_2}Log4j 1.2 is broken on Java 9}}
+	for details.
+
 Apache log4j\u2122  1.2
 
     Welcome to Apache log4j, a logging library for Java. Apache log4j
