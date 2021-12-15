@@ -73,22 +73,30 @@ except test cases and classes from the "examples" and
 Building log4j
 ==============
 
-log4j (as of 1.2.15) is built with Maven 2.  To rebuild log4j,
-place Maven 2 on the PATH and execute "mvn package".  The resulting
-jar will be placed in the target subdirectory.
+log4j (as of 1.2.18) is built with Maven 3 and JDK 6.
 
-If building with JDK 1.4, one dependency will need to be manually
-installed since its license does not allow it to be placed in the
-online maven repositories.  If not already installed, a build attempt will
-describe where to download and how to install the dependency.  To
-install the dependency:
+To configure your Maven installation to build with JDK 6, provide a
+~/.m2/toolchains.xml file defining an oracle jdk 1.6, for example:
 
-Download JMX 1.2.1 from http://java.sun.com/products/JavaManagement/download.html.
+      <?xml version="1.0" encoding="UTF-8"?>
+      <toolchains>
+         <toolchain>
+            <type>jdk</type>
+            <provides>
+               <version>1.6</version>
+               <vendor>oracle</vendor>
+            </provides>
+            <configuration>
+               <jdkHome>/usr/lib/jvm/java-1.6.0-openjdk-amd64</jdkHome>
+               <!-- <jdkHome>C:\Program Files\Java\jdk1.6.0_45</jdkHome> -->
+            </configuration>
+         </toolchain>
+      </toolchains>
 
-$ jar xf jmx-1_2_1-ri.zip
-$ mvn install:install-file -DgroupId=com.sun.jmx -DartifactId=jmxri \
-          -Dversion=1.2.1 -Dpackaging=jar -Dfile=jmx-1_2_1-bin/lib/jmxri.jar
+Either Oracle JDK 6 or OpenJDK 6 is supported, but our pom expects vendor "oracle".
 
+To rebuild log4j, place Maven 3 on the PATH and execute "mvn package".
+The resulting jar will be placed in the target subdirectory.
 
 The build script will attempt to build NTEventLogAppender.dll if
 MinGW is available on the path.  If the unit tests are run on Windows

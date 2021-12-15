@@ -34,16 +34,13 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
   <packaging>bundle</packaging>
   <name>Apache Log4j</name>
   <version>1.2.18-SNAPSHOT</version>
-  <description>Apache Log4j 1.2</description>
+  <description>Apache Log4j 1.2 (UNMAINTAINED)</description>
   <url>http://logging.apache.org/log4j/1.2/</url>
   <issueManagement>
-    <system>Bugzilla</system>
-    <url>https://issues.apache.org/bugzilla/describecomponents.cgi?product=Log4j</url>
+    <!-- not really, this is for 2.x, but Bugzilla for Log4j is also disabled -->
+    <system>Jira</system>
+    <url>https://issues.apache.org/jira/projects/LOG4J2</url>
   </issueManagement>
-  <ciManagement>
-    <system>Gump</system>
-    <url>http://vmgump.apache.org/gump/public/logging-log4j-12/logging-log4j-12/index.html</url>
-  </ciManagement>
   <inceptionYear>1999</inceptionYear>
   <mailingLists>
     <mailingList>
@@ -51,22 +48,14 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       <subscribe>log4j-user-subscribe@logging.apache.org</subscribe>
       <unsubscribe>log4j-user-unsubscribe@logging.apache.org</unsubscribe>
       <post>log4j-user@logging.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-user/</archive>
-      <otherArchives>
-        <otherArchive>http://marc.info/?l=log4j-user</otherArchive>
-        <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.user</otherArchive>
-      </otherArchives>
+      <archive>https://lists.apache.org/list.html?log4j-user@logging.apache.org</archive>
     </mailingList>
     <mailingList>
       <name>log4j-dev</name>
-      <subscribe>log4j-dev-subscribe@logging.apache.org</subscribe>
-      <unsubscribe>log4j-dev-unsubscribe@logging.apache.org</unsubscribe>
-      <post>log4j-dev@logging.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4j-dev/</archive>
-      <otherArchives>
-        <otherArchive>http://marc.info/?l=log4j-dev</otherArchive>
-        <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
-      </otherArchives>
+      <subscribe>dev-subscribe@logging.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@logging.apache.org</unsubscribe>
+      <post>dev@logging.apache.org</post>
+      <archive>https://lists.apache.org/list.html?dev@logging.apache.org</archive>
     </mailingList>
   </mailingLists>
   <licenses>
@@ -77,9 +66,9 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4j/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4j/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/logging/log4j/trunk</url>
+    <connection>scm:git:https://github.com/apache/log4j</connection>
+    <developerConnection>scm:svn:https://gitbox.apache.org/repos/asf/logging-log4j1.git</developerConnection><!-- todo -->
+    <url>https://gitbox.apache.org/repos/asf/logging-log4j2.git</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
@@ -87,6 +76,26 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
   </organization>
   <build>
     <plugins>
+       <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-toolchains-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>toolchain</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <toolchains>
+            <jdk>
+              <version>1.6</version>
+              <vendor>oracle</vendor>
+            </jdk>
+          </toolchains>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -344,13 +353,16 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
             <version>3.8.1</version>
             <scope>compile</scope>
           </dependency>
-          <dependency>
+          <!--
+            does not seem to be needed if not rebuilding .dll
+            
+            <dependency>
             <groupId>sun.jdk</groupId>
             <artifactId>tools</artifactId>
             <version>1.4.2</version>
             <scope>system</scope>
             <systemPath>${tools.jar}</systemPath>
-          </dependency>
+          </dependency>-->
         </dependencies>
       </plugin>
       <plugin>
@@ -593,4 +605,3 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
     </site>
   </distributionManagement>
 </project>
-
