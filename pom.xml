@@ -18,12 +18,7 @@
 <!--
 Usage notes:
 
-To build NTEventLogAppender.dll using MinGW, place mingw\bin on path for Windows or install mingw
-package on other platforms.  Build will execute gcc and windres on Windows and
-i586-mingw32msvc-gcc and i586-mingw32msvc-windres on other platforms.
-
-To build NTEventLogAppender.dll using Microsoft tools, run the appropriate vcvars for the
-target platform and specify -Dntdll_target=msbuild on the mvn command line.
+Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
 
 -->        
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -99,13 +94,14 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
+        <version>3.2.0</version>
         <configuration>
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.5</version>
+        <version>2.22.2</version>
         <configuration>
           <workingDirectory>tests</workingDirectory>
           <reportFormat>plain</reportFormat>
@@ -150,14 +146,14 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
             <include>org/apache/log4j/RFATestCase.java</include>
             <include>org/apache/log4j/varia/ERFATestCase.java</include>
             <include>org/apache/log4j/net/SyslogAppenderTest</include>
-            <include>org/apache/log4j/nt/NTEventLogAppenderTest</include>
+            <!--<include>org/apache/log4j/nt/NTEventLogAppenderTest</include>-->
             <include>org/apache/log4j/net/SocketAppenderTest</include>
           </includes>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.1</version>
+        <version>3.8.1</version>
         <configuration>
           <source>1.4</source>
           <target>1.4</target>
@@ -185,185 +181,44 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
       </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.2</version>
+        <version>3.0.0</version>
         <executions>
-          <!-- generate NTEventLogAppender.dll -->
-          <execution>
-            <phase>process-classes</phase>
-            <id>ntdll</id>
-            <configuration>
-              <tasks>
-                <ant antfile="src/ntdll/build.xml" target="${ntdll_target}">
-                  <property name="target.dir" location="target" />
-                  <property name="classes.dir" location="target/classes" />
-                  <property name="src.dir" location="src/ntdll" />
-                  <property name="jni.include.dir" location="${java.home}/../include" />
-                </ant>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          <!-- create tests/output prior to test run -->
-            <!--
-
-            TODO: several tests are run from tests/build.xml,
-            for example longUnit
-
-            Refactor these tests to run with Surefire
-
-
-          <execution>
-            <phase>test-compile</phase>
-            <id>mkdir_tests_output</id>
-            <configuration>
-              <tasks>
-                <mkdir dir="tests/output" />
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          <execution>
-            <phase>clean</phase>
-            <id>rmdir_tests_output</id>
-            <configuration>
-              <tasks>
-                <delete dir="tests/output" />
-                <delete dir="tests/classes" />
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          <execution>
-            <phase>test</phase>
-            <id>runAll</id>
-            <configuration>
-              <tasks>
-                <ant dir="tests" target="runAll">
-                  <property name="m2_repo" location="${m2_repo}" />
-                  <property name="log4j.jar" location="target/classes" />
-                  <property name="project.lib.home" location="target" />
-                </ant>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          -->
           <!-- release builds will put SVN tags into the SCM page, this changes it back to trunk -->
           <execution>
             <phase>site</phase>
             <id>untag-site</id>
             <configuration>
-              <tasks>
+              <target>
                 <taskdef name="replaceregexp" classname="org.apache.tools.ant.taskdefs.optional.ReplaceRegExp" />
                 <replaceregexp file="target/site/source-repository.html" match="/tags/[^ &quot;'&lt;]*"
                   replace="/trunk" flags="g" />
                 <replaceregexp match="-- Generated by (.*) on .*--" replace="-- Generated by \1 --" flags="g">
                   <fileset dir="target/site/apidocs" includes="**/*.html" />
                 </replaceregexp>
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
           </execution>
-
-            <!--
-
-            TODO: checks out a site from svn. Is that necessary?
-
-          <execution>
-            <phase>post-site</phase>
-            <id>post-site</id>
-            <configuration>
-              <tasks>
-                <ant target="post-site" />
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-
-          -->
-
-
-            <!--
-
-            TODO: this is doable from maven
-
-          <execution>
-            <phase>site-deploy</phase>
-            <id>site-deploy</id>
-            <configuration>
-              <tasks>
-                <ant target="site-deploy" />
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          -->
-
           <execution>
             <id>javadoc.resources</id>
-            <phase>generate-sources</phase>
+            <phase>pre-site</phase>
             <goals>
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <copy todir="${project.build.directory}/apidocs/META-INF">
                   <fileset dir="${basedir}">
                     <include name="LICENSE" />
                     <include name="NOTICE" />
                   </fileset>
                 </copy>
-              </tasks>
+              </target>
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant-nodeps</artifactId>
-            <version>1.6.5</version>
-          </dependency>
-          <dependency>
-            <groupId>ant-contrib</groupId>
-            <artifactId>ant-contrib</artifactId>
-            <version>1.0b2</version>
-          </dependency>
-          <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant-junit</artifactId>
-            <version>1.6.5</version>
-          </dependency>
-          <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>compile</scope>
-          </dependency>
-          <!--
-            does not seem to be needed if not rebuilding .dll
-            
-            <dependency>
-            <groupId>sun.jdk</groupId>
-            <artifactId>tools</artifactId>
-            <version>1.4.2</version>
-            <scope>system</scope>
-            <systemPath>${tools.jar}</systemPath>
-          </dependency>-->
-        </dependencies>
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -381,11 +236,10 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
             </goals>
           </execution>
         </executions>
-
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
+        <version>3.3.1</version>
         <configuration>
           <docfilessubdirs>true</docfilessubdirs>
           <excludedocfilessubdir>.svn</excludedocfilessubdir>
@@ -452,7 +306,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         <plugin>
             <groupId>org.apache.felix</groupId>
             <artifactId>maven-bundle-plugin</artifactId>
-            <version>2.1.0</version>
+            <version>5.1.1</version>
             <extensions>true</extensions>
             <configuration>
                 <instructions>
@@ -472,7 +326,10 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         </plugin>
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.1</version>
+        <version>3.9.1</version>
+        <configuration>
+          <templateFile>${basedir}/src/site/site-template.vm</templateFile>
+        </configuration>
         <executions>
           <execution>
             <phase>package</phase>
@@ -534,7 +391,6 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         </os>
       </activation>
       <properties>
-        <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
         <m2_repo>${user.home}/.m2/repository</m2_repo>
         <ntdll_target>build</ntdll_target>
       </properties>
@@ -545,7 +401,6 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
         <m2_repo>${user.home}/.m2/repository</m2_repo>
         <ntdll_target>build</ntdll_target>
       </properties>
