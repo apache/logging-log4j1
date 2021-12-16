@@ -98,12 +98,10 @@ Either Oracle JDK 6 or OpenJDK 6 is supported, but our pom expects vendor "oracl
 To rebuild log4j, place Maven 3 on the PATH and execute "mvn package".
 The resulting jar will be placed in the target subdirectory.
 
-The build script will attempt to build NTEventLogAppender.dll if
-MinGW is available on the path.  If the unit tests are run on Windows
-without NTEventLogAppender.dll, many warnings of the missing DLL
-will be generated.  An installer for MinGW on Windows is
-available for download at http://sourceforge.net/project/showfiles.php?group_id=2435.
-MinGW is also available through the package managers of many Linux distributions.
+The main maven build will no longer automatically attempt to build
+NTEventLogAppender.dll or NTEventLogAppender.amd64.dll. To rebuild these
+files see src/ntdll/build.xml, and check in new versions into
+src/main/resources.
 
 In case of problems send an e-mail note to
 log4j-user@logging.apache.org.  Please do not directly e-mail any

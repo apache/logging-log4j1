@@ -33,6 +33,7 @@
 				<include>KEYS</include>
 				<include>LICENSE</include>
 				<include>NOTICE</include>
+				<include>README.md</include>
 				<include>contribs/**</include>
 				<include>examples/**</include>
 				<include>src/assembly/**</include>
@@ -52,17 +53,17 @@
 			</includes>
 		</fileSet>
 	</fileSets>
-        <files>
-        	<file>
-		   <source>target/log4j-${project.version}.jar</source>
-                </file>
-                <file>
-                   <source>target/NTEventLogAppender.dll</source>
-                   <fileMode>0755</fileMode>
-                </file>
-                <file>
-                   <source>NTEventLogAppender.amd64.dll</source>
-                   <fileMode>0755</fileMode>
-                </file>
-        </files>
+	<files>
+		<file>
+			<source>target/log4j-${project.version}.jar</source>
+		</file>
+		<file>
+			<source>NTEventLogAppender.dll</source>
+			<fileMode>0755</fileMode>
+		</file>
+		<file>
+			<source>NTEventLogAppender.amd64.dll</source>
+			<fileMode>0755</fileMode>
+		</file>
+	</files>
 </assembly>

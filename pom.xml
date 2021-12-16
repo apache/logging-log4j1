@@ -20,7 +20,7 @@ Usage notes:
 
 Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
 
--->        
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -32,9 +32,8 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
   <description>Apache Log4j 1.2 (UNMAINTAINED)</description>
   <url>http://logging.apache.org/log4j/1.2/</url>
   <issueManagement>
-    <!-- not really, this is for 2.x, but Bugzilla for Log4j is also disabled -->
-    <system>Jira</system>
-    <url>https://issues.apache.org/jira/projects/LOG4J2</url>
+    <system>GitHub</system>
+    <url>https://github.com/apache/log4j/issues</url>
   </issueManagement>
   <inceptionYear>1999</inceptionYear>
   <mailingLists>
@@ -62,13 +61,17 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
   </licenses>
   <scm>
     <connection>scm:git:https://github.com/apache/log4j</connection>
-    <developerConnection>scm:svn:https://gitbox.apache.org/repos/asf/logging-log4j1.git</developerConnection><!-- todo -->
-    <url>https://gitbox.apache.org/repos/asf/logging-log4j2.git</url>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j1.git</developerConnection><!-- todo -->
+    <url>https://gitbox.apache.org/repos/asf/logging-log4j1.git</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
     <url>http://www.apache.org</url>
   </organization>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
   <build>
     <plugins>
        <plugin>
@@ -98,6 +101,49 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
         <configuration>
           <encoding>UTF-8</encoding>
         </configuration>
+        <executions>
+          <execution>
+            <id>javadoc.resources</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/apidocs/META-INF</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}</directory>
+                  <filtering>false</filtering>
+                  <includes>
+                    <include>LICENSE</include>
+                    <include>NOTICE</include>
+                    <include>README.md</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ntdll.resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}</directory>
+                  <filtering>false</filtering>
+                  <includes>
+                    <include>NTEventLogAppender.dll</include>
+                    <include>NTEventLogAppender.amd64.dll</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -105,8 +151,9 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
         <configuration>
           <workingDirectory>tests</workingDirectory>
           <reportFormat>plain</reportFormat>
-          <forkMode>pertest</forkMode>
+          <forkMode>pertest</forkMode><!-- deprecated, but tests fail when changing the setting -->
           <skip>false</skip>
+          <argLine>-Djava.library.path=${project.basedir}</argLine>
           <includes>
             <include>org/apache/log4j/LevelTest.java</include>
             <include>org/apache/log4j/PriorityTest.java</include>
@@ -146,7 +193,7 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
             <include>org/apache/log4j/RFATestCase.java</include>
             <include>org/apache/log4j/varia/ERFATestCase.java</include>
             <include>org/apache/log4j/net/SyslogAppenderTest</include>
-            <!--<include>org/apache/log4j/nt/NTEventLogAppenderTest</include>-->
+            <include>org/apache/log4j/nt/NTEventLogAppenderTest</include>
             <include>org/apache/log4j/net/SocketAppenderTest</include>
           </includes>
         </configuration>
@@ -162,7 +209,7 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3</version>
+        <version>3.2.0</version>
         <configuration>
           <archive>
             <manifestSections>
@@ -183,15 +230,12 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
         <artifactId>maven-antrun-plugin</artifactId>
         <version>3.0.0</version>
         <executions>
-          <!-- release builds will put SVN tags into the SCM page, this changes it back to trunk -->
           <execution>
             <phase>site</phase>
             <id>untag-site</id>
             <configuration>
               <target>
                 <taskdef name="replaceregexp" classname="org.apache.tools.ant.taskdefs.optional.ReplaceRegExp" />
-                <replaceregexp file="target/site/source-repository.html" match="/tags/[^ &quot;'&lt;]*"
-                  replace="/trunk" flags="g" />
                 <replaceregexp match="-- Generated by (.*) on .*--" replace="-- Generated by \1 --" flags="g">
                   <fileset dir="target/site/apidocs" includes="**/*.html" />
                 </replaceregexp>
@@ -201,41 +245,17 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
               <goal>run</goal>
             </goals>
           </execution>
-          <execution>
-            <id>javadoc.resources</id>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <copy todir="${project.build.directory}/apidocs/META-INF">
-                  <fileset dir="${basedir}">
-                    <include name="LICENSE" />
-                    <include name="NOTICE" />
-                  </fileset>
-                </copy>
-              </target>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-5</version>
+        <version>3.3.0</version>
         <configuration>
           <descriptors>
             <descriptor>src/assembly/bin.xml</descriptor>
           </descriptors>
           <appendAssemblyId>false</appendAssemblyId>
         </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>assembly</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -244,7 +264,6 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
           <docfilessubdirs>true</docfilessubdirs>
           <excludedocfilessubdir>.svn</excludedocfilessubdir>
           <encoding>UTF-8</encoding>
-          <docEncoding>UTF-8</docEncoding>
         </configuration>
         <executions>
           <execution>
@@ -264,15 +283,14 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
       </plugin>
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.0-beta-9</version>
-        <!-- Bug MRELEASE-273 has been throwing NPE during release:perform, typically after deploy so this places it last. -->
+        <version>3.0.0-M4</version>
         <configuration>
-          <goals>package site-deploy assembly:attached deploy</goals>
+          <goals>package site-deploy assembly:single deploy</goals>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.1</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <goals>
@@ -281,20 +299,20 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
           </execution>
         </executions>
       </plugin>
-      <!-- clirr:check will fail with NullPointerException due to missing javax.jms.MessageListener, however it will trigger 
+      <!-- clirr:check will fail with NullPointerException due to missing javax.jms.MessageListener, however it will trigger
         download of supporting components which can allow "ant clirr" to succeed. Could possibly run on a JavaEE platform. -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>clirr-maven-plugin</artifactId>
-        <version>2.2.2</version>
+        <version>2.8</version>
         <configuration>
           <comparisonVersion>1.2.15</comparisonVersion>
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>rat-maven-plugin</artifactId>
-        <version>1.0-alpha-3</version>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.13</version>
         <configuration>
           <excludes>
             <exclude>tests/witness/**</exclude>
@@ -330,17 +348,23 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
         <configuration>
           <templateFile>${basedir}/src/site/site-template.vm</templateFile>
         </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>site</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
     <testSourceDirectory>tests/src/java</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+      </resource>
+      <resource>
+        <targetPath>META-INF</targetPath>
+        <filtering>false</filtering>
+        <directory>${project.basedir}</directory>
+        <includes>
+          <include>LICENSE</include>
+          <include>NOTICE</include>
+        </includes>
+      </resource>
+    </resources>
     <testResources>
       <testResource>
         <directory>tests/resources</directory>
@@ -351,27 +375,24 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
     <plugins>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.4</version>
+        <version>3.1.2</version>
         <reportSets>
           <reportSet>
             <reports>
               <report>scm</report>
               <report>dependencies</report>
-              <report>cim</report>
-              <report>issue-tracking</report>
-              <report>mailing-list</report>
-              <report>license</report>
+              <report>mailing-lists</report>
             </reports>
           </reportSet>
         </reportSets>
       </plugin>
       <plugin>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.1</version>
+        <version>3.1.1</version>
       </plugin>
       <plugin>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.12.1</version>
         <reportSets>
           <reportSet>
             <reports>
@@ -382,44 +403,13 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
       </plugin>
     </plugins>
   </reporting>
-  <profiles>
-    <profile>
-      <id>mac</id>
-      <activation>
-        <os>
-          <family>mac</family>
-        </os>
-      </activation>
-      <properties>
-        <m2_repo>${user.home}/.m2/repository</m2_repo>
-        <ntdll_target>build</ntdll_target>
-      </properties>
-    </profile>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <m2_repo>${user.home}/.m2/repository</m2_repo>
-        <ntdll_target>build</ntdll_target>
-      </properties>
-    </profile>
-  </profiles>
-  <repositories>
-    <repository>
-      <id>maven2-repository.dev.java.net</id>
-      <name>Java.net Repository for Maven</name>
-      <url>http://download.java.net/maven/2/</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4.3</version>
+      <groupId>jakarta.mail	</groupId>
+      <artifactId>jakarta.mail-api</artifactId>
+      <version>2.0.1</version>
       <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.openejb</groupId>
@@ -428,8 +418,6 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
-    <!-- the following dependency is not needed on JDK 1.5 and higher <dependency> <groupId>com.sun.jmx</groupId> <artifactId>jmxri</artifactId> 
-      <version>1.2.1</version> <optional>true</optional> </dependency> -->
     <dependency>
       <groupId>oro</groupId>
       <artifactId>oro</artifactId>
