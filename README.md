@@ -16,4 +16,4 @@ For users that cannot upgrade to Log4j 2.x, a somewhat-secured version of Log4j 
 
 ## Changes in 1.2.18
 
-* ...
+See the [Changes Report](https://logging.apache.org/log4j/1.2/changes-report.html) for a detailed list of changes. This file is generated from [changes.xml](src/changes/changes.xml).
