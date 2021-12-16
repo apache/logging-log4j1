@@ -17,81 +17,31 @@
 
 package org.apache.log4j.net;
 
-import java.net.ServerSocket;
-import java.net.Socket;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.xml.DOMConfigurator;
-
-
 /**
- *  A simple {@link SocketNode} based server.
+ *  A simple {@link SocketNode} based server in Log4j up to 1.2.17.
  *
-   <pre>
-   <b>Usage:</b> java org.apache.log4j.net.SimpleSocketServer port configFile
-
-   where <em>port</em> is a port number where the server listens and
-   <em>configFile</em> is a configuration file fed to the {@link
-   PropertyConfigurator} or to {@link DOMConfigurator} if an XML file.
-   </pre>
-  *
-  * @author  Ceki G&uuml;lc&uuml;
-  *
-  *  @since 0.8.4 
-  * */
+ *  Changed in 1.2.18+ to complain about its use and do nothing else.
+ *  See <a href="https://logging.apache.org/log4j/1.2/">the log4j 1.2 homepage</a>
+ *  for more information on why JMS is disabled since 1.2.18.
+ *
+ *  @author  Ceki G&uuml;lc&uuml;
+ *  @since 0.8.4
+ */
 public class SimpleSocketServer  {
 
-  static Logger cat = Logger.getLogger(SimpleSocketServer.class);
-
-  static int port;
+  static final String SOCKET_SERVER_UNSUPPORTED =
+      "ERROR-LOG4J-NETWORKING-UNSUPPORTED: SimpleSocketServer unsupported!" +
+      " This is a breaking change in Log4J >=1.2.18. Stop using this class!";
 
   public
   static
   void main(String argv[]) {
-    if(argv.length == 2) {
-      init(argv[0], argv[1]);
-    } else {
-      usage("Wrong number of arguments.");
-    }
-    
-    try {
-      cat.info("Listening on port " + port);
-      ServerSocket serverSocket = new ServerSocket(port);
-      while(true) {
-	cat.info("Waiting to accept a new client.");
-	Socket socket = serverSocket.accept();
-	cat.info("Connected to client at " + socket.getInetAddress());
-	cat.info("Starting new socket node.");
-	new Thread(new SocketNode(socket,
-				  LogManager.getLoggerRepository()),"SimpleSocketServer-" + port).start();
-      }
-    } catch(Exception e) {
-      e.printStackTrace();
-    }
+      usage();
   }
 
-
-  static void  usage(String msg) {
-    System.err.println(msg);
-    System.err.println(
-      "Usage: java " +SimpleSocketServer.class.getName() + " port configFile");
+  static void usage() {
+    System.err.println(SOCKET_SERVER_UNSUPPORTED);
     System.exit(1);
   }
 
-  static void init(String portStr, String configFile) {
-    try {
-      port = Integer.parseInt(portStr);
-    } catch(java.lang.NumberFormatException e) {
-      e.printStackTrace();
-      usage("Could not interpret port number ["+ portStr +"].");
-    }
-   
-    if(configFile.endsWith(".xml")) {
-      DOMConfigurator.configure(configFile);
-    } else {
-      PropertyConfigurator.configure(configFile);
-    }
-  }
 }

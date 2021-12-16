@@ -18,136 +18,46 @@
 package org.apache.log4j.net;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.xml.DOMConfigurator;
 
-import javax.jms.JMSException;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
-import javax.jms.Topic;
-import javax.jms.TopicConnection;
-import javax.jms.TopicConnectionFactory;
-import javax.jms.TopicSession;
-import javax.jms.TopicSubscriber;
 import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 /**
  * A simple application that consumes logging events sent by a {@link
- * JMSAppender}.
+ * JMSAppender} in Log4j up to 1.2.17.
  *
+ * Changed in 1.2.18+ to complain about its use and do nothing else.
+ * See <a href="https://logging.apache.org/log4j/1.2/">the log4j 1.2 homepage</a>
+ * for more information on why JMS is disabled since 1.2.18.
  *
  * @author Ceki G&uuml;lc&uuml; 
- * */
+ */
 public class JMSSink implements javax.jms.MessageListener {
 
   static Logger logger = Logger.getLogger(JMSSink.class);
 
   static public void main(String[] args) throws Exception {
-    if(args.length != 5) {
-      usage("Wrong number of arguments.");
-    }
-    
-    String tcfBindingName = args[0];
-    String topicBindingName = args[1];
-    String username = args[2];
-    String password = args[3];
-    
-    
-    String configFile = args[4];
-
-    if(configFile.endsWith(".xml")) {
-      DOMConfigurator.configure(configFile);
-    } else {
-      PropertyConfigurator.configure(configFile);
-    }
-    
-    new JMSSink(tcfBindingName, topicBindingName, username, password);
-
-    BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-    // Loop until the word "exit" is typed
-    System.out.println("Type \"exit\" to quit JMSSink.");
-    while(true){
-      String s = stdin.readLine( );
-      if (s.equalsIgnoreCase("exit")) {
-	System.out.println("Exiting. Kill the application if it does not exit "
-			   + "due to daemon threads.");
-	return; 
-      }
-    } 
+    usage();
   }
 
-  public JMSSink( String tcfBindingName, String topicBindingName, String username,
-		  String password) {
-    
-    try {
-      Context ctx = new InitialContext();
-      TopicConnectionFactory topicConnectionFactory;
-      topicConnectionFactory = (TopicConnectionFactory) lookup(ctx,
-                                                               tcfBindingName);
-
-      TopicConnection topicConnection =
-	                        topicConnectionFactory.createTopicConnection(username,
-									     password);
-      topicConnection.start();
-
-      TopicSession topicSession = topicConnection.createTopicSession(false,
-                                                       Session.AUTO_ACKNOWLEDGE);
-
-      Topic topic = (Topic)ctx.lookup(topicBindingName);
-
-      TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
-    
-      topicSubscriber.setMessageListener(this);
-
-    } catch(JMSException e) {
-      logger.error("Could not read JMS message.", e);
-    } catch(NamingException e) {
-      logger.error("Could not read JMS message.", e);
-    } catch(RuntimeException e) {
-      logger.error("Could not read JMS message.", e);
-    }
+  /** @noinspection unused*/
+  public JMSSink(String tcfBindingName, String topicBindingName, String username,
+                 String password) {
+    logger.error(JMSAppender.JMS_UNSUPPORTED);
   }
 
   public void onMessage(javax.jms.Message message) {
-    LoggingEvent event;
-    Logger remoteLogger;
-
-    try {
-      if(message instanceof  ObjectMessage) {
-	ObjectMessage objectMessage = (ObjectMessage) message;
-	event = (LoggingEvent) objectMessage.getObject();
-	remoteLogger = Logger.getLogger(event.getLoggerName());
-	remoteLogger.callAppenders(event);
-      } else {
-	logger.warn("Received message is of type "+message.getJMSType()
-		    +", was expecting ObjectMessage.");
-      }      
-    } catch(JMSException jmse) {
-      logger.error("Exception thrown while processing incoming message.", 
-		   jmse);
-    }
+    logger.error(JMSAppender.JMS_UNSUPPORTED);
   }
 
-
+  /** @noinspection unused*/
   protected static Object lookup(Context ctx, String name) throws NamingException {
-    try {
-      return ctx.lookup(name);
-    } catch(NameNotFoundException e) {
-      logger.error("Could not find name ["+name+"].");
-      throw e;
-    }
+    logger.error(JMSAppender.JMS_UNSUPPORTED);
+    throw new NamingException(JMSAppender.JMS_UNSUPPORTED);
   }
 
-  static void usage(String msg) {
-    System.err.println(msg);
-    System.err.println("Usage: java " + JMSSink.class.getName()
-            + " TopicConnectionFactoryBindingName TopicBindingName username password configFile");
+  static void usage() {
+    System.err.println(JMSAppender.JMS_UNSUPPORTED);
     System.exit(1);
   }
 }

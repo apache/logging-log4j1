@@ -179,7 +179,6 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
             <include>org/apache/log4j/xml/CustomLevelTestCase.java</include>
             <include>org/apache/log4j/customLogger/XLoggerTestCase.java</include>
             <!-- DefaultInit -->
-            <!-- SocketServer -->
             <include>org/apache/log4j/xml/XMLLayoutTestCase.java</include>
             <include>org/apache/log4j/xml/AsyncAppenderTestCase.java</include>
             <include>org/apache/log4j/varia/LevelMatchFilterTestCase.java</include>
