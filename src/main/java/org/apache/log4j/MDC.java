@@ -72,9 +72,7 @@ public class MDC {
 
     private MDC() {
         java1 = Loader.isJava1();
-        if (!java1) {
-            tlm = new ThreadLocalMap();
-        }
+        tlm = new ThreadLocalMap();
 
         try {
             removeMethod = ThreadLocal.class.getMethod("remove", null);

@@ -32,6 +32,8 @@ Java Version Incompatibilities
 	{{{https://blogs.apache.org/logging/entry/moving_on_to_log4j_2}Log4j 1.2 is broken on Java 9}}
 	for details.
 
+	Switch to Log4J >=1.2.18 to get MDC to work.
+
 Apache log4j\u2122  1.2
 
     Welcome to Apache log4j, a logging library for Java. Apache log4j

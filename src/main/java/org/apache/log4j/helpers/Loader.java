@@ -33,22 +33,12 @@ public class Loader  {
 
   static final String TSTR = "Caught Exception while in Loader.getResource. This may be innocuous.";
 
-  // We conservatively assume that we are running under Java 1.x
-  static private boolean java1 = true;
+  // We are on java 1.2+ since we compile with source/target >1.4
+  static private final boolean java1 = false;
   
   static private boolean ignoreTCL = false;
   
   static {
-    String prop = OptionConverter.getSystemProperty("java.version", null);
-    
-    if(prop != null) {
-      int i = prop.indexOf('.');
-      if(i != -1) {	
-	if(prop.charAt(i+1) != '1') {
-        java1 = false;
-    }
-      } 
-    }
     String ignoreTCLProp = OptionConverter.getSystemProperty("log4j.ignoreTCL", null);
     if(ignoreTCLProp != null) {
       ignoreTCL = OptionConverter.toBoolean(ignoreTCLProp, true);      
