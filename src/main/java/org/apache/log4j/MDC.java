@@ -53,7 +53,7 @@ import java.util.Hashtable;
  * }
  * </pre>
  *
- * <p>Please also see: {@link http://logging.apache.org/log4j/1.2/faq.html#mdcmemoryleak}</p>
+ * <p>Please also see: <a href="http://logging.apache.org/log4j/1.2/faq.html#mdcmemoryleak">Memory leak FAQ</a>.</p>
  *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.2
