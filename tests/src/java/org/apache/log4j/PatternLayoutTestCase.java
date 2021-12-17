@@ -18,22 +18,12 @@
 package org.apache.log4j;
 
 import junit.framework.TestCase;
-import org.apache.log4j.util.AbsoluteDateAndTimeFilter;
-import org.apache.log4j.util.AbsoluteTimeFilter;
-import org.apache.log4j.util.Compare;
-import org.apache.log4j.util.ControlFilter;
-import org.apache.log4j.util.Filter;
-import org.apache.log4j.util.ISO8601Filter;
-import org.apache.log4j.util.JunitTestRunnerFilter;
-import org.apache.log4j.util.LineNumberFilter;
-import org.apache.log4j.util.RelativeTimeFilter;
-import org.apache.log4j.util.SunReflectFilter;
-import org.apache.log4j.util.Transformer;
+import org.apache.log4j.util.*;
 
 public class PatternLayoutTestCase extends TestCase {
 
-  static String TEMP = "output/temp";
-  static String FILTERED = "output/filtered";
+  static String TEMP = TestFile.temp(PatternLayoutTestCase.class);
+  static String FILTERED = TestFile.filtered(PatternLayoutTestCase.class);
 
   Logger root; 
   Logger logger;

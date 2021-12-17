@@ -31,7 +31,7 @@ import junit.framework.Test;
 */
 public class XLoggerTestCase extends TestCase {
 
-  static String FILTERED = "output/filtered";
+  static String FILTERED = TestFile.filtered(XLoggerTestCase.class);
   static XLogger logger = (XLogger) XLogger.getLogger(XLoggerTestCase.class);
 
   public XLoggerTestCase(String name){

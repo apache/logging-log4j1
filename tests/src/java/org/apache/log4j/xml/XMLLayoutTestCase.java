@@ -24,21 +24,14 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
-import org.apache.log4j.util.Compare;
-import org.apache.log4j.util.Filter;
-import org.apache.log4j.util.JunitTestRunnerFilter;
-import org.apache.log4j.util.LineNumberFilter;
-import org.apache.log4j.util.SunReflectFilter;
-import org.apache.log4j.util.Transformer;
-import org.apache.log4j.util.XMLLineAttributeFilter;
-import org.apache.log4j.util.XMLTimestampFilter;
+import org.apache.log4j.util.*;
 
 import java.util.Hashtable;
 
 public class XMLLayoutTestCase extends TestCase {
 
-  static String TEMP = "output/temp";
-  static String FILTERED = "output/filtered";
+  static String TEMP = TestFile.temp(XMLLayoutTestCase.class);
+  static String FILTERED = TestFile.filtered(XMLLayoutTestCase.class);
 
   Logger root; 
   Logger logger;

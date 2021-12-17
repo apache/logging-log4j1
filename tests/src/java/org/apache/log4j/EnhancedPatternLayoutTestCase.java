@@ -18,17 +18,7 @@
 package org.apache.log4j;
 
 import junit.framework.TestCase;
-import org.apache.log4j.util.AbsoluteDateAndTimeFilter;
-import org.apache.log4j.util.AbsoluteTimeFilter;
-import org.apache.log4j.util.Compare;
-import org.apache.log4j.util.ControlFilter;
-import org.apache.log4j.util.Filter;
-import org.apache.log4j.util.ISO8601Filter;
-import org.apache.log4j.util.EnhancedJunitTestRunnerFilter;
-import org.apache.log4j.util.EnhancedLineNumberFilter;
-import org.apache.log4j.util.RelativeTimeFilter;
-import org.apache.log4j.util.SunReflectFilter;
-import org.apache.log4j.util.Transformer;
+import org.apache.log4j.util.*;
 import org.apache.log4j.MDCOrderFilter;
 import org.apache.log4j.spi.ThrowableInformation;
 
@@ -40,8 +30,8 @@ import java.io.*;
 
 
 public class EnhancedPatternLayoutTestCase extends TestCase {
-  static String TEMP = "output/temp";
-  static String FILTERED = "output/filtered";
+  static String TEMP = TestFile.temp(EnhancedPatternLayoutTestCase.class);
+  static String FILTERED = TestFile.filtered(EnhancedPatternLayoutTestCase.class);
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*\\)";
   static String EXCEPTION3 = "\\s*at .*\\((Native Method|Unknown Source)\\)";
