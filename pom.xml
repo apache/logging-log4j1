@@ -371,7 +371,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
         </executions>
 
       </plugin>
-<!--      <plugin>
+      <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.7</version>
         <configuration>
@@ -395,7 +395,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
             </goals>
           </execution>
         </executions>
-      </plugin>-->
+      </plugin>
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <version>2.0-beta-9</version>
@@ -458,7 +458,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
                 </instructions>
             </configuration>
         </plugin>
-<!--      <plugin>
+      <plugin>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.1</version>
         <executions>
@@ -469,7 +469,7 @@ target platform and specify -Dntdll_target=msbuild on the mvn command line.
             </goals>
           </execution>
         </executions>
-      </plugin>-->
+      </plugin>
     </plugins>
     <testSourceDirectory>tests/src/java</testSourceDirectory>
     <testResources>
