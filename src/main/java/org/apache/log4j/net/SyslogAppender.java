@@ -37,6 +37,9 @@ import org.apache.log4j.spi.LoggingEvent;
 /**
     Use SyslogAppender to send log messages to a remote syslog daemon.
 
+    Since Log4J 1.2.18, will log a warning if the remote syslog daemon
+    is not a local loopback (127.x.x.x or ::1/128).
+
     @author Ceki G&uuml;lc&uuml;
     @author Anders Kristensen
  */

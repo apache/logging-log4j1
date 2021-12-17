@@ -17,17 +17,9 @@
 
 package org.apache.log4j.net;
 
-import java.io.File;
-import java.net.InetAddress;
-import java.util.Hashtable;
+import org.apache.log4j.helpers.LogLog;
 
-import org.apache.log4j.Hierarchy;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.spi.LoggerRepository;
-import org.apache.log4j.spi.RootLogger;
+import java.io.File;
 
 
 /**
@@ -45,9 +37,7 @@ public class SocketServer  {
 
   static final String SOCKET_SERVER_UNSUPPORTED =
       "ERROR-LOG4J-NETWORKING-UNSUPPORTED: SocketServer unsupported!" +
-      " This is a breaking change in Log4J >=1.2.18. Stop using this class!";
-
-  static Logger cat = Logger.getLogger(SocketServer.class);
+      " This is a breaking change in Log4J 1 >=1.2.18. Stop using this class!";
 
   public
   static
@@ -65,6 +55,6 @@ public class SocketServer  {
   /** @noinspection unused*/
   public
   SocketServer(File directory) {
-    cat.error(SOCKET_SERVER_UNSUPPORTED);
+    LogLog.error(SOCKET_SERVER_UNSUPPORTED);
   }
 }

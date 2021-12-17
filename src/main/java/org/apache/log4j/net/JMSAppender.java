@@ -42,7 +42,7 @@ public class JMSAppender extends AppenderSkeleton {
 
   static final String JMS_UNSUPPORTED =
       "ERROR-LOG4J-NETWORKING-UNSUPPORTED: JMS unsupported!" +
-      " This is a breaking change in Log4J >=1.2.18. Change your config to stop using JMS!";
+      " This is a breaking change in Log4J 1 >=1.2.18. Change your config to stop using JMS!";
 
   public
   JMSAppender() {

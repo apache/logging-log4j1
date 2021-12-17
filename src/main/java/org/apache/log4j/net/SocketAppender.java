@@ -97,6 +97,10 @@ import org.apache.log4j.spi.LoggingEvent;
      </ul>
 
     @author  Ceki G&uuml;lc&uuml;
+    @deprecated
+      The server side of the log4j socket protocol has been disabled
+      in Log4j >= 1.2.18. Change your config to ship logs using a
+      modern and secure protocol!
     @since 0.8.4 */
 
 public class SocketAppender extends AppenderSkeleton {

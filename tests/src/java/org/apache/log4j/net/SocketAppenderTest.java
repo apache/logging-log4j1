@@ -56,8 +56,8 @@ public class SocketAppenderTest extends TestCase {
 
     /* Fields */
 
-    private static Logger logger;
-    private static LastOnlyAppender secondary;
+    private Logger logger;
+    private LastOnlyAppender secondary;
 
     /* Inner classes */
 

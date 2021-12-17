@@ -31,7 +31,7 @@ public class SimpleSocketServer  {
 
   static final String SOCKET_SERVER_UNSUPPORTED =
       "ERROR-LOG4J-NETWORKING-UNSUPPORTED: SimpleSocketServer unsupported!" +
-      " This is a breaking change in Log4J >=1.2.18. Stop using this class!";
+      " This is a breaking change in Log4J 1 >=1.2.18. Stop using this class!";
 
   public
   static

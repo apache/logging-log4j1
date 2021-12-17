@@ -39,7 +39,7 @@ public class SocketHubAppender extends AppenderSkeleton {
 
   static final String SOCKET_HUB_UNSUPPORTED =
       "ERROR-LOG4J-NETWORKING-UNSUPPORTED: SocketHubAppender unsupported!" +
-          " This is a breaking change in Log4J >=1.2.18. Stop using this class!";
+          " This is a breaking change in Log4J 1 >=1.2.18. Stop using this class!";
 
   /**
      The default port number of the ServerSocket will be created on. */

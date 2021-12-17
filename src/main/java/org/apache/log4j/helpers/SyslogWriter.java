@@ -92,6 +92,10 @@ public class SyslogWriter extends Writer {
 
     try {      
       this.address = InetAddress.getByName(host);
+      if(!this.address.isLoopbackAddress()) {
+        LogLog.warn("WARN-LOG4J-NETWORKING-REMOTE-SYSLOG: logging to remote syslog host '" +
+            syslogHost + "'! Syslog is an unencrypted protocol.");
+      }
     }
     catch (UnknownHostException e) {
       LogLog.error("Could not find " + host +

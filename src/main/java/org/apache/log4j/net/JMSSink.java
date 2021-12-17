@@ -17,7 +17,7 @@
 
 package org.apache.log4j.net;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.helpers.LogLog;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -34,8 +34,6 @@ import javax.naming.NamingException;
  */
 public class JMSSink implements javax.jms.MessageListener {
 
-  static Logger logger = Logger.getLogger(JMSSink.class);
-
   static public void main(String[] args) throws Exception {
     usage();
   }
@@ -43,16 +41,16 @@ public class JMSSink implements javax.jms.MessageListener {
   /** @noinspection unused*/
   public JMSSink(String tcfBindingName, String topicBindingName, String username,
                  String password) {
-    logger.error(JMSAppender.JMS_UNSUPPORTED);
+    LogLog.error(JMSAppender.JMS_UNSUPPORTED);
   }
 
   public void onMessage(javax.jms.Message message) {
-    logger.error(JMSAppender.JMS_UNSUPPORTED);
+    LogLog.error(JMSAppender.JMS_UNSUPPORTED);
   }
 
-  /** @noinspection unused*/
+  /** @noinspection unused, UnusedReturnValue, SameParameterValue */
   protected static Object lookup(Context ctx, String name) throws NamingException {
-    logger.error(JMSAppender.JMS_UNSUPPORTED);
+    LogLog.error(JMSAppender.JMS_UNSUPPORTED);
     throw new NamingException(JMSAppender.JMS_UNSUPPORTED);
   }
 
