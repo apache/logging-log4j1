@@ -43,22 +43,13 @@ $> sudo apt-get install openjdk-6-jdk
 </pre>
 
 
-<h3>Install Maven 2, Subversion, mingw and xemacs21, openssh-server:</h3>
+<h3>Install Maven 3, Subversion, mingw and xemacs21, openssh-server:</h3>
 
 <pre>
-$> sudo apt-get install maven2 subversion mingw32 xemacs21 openssh-server
+$> sudo apt-get install maven3 git mingw32 xemacs21 openssh-server
 </pre>
 
-<h3>Copy Win32 version of jni_md.h for NTEventLogAppender.dll</h3>
-
-<pre>
-c:\>cd "\Program Files\Java\jdk_1.6.0_16\include\win32
-c:\>scp jni_md.h username@hostname:
-
-$> export JNI_WIN32_INCLUDE_DIR=/home/username
-</pre>
-
-<h3>Signing &amp; Deploying</h3>
+<h3>Outdated: signing &amp; Deploying</h3>
 
 <p>Create a local ssh key with no passphrase to enable 
 "deployment" of site back to the local machine using scp.</p>
@@ -107,12 +98,14 @@ $ ssh -l USERNAME people.apache.org
 $ ssh localhost
 </pre>
 
-<h2>Building release artifacts</h2>
+<h2>Untested: Building release artifacts</h2>
 
-<p>Before you build, please make sure you have a nonblocking editor set as SVN editor. Like:</p>
+<p>Instructions not tested for Log4J 1.2.18. The switch to Maven 3 and git probably mean changes. Make sure to check the INSTALL file at https://github.com/apache/log4j/blob/trunk/INSTALL</p>
+
+<p>Before you build, please make sure you have a nonblocking editor set as GIT editor. Like:</p>
 
 <pre>
-$ export SVN_EDITOR=xemacs
+$ export GIT_EDITOR=xemacs
 </pre>
 
 <p>Other checks:</p>
@@ -122,16 +115,17 @@ $ export SVN_EDITOR=xemacs
     to the date the release candidate is created.</li>
     <li>Please update doap_log4j.rdf to reflect the correct version. Use the same release date as in changes.</li>
 </ul>
-<p>The release artifacts were originally built by:</p>
+
+<p>Untested: the release artifacts might be buildable with:</p>
 
 <pre>
-$> svn co http://svn.apache.org/repos/asf/logging/log4j/trunk log4j
+$> git clone git@github.com:apache/log4j.git
 $> cd log4j
 $> mvn package release:prepare
 $> mvn release:perform
 </pre>
 
-<p>Note: you'll be ask for a SVN tagname. Please use the following pattern: v1.2.17-RC1.</p>
+<p>Note: you'll be ask for a git tagname. Please use the following pattern: v1.2.17-RC1.</p>
 
 <p>
 Attention: this is an non-interactive build. In some cases it is necessary
@@ -140,11 +134,7 @@ to the release plugin commands. This is surely not safe because your password
 can be seen clearly. 
 </p>
 
-<p>Sometimes iz might be necessary to disable keystore on Ubuntu machines when the automatic svn commit fails. To do this, add the following line to .subversion/config in your [auth] section:</p>
-
-<pre>password-stores =</pre>
-
-<p>The release artifacts can be rebuilt by:</p>
+<p>Outdated: The release artifacts can be rebuilt by:</p>
 
 <pre>
 $ mvn release:perform -DconnectionUrl=scm:svn:https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_16
@@ -172,7 +162,7 @@ $ mvn release:perform -DconnectionUrl=scm:svn:https://svn.apache.org/repos/asf/l
 </pre>
 
 
-<p>Building site and artifacts from a tag:</p>
+<p>Outdated: building site and artifacts from a tag:</p>
 
 <pre>
 $ svn co https://svn.apache.org/repos/asf/logging/log4j/tags/v1_2_16
@@ -199,7 +189,7 @@ The staged version can be published to the main public site by executing
 "svn update" in /www/logging.apache.org/log4j/1.2 on people.apache.org.
 </p>
 
-<h2>If a vote has failed</h2>
+<h2>Outdated: If a vote has failed</h2>
 <ul>
     <li>Send a "cancel" note to the mailinglist (usually resend the vote mail with [CANCEL] in subject</li>
     <li>Delete the RC artifacts from:<pre>http://people.apache.org/builds/logging/repo/log4j/log4j/</pre></li>
@@ -207,7 +197,7 @@ The staged version can be published to the main public site by executing
 
 
 
-<h2>If a vote has passed</h2>
+<h2>Outdated: If a vote has passed</h2>
 
 <p>If a RC has passed the vote, these steps are necessary:</p>
 
