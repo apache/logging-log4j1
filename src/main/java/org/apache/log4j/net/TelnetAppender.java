@@ -32,6 +32,7 @@ import java.io.IOException;
    for more information on why JMS is disabled since 1.2.18.
 
    @author <a HREF="mailto:jay@v-wave.com">Jay Funnell</a>
+   @deprecated
    @noinspection unused
 */
 

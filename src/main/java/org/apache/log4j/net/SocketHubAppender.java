@@ -33,6 +33,7 @@ import org.apache.log4j.spi.LoggingEvent;
   for more information on why JMS is disabled since 1.2.18..
 
   @author Mark Womack
+  @deprecated
   @noinspection unused
 */
 public class SocketHubAppender extends AppenderSkeleton {

@@ -36,6 +36,7 @@ import javax.naming.NamingException;
  * for more information on why JMS is disabled since 1.2.18.
  *
  * @author Ceki G&uuml;lc&uuml;
+ * @deprecated
  * @noinspection unused
  */
 public class JMSAppender extends AppenderSkeleton {

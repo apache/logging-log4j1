@@ -36,6 +36,7 @@ import org.apache.log4j.spi.LoggingEvent;
    @author  Ceki G&uuml;lc&uuml;
 
    @since 0.8.4
+   @deprecated
    @noinspection unused
 */
 public class SocketNode implements Runnable {
