@@ -219,15 +219,61 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
           </execution>
         </executions>
       </plugin>
-      <!-- clirr:check will fail with NullPointerException due to missing javax.jms.MessageListener, however it will trigger
-        download of supporting components which can allow "ant clirr" to succeed. Could possibly run on a JavaEE platform. -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>clirr-maven-plugin</artifactId>
-        <version>2.8</version>
+        <!-- based on https://github.com/apache/commons-parent/blob/master/pom.xml -->
+        <groupId>com.github.siom79.japicmp</groupId>
+        <artifactId>japicmp-maven-plugin</artifactId>
+        <version>0.15.4</version>
         <configuration>
-          <comparisonVersion>1.2.15</comparisonVersion>
+          <oldVerson>
+            <dependendency>
+              <groupId>log4j</groupId>
+              <artifactId>log4j</artifactId>
+              <version>1.2.17</version>
+              <type>jar</type>
+            </dependendency>
+          </oldVerson>
+          <newVersion>
+            <file>
+              <path>${project.build.directory}/${project.artifactId}-${project.version}.jar</path>
+            </file>
+          </newVersion>
+          <parameter>
+            <onlyModified>true</onlyModified>
+            <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
+            <breakBuildOnSourceIncompatibleModifications>true</breakBuildOnSourceIncompatibleModifications>
+            <reportOnlyFilename>true</reportOnlyFilename>
+            <ignoreMissingClasses>false</ignoreMissingClasses>
+            <ignoreMissingClassesByRegularExpressions>
+              <ignoreMissingClassesByRegularExpression>javax\.mail\..*</ignoreMissingClassesByRegularExpression>
+            </ignoreMissingClassesByRegularExpressions>
+            <excludes>
+              <!-- 1.2.18 (old) -->
+              <exclude>org.apache.log4j.chainsaw</exclude><!-- removed per issue 49077 -->
+              <exclude>org.apache.log4j.lf5</exclude><!-- removed per issue 49077 -->
+              <exclude>org.apache.log4j.net.SyslogAppender#getTag()</exclude><!-- added per issue 46626 -->
+              <exclude>org.apache.log4j.net.SyslogAppender#setTag(java.lang.String)</exclude><!-- added per issue 46626 -->
+              <exclude>org.apache.log4j.net.TelnetAppender#TelnetAppender(boolean)</exclude><!-- added per issue 46626 -->
+              <exclude>org.apache.log4j.pattern.FormattingInfo#FormattingInfo(boolean, boolean, int, int)</exclude><!-- added per new feature -->
+              <exclude>org.apache.log4j.pattern.FormattingInfo#isRightTruncated()</exclude><!-- added per new feature -->
+
+              <!-- 1.2.18 (security fixes -->
+              <exclude>org.apache.log4j.jmx.Agent</exclude><!-- removed for security -->
+              <exclude>org.apache.log4j.net.JMSSink</exclude><!-- removed for security -->
+              <exclude>org.apache.log4j.net.SimpleSocketServer</exclude><!-- removed for security -->
+              <exclude>org.apache.log4j.net.SocketServer</exclude><!-- removed for security -->
+            </excludes>
+          </parameter>
         </configuration>
+        <executions>
+          <execution>
+            <id>japicmp-verify</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>cmp</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.rat</groupId>
