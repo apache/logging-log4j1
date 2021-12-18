@@ -76,6 +76,8 @@ import java.util.Properties;
 
    Since 1.2.16, SMTP over SSL is supported by setting SMTPProtocol to "smpts".
 
+   Since 1.2.18, warns when using an smtp host that is not the local loopback.
+
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
 public class SMTPAppender extends AppenderSkeleton

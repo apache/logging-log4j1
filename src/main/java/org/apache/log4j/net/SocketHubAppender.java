@@ -30,7 +30,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
   Changed in 1.2.18+ to complain about its use and do nothing else.
   See <a href="https://logging.apache.org/log4j/1.2/">the log4j 1.2 homepage</a>
-  for more information on why JMS is disabled since 1.2.18..
+  for more information on why this class is disabled since 1.2.18..
 
   @author Mark Womack
   @deprecated
