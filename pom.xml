@@ -61,8 +61,8 @@ Building of NTEventLogappender.dll is disabled. Use an older log4j to get it.
   </licenses>
   <scm>
     <connection>scm:git:https://github.com/apache/log4j</connection>
-    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j1.git</developerConnection><!-- todo -->
-    <url>https://gitbox.apache.org/repos/asf/logging-log4j1.git</url>
+    <developerConnection>scm:git:https://github.com/apache/log4j</developerConnection>
+    <url>https://github.com/apache/log4j</url>
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
