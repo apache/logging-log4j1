@@ -20,7 +20,32 @@
     <title>Apache log4j 1.2</title>
   </properties>
   <body>
-    <release version="1.2.18" date="2012-??-??" description="Maintenance release">    
+    <release version="1.2.18" date="2012-??-??" description="Maintenance release">
+       <action>
+        Log4j version 1.2.18 contains several critical security fixes
+        to Log4J 1.2.17. It is designed as a drop-in replacement for
+        Log4J 1.2.17 and earlier versions for users that cannot upgrade
+        to Log4J 2.
+
+        Unsafe features have been removed and software or configurations
+        that was using them will now result in runtime errors.
+
+        For a more detailed discussion, refer to the Log4J 1.2 homepage at:
+
+        https://logging.apache.org/log4j/1.2/
+       </action>
+       <action action="remove" dev="leosimons">Disable socket server in ExternalRollingFileAppender (unencrypted protocol)</action>
+       <action action="remove" dev="leosimons">Disable JDBC use in unsafe JDBCAppender (to prevent possible SQL injection)</action>
+       <action action="remove" dev="leosimons">Disable JMS use in unsafe JMSAppender, delete JMSSink (fixes CVE-2021-4104)</action>
+       <action action="fix" dev="leosimons">Add warnings around unsafe SMTP code in SMTPAppender (change config to fix CVE-2020-9488)</action>
+       <action action="remove" dev="leosimons">Disable some unsafe log4j socket protocol code, delete SocketServer and SimpleSocketServer (fixes CVE-2019-17571)</action>
+       <action action="fix" dev="leosimons">Remove MDC version parsing to enable it on Java 9 and higher</action>
+       <action action="update" dev="leosimons">Clean up and modernize build, use Maven 3</action>
+       <action>
+        The changes listed below were introduced in the unreleased version
+        of log4j 1.2.18, back in 2013. They are not part of the new security
+        fixes made in 2021.
+       </action>
        <action action="update" dev="grobmeier">Merged truncate feature to FormattingInfo from extras</action>
        <action issue="54845" action="fix" dev="ggregory" due-to="Robert Balent">Typo in log4j 1.2 manual</action>
        <action issue="53299" action="update" dev="grobmeier">Simplify log4j build</action>
