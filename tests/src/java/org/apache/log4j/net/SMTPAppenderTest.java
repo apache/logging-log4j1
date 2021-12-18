@@ -58,5 +58,20 @@ public class SMTPAppenderTest extends TestCase {
       SMTPAppender appender = (SMTPAppender) Logger.getRootLogger().getAppender("A1");
       TriggeringEventEvaluator evaluator = appender.getEvaluator();
       assertTrue(evaluator instanceof MockTriggeringEventEvaluator);
+      // SMTP to localhost, so no warning
+  }
+
+  public void testInsecureSMTP() {
+    // SMTP to example.com, warn about SMTP
+    DOMConfigurator.configure("input/xml/smtpAppender2.xml");
+    SMTPAppender appender = (SMTPAppender) Logger.getRootLogger().getAppender("A1");
+    assertNotNull(appender);
+  }
+
+  public void testInsecureSMTPS() {
+    // SMTPS to example.com, warn about SMTPS
+    DOMConfigurator.configure("input/xml/smtpAppender3.xml");
+    SMTPAppender appender = (SMTPAppender) Logger.getRootLogger().getAppender("A1");
+    assertNotNull(appender);
   }
 }

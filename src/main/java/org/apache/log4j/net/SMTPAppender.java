@@ -48,6 +48,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -134,6 +136,8 @@ public class SMTPAppender extends AppenderSkeleton
      recipient, from, etc. */
   public
   void activateOptions() {
+    warnInCaseOfInsecureSMTP();
+
     Session session = createSession();
     msg = new MimeMessage(session);
 
@@ -154,7 +158,29 @@ public class SMTPAppender extends AppenderSkeleton
          ((OptionHandler) evaluator).activateOptions();
      }
   }
-  
+
+  void warnInCaseOfInsecureSMTP() {
+    boolean local = false;
+    if (smtpHost != null) {
+      try {
+        if (InetAddress.getByName(smtpHost).isLoopbackAddress()) {
+          local = true;
+        }
+      } catch (UnknownHostException e) {
+        // hope it'll work out later
+      }
+    }
+    if (!local) {
+      if ("smtps".equals(smtpProtocol)) {
+        LogLog.warn("WARN-LOG4J-NETWORKING-REMOTE-SMTPS: logging to remote SMTPS host '" +
+            smtpHost + "'! Log4J 1.2 cannot verify the host, upgrade to Log4J 2!");
+      } else {
+        LogLog.warn("WARN-LOG4J-NETWORKING-REMOTE-SMTP: logging to remote SMTP host '" +
+            smtpHost + "'! SMTP is an unencrypted protocol.");
+      }
+    }
+  }
+
   /**
    *   Address message.
    *   @param msg message, may not be null.
