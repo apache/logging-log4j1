@@ -44,6 +44,8 @@ import org.apache.log4j.PropertyConfigurator;
 public class Main
     extends JFrame
 {
+    private static final long serialVersionUID = 6679218458268861656L;
+
     /** the default port number to listen on **/
     private static final int DEFAULT_PORT = 4445;
 
