@@ -97,6 +97,10 @@ import org.apache.log4j.spi.LoggingEvent;
      </ul>
 
     @author  Ceki G&uuml;lc&uuml;
+    @deprecated
+      The server side of the log4j socket protocol has been disabled
+      in Log4j >= 1.2.18. Change your config to ship logs using a
+      modern and secure protocol!
     @since 0.8.4 */
 
 public class SocketAppender extends AppenderSkeleton {
@@ -181,8 +185,9 @@ public class SocketAppender extends AppenderSkeleton {
    * #cleanUp} method.
    * */
   synchronized public void close() {
-    if(closed)
-      return;
+    if(closed) {
+        return;
+    }
 
     this.closed = true;
     if (advertiseViaMulticastDNS) {
@@ -216,8 +221,9 @@ public class SocketAppender extends AppenderSkeleton {
   }
 
   void connect(InetAddress address, int port) {
-    if(this.address == null)
-      return;
+    if(this.address == null) {
+        return;
+    }
     try {
       // First, close the previous connection if any.
       cleanUp();
@@ -241,8 +247,9 @@ public class SocketAppender extends AppenderSkeleton {
 
 
   public void append(LoggingEvent event) {
-    if(event == null)
-      return;
+    if(event == null) {
+        return;
+    }
 
     if(address==null) {
       errorHandler.error("No remote host is set for SocketAppender named \""+

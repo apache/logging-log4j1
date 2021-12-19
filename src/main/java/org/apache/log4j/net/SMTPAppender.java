@@ -48,6 +48,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -73,6 +75,8 @@ import java.util.Properties;
    This class has implemented UnrecognizedElementHandler since 1.2.15.
 
    Since 1.2.16, SMTP over SSL is supported by setting SMTPProtocol to "smpts".
+
+   Since 1.2.18, warns when using an smtp host that is not the local loopback.
 
    @author Ceki G&uuml;lc&uuml;
    @since 1.0 */
@@ -134,6 +138,8 @@ public class SMTPAppender extends AppenderSkeleton
      recipient, from, etc. */
   public
   void activateOptions() {
+    warnInCaseOfInsecureSMTP();
+
     Session session = createSession();
     msg = new MimeMessage(session);
 
@@ -154,7 +160,29 @@ public class SMTPAppender extends AppenderSkeleton
          ((OptionHandler) evaluator).activateOptions();
      }
   }
-  
+
+  void warnInCaseOfInsecureSMTP() {
+    boolean local = false;
+    if (smtpHost != null) {
+      try {
+        if (InetAddress.getByName(smtpHost).isLoopbackAddress()) {
+          local = true;
+        }
+      } catch (UnknownHostException e) {
+        // hope it'll work out later
+      }
+    }
+    if (!local) {
+      if ("smtps".equals(smtpProtocol)) {
+        LogLog.warn("WARN-LOG4J-NETWORKING-REMOTE-SMTPS: logging to remote SMTPS host '" +
+            smtpHost + "'! Log4J 1.2 cannot verify the host, upgrade to Log4J 2!");
+      } else {
+        LogLog.warn("WARN-LOG4J-NETWORKING-REMOTE-SMTP: logging to remote SMTP host '" +
+            smtpHost + "'! SMTP is an unencrypted protocol.");
+      }
+    }
+  }
+
   /**
    *   Address message.
    *   @param msg message, may not be null.
@@ -342,8 +370,9 @@ public class SMTPAppender extends AppenderSkeleton
 	  
       StringBuffer sbuf = new StringBuffer();
       String t = layout.getHeader();
-      if(t != null)
-	sbuf.append(t);
+      if(t != null) {
+        sbuf.append(t);
+    }
       int len =  cb.length();
       for(int i = 0; i < len; i++) {
 	//sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));

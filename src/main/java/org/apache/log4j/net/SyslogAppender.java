@@ -17,24 +17,28 @@
 
 package org.apache.log4j.net;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.SyslogQuietWriter;
 import org.apache.log4j.helpers.SyslogWriter;
 import org.apache.log4j.spi.LoggingEvent;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.io.IOException;
-
 // Contributors: Yves Bossel <ybossel@opengets.cl>
 //               Christopher Taylor <cstaylor@pacbell.net>
 
 /**
     Use SyslogAppender to send log messages to a remote syslog daemon.
+
+    Since Log4J 1.2.18, will log a warning if the remote syslog daemon
+    is not a local loopback (127.x.x.x or ::1/128).
 
     @author Ceki G&uuml;lc&uuml;
     @author Anders Kristensen
@@ -44,6 +48,11 @@ public class SyslogAppender extends AppenderSkeleton {
   // copyrighted by the Regents of the University of California
   // I hope nobody at Berkley gets offended.
 
+  /**
+    * Maximum length of a TAG string.
+    */
+  private static final int MAX_TAG_LEN = 32;
+  
   /** Kernel messages */
   final static public int LOG_KERN     = 0;
   /** Random user-level messages */
@@ -93,6 +102,8 @@ public class SyslogAppender extends AppenderSkeleton {
 
   static final String TAB = "    ";
 
+  static final Pattern NOT_ALPHANUM = Pattern.compile("[^\\p{Alnum}]");
+
   // Have LOG_USER as default
   int syslogFacility = LOG_USER;
   String facilityStr;
@@ -108,11 +119,20 @@ public class SyslogAppender extends AppenderSkeleton {
      * @since 1.2.15
      */
   private boolean header = false;
+  
+    /**
+     * The TAG part of the syslog message.
+     * 
+     * @since 1.2.18
+     */
+  private String tag = null;
+  
     /**
      * Date format used if header = true.
      * @since 1.2.15
      */
   private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss ", Locale.ENGLISH);
+  
     /**
      * Host name used to identify messages from this appender.
      * @since 1.2.15
@@ -295,8 +315,9 @@ public class SyslogAppender extends AppenderSkeleton {
   public
   void append(LoggingEvent event) {
 
-    if(!isAsSevereAsThreshold(event.getLevel()))
-      return;
+    if(!isAsSevereAsThreshold(event.getLevel())) {
+        return;
+    }
 
     // We must not attempt to append if sqw is null.
     if(sqw == null) {
@@ -413,8 +434,9 @@ public class SyslogAppender extends AppenderSkeleton {
      @since 0.8.1 */
   public
   void setFacility(String facilityName) {
-    if(facilityName == null)
-      return;
+    if(facilityName == null) {
+        return;
+    }
 
     syslogFacility = getFacility(facilityName);
     if (syslogFacility == -1) {
@@ -508,6 +530,10 @@ public class SyslogAppender extends AppenderSkeleton {
         }
         buf.append(getLocalHostname());
         buf.append(' ');
+        if(this.tag != null) {
+            buf.append(this.tag);
+            buf.append(": ");
+        }
         return buf.toString();
       }
       return "";
