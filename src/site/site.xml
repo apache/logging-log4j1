@@ -38,11 +38,10 @@
 	   <item name="What is log4j?" href="/index.html"/>
        <item name="Download" href="/download.html"/>
 	   <item name="FAQ" href="/faq.html"/>
-	   <item name="Roadmap" href="/roadmap.html"/>
 	</menu>
 
 	<menu name="Community">
-		<item name="Mailing Lists" href="/mail-lists.html"/>
+		<item name="Mailing Lists" href="/mailing-lists.html"/>
 		<item name="Issue Tracking" href="/issue-tracking.html"/>
 		<item name="Blog" href="http://blogs.apache.org/logging/"/>
 	</menu>
@@ -52,7 +51,6 @@
 		<item name="JavaDoc" href="/apidocs/index.html"/>
 		<item name="Publications" href="/publications.html"/>
         <item name="Building" href="/building.html"/>
-		<item name="Wiki" href="http://wiki.apache.org/logging-log4j"/>
 	</menu>
 	
     <menu ref="reports"/> 
