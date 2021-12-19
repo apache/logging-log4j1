@@ -42,6 +42,10 @@ public class NTEventLogAppenderTest extends TestCase {
    *   Simple test of NTEventLogAppender.
    */
   public void testSimple() {
+    if (!System.getProperty("os.name").startsWith("Windows")) {
+      return;
+    }
+
     BasicConfigurator.configure(new NTEventLogAppender());
     Logger logger = Logger.getLogger("org.apache.log4j.nt.NTEventLogAppenderTest");
     int i  = 0;
