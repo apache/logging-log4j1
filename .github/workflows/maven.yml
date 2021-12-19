@@ -1,0 +1,97 @@
+name: Maven CI Build
+
+on: [push]
+
+jobs:
+  JDK6Toolchain:
+    name: Toolchain 1.6, JDK 11, OS ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04, windows-2019, windows-2022]
+      fail-fast: true
+      max-parallel: 2
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Toolchain JDK
+        uses: battila7/jdk-via-jabba@v1
+        with:
+          jdk: zulu@1.6.119
+          javaHomeEnvironmentVariable: TOOLCHAIN_JDK
+          addBinDirectoryToPath: false
+      - name: Configure Maven for Toolchain
+        shell: bash
+        run: |
+          mkdir -p $HOME/.m2 && cat >$HOME/.m2/toolchains.xml <<EOF
+          <?xml version="1.0" encoding="UTF8"?>
+          <toolchains>
+            <toolchain>
+              <type>jdk</type>
+                <provides>
+                  <version>1.6</version>
+                  <vendor>oracle</vendor><!-- definitely a lie -->
+                </provides>
+                <configuration>
+                  <jdkHome>${{ env.TOOLCHAIN_JDK }}</jdkHome>
+                </configuration>
+            </toolchain>
+          </toolchains>
+          EOF
+      - name: Set up Modern JDK for Maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Run maven build
+        run: mvn clean verify site assembly:single -B
+  JDK7Toolchain:
+    name: Toolchain 1.7, JDK 11, OS ubuntu-18.04
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Toolchain JDK
+        uses: battila7/jdk-via-jabba@v1
+        with:
+          jdk: zulu@1.7.292
+          javaHomeEnvironmentVariable: TOOLCHAIN_JDK
+          addBinDirectoryToPath: false
+      - name: Configure Maven for Toolchain
+        shell: bash
+        run: |
+          mkdir -p $HOME/.m2 && cat >$HOME/.m2/toolchains.xml <<EOF
+          <?xml version="1.0" encoding="UTF8"?>
+          <toolchains>
+            <toolchain>
+              <type>jdk</type>
+                <provides>
+                  <version>1.6</version><!-- a little lie -->
+                  <vendor>oracle</vendor><!-- definitely a lie -->
+                </provides>
+                <configuration>
+                  <jdkHome>${{ env.TOOLCHAIN_JDK }}</jdkHome>
+                </configuration>
+            </toolchain>
+          </toolchains>
+          EOF
+      - name: Set up Modern JDK for Maven
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Run maven build
+        run: mvn clean verify -B
+  Modern:
+    name: JDK ${{ matrix.jdk }}, OS ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04, windows-2019, windows-2022]
+        jdk: [8, 11, 17]
+      fail-fast: true
+      max-parallel: 4
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Modern JDK for Maven
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.jdk }}
+    - name: Run maven build
+      run: mvn clean verify -B -P no-toolchain
