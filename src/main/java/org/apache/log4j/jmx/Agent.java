@@ -28,11 +28,11 @@ import java.io.InterruptedIOException;
 
 
 /**
- * Manages an instance of com.sun.jdmk.comm.HtmlAdapterServer which
- * was provided for demonstration purposes in the
- * Java Management Extensions Reference Implementation 1.2.1.
- * This class is provided to maintain compatibility with earlier
- * versions of log4j and use in new code is discouraged.
+ * Manages an instance of com.sun.jdmk.comm.HtmlAdapterServer in Log4j up to 1.2.17.
+ *
+ * Changed in 1.2.18+ to complain about its use and do nothing else.
+ * See <a href="https://logging.apache.org/log4j/1.2/">the log4j 1.2 homepage</a>
+ * for more information on why this class is disabled since 1.2.18.
  *
  * @deprecated
  */
@@ -57,20 +57,10 @@ public class Agent {
      *
      * @since 1.2.16
      * @return new instance.
+     * @deprecated
      */
   private static Object createServer() {
-      Object newInstance = null;
-      try {
-        newInstance = Class.forName(
-                "com.sun.jdmk.comm.HtmlAdapterServer").newInstance();
-      } catch (ClassNotFoundException ex) {
-          throw new RuntimeException(ex.toString());
-      } catch (InstantiationException ex) {
-          throw new RuntimeException(ex.toString());
-      } catch (IllegalAccessException ex) {
-          throw new RuntimeException(ex.toString());
-      }
-      return newInstance;
+    throw new RuntimeException("JMX / HtmlAdapterServer no longer supported");
   }
 
     /**
@@ -78,54 +68,18 @@ public class Agent {
      *
      * @since 1.2.16
      * @param server instance of com.sun.jdmk.comm.HtmlAdapterServer.
+     * @deprecated
      */
   private static void startServer(final Object server) {
-      try {
-          server.getClass().getMethod("start", new Class[0]).
-                  invoke(server, new Object[0]);
-      } catch(InvocationTargetException ex) {
-          Throwable cause = ex.getTargetException();
-          if (cause instanceof RuntimeException) {
-              throw (RuntimeException) cause;
-          } else if (cause != null) {
-              if (cause instanceof InterruptedException
-                      || cause instanceof InterruptedIOException) {
-                  Thread.currentThread().interrupt();
-              }
-              throw new RuntimeException(cause.toString());
-          } else {
-              throw new RuntimeException();
-          }
-      } catch(NoSuchMethodException ex) {
-          throw new RuntimeException(ex.toString());
-      } catch(IllegalAccessException ex) {
-        throw new RuntimeException(ex.toString());
-    }
+    throw new RuntimeException("JMX / HtmlAdapterServer no longer supported");
   }
 
 
     /**
      * Starts instance of HtmlAdapterServer.
      * @deprecated
-      */
+     */
   public void start() {
-
-    MBeanServer server = MBeanServerFactory.createMBeanServer();
-    Object html = createServer();
-
-    try {
-      log.info("Registering HtmlAdaptorServer instance.");
-      server.registerMBean(html, new ObjectName("Adaptor:name=html,port=8082"));
-      log.info("Registering HierarchyDynamicMBean instance.");
-      HierarchyDynamicMBean hdm = new HierarchyDynamicMBean();
-      server.registerMBean(hdm, new ObjectName("log4j:hiearchy=default"));
-    } catch(JMException e) {
-      log.error("Problem while registering MBeans instances.", e);
-      return;
-    } catch(RuntimeException e) {
-      log.error("Problem while registering MBeans instances.", e);
-      return;
-    }
-    startServer(html);
+    throw new RuntimeException("JMX / HtmlAdapterServer no longer supported");
   }
 }
