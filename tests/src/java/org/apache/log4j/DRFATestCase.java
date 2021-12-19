@@ -415,6 +415,7 @@ public class DRFATestCase extends TestCase {
         cal.set(Calendar.MILLISECOND, 0);
         cal.add(Calendar.MINUTE, 1);
         long until = cal.getTime().getTime();
+        System.out.println("Sleep until three seconds into next minute...");
         Thread.sleep(until - now);
         root.info("Hello, World");
         assertTrue(firstFile.exists());
@@ -472,6 +473,7 @@ public class DRFATestCase extends TestCase {
         //
         //   sleep until three seconds into next minute
         //
+        System.out.println("Sleep until three seconds into next minute...");
         Thread.sleep(63000 - (start.getTime() % 60000));
         //
         //  should trigger failed rollover
