@@ -29,6 +29,7 @@
 				<include>*.txt</include>
 				<include>*.sample</include>
 				<include>*.xml</include>
+				<include>README.md</include>
 				<include>INSTALL</include>
 				<include>KEYS</include>
 				<include>LICENSE</include>
