@@ -1,19 +1,3 @@
- Licensed to the Apache Software Foundation (ASF) under one or more
- contributor license agreements.  See the NOTICE file distributed with
- this work for additional information regarding copyright ownership.
- The ASF licenses this file to You under the Apache License, Version 2.0
- (the "License"); you may not use this file except in compliance with
- the License.  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
-
 ===========
 Using log4j
 ===========
@@ -73,32 +57,49 @@ except test cases and classes from the "examples" and
 Building log4j
 ==============
 
-log4j (as of 1.2.15) is built with Maven 2.  To rebuild log4j,
-place Maven 2 on the PATH and execute "mvn package".  The resulting
-jar will be placed in the target subdirectory.
+log4j (as of 1.2.18) is built with Maven 3 and JDK 8 or higher.
 
-If building with JDK 1.4, one dependency will need to be manually
-installed since its license does not allow it to be placed in the
-online maven repositories.  If not already installed, a build attempt will
-describe where to download and how to install the dependency.  To
-install the dependency:
+To build for compatibility with older JDKs (1.4/5/7), set up a Maven
+toolchain JDK with version=1.6 and vendor=oracle. For example set up
+the following configuration in ~/.m2/toolchains.xml:
 
-Download JMX 1.2.1 from http://java.sun.com/products/JavaManagement/download.html.
+      <?xml version="1.0" encoding="UTF-8"?>
+      <toolchains>
+         <toolchain>
+            <type>jdk</type>
+            <provides>
+               <version>1.6</version>
+               <vendor>oracle</vendor>
+            </provides>
+            <configuration>
+               <jdkHome>/usr/lib/jvm/java-1.6.0-openjdk-amd64</jdkHome>
+               <!-- <jdkHome>C:\Program Files\Java\jdk1.6.0_45</jdkHome> -->
+            </configuration>
+         </toolchain>
+      </toolchains>
 
-$ jar xf jmx-1_2_1-ri.zip
-$ mvn install:install-file -DgroupId=com.sun.jmx -DartifactId=jmxri \
-          -Dversion=1.2.1 -Dpackaging=jar -Dfile=jmx-1_2_1-bin/lib/jmxri.jar
+See https://maven.apache.org/guides/mini/guide-using-toolchains.html
+for more information about maven toolchains.
 
+After setting up a toolchain you can then build using the default
+profile:
 
-The build script will attempt to build NTEventLogAppender.dll if
-MinGW is available on the path.  If the unit tests are run on Windows
-without NTEventLogAppender.dll, many warnings of the missing DLL
-will be generated.  An installer for MinGW on Windows is
-available for download at http://sourceforge.net/project/showfiles.php?group_id=2435.
-MinGW is also available through the package managers of many Linux distributions.
+  mvn verify
 
-In case of problems send an e-mail note to
-log4j-user@logging.apache.org.  Please do not directly e-mail any
-log4j developers. The answer to your question might be useful to other
-users. Moreover, there are many knowledgeable users on the log4j-user
-mailing lists who can quickly answer your questions.
+If you do not care about compatibility with old JDKs, you can use a
+build without a toolchain and execute
+
+  mvn verify -P no-toolchain
+
+Build results can be found in the target/ subdirectory.
+
+==================
+NTEventLogAppender
+==================
+
+The maven build uses prebuilt NTEventLogAppender.dll and
+NTEventLogAppender.amd64.dll binaries. To rebuild these, see
+
+  src/ntdll
+
+for more information.
