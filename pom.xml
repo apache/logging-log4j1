@@ -442,6 +442,18 @@
               <forkMode>pertest</forkMode><!-- deprecated, but tests fail when changing the setting -->
               <skip>false</skip>
               <argLine>-Djava.library.path=${project.basedir}</argLine>
+              <excludes>
+                <exclude>**/AsyncAppenderTestCase.java</exclude>
+                <exclude>**/DRFATestCase.java</exclude>
+                <exclude>**/EnhancedPatternLayoutTestCase.java</exclude>
+                <exclude>**/MinimumTestCase.java</exclude>
+                <exclude>**/PatternLayoutTestCase.java</exclude>
+                <exclude>**/TestLogMF.java</exclude>
+                <exclude>**/XLoggerTestCase.java</exclude>
+                <exclude>**/ErrorHandlerTestCase.java</exclude>
+                <exclude>**/DOMTestCase.java</exclude>
+                <exclude>**/XMLLayoutTestCase.java</exclude>
+              </excludes>
             </configuration>
           </plugin>
           <plugin>
