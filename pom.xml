@@ -106,6 +106,20 @@
             <skip>false</skip>
             <argLine>-Djava.library.path=${project.basedir}</argLine>
           </configuration>
+          <executions>
+            <execution>
+              <id>default-test</id>
+              <configuration>
+                <excludes>
+                  <!-- These classes rely on system properties and log4j.xml configuration,
+                       so they require their own JVM executions -->
+                  <exclude>*TestCase2.class</exclude>
+                  <exclude>*TestCase3.class</exclude>
+                  <exclude>*TestCase4.class</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
