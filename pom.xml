@@ -23,7 +23,7 @@
   <packaging>bundle</packaging>
   <name>Apache Log4j</name>
   <version>1.2.18-SNAPSHOT</version>
-  <description>Apache Log4j 1.2 (UNMAINTAINED)</description>
+  <description>Apache Log4j 1.2</description>
   <url>http://logging.apache.org/log4j/1.2/</url>
   <issueManagement>
     <system>GitHub</system>
@@ -49,7 +49,7 @@
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -60,13 +60,55 @@
   </scm>
   <organization>
     <name>Apache Software Foundation</name>
-    <url>http://www.apache.org</url>
+    <url>https://www.apache.org</url>
   </organization>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.javac.target>1.4</project.javac.target>
   </properties>
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-toolchains-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.3.1</version>
+          <configuration>
+            <docfilessubdirs>true</docfilessubdirs>
+            <excludedocfilessubdir>.svn</excludedocfilessubdir>
+            <encoding>${project.build.sourceEncoding}</encoding>
+            <notimestamp>true</notimestamp>
+            <failOnError>false</failOnError>
+            <failOnWarnings>false</failOnWarnings>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+          <configuration>
+            <source>${project.javac.target}</source>
+            <target>${project.javac.target}</target>
+            <encoding>${project.build.sourceEncoding}</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.2</version>
+          <configuration>
+            <workingDirectory>tests</workingDirectory>
+            <reportFormat>plain</reportFormat>
+            <forkMode>pertest</forkMode><!-- deprecated, but tests fail when changing the setting -->
+            <skip>false</skip>
+            <argLine>-Djava.library.path=${project.basedir}</argLine>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -150,13 +192,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.3.1</version>
-        <configuration>
-          <docfilessubdirs>true</docfilessubdirs>
-          <excludedocfilessubdir>.svn</excludedocfilessubdir>
-          <encoding>UTF-8</encoding>
-          <notimestamp>true</notimestamp>
-        </configuration>
         <executions>
           <execution>
             <id>javadoc-package</id>
@@ -269,7 +304,7 @@
                         javax.mail.*;resolution:=optional,
                         *
                     </Import-Package>
-                    <Bundle-DocURL>http://logging.apache.org/log4j/1.2</Bundle-DocURL>
+                    <Bundle-DocURL>https://logging.apache.org/log4j/1.2</Bundle-DocURL>
                     <Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
                     <Bundle-RequiredExecutionEnvironment>J2SE-1.4</Bundle-RequiredExecutionEnvironment>
                 </instructions>
@@ -401,78 +436,26 @@
   </distributionManagement>
   <profiles>
     <profile>
-      <id>no-toolchain</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.1</version>
-            <configuration>
-              <source>7</source>
-              <target>7</target>
-              <encoding>UTF-8</encoding>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.22.2</version>
-            <configuration>
-              <workingDirectory>tests</workingDirectory>
-              <reportFormat>plain</reportFormat>
-              <forkMode>pertest</forkMode><!-- deprecated, but tests fail when changing the setting -->
-              <skip>false</skip>
-              <argLine>-Djava.library.path=${project.basedir}</argLine>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>com.soebes.maven.plugins</groupId>
-            <artifactId>echo-maven-plugin</artifactId>
-            <version>0.4.0</version>
-            <executions>
-              <execution>
-                <id>echo-toolchain-warning</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>echo</goal>
-                </goals>
-                <configuration>
-                  <echos>
-                    <echo>WARNING:</echo>
-                    <echo>WARNING:</echo>
-                    <echo>WARNING:</echo>
-                    <echo>WARNING: =========================================================</echo>
-                    <echo>WARNING: You are using a modern JDK without the toolchain profile.</echo>
-                    <echo>WARNING: Resulting jar files will not work with old JDKs!         </echo>
-                    <echo>WARNING: =========================================================</echo>
-                    <echo>WARNING:</echo>
-                    <echo>WARNING:</echo>
-                    <echo>WARNING:</echo>
-                  </echos>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <failOnError>false</failOnError>
-              <failOnWarnings>false</failOnWarnings>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>toolchain</id>
+      <id>toolchains</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <jdk>(8,]</jdk>
       </activation>
       <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <!-- Ignore toolchains for test execution, so tests use Maven JVM -->
+                <jvm>${env.JAVA_HOME}/bin/java</jvm>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-toolchains-plugin</artifactId>
-            <version>1.1</version>
             <executions>
               <execution>
                 <goals>
@@ -483,30 +466,9 @@
             <configuration>
               <toolchains>
                 <jdk>
-                  <version>1.6</version>
-                  <vendor>oracle</vendor>
+                  <version>[1.4, 8]</version>
                 </jdk>
               </toolchains>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.1</version>
-            <configuration>
-              <source>1.4</source>
-              <target>1.4</target>
-              <encoding>UTF-8</encoding>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.22.2</version>
-            <configuration>
-              <workingDirectory>tests</workingDirectory>
-              <reportFormat>plain</reportFormat>
-              <forkMode>pertest</forkMode><!-- deprecated, but tests fail when changing the setting -->
-              <skip>false</skip>
-              <argLine>-Djava.library.path=${project.basedir}</argLine>
             </configuration>
           </plugin>
         </plugins>
