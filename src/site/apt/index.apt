@@ -19,7 +19,7 @@ Apache log4j\u2122  1.2
     is an Apache Software Foundation Project and developed by a dedicated
     team of Committers of the Apache Software Foundation.
     For more info, please see {{{http://www.apache.org}The Apache Software Foundation}}.
-    Apache log4j is also part of a project which is known as {{{http://logging.apache.org}Apache Logging}}.
+    Apache log4j is also part of a project which is known as {{{https://logging.apache.org}Apache Logging}}.
     Please see the {{{/license.html}License}}.
 
     If you are interested in the recent changes, visit our {{{/changes-report.html}changes report}}.

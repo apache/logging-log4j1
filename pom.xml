@@ -24,7 +24,7 @@
   <name>Apache Log4j</name>
   <version>1.2.18-SNAPSHOT</version>
   <description>Apache Log4j 1.2</description>
-  <url>http://logging.apache.org/log4j/1.2/</url>
+  <url>https://logging.apache.org/log4j/1.2/</url>
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/apache/logging-log4j1/issues</url>
