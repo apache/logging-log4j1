@@ -1,7 +1,7 @@
 ===========
 Using log4j
 ===========
-	
+
 1) First untar or unzip the distribution file.
 
 2) Assuming you chose to extract the distribution in to the
@@ -11,17 +11,17 @@ Using log4j
    directory PATH_OF_YOUR_CHOICE/apache-log4j-VERSION/ as $LOG4J_HOME/.
 
 3) Add $LOG4J_HOME/log4j-VERSION.jar to your CLASSPATH,
-   
+
 4) You can now test your installation by first compiling the following
    simple program.
 
     import org.apache.log4j.Logger;
     import org.apache.log4j.BasicConfigurator;
-    
+
     public class Hello {
-    
+
       private static final Logger logger = Logger.getLogger(Hello.class);
-    
+
       public
       static
       void main(String argv[]) {
@@ -35,7 +35,7 @@ Using log4j
    After compilation, try it out by issuing the command
 
       java Hello
-  
+
    You should see log statements appearing on the console.
 
 5) Refer to the javadoc documentation and the user manual on how to
@@ -59,21 +59,20 @@ Building log4j
 
 log4j (as of 1.2.18) is built with Maven 3 and JDK 8 or higher.
 
-To build for compatibility with older JDKs (1.4/5/7), set up a Maven
-toolchain JDK with version=1.6 and vendor=oracle. For example set up
-the following configuration in ~/.m2/toolchains.xml:
+The project compiles to Java 1.4 bytecode, so you need to have Java 8 for that.
+If you run Maven with newer Java version, you need to configure
+the location of Java 1.8 via ~/.m2/toolchains.xml.
 
       <?xml version="1.0" encoding="UTF-8"?>
       <toolchains>
          <toolchain>
             <type>jdk</type>
             <provides>
-               <version>1.6</version>
-               <vendor>oracle</vendor>
+               <version>1.8</version>
             </provides>
             <configuration>
-               <jdkHome>/usr/lib/jvm/java-1.6.0-openjdk-amd64</jdkHome>
-               <!-- <jdkHome>C:\Program Files\Java\jdk1.6.0_45</jdkHome> -->
+               <jdkHome>/path/to/java-1.8.0_222</jdkHome>
+               <!-- <jdkHome>C:\Program Files\Java\jdk1.8.0_222</jdkHome> -->
             </configuration>
          </toolchain>
       </toolchains>
@@ -81,15 +80,9 @@ the following configuration in ~/.m2/toolchains.xml:
 See https://maven.apache.org/guides/mini/guide-using-toolchains.html
 for more information about maven toolchains.
 
-After setting up a toolchain you can then build using the default
-profile:
+After setting up a toolchain you can then build using the following command:
 
   mvn verify
-
-If you do not care about compatibility with old JDKs, you can use a
-build without a toolchain and execute
-
-  mvn verify -P no-toolchain
 
 Build results can be found in the target/ subdirectory.
 

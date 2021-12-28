@@ -1,13 +1,14 @@
-# End Of Life
+# About
 
-On August 5, 2015 the Logging Services Project Management Committee announced that Log4j 1.x had reached end of life. For complete text of the announcement please see the [Apache Blog](https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces). Users of Log4j 1 are recommended to upgrade to [Apache Log4j 2](https://logging.apache.org/log4j/2.x/index.html).
+log4j a logging library for Java.
 
-# Security release 1.2.18
+# Status
 
-Several security vulnerabilities have been identified in Log4J 1 up to and including 1.2.17. All users should upgrade to Log4J 2. For users that cannot upgrade, certain fixes are made available here. Please note Log4J 1 remains End Of Life.
+log4j 1.x is feature complete, so do not expect new features to appear,
+however, security issues might be fixed.
 
 See [the log4j 1.2 website](https://logging.apache.org/log4j/1.2/) for more information.
 
-## Changes in 1.2.18
+# Log4shell
 
-See the [Changes Report](https://logging.apache.org/log4j/1.2/changes-report.html) for a detailed list of changes. This file is generated from [changes.xml](src/changes/changes.xml).
+log4j 1.x is not vulnerable to CVE-2021-45105, CVE-2021-45046, and CVE-2021-44228.
