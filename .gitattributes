@@ -1,0 +1,16 @@
+# Auto detect text files and perform LF normalization
+*        text=auto
+
+*.java   text
+*.html   text
+*.css    text
+*.js     text
+*.sql    text
+*.q      text
+
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+
+# Blow files don't have extension, so we mention them explicitly
+/src/changes/changes.xml merge=union
+
