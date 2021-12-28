@@ -22,6 +22,7 @@ import junit.framework.TestSuite;
 import junit.framework.Test;
 
 import org.apache.log4j.util.Compare;
+import org.apache.log4j.util.TestFile;
 import org.apache.log4j.xml.XLevel;
 
 /**
@@ -31,7 +32,7 @@ import org.apache.log4j.xml.XLevel;
 */
 public class HierarchyThresholdTestCase extends TestCase {
   
-  static String TEMP = "output/temp";
+  static String TEMP = TestFile.temp(HierarchyThresholdTestCase.class);
   static Logger logger = Logger.getLogger(HierarchyThresholdTestCase.class);
 
   public HierarchyThresholdTestCase(String name) {

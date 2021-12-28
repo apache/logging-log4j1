@@ -29,7 +29,7 @@ import org.apache.log4j.util.*;
  */
 public class MinimumTestCase extends TestCase {
 
-  static String FILTERED = "output/filtered";
+  static String FILTERED = TestFile.filtered(MinimumTestCase.class);
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
   static String EXCEPTION2 = "\\s*at .*\\(.*\\)";

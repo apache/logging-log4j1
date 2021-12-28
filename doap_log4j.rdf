@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl"?>
 <rdf:RDF xml:lang="en"
-         xmlns="http://usefulinc.com/ns/doap#" 
-         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns="http://usefulinc.com/ns/doap#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:asfext="http://projects.apache.org/ns/asfext#"
          xmlns:foaf="http://xmlns.com/foaf/0.1/">
 <!--
@@ -22,16 +22,16 @@
  limitations under the License.
 
 -->
-  <Project rdf:about="http://logging.apache.org/log4j">
+  <Project rdf:about="https://logging.apache.org/log4j">
     <created>2007-02-09</created>
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
     <name>Apache log4j</name>
-    <homepage rdf:resource="http://logging.apache.org/log4j" />
-    <asfext:pmc rdf:resource="http://logging.apache.org" />
+    <homepage rdf:resource="https://logging.apache.org/log4j" />
+    <asfext:pmc rdf:resource="https://logging.apache.org" />
     <shortdesc>Apache log4j provides logging services for Java.</shortdesc>
     <bug-database rdf:resource="http://issues.apache.org/bugzilla" />
-    <mailing-list rdf:resource="http://logging.apache.org/log4j/1.2/mail-lists.html" />
-    <download-page rdf:resource="http://logging.apache.org/log4j/1.2/download.html" />
+    <mailing-list rdf:resource="https://logging.apache.org/log4j/1.2/mail-lists.html" />
+    <download-page rdf:resource="https://logging.apache.org/log4j/1.2/download.html" />
     <programming-language>Java</programming-language>
     <category rdf:resource="http://projects.apache.org/category/library" />
     <release>

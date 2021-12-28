@@ -22,10 +22,11 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.log4j.Logger;
 import org.apache.log4j.util.Compare;
+import org.apache.log4j.util.TestFile;
 
 public class CustomLevelTestCase extends TestCase {
 
-  static String TEMP = "output/temp";
+  static String TEMP = TestFile.temp(CustomLevelTestCase.class);
 
   Logger root; 
   Logger logger;

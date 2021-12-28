@@ -37,6 +37,12 @@ public class SunReflectFilter implements Filter {
     if (in.indexOf("at java.lang.reflect.") >= 0) {
       return null;
     }
+    if (in.indexOf("at java.base/jdk.internal.reflect") >= 0) {
+      return null;
+    }
+    if (in.indexOf("at java.base/java.lang.reflect") >= 0) {
+      return null;
+    }
     if (in.indexOf("Compiled Code") >= 0) {
         if(in.indexOf("junit.framework.TestSuite") >= 0) {
             return util.substitute("s/Compiled Code/TestSuite.java:XXX/", in);

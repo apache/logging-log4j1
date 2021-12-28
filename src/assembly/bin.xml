@@ -29,6 +29,7 @@
 				<include>*.txt</include>
 				<include>*.sample</include>
 				<include>*.xml</include>
+				<include>README.md</include>
 				<include>INSTALL</include>
 				<include>KEYS</include>
 				<include>LICENSE</include>
@@ -57,7 +58,7 @@
 		   <source>target/log4j-${project.version}.jar</source>
                 </file>
                 <file>
-                   <source>target/NTEventLogAppender.dll</source>
+                   <source>NTEventLogAppender.dll</source>
                    <fileMode>0755</fileMode>
                 </file>
                 <file>

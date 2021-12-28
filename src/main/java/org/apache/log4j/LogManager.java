@@ -198,7 +198,7 @@ public class LogManager {
         guard = null;
         Exception ex = new IllegalStateException("Class invariant violation");
         String msg =
-                "log4j called after unloading, see http://logging.apache.org/log4j/1.2/faq.html#unload.";
+                "log4j called after unloading, see https://logging.apache.org/log4j/1.2/faq.html#unload.";
         if (isLikelySafeScenario(ex)) {
             LogLog.debug(msg, ex);
         } else {

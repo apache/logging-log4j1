@@ -37,6 +37,7 @@ import org.apache.log4j.util.ISO8601Filter;
 import org.apache.log4j.util.JunitTestRunnerFilter;
 import org.apache.log4j.util.LineNumberFilter;
 import org.apache.log4j.util.SunReflectFilter;
+import org.apache.log4j.util.TestFile;
 import org.apache.log4j.util.Transformer;
 
 import java.io.File;
@@ -50,10 +51,10 @@ import java.util.zip.ZipOutputStream;
 
 public class DOMTestCase extends TestCase {
 
-  static String TEMP_A1 = "output/temp.A1";
-  static String TEMP_A2 = "output/temp.A2";
-  static String FILTERED_A1 = "output/filtered.A1";
-  static String FILTERED_A2 = "output/filtered.A2";
+  static String TEMP_A1 = TestFile.byClassName("output/temp.A1", DOMTestCase.class);
+  static String TEMP_A2 = TestFile.byClassName("output/temp.A2", DOMTestCase.class);
+  static String FILTERED_A1 = TestFile.byClassName("output/filtered.A1", DOMTestCase.class);
+  static String FILTERED_A2 = TestFile.byClassName("output/filtered.A2", DOMTestCase.class);
 
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
@@ -332,8 +333,8 @@ public class DOMTestCase extends TestCase {
   public void testOverrideSubst() {
       DOMConfigurator configurator = new DOMConfigurator() {
           protected String subst(final String value) {
-              if ("output/temp.A1".equals(value)) {
-                  return "output/subst-test.A1";
+              if ("output/temp.A1.DOMTestCase".equals(value)) {
+                  return "output/subst-test.A1.DOMTestCase";
               }
               return value;
           }
@@ -341,7 +342,7 @@ public class DOMTestCase extends TestCase {
       configurator.doConfigure("input/xml/DOMTestCase1.xml", LogManager.getLoggerRepository());
       FileAppender a1 = (FileAppender) Logger.getRootLogger().getAppender("A1");
       String file = a1.getFile();
-      assertEquals("output/subst-test.A1", file);
+      assertEquals("output/subst-test.A1.DOMTestCase", file);
   }
 
     /**

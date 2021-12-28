@@ -23,6 +23,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.util.Filter;
+import org.apache.log4j.util.TestFile;
 import org.apache.log4j.util.Transformer;
 import org.apache.log4j.util.Compare;
 import org.apache.log4j.util.JunitTestRunnerFilter;
@@ -34,8 +35,8 @@ import org.apache.log4j.PropertyConfigurator;
 
 public class ErrorHandlerTestCase extends TestCase {
 
-  static String TEMP = "output/temp";
-  static String FILTERED = "output/filtered";
+  static String TEMP = TestFile.temp(ErrorHandlerTestCase.class);
+  static String FILTERED = TestFile.filtered(ErrorHandlerTestCase.class);
 
 
   static String EXCEPTION1 = "java.lang.Exception: Just testing";
