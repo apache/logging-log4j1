@@ -208,6 +208,7 @@ public class Level extends Priority implements Serializable {
      * @return resolved object.
      * @throws ObjectStreamException if exception during resolution.
      */
+   // FIXME this method should not be private.
     private Object readResolve() throws ObjectStreamException {
         //
         //  if the deserizalized object is exactly an instance of Level
