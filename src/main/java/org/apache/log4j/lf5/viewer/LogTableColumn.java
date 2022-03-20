@@ -111,7 +111,7 @@ public class LogTableColumn implements java.io.Serializable {
     return tableColumn;
   }
 
-
+  // FIXME avoid using == or != for string comparison
   public boolean equals(Object o) {
     boolean equals = false;
 
