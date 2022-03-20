@@ -217,6 +217,7 @@ public class LogFileParser implements Runnable {
         return 0;
       }
 
+      // TODO don't use static call to DateFormats       
       Date d = _sdf.parse(s);
 
       return d.getTime();
