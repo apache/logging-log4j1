@@ -88,6 +88,7 @@ public class Priority {
      Two priorities are equal if their level fields are equal.
      @since 1.2
    */
+  // TODO override hashCode() also
   public
   boolean equals(Object o) {
     if(o instanceof Priority) {
