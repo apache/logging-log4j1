@@ -93,6 +93,7 @@ public class PropertyPrinter implements PropertyGetter.PropertyCallback {
   /**
    * @since 1.2.15
    */
+   // FIXME avoid using == or != for string comparison
   protected
   void printOptions(PrintWriter out, Category cat) {
     Enumeration appenders = cat.getAllAppenders();
