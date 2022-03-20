@@ -231,7 +231,6 @@ public class WriterAppender extends AppenderSkeleton {
      <code>encoding</code> property.  If the encoding value is
      specified incorrectly the writer will be opened using the default
      system encoding (an error message will be printed to the loglog.  */
-	
   protected
   OutputStreamWriter createWriter(OutputStream os) {
     OutputStreamWriter retval = null;
@@ -241,7 +240,7 @@ public class WriterAppender extends AppenderSkeleton {
       try {
 	retval = new OutputStreamWriter(os, enc);
       } catch(IOException e) {
-          if (e instanceof UnsupportedEncodingException) {
+          if (e instanceof InterruptedIOException) {
               Thread.currentThread().interrupt();
           }
 	      LogLog.warn("Error initializing output writer.");
