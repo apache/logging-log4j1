@@ -44,6 +44,7 @@ public class CategoryImmediateEditor extends DefaultTreeCellEditor {
   //   Protected Variables:
   //--------------------------------------------------------------------------
   private CategoryNodeRenderer renderer;
+  // FIXME Field CategoryImmediateEditor.editingIcon masks field in superclass javax.swing.tree.DefaultTreeCellEditor   
   protected Icon editingIcon = null;
 
   //--------------------------------------------------------------------------
