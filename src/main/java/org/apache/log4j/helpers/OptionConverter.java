@@ -145,21 +145,18 @@ public class OptionConverter {
     return dEfault;
   }
 
-  public
-  static
-  int toInt(String value, int dEfault) {
-    if(value != null) {
-      String s = value.trim();
-      try {
-	return Integer.valueOf(s).intValue();
-      }
-      catch (NumberFormatException e) {
-	 LogLog.error("[" + s + "] is not in proper int form.");
-	e.printStackTrace();
-      }
+    public static int toInt(String value, int dEfault) {
+        if (value != null) {
+            String s = value.trim();
+            try {
+                return Integer.valueOf(s).intValue();
+            } catch (NumberFormatException e) {
+                LogLog.error("[" + s + "] is not in proper int form.");
+                e.printStackTrace();
+            }
+        }
+        return dEfault;
     }
-    return dEfault;
-  }
 
   /**
      Converts a standard or custom priority level to a Level
